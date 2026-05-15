@@ -7,7 +7,7 @@
 <meta name="description" content="How many tourists are in Hawaii today? Live daily visitor arrivals for Maui, Oahu, Kauai and the Big Island. Plus live weather, surf report and where visitors come from. Updated every morning from Hawaii DBEDT.">
 
 <!-- SEO Keywords -->
-<meta name="keywords" content="Hawaii tourists today, how many tourists in Hawaii, Hawaii visitor count, Maui tourists, Oahu visitors, Hawaii daily arrivals, Hawaii tourism statistics, Hawaii travel data, tourists in Hawaii, Hawaii visitor tracker">
+<meta name="keywords" content="Hawaii tourists today, how many tourists in Hawaii, Hawaii visitor count, Maui tourists, Oahu visitors, Hawaii daily arrivals, Hawaii tourism statistics, Hawaii travel data, tourists in Hawaii, Hawaii visitor tracker, Hawaii live webcam, Maui live camera, Oahu live webcam, Kauai live camera, Big Island live webcam, Hawaii beach cam, Waikiki live cam, Hawaii surf cam, Hawaii volcano cam, live camera Hawaii">
 <meta name="author" content="Today in Hawaii">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.todayinhawaii.com">
@@ -278,6 +278,20 @@
   .otab { padding: 6px 16px; border-radius: 99px; font-size: 13px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
   .otab.active, .otab:hover { background: rgba(34,211,238,0.15); border-color: var(--foam); color: var(--foam); }
 
+  /* ── WEBCAMS ── */
+  .webcam-section { margin-bottom: 56px; }
+  .cam-island-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin: 32px 0 16px; }
+  .cam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 8px; }
+  .cam-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; text-decoration: none; transition: transform 0.2s, border-color 0.2s; display: block; }
+  .cam-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); }
+  .cam-thumb { position: relative; height: 140px; display: flex; align-items: center; justify-content: center; }
+  .cam-play { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.3); transition: all 0.2s; padding-left: 4px; }
+  .cam-card:hover .cam-play { background: rgba(255,255,255,0.35); transform: scale(1.1); }
+  .cam-live-dot { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.4); border-radius: 99px; padding: 4px 10px; font-size: 11px; color: #fff; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
+  .cam-info { padding: 14px 16px; }
+  .cam-name { font-weight: 500; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .cam-loc { font-size: 12px; color: var(--muted); }
+
   /* ── DIVIDER ── */
   .section-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
 
@@ -469,6 +483,201 @@
   </div>
 
 </div><!-- /wrap -->
+
+<!-- WEBCAM SECTION -->
+<div class="wrap">
+  <hr class="section-divider">
+  <div class="webcam-section">
+    <div class="section-title">🎥 Live Island Cameras <span class="section-note">Live</span></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:32px;max-width:620px;line-height:1.6;">
+      Watch Hawaii live right now — beaches, surf, volcanoes and sunsets across all islands. Click any camera to open the live feed.
+    </p>
+
+    <!-- OAHU -->
+    <div class="cam-island-title">🌆 Oahu</div>
+    <div class="cam-grid">
+      <a href="https://www.hiltonhawaiianvillage.com/live-cam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#0e7490,#22d3ee)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Hilton Hawaiian Village</div>
+          <div class="cam-loc">📍 Waikiki Beach · Honolulu</div>
+        </div>
+      </a>
+      <a href="https://www.sheratonwaikiki.com/live-cam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#0369a1,#38bdf8)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Sheraton Waikiki</div>
+          <div class="cam-loc">📍 Waikiki Beach · Honolulu</div>
+        </div>
+      </a>
+      <a href="https://www.surfline.com/surf-report/pipeline/5842041f4e65fad6a7708890" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#155e75,#06b6d4)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Banzai Pipeline</div>
+          <div class="cam-loc">📍 North Shore · Oahu</div>
+        </div>
+      </a>
+      <a href="https://www.surfline.com/surf-report/sunset-beach/5842041f4e65fad6a7708893" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#1e3a5f,#3b82f6)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Sunset Beach</div>
+          <div class="cam-loc">📍 North Shore · Oahu</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- MAUI -->
+    <div class="cam-island-title">🏄 Maui</div>
+    <div class="cam-grid">
+      <a href="https://www.whalercondos.com/maui-webcam/" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#9a3412,#f97316)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Kaanapali Beach</div>
+          <div class="cam-loc">📍 The Whaler · West Maui</div>
+        </div>
+      </a>
+      <a href="https://www.grandwailea.com/live-webcam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#7c2d12,#fb923c)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Grand Wailea Resort</div>
+          <div class="cam-loc">📍 Wailea Beach · South Maui</div>
+        </div>
+      </a>
+      <a href="https://www.surfline.com/surf-report/hookipa-beach/5842041f4e65fad6a770886f" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#78350f,#f59e0b)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Ho'okipa Beach</div>
+          <div class="cam-loc">📍 North Shore · Maui</div>
+        </div>
+      </a>
+      <a href="https://www.nps.gov/hale/learn/photosmultimedia/webcams.htm" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#44403c,#a8a29e)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Haleakalā Summit</div>
+          <div class="cam-loc">📍 10,023 ft Summit · Maui</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- KAUAI -->
+    <div class="cam-island-title">🌿 Kauaʻi</div>
+    <div class="cam-grid">
+      <a href="https://www.hanaleicolony.com/webcam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#14532d,#22c55e)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Hanalei Bay</div>
+          <div class="cam-loc">📍 Hanalei Colony Resort · North Shore</div>
+        </div>
+      </a>
+      <a href="https://www.royal-sonesta.com/kauai/live-cam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#166534,#4ade80)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Kalapaki Beach</div>
+          <div class="cam-loc">📍 Royal Sonesta · Lihue</div>
+        </div>
+      </a>
+      <a href="https://www.lawaibeachresort.com/webcam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#064e3b,#34d399)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Poipu Beach</div>
+          <div class="cam-loc">📍 Lawai Beach Resort · South Shore</div>
+        </div>
+      </a>
+      <a href="https://www.surfline.com/surf-report/hanalei-bay/5842041f4e65fad6a7708957" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#065f46,#6ee7b7)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Hanalei Surf Cam</div>
+          <div class="cam-loc">📍 Hanalei · North Shore</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- BIG ISLAND -->
+    <div class="cam-island-title">🌋 Big Island</div>
+    <div class="cam-grid">
+      <a href="https://www.usgs.gov/volcanoes/kilauea/webcams" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#7c1d1d,#ef4444)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Kīlauea Volcano</div>
+          <div class="cam-loc">📍 USGS · Hawaiʻi Volcanoes NP</div>
+        </div>
+      </a>
+      <a href="https://www.outrigger.com/hotels-resorts/hawaii/big-island/outrigger-kona-resort-and-spa/webcam" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#78350f,#fbbf24)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Kona Coast</div>
+          <div class="cam-loc">📍 Outrigger Resort · Kailua-Kona</div>
+        </div>
+      </a>
+      <a href="https://www.surfline.com/surf-report/banyans/5842041f4e65fad6a7708960" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#451a03,#d97706)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Banyans Surf Cam</div>
+          <div class="cam-loc">📍 Kailua-Kona · Big Island</div>
+        </div>
+      </a>
+      <a href="https://www.nps.gov/havo/learn/photosmultimedia/webcams.htm" target="_blank" rel="noopener" class="cam-card">
+        <div class="cam-thumb" style="background:linear-gradient(135deg,#1c1917,#57534e)">
+          <div class="cam-play">▶</div>
+          <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
+        </div>
+        <div class="cam-info">
+          <div class="cam-name">Halemaʻumaʻu Crater</div>
+          <div class="cam-loc">📍 NPS · Hawaiʻi Volcanoes NP</div>
+        </div>
+      </a>
+    </div>
+
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:13px;color:var(--muted);margin-top:8px;">
+      📷 Cameras operated by third parties. Click to open live feed in a new tab. Availability may vary.
+    </div>
+  </div>
+</div><!-- /webcam wrap -->
 
 <footer>
   <div class="wrap">
