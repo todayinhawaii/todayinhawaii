@@ -533,7 +533,8 @@ function renderIslandData(apiData) {
       </div>`;
   });
 
-  // TODAY TABLE
+  // Update share donut
+  buildShareDonut(islands);
   const tbody = document.getElementById('tableBody');
   const maxArr = Math.max(...ISLANDS.map(i => (islands[i.id] || {arrivals:1}).arrivals));
   tbody.innerHTML = ISLANDS.map(({ id, color }) => {
@@ -642,21 +643,29 @@ ISLANDS.forEach(({ id }) => {
 });
 buildTrendChart();
 
-// SHARE DONUT
-const shareCtx = document.getElementById('shareChart').getContext('2d');
-const shareData = ISLANDS.map(i=>DATA.today[i.id].arrivals);
-const shareColors = ISLANDS.map(i=>CHART_COLORS[i.id]);
-const shareTotal  = shareData.reduce((a,b)=>a+b,0);
-new Chart(shareCtx,{
-  type:'doughnut',
-  data:{ labels:ISLANDS.map(i=>i.id), datasets:[{ data:shareData, backgroundColor:shareColors, borderColor:'#061d2c', borderWidth:3, hoverOffset:6 }] },
-  options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:ctx=>` ${ctx.label}: ${ctx.parsed.toLocaleString()} (${((ctx.parsed/shareTotal)*100).toFixed(1)}%)` } } } }
-});
-const legendEl = document.getElementById('shareLegend');
-ISLANDS.forEach(({ id, color }) => {
-  const pct = ((DATA.today[id].arrivals/shareTotal)*100).toFixed(1);
-  legendEl.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${color};margin-right:8px;"></span>${id}</span><span style="color:#7fb3c8">${pct}%</span></div>`;
-});
+// SHARE DONUT — built after API data loads
+function buildShareDonut(islandData) {
+  const shareCtx = document.getElementById('shareChart').getContext('2d');
+  const shareData = ISLANDS.map(i=>(islandData[i.id]||{arrivals:0}).arrivals);
+  const shareColors = ISLANDS.map(i=>CHART_COLORS[i.id]);
+  const shareTotal  = shareData.reduce((a,b)=>a+b,0);
+  new Chart(shareCtx,{
+    type:'doughnut',
+    data:{ labels:ISLANDS.map(i=>i.id), datasets:[{ data:shareData, backgroundColor:shareColors, borderColor:'#061d2c', borderWidth:3, hoverOffset:6 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:ctx=>` ${ctx.label}: ${ctx.parsed.toLocaleString()} (${((ctx.parsed/shareTotal)*100).toFixed(1)}%)` } } } }
+  });
+  const legendEl = document.getElementById('shareLegend');
+  legendEl.innerHTML = '';
+  ISLANDS.forEach(({ id, color }) => {
+    const pct = shareTotal > 0 ? ((islandData[id]?.arrivals||0)/shareTotal*100).toFixed(1) : '0.0';
+    legendEl.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${color};margin-right:8px;"></span>${id}</span><span style="color:#7fb3c8">${pct}%</span></div>`;
+  });
+}
+
+// Build with fallback data initially, then overwrite when API loads
+const fallbackIslands = {};
+ISLANDS.forEach(({id})=>{ fallbackIslands[id]={arrivals:1000}; });
+buildShareDonut(fallbackIslands);
 
 function focusIsland(id) {
   activeIslands = new Set([id]);
