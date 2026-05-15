@@ -516,7 +516,7 @@ function renderIslandData(apiData) {
   ISLANDS.forEach(({ id, emoji, nickname, color }) => {
     const d = islands[id];
     if (!d) return;
-    const pct = d.change_pct !== null ? d.change_pct : 0;
+    const pct = (d.change_pct !== null && d.change_pct !== undefined) ? d.change_pct : 0;
     const isUp = pct >= 0;
     grid.innerHTML += `
       <div class="island-card fade-up" data-island="${id}" onclick="focusIsland('${id}')">
@@ -542,16 +542,19 @@ function renderIslandData(apiData) {
   tbody.innerHTML = ISLANDS.map(({ id, color }) => {
     const d = islands[id];
     if (!d) return '';
-    const pct = d.change_pct !== null ? d.change_pct : 0;
+    const pct = (d.change_pct !== null && d.change_pct !== undefined) ? d.change_pct : 0;
     const isUp = pct >= 0;
     const barW = Math.round((d.arrivals/maxArr)*100);
+    const netFlow = d.net_flow || 0;
+    const dom = d.domestic || 0;
+    const intl = d.international || 0;
     return `<tr>
       <td><span class="island-dot" style="background:${color}"></span>${id}</td>
       <td><div class="bar-cell"><span>${d.arrivals.toLocaleString()}</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${barW}%;background:${color}"></div></div></div></td>
       <td>${d.departures.toLocaleString()}</td>
-      <td style="color:${(d.net_flow||0)>=0?'#10b981':'#f97316'}">${(d.net_flow||0)>=0?'+':''}${(d.net_flow||0).toLocaleString()}</td>
-      <td>${(d.domestic||0).toLocaleString()}</td>
-      <td>${(d.international||0).toLocaleString()}</td>
+      <td style="color:${netFlow>=0?'#10b981':'#f97316'}">${netFlow>=0?'+':''}${netFlow.toLocaleString()}</td>
+      <td>${dom.toLocaleString()}</td>
+      <td>${intl.toLocaleString()}</td>
       <td class="${isUp?'trend-up':'trend-down'}">${isUp?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</td>
     </tr>`;
   }).join('');
