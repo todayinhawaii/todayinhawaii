@@ -850,6 +850,71 @@ renderMarkets('all');
 buildOriginTrend('all');
 buildWorldChart();
 
+// Try to load saved origins from admin
+fetch('/api/origins')
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) return; // No saved data, use defaults
+    const m = data.markets;
+    if (!m) return;
+
+    // Update MARKETS.all with saved data
+    const marketMap = {
+      uswest:  { flag:'🇺🇸', name:'US West',  sub:'California, Nevada, WA', color:'#22d3ee' },
+      useast:  { flag:'🇺🇸', name:'US East',  sub:'New York, Texas, FL',    color:'#38bdf8' },
+      japan:   { flag:'🇯🇵', name:'Japan',    sub:'Tokyo, Osaka, Nagoya',   color:'#f43f5e' },
+      canada:  { flag:'🇨🇦', name:'Canada',   sub:'BC, Ontario, Alberta',   color:'#f97316' },
+      oceania: { flag:'🇦🇺', name:'Oceania',  sub:'Australia, New Zealand', color:'#10b981' },
+      europe:  { flag:'🇩🇪', name:'Europe',   sub:'Germany, UK, France',    color:'#fbbf24' },
+      korea:   { flag:'🇰🇷', name:'Korea',    sub:'Seoul, Busan',           color:'#a78bfa' },
+      china:   { flag:'🇨🇳', name:'China',    sub:'Mainland China',         color:'#fb923c' },
+    };
+
+    const newMarkets = Object.entries(m)
+      .filter(([k]) => marketMap[k])
+      .map(([k, v]) => ({
+        ...marketMap[k],
+        val: v * 1000,
+        pct: 100,
+        trend: '',
+        up: true,
+      }));
+
+    // Sort by value descending and fix pct
+    newMarkets.sort((a,b) => b.val - a.val);
+    const maxVal = newMarkets[0]?.val || 1;
+    newMarkets.forEach(mk => { mk.pct = Math.round(mk.val / maxVal * 100); });
+
+    MARKETS.all = newMarkets;
+
+    // Update WORLD chart data
+    WORLD.length = 0;
+    newMarkets.forEach(mk => WORLD.push({ label: mk.name, val: Math.round(mk.val/1000), color: mk.color }));
+
+    // Update spend cards if saved
+    if (data.spend) {
+      const sp = data.spend;
+      const newSpend = [];
+      if (sp.japan)   newSpend.push({flag:'🇯🇵', country:'Japan',   spend:'$'+sp.japan.amount,   days:sp.japan.days,   color:'#f43f5e'});
+      if (sp.oceania) newSpend.push({flag:'🇦🇺', country:'Oceania', spend:'$'+sp.oceania.amount, days:sp.oceania.days, color:'#10b981'});
+      if (sp.europe)  newSpend.push({flag:'🇩🇪', country:'Europe',  spend:'$'+sp.europe.amount,  days:sp.europe.days,  color:'#fbbf24'});
+      if (sp.useast)  newSpend.push({flag:'🇺🇸', country:'US East', spend:'$'+sp.useast.amount,  days:sp.useast.days,  color:'#22d3ee'});
+      document.getElementById('spendGrid').innerHTML = newSpend.map(s => `
+        <div class="spend-card">
+          <div class="spend-flag">${s.flag}</div>
+          <div class="spend-val">${s.spend}</div>
+          <div class="spend-lbl">${s.country}</div>
+          <div class="spend-sub">avg/day · ${s.days} days stay</div>
+        </div>`).join('');
+    }
+
+    // Re-render everything with new data
+    renderMarkets('all');
+    buildOriginTrend('all');
+    buildWorldChart();
+  })
+  .catch(() => {}); // Silently fail, keep defaults
+
 // ============================================================
 // SURF REPORT — Live from Open-Meteo Marine API (free, no key)
 // ============================================================
