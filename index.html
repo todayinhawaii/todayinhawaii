@@ -535,6 +535,8 @@ function renderIslandData(apiData) {
 
   // Update share donut
   buildShareDonut(islands);
+
+  // TODAY TABLE
   const tbody = document.getElementById('tableBody');
   const maxArr = Math.max(...ISLANDS.map(i => (islands[i.id] || {arrivals:1}).arrivals));
   tbody.innerHTML = ISLANDS.map(({ id, color }) => {
@@ -662,9 +664,13 @@ function buildShareDonut(islandData) {
   });
 }
 
-// Build with fallback data initially, then overwrite when API loads
-const fallbackIslands = {};
-ISLANDS.forEach(({id})=>{ fallbackIslands[id]={arrivals:1000}; });
+// Build with realistic fallback proportions initially
+const fallbackIslands = {
+  'Maui':       {arrivals:4200},
+  'Oahu':       {arrivals:9400},
+  'Kauai':      {arrivals:1350},
+  'Big Island': {arrivals:2100},
+};
 buildShareDonut(fallbackIslands);
 
 function focusIsland(id) {
