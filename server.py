@@ -1,20 +1,12 @@
 """
-VisitorPulse Hawaii — Backend Server
-=====================================
-A tiny Flask web server that:
-1. Serves the website (index.html)
-2. Exposes /api/today and /api/history endpoints
-   so the frontend can fetch real data from hawaii_data.csv
-3. Runs the daily fetch automatically at 8am
-
-Deploy this to Railway — it handles everything.
+Today in Hawaii — Backend Server
 """
 
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 import csv
 import os
-from datetime import datetime, date, timedelta
+from datetime import datetime
 from collections import defaultdict
 import threading
 import schedule
@@ -37,7 +29,6 @@ DATA_FILE = os.path.join(os.path.dirname(__file__), "hawaii_data.csv")
 # ── DATA LOADING ──────────────────────────────────────────────
 
 def load_csv() -> list[dict]:
-    """Load all records from hawaii_data.csv."""
     if not os.path.exists(DATA_FILE):
         return []
     with open(DATA_FILE, newline="", encoding="utf-8") as f:
@@ -45,7 +36,6 @@ def load_csv() -> list[dict]:
 
 
 def to_int(val):
-    """Safe integer conversion."""
     try:
         return int(val) if val and val.strip() else None
     except (ValueError, AttributeError):
@@ -56,32 +46,34 @@ def to_int(val):
 
 @app.route("/")
 def index():
-    """Serve the main website."""
     return send_from_directory(".", "index.html")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory(".", "sitemap.xml")
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(".", "robots.txt")
 
 
 @app.route("/api/today")
 def api_today():
-    """
-    Returns today's data for all islands.
-    Falls back to most recent available day if today isn't in yet.
-    """
     records = load_csv()
     if not records:
-        return jsonify({"error": "No data yet. Run fetch_hawaii_data.py first."}), 404
+        return jsonify({"error": "No data yet."}), 404
 
-    # Find the most recent date in the data
     dates = sorted(set(r["data_date"] for r in records if r["data_date"]), reverse=True)
     latest_date = dates[0] if dates else None
 
     if not latest_date:
         return jsonify({"error": "No valid dates in data"}), 404
 
-    # Get records for the latest date (excluding statewide summary)
     latest = [r for r in records
               if r["data_date"] == latest_date and r["island"] != "Statewide"]
 
-    # Also get previous day for % change
     prev_date = dates[1] if len(dates) > 1 else None
     prev = {r["island"]: r for r in records
             if r["data_date"] == prev_date} if prev_date else {}
@@ -110,7 +102,6 @@ def api_today():
             "on_island_est": round(arr * 8.9) if arr else None,
         }
 
-    # Statewide totals
     total_arr = sum(v["arrivals"] or 0 for v in islands.values())
     total_dep = sum(v["departures"] or 0 for v in islands.values())
 
@@ -130,23 +121,17 @@ def api_today():
 @app.route("/api/history")
 @app.route("/api/history/<int:days>")
 def api_history(days=30):
-    """
-    Returns daily arrival history for the last N days, per island.
-    Used by the trend chart.
-    """
-    days = min(days, 365)   # Cap at 1 year
+    days = min(days, 365)
     records = load_csv()
     if not records:
         return jsonify({"error": "No data yet"}), 404
 
-    # Collect all dates, sorted
     all_dates = sorted(set(
         r["data_date"] for r in records
         if r["data_date"] and r["island"] != "Statewide"
     ))
     recent_dates = all_dates[-days:] if len(all_dates) >= days else all_dates
 
-    # Build per-island history
     by_island_date = defaultdict(dict)
     for r in records:
         if r["island"] != "Statewide":
@@ -155,69 +140,79 @@ def api_history(days=30):
     history = {}
     for island in by_island_date:
         history[island] = [
-            {
-                "date": d,
-                "arrivals": by_island_date[island].get(d),
-            }
+            {"date": d, "arrivals": by_island_date[island].get(d)}
             for d in recent_dates
         ]
 
-    return jsonify({
-        "days": days,
-        "dates": recent_dates,
-        "islands": history,
-    })
+    return jsonify({"days": days, "dates": recent_dates, "islands": history})
 
 
 @app.route("/api/status")
 def api_status():
-    """Health check — useful for Railway to verify the server is running."""
     records = load_csv()
-    dates   = sorted(set(r["data_date"] for r in records if r["data_date"]), reverse=True)
+    dates = sorted(set(r["data_date"] for r in records if r["data_date"]), reverse=True)
     return jsonify({
-        "status":       "ok",
-        "records":      len(records),
-        "latest_date":  dates[0] if dates else None,
-        "server_time":  datetime.now().isoformat(),
+        "status":      "ok",
+        "records":     len(records),
+        "latest_date": dates[0] if dates else None,
+        "server_time": datetime.now().isoformat(),
     })
+
+
+@app.route("/api/fetch-now")
+def fetch_now():
+    """Manually trigger a data fetch."""
+    def do_fetch():
+        run_daily_fetch()
+    t = threading.Thread(target=do_fetch, daemon=True)
+    t.start()
+    return jsonify({"status": "fetch started", "time": datetime.now().isoformat()})
 
 
 # ── SCHEDULED DAILY FETCH ─────────────────────────────────────
 
 def run_daily_fetch():
-    """Runs the data fetch in a background thread."""
     if fetch_data:
-        print(f"[{datetime.now()}] Running scheduled data fetch...")
+        print(f"[{datetime.now()}] Running data fetch...")
         try:
             fetch_data()
             print(f"[{datetime.now()}] Fetch complete.")
         except Exception as e:
             print(f"[{datetime.now()}] Fetch error: {e}")
     else:
-        print("Warning: fetch_hawaii_data.py not found — skipping scheduled fetch")
+        print("Warning: fetch_hawaii_data.py not found")
 
 
 def schedule_loop():
-    """Runs in a background thread to trigger daily fetch."""
-    # Fetch at 8:30am Hawaii time (UTC-10 = 18:30 UTC)
+    # 8:30am Hawaii time = 18:30 UTC
     schedule.every().day.at("18:30").do(run_daily_fetch)
-    # Also fetch on startup if no data yet
+    print(f"[{datetime.now()}] Scheduler started. Next fetch at 18:30 UTC.")
+    # Run on startup if no data
     if not os.path.exists(DATA_FILE):
-        print("No data file found — running initial fetch...")
+        print("No data file — running initial fetch...")
         run_daily_fetch()
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(30)
 
 
-# ── START SERVER ──────────────────────────────────────────────
+# ── START SCHEDULER (works with gunicorn too) ─────────────────
+# This runs whether started via `python server.py` or gunicorn
+_scheduler_started = False
+_scheduler_lock = threading.Lock()
+
+def start_scheduler():
+    global _scheduler_started
+    with _scheduler_lock:
+        if not _scheduler_started:
+            _scheduler_started = True
+            t = threading.Thread(target=schedule_loop, daemon=True)
+            t.start()
+            print("Scheduler thread started.")
+
+start_scheduler()
 
 if __name__ == "__main__":
-    # Start the scheduler in a background thread
-    scheduler_thread = threading.Thread(target=schedule_loop, daemon=True)
-    scheduler_thread.start()
-
-    # Start the web server
     port = int(os.environ.get("PORT", 5000))
-    print(f"VisitorPulse Hawaii server starting on port {port}")
+    print(f"Today in Hawaii server starting on port {port}")
     app.run(host="0.0.0.0", port=port, debug=False)
