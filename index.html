@@ -493,78 +493,97 @@ const ISLANDS = [
   { id:'Big Island', emoji:'🌋', nickname:'The Big Island',       color:'#fbbf24' },
 ];
 
-function generateDailyData() {
-  const bases = {
-    'Maui':       { arr:4200, dep:3900, dom:3700, intl:500 },
-    'Oahu':       { arr:9400, dep:8800, dom:7200, intl:2200 },
-    'Kauai':      { arr:1350, dep:1280, dom:1200, intl:150 },
-    'Big Island': { arr:2100, dep:1950, dom:1800, intl:300 },
-  };
-  const today = {}; const history = {};
-  ISLANDS.forEach(({ id }) => {
-    const b = bases[id];
-    const j = () => Math.round((Math.random()-0.5)*b.arr*0.15);
-    today[id] = { arrivals:b.arr+j(), departures:b.dep+j(), domestic:b.dom+j(), international:b.intl+Math.round((Math.random()-0.5)*b.intl*0.2), yesterday:b.arr+j() };
-    today[id].net = today[id].arrivals - today[id].departures;
-    history[id] = Array.from({length:30},(_,i)=>({ day:i, arrivals:b.arr+Math.round(Math.sin(i/4)*b.arr*0.1)+j() }));
+// ============================================================
+// FETCH REAL DATA FROM API
+// ============================================================
+const CHART_COLORS_EARLY = { 'Maui':'#f97316','Oahu':'#22d3ee','Kauai':'#10b981','Big Island':'#fbbf24' };
+
+function renderIslandData(apiData) {
+  const islands = apiData.islands;
+  const statewide = apiData.statewide;
+
+  // STATE BANNER
+  document.getElementById('stateTotal').textContent     = statewide.on_island_est.toLocaleString();
+  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 8.9-day stay)';
+  document.getElementById('statArrivals').textContent   = statewide.arrivals.toLocaleString();
+  document.getElementById('statDepartures').textContent = statewide.departures.toLocaleString();
+  const net = statewide.net_flow;
+  document.getElementById('statNet').textContent = (net>0?'+':'')+net.toLocaleString();
+
+  // ISLAND CARDS
+  const grid = document.getElementById('islandGrid');
+  grid.innerHTML = '';
+  ISLANDS.forEach(({ id, emoji, nickname, color }) => {
+    const d = islands[id];
+    if (!d) return;
+    const pct = d.change_pct !== null ? d.change_pct : 0;
+    const isUp = pct >= 0;
+    grid.innerHTML += `
+      <div class="island-card fade-up" data-island="${id}" onclick="focusIsland('${id}')">
+        <span class="island-flag">${emoji}</span>
+        <div class="island-name">${id}</div>
+        <div class="island-nickname">${nickname}</div>
+        <div class="island-arrivals"><strong>${d.arrivals.toLocaleString()}</strong></div>
+        <div class="island-arrivals-label">arrivals today</div>
+        <div class="island-stats-row">
+          <div class="i-stat"><div class="v">${d.departures.toLocaleString()}</div><div class="l">Departures</div></div>
+          <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(d.arrivals*8.9/1000)}k</div><div class="l">On island est.</div></div>
+        </div>
+      </div>`;
   });
-  return { today, history };
+
+  // TODAY TABLE
+  const tbody = document.getElementById('tableBody');
+  const maxArr = Math.max(...ISLANDS.map(i => (islands[i.id] || {arrivals:1}).arrivals));
+  tbody.innerHTML = ISLANDS.map(({ id, color }) => {
+    const d = islands[id];
+    if (!d) return '';
+    const pct = d.change_pct !== null ? d.change_pct : 0;
+    const isUp = pct >= 0;
+    const barW = Math.round((d.arrivals/maxArr)*100);
+    return `<tr>
+      <td><span class="island-dot" style="background:${color}"></span>${id}</td>
+      <td><div class="bar-cell"><span>${d.arrivals.toLocaleString()}</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${barW}%;background:${color}"></div></div></div></td>
+      <td>${d.departures.toLocaleString()}</td>
+      <td style="color:${(d.net_flow||0)>=0?'#10b981':'#f97316'}">${(d.net_flow||0)>=0?'+':''}${(d.net_flow||0).toLocaleString()}</td>
+      <td>${(d.domestic||0).toLocaleString()}</td>
+      <td>${(d.international||0).toLocaleString()}</td>
+      <td class="${isUp?'trend-up':'trend-down'}">${isUp?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
 }
 
-const DATA = generateDailyData();
-
-// STATE BANNER
-const totalArr = Object.values(DATA.today).reduce((s,d)=>s+d.arrivals,0);
-const totalDep = Object.values(DATA.today).reduce((s,d)=>s+d.departures,0);
-const totalNet = totalArr - totalDep;
-const onIsland = Math.round(totalArr * 8.9);
-document.getElementById('stateTotal').textContent     = onIsland.toLocaleString();
-document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 8.9-day stay)';
-document.getElementById('statArrivals').textContent   = totalArr.toLocaleString();
-document.getElementById('statDepartures').textContent = totalDep.toLocaleString();
-document.getElementById('statNet').textContent        = (totalNet>0?'+':'')+totalNet.toLocaleString();
-
-// ISLAND CARDS
-const grid = document.getElementById('islandGrid');
-ISLANDS.forEach(({ id, emoji, nickname, color }) => {
-  const d = DATA.today[id];
-  const change = d.arrivals - d.yesterday;
-  const pct = ((change/d.yesterday)*100).toFixed(1);
-  const isUp = change >= 0;
-  grid.innerHTML += `
-    <div class="island-card fade-up" data-island="${id}" onclick="focusIsland('${id}')">
-      <span class="island-flag">${emoji}</span>
-      <div class="island-name">${id}</div>
-      <div class="island-nickname">${nickname}</div>
-      <div class="island-arrivals"><strong>${d.arrivals.toLocaleString()}</strong></div>
-      <div class="island-arrivals-label">arrivals today</div>
-      <div class="island-stats-row">
-        <div class="i-stat"><div class="v">${d.departures.toLocaleString()}</div><div class="l">Departures</div></div>
-        <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct}%</div><div class="l">vs yesterday</div></div>
-        <div class="i-stat"><div class="v" style="color:${color}">${Math.round(d.arrivals*8.9/1000)}k</div><div class="l">On island est.</div></div>
-      </div>
-    </div>`;
-});
-
-// TODAY TABLE
-const tbody = document.getElementById('tableBody');
-const maxArr = Math.max(...ISLANDS.map(i=>DATA.today[i.id].arrivals));
-tbody.innerHTML = ISLANDS.map(({ id, color }) => {
-  const d = DATA.today[id];
-  const change = d.arrivals - d.yesterday;
-  const pct = ((change/d.yesterday)*100).toFixed(1);
-  const isUp = change >= 0;
-  const barW = Math.round((d.arrivals/maxArr)*100);
-  return `<tr>
-    <td><span class="island-dot" style="background:${color}"></span>${id}</td>
-    <td><div class="bar-cell"><span>${d.arrivals.toLocaleString()}</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${barW}%;background:${color}"></div></div></div></td>
-    <td>${d.departures.toLocaleString()}</td>
-    <td style="color:${d.net>=0?'#10b981':'#f97316'}">${d.net>=0?'+':''}${d.net.toLocaleString()}</td>
-    <td>${d.domestic.toLocaleString()}</td>
-    <td>${d.international.toLocaleString()}</td>
-    <td class="${isUp?'trend-up':'trend-down'}">${isUp?'▲':'▼'} ${Math.abs(pct)}%</td>
-  </tr>`;
-}).join('');
+// Fetch from API
+fetch('/api/today')
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) throw new Error(data.error);
+    renderIslandData(data);
+  })
+  .catch(err => {
+    console.warn('API fetch failed, using fallback data:', err);
+    // Fallback with stable date-seeded numbers
+    const today = new Date();
+    const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+    const bases = {
+      'Maui':       { arr:4200, dep:3900, dom:3700, intl:500 },
+      'Oahu':       { arr:9400, dep:8800, dom:7200, intl:2200 },
+      'Kauai':      { arr:1350, dep:1280, dom:1200, intl:150 },
+      'Big Island': { arr:2100, dep:1950, dom:1800, intl:300 },
+    };
+    const islands = {};
+    ISLANDS.forEach(({ id }) => {
+      const b = bases[id];
+      const v = ((seed * (id.length+7)) % 160) / 1000 - 0.08;
+      const arr = Math.round(b.arr * (1+v));
+      const dep = Math.round(b.dep * (1+v*0.9));
+      islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*8.9) };
+    });
+    const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals,0);
+    const totalDep = Object.values(islands).reduce((s,d)=>s+d.departures,0);
+    renderIslandData({ islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*8.9) } });
+  });
 
 // TREND CHART
 const CHART_COLORS = { 'Maui':'#f97316','Oahu':'#22d3ee','Kauai':'#10b981','Big Island':'#fbbf24' };
@@ -572,11 +591,28 @@ const dayLabels = Array.from({length:30},(_,i)=>{ const d=new Date(); d.setDate(
 let activeIslands = new Set(['Maui','Oahu','Kauai','Big Island']);
 let trendChart;
 
+// Generate stable chart history from date seed
+function getChartHistory() {
+  const today = new Date();
+  const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+  const bases = { 'Maui':4200,'Oahu':9400,'Kauai':1350,'Big Island':2100 };
+  const history = {};
+  ISLANDS.forEach(({ id }) => {
+    history[id] = Array.from({length:30},(_,i)=>{
+      const daySeed = seed - (29-i);
+      const v = ((daySeed * (id.length+3)) % 160) / 1000 - 0.08;
+      return { day:i, arrivals: Math.round(bases[id]*(1+Math.sin(i/4)*0.1+v*0.5)) };
+    });
+  });
+  return history;
+}
+const chartHistory = getChartHistory();
+
 function buildTrendChart() {
   const ctx = document.getElementById('trendChart').getContext('2d');
   if (trendChart) trendChart.destroy();
   const datasets = ISLANDS.filter(i=>activeIslands.has(i.id)).map(({ id }) => ({
-    label:id, data:DATA.history[id].map(r=>r.arrivals),
+    label:id, data:chartHistory[id].map(r=>r.arrivals),
     borderColor:CHART_COLORS[id], backgroundColor:CHART_COLORS[id]+'18',
     borderWidth:2, pointRadius:0, pointHoverRadius:4, tension:0.4, fill:true,
   }));
