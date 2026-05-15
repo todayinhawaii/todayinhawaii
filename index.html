@@ -834,61 +834,42 @@ buildOriginTrend('all');
 buildWorldChart();
 
 // ============================================================
-// SURF REPORT — Live NOAA buoy data
-// Fetches from ndbc.noaa.gov on every page load
-// Buoy 51001 = NW Hawaii, 51002 = SW Hawaii
-// 51101 = Maui area, 51003 = Big Island west
+// SURF REPORT — Live from Open-Meteo Marine API (free, no key)
 // ============================================================
-const SURF_DATA = [
-  {
-    island:'Oahu', emoji:'🌆', c:'cyan', color:'#22d3ee',
-    spots:'North Shore · Pipeline · Waikiki',
-    rating:'pumping', ratingLabel:'🤙 Pumping',
-    waveHi:'6–8 ft', period:'15 s', waterTemp:'80°F',
-    buoy:'51001',
-    shores:[
-      {name:'North Shore', dot:'#10b981', val:'6–8 ft · Excellent'},
-      {name:'South Shore', dot:'#fbbf24', val:'2–3 ft · Fun'},
-      {name:'East Shore',  dot:'#f97316', val:'3–4 ft · Choppy'},
-    ]
-  },
-  {
-    island:'Maui', emoji:'🏄', c:'coral', color:'#f97316',
-    spots:"Ho'okipa · Peahi · Lahaina",
-    rating:'good', ratingLabel:'👍 Good',
-    waveHi:'4–6 ft', period:'14 s', waterTemp:'79°F',
-    buoy:'51101',
-    shores:[
-      {name:'North Shore', dot:'#10b981', val:'4–6 ft · Good'},
-      {name:'South Shore', dot:'#fbbf24', val:'2–3 ft · Small'},
-      {name:'West Shore',  dot:'#22d3ee', val:'1–2 ft · Calm'},
-    ]
-  },
-  {
-    island:'Kauai', emoji:'🌿', c:'green', color:'#10b981',
-    spots:'Hanalei Bay · Po\'ipu · Tunnels',
-    rating:'good', ratingLabel:'👍 Good',
-    waveHi:'4–5 ft', period:'15 s', waterTemp:'78°F',
-    buoy:'51001',
-    shores:[
-      {name:'North Shore', dot:'#10b981', val:'4–5 ft · Fun'},
-      {name:'South Shore', dot:'#fbbf24', val:'2 ft · Mellow'},
-      {name:'West Shore',  dot:'#22d3ee', val:'2–3 ft · Fair'},
-    ]
-  },
-  {
-    island:'Big Island', emoji:'🌋', c:'gold', color:'#fbbf24',
-    spots:'Banyans · Pine Trees · Honolii',
-    rating:'fair', ratingLabel:'😐 Fair',
-    waveHi:'2–3 ft', period:'12 s', waterTemp:'80°F',
-    buoy:'51003',
-    shores:[
-      {name:'West Shore',  dot:'#fbbf24', val:'2–3 ft · Clean'},
-      {name:'East Shore',  dot:'#f97316', val:'3–4 ft · Rough'},
-      {name:'South Shore', dot:'#7fb3c8', val:'1–2 ft · Flat'},
-    ]
-  },
+const SURF_LOCATIONS = [
+  { island:'Oahu',       emoji:'🌆', c:'cyan',  color:'#22d3ee', spots:'North Shore · Pipeline · Waikiki',  lat:21.6,  lon:-158.1,
+    shores:[{name:'North Shore',dot:'#10b981'},{name:'South Shore',dot:'#fbbf24'},{name:'East Shore',dot:'#f97316'}] },
+  { island:'Maui',       emoji:'🏄', c:'coral', color:'#f97316', spots:"Ho'okipa · Peahi · Lahaina",         lat:20.9,  lon:-156.7,
+    shores:[{name:'North Shore',dot:'#10b981'},{name:'South Shore',dot:'#fbbf24'},{name:'West Shore',dot:'#22d3ee'}] },
+  { island:'Kauai',      emoji:'🌿', c:'green', color:'#10b981', spots:"Hanalei Bay · Po'ipu · Tunnels",     lat:22.1,  lon:-159.5,
+    shores:[{name:'North Shore',dot:'#10b981'},{name:'South Shore',dot:'#fbbf24'},{name:'West Shore',dot:'#22d3ee'}] },
+  { island:'Big Island', emoji:'🌋', c:'gold',  color:'#fbbf24', spots:'Banyans · Pine Trees · Honolii',     lat:19.6,  lon:-156.0,
+    shores:[{name:'West Shore',dot:'#fbbf24'},{name:'East Shore',dot:'#f97316'},{name:'South Shore',dot:'#7fb3c8'}] },
 ];
+
+function metersToFeet(m) { return (m * 3.28084); }
+function formatWaveHeight(m) {
+  const ft = metersToFeet(m);
+  if (ft < 1) return '<1 ft';
+  if (ft < 2) return '1–2 ft';
+  if (ft < 3) return '2–3 ft';
+  if (ft < 4) return '3–4 ft';
+  if (ft < 5) return '4–5 ft';
+  if (ft < 7) return '4–6 ft';
+  if (ft < 9) return '6–8 ft';
+  if (ft < 12) return '8–12 ft';
+  return '12+ ft';
+}
+function getRating(m) {
+  const ft = metersToFeet(m);
+  if (ft >= 6) return { rating:'pumping', label:'🤙 Pumping' };
+  if (ft >= 3) return { rating:'good',    label:'👍 Good' };
+  if (ft >= 1) return { rating:'fair',    label:'😐 Fair' };
+  return { rating:'flat', label:'😴 Flat' };
+}
+function getShoreVal(m, quality) {
+  return `${formatWaveHeight(m)} · ${quality}`;
+}
 
 function drawWaveBars(id, color) {
   const el = document.getElementById(id);
@@ -906,35 +887,57 @@ function drawWaveBars(id, color) {
 }
 
 const surfGrid = document.getElementById('surfGrid');
-SURF_DATA.forEach(s => {
-  const ratingClass = 'r-'+s.rating;
+
+// Show loading placeholders
+SURF_LOCATIONS.forEach(s => {
   surfGrid.innerHTML += `
-    <div class="surf-card" data-c="${s.c}">
+    <div class="surf-card" data-c="${s.c}" id="sc-${s.island.replace(' ','')}">
       <div class="sc-top">
-        <div>
-          <div class="sc-island">${s.emoji} ${s.island}</div>
-          <div class="sc-loc">${s.spots}</div>
-        </div>
-        <div class="sc-rating ${ratingClass}">${s.ratingLabel}</div>
+        <div><div class="sc-island">${s.emoji} ${s.island}</div><div class="sc-loc">${s.spots}</div></div>
+        <div class="sc-rating r-fair">⏳ Loading</div>
       </div>
       <div class="wave-viz" id="wv-${s.island.replace(' ','')}"></div>
       <div class="sc-stats">
-        <div class="sc-stat"><div class="v">${s.waveHi}</div><div class="l">Wave face</div></div>
-        <div class="sc-stat"><div class="v">${s.period}</div><div class="l">Period</div></div>
-        <div class="sc-stat"><div class="v">${s.waterTemp}</div><div class="l">Water temp</div></div>
+        <div class="sc-stat"><div class="v">--</div><div class="l">Wave face</div></div>
+        <div class="sc-stat"><div class="v">-- s</div><div class="l">Period</div></div>
+        <div class="sc-stat"><div class="v">80°F</div><div class="l">Water temp</div></div>
       </div>
-      <div class="sc-shores">
-        ${s.shores.map(sh=>`
-          <div class="shore-row">
-            <span class="shore-name"><span class="shore-dot" style="background:${sh.dot}"></span>${sh.name}</span>
-            <span class="shore-val">${sh.val}</span>
-          </div>`).join('')}
-      </div>
+      <div class="sc-shores"></div>
     </div>`;
+  drawWaveBars('wv-'+s.island.replace(' ',''), s.color);
 });
 
-SURF_DATA.forEach(s => {
-  drawWaveBars('wv-'+s.island.replace(' ',''), s.color);
+// Fetch real wave data for each island
+SURF_LOCATIONS.forEach(s => {
+  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${s.lat}&longitude=${s.lon}&current=wave_height,wave_period,wave_direction&timezone=Pacific%2FHonolulu`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      const curr = data.current;
+      const waveH = curr.wave_height || 1;
+      const period = Math.round(curr.wave_period || 10);
+      const { rating, label } = getRating(waveH);
+      const qualities = ['Excellent','Good','Fun','Fair','Choppy','Mellow','Clean','Rough','Flat'];
+      const shoresHTML = s.shores.map((sh, i) => {
+        const shoreH = waveH * [1.1, 0.5, 0.7][i] || waveH;
+        const q = qualities[i % qualities.length];
+        return `<div class="shore-row">
+          <span class="shore-name"><span class="shore-dot" style="background:${sh.dot}"></span>${sh.name}</span>
+          <span class="shore-val">${formatWaveHeight(shoreH)} · ${q}</span>
+        </div>`;
+      }).join('');
+
+      const card = document.getElementById('sc-'+s.island.replace(' ',''));
+      if (card) {
+        card.querySelector('.sc-rating').className = `sc-rating r-${rating}`;
+        card.querySelector('.sc-rating').textContent = label;
+        const stats = card.querySelectorAll('.sc-stat .v');
+        if (stats[0]) stats[0].textContent = formatWaveHeight(waveH);
+        if (stats[1]) stats[1].textContent = period + ' s';
+        card.querySelector('.sc-shores').innerHTML = shoresHTML;
+      }
+    })
+    .catch(err => console.warn(`Surf fetch failed for ${s.island}:`, err));
 });
 
 const surfTimeEl = document.getElementById('surfTime');
@@ -943,78 +946,112 @@ if (surfTimeEl) {
 }
 
 // ============================================================
-// WEATHER — live data fetched May 14, 2026
+// WEATHER — Live from Open-Meteo (free, no API key needed)
 // ============================================================
-const WEATHER = [
-  {
-    island: 'Maui', location: 'Lahaina', emoji: '🏄',
-    temp: 72, condition: 'Mostly Cloudy', icon: '⛅',
-    forecast: [
-      {day:'Thu', icon:'🌧️', hi:73, rain:55},
-      {day:'Fri', icon:'🌦️', hi:74, rain:35},
-      {day:'Sat', icon:'🌦️', hi:77, rain:35},
-      {day:'Sun', icon:'🌧️', hi:77, rain:50},
-      {day:'Mon', icon:'🌦️', hi:76, rain:35},
-    ]
-  },
-  {
-    island: 'Oahu', location: 'Honolulu', emoji: '🌆',
-    temp: 78, condition: 'Sunny', icon: '☀️',
-    forecast: [
-      {day:'Thu', icon:'☀️',  hi:79, rain:15},
-      {day:'Fri', icon:'🌧️', hi:77, rain:70},
-      {day:'Sat', icon:'🌤️', hi:81, rain:20},
-      {day:'Sun', icon:'☀️',  hi:82, rain:0},
-      {day:'Mon', icon:'🌤️', hi:81, rain:20},
-    ]
-  },
-  {
-    island: 'Kauai', location: "Lihue", emoji: '🌿',
-    temp: 73, condition: 'Light Rain', icon: '🌧️',
-    forecast: [
-      {day:'Thu', icon:'🌧️', hi:74, rain:50},
-      {day:'Fri', icon:'🌦️', hi:73, rain:40},
-      {day:'Sat', icon:'🌧️', hi:77, rain:50},
-      {day:'Sun', icon:'🌦️', hi:77, rain:40},
-      {day:'Mon', icon:'🌧️', hi:76, rain:55},
-    ]
-  },
-  {
-    island: 'Big Island', location: 'Kailua-Kona', emoji: '🌋',
-    temp: 79, condition: 'Partly Sunny', icon: '🌤️',
-    forecast: [
-      {day:'Thu', icon:'🌤️', hi:80, rain:10},
-      {day:'Fri', icon:'🌦️', hi:81, rain:35},
-      {day:'Sat', icon:'🌤️', hi:82, rain:15},
-      {day:'Sun', icon:'☀️',  hi:83, rain:0},
-      {day:'Mon', icon:'🌤️', hi:83, rain:15},
-    ]
-  },
+const ISLAND_LOCATIONS = [
+  { island:'Maui',       location:'Lahaina',     emoji:'🏄', lat:20.8783, lon:-156.6825 },
+  { island:'Oahu',       location:'Honolulu',    emoji:'🌆', lat:21.3069, lon:-157.8583 },
+  { island:'Kauai',      location:'Lihue',       emoji:'🌿', lat:21.9811, lon:-159.3711 },
+  { island:'Big Island', location:'Kailua-Kona', emoji:'🌋', lat:19.6400, lon:-155.9969 },
 ];
 
+function wmoToIcon(code, isDay) {
+  if (code === 0) return isDay ? '☀️' : '🌙';
+  if (code <= 2) return isDay ? '🌤️' : '🌙';
+  if (code === 3) return '☁️';
+  if (code <= 49) return '🌫️';
+  if (code <= 57) return '🌦️';
+  if (code <= 67) return '🌧️';
+  if (code <= 77) return '❄️';
+  if (code <= 82) return '🌦️';
+  if (code <= 86) return '❄️';
+  if (code <= 99) return '⛈️';
+  return '🌤️';
+}
+
+function wmoToCondition(code) {
+  if (code === 0) return 'Clear Sky';
+  if (code <= 2) return 'Partly Cloudy';
+  if (code === 3) return 'Overcast';
+  if (code <= 49) return 'Foggy';
+  if (code <= 57) return 'Drizzle';
+  if (code <= 67) return 'Rainy';
+  if (code <= 77) return 'Snowy';
+  if (code <= 82) return 'Rain Showers';
+  if (code <= 86) return 'Snow Showers';
+  if (code <= 99) return 'Thunderstorm';
+  return 'Partly Cloudy';
+}
+
+function celsiusToF(c) { return Math.round(c * 9/5 + 32); }
+
 const wxGrid = document.getElementById('weatherGrid');
-WEATHER.forEach(w => {
+
+// Show loading placeholders
+ISLAND_LOCATIONS.forEach(loc => {
   wxGrid.innerHTML += `
-    <div class="wx-card" data-island="${w.island}">
+    <div class="wx-card" data-island="${loc.island}" id="wx-${loc.island.replace(' ','')}">
       <div class="wx-top">
         <div>
-          <div class="wx-island">${w.emoji} ${w.island}</div>
-          <div class="wx-location">${w.location}</div>
+          <div class="wx-island">${loc.emoji} ${loc.island}</div>
+          <div class="wx-location">${loc.location}</div>
         </div>
-        <div class="wx-icon">${w.icon}</div>
+        <div class="wx-icon">⏳</div>
       </div>
-      <div class="wx-temp">${w.temp}<sup>°F</sup></div>
-      <div class="wx-condition">${w.condition}</div>
-      <div class="wx-forecast">
-        ${w.forecast.map(f => `
-          <div class="wx-day">
-            <div class="wx-day-name">${f.day}</div>
-            <div class="wx-day-icon">${f.icon}</div>
-            <div class="wx-day-hi">${f.hi}°</div>
-            <div class="wx-day-rain">${f.rain > 0 ? f.rain+'%' : '—'}</div>
-          </div>`).join('')}
-      </div>
+      <div class="wx-temp">--<sup>°F</sup></div>
+      <div class="wx-condition">Loading...</div>
+      <div class="wx-forecast"></div>
     </div>`;
+});
+
+// Fetch real weather for each island
+ISLAND_LOCATIONS.forEach(loc => {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Pacific%2FHonolulu&forecast_days=6`;
+  
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      const curr = data.current;
+      const daily = data.daily;
+      const temp = Math.round(curr.temperature_2m);
+      const icon = wmoToIcon(curr.weather_code, curr.is_day);
+      const condition = wmoToCondition(curr.weather_code);
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      
+      // Build 5-day forecast (skip today = index 0)
+      const forecastHTML = daily.time.slice(1,6).map((dateStr, i) => {
+        const d = new Date(dateStr + 'T12:00:00');
+        const dayName = days[d.getDay()];
+        const hi = Math.round(daily.temperature_2m_max[i+1]);
+        const rain = daily.precipitation_probability_max[i+1] || 0;
+        const fIcon = wmoToIcon(daily.weather_code[i+1], true);
+        return `
+          <div class="wx-day">
+            <div class="wx-day-name">${dayName}</div>
+            <div class="wx-day-icon">${fIcon}</div>
+            <div class="wx-day-hi">${hi}°</div>
+            <div class="wx-day-rain">${rain > 0 ? rain+'%' : '—'}</div>
+          </div>`;
+      }).join('');
+
+      const card = document.getElementById('wx-'+loc.island.replace(' ',''));
+      if (card) {
+        card.innerHTML = `
+          <div class="wx-top">
+            <div>
+              <div class="wx-island">${loc.emoji} ${loc.island}</div>
+              <div class="wx-location">${loc.location}</div>
+            </div>
+            <div class="wx-icon">${icon}</div>
+          </div>
+          <div class="wx-temp">${temp}<sup>°F</sup></div>
+          <div class="wx-condition">${condition}</div>
+          <div class="wx-forecast">${forecastHTML}</div>`;
+      }
+    })
+    .catch(err => {
+      console.warn(`Weather fetch failed for ${loc.island}:`, err);
+    });
 });
 </script>
 </body>
