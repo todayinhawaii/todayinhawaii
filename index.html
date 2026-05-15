@@ -499,6 +499,7 @@ const ISLANDS = [
 const CHART_COLORS_EARLY = { 'Maui':'#f97316','Oahu':'#22d3ee','Kauai':'#10b981','Big Island':'#fbbf24' };
 
 function renderIslandData(apiData) {
+  try {
   const islands = apiData.islands;
   const statewide = apiData.statewide;
 
@@ -516,19 +517,19 @@ function renderIslandData(apiData) {
   ISLANDS.forEach(({ id, emoji, nickname, color }) => {
     const d = islands[id];
     if (!d) return;
-    const pct = (d.change_pct !== null && d.change_pct !== undefined) ? d.change_pct : 0;
+    const pct = (d.change_pct !== null && d.change_pct !== undefined) ? Number(d.change_pct) : 0;
     const isUp = pct >= 0;
     grid.innerHTML += `
       <div class="island-card fade-up" data-island="${id}" onclick="focusIsland('${id}')">
         <span class="island-flag">${emoji}</span>
         <div class="island-name">${id}</div>
         <div class="island-nickname">${nickname}</div>
-        <div class="island-arrivals"><strong>${d.arrivals.toLocaleString()}</strong></div>
+        <div class="island-arrivals"><strong>${(d.arrivals||0).toLocaleString()}</strong></div>
         <div class="island-arrivals-label">arrivals today</div>
         <div class="island-stats-row">
-          <div class="i-stat"><div class="v">${d.departures.toLocaleString()}</div><div class="l">Departures</div></div>
+          <div class="i-stat"><div class="v">${(d.departures||0).toLocaleString()}</div><div class="l">Departures</div></div>
           <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
-          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(d.arrivals*8.9/1000)}k</div><div class="l">On island est.</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round((d.arrivals||0)*8.9/1000)}k</div><div class="l">On island est.</div></div>
         </div>
       </div>`;
   });
@@ -558,6 +559,7 @@ function renderIslandData(apiData) {
       <td class="${isUp?'trend-up':'trend-down'}">${isUp?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</td>
     </tr>`;
   }).join('');
+  } catch(e) { console.error('renderIslandData error:', e); }
 }
 
 // Fetch from API
