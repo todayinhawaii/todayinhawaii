@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today in Hawaii — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #061d2c; --wave: #0e7490; --foam: #22d3ee;
+    --coral: #f97316; --green: #10b981; --gold: #fbbf24;
+    --text: #e8f4f8; --muted: #7fb3c8;
+    --card: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--deep); color: var(--text); min-height: 100vh; padding: 32px 24px; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  .header { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+  .logo { width: 48px; height: 48px; background: linear-gradient(135deg, var(--wave), var(--foam)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--text); }
+  .header h1 span { color: var(--foam); }
+  .badge { background: rgba(249,115,22,0.15); color: var(--coral); border: 1px solid rgba(249,115,22,0.3); border-radius: 99px; padding: 4px 14px; font-size: 12px; font-weight: 500; }
+
+  /* LOGIN */
+  .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 20px; }
+  .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 40px; width: 100%; max-width: 400px; text-align: center; }
+  .login-box h2 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .login-box p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .login-box input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 16px; font-family: 'DM Sans', sans-serif; margin-bottom: 16px; text-align: center; letter-spacing: 4px; }
+  .login-box input:focus { outline: none; border-color: var(--foam); }
+
+  /* SECTIONS */
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 32px; margin-bottom: 28px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); }
+  .section-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .freq-badge { font-size: 11px; padding: 4px 12px; border-radius: 99px; font-weight: 500; }
+  .freq-daily { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .freq-monthly { background: rgba(251,191,36,0.15); color: var(--gold); border: 1px solid rgba(251,191,36,0.3); }
+
+  /* ISLAND GRID */
+  .island-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .island-input { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  .island-name { font-weight: 500; font-size: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .island-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .input-row { display: flex; flex-direction: column; gap: 8px; }
+  .input-group { display: flex; flex-direction: column; gap: 4px; }
+  .input-group label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .input-group input { padding: 10px 12px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; width: 100%; }
+  .input-group input:focus { outline: none; border-color: var(--foam); background: rgba(34,211,238,0.05); }
+
+  /* ORIGINS GRID */
+  .origins-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .origin-row { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .origin-label { font-size: 13px; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .origin-label .flag { font-size: 20px; }
+
+  /* BUTTONS */
+  .btn { padding: 14px 28px; border-radius: 12px; border: none; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: linear-gradient(135deg, var(--wave), var(--foam)); color: #fff; }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-danger { background: rgba(249,115,22,0.15); color: var(--coral); border: 1px solid rgba(249,115,22,0.3); }
+  .btn-danger:hover { background: rgba(249,115,22,0.25); }
+  .btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  /* STATUS */
+  .status-bar { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); border-radius: 12px; padding: 12px 20px; font-size: 14px; color: var(--green); display: none; margin-top: 16px; }
+  .status-bar.error { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.25); color: var(--coral); }
+  .status-bar.show { display: block; }
+
+  /* INFO BOX */
+  .info-box { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.15); border-radius: 14px; padding: 16px 20px; font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .info-box strong { color: var(--foam); }
+  .info-box a { color: var(--foam); }
+
+  .dbedt-link { display: inline-flex; align-items: center; gap: 8px; background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.2); border-radius: 10px; padding: 10px 16px; color: var(--foam); text-decoration: none; font-size: 13px; font-weight: 500; margin-bottom: 20px; transition: all 0.2s; }
+  .dbedt-link:hover { background: rgba(34,211,238,0.2); }
+
+  .current-status { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 20px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 24px; font-size: 13px; }
+  .current-status .item .label { color: var(--muted); margin-bottom: 2px; }
+  .current-status .item .value { color: var(--text); font-weight: 500; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">🌊</div>
+    <div>
+      <h1>Today in <span>Hawaiʻi</span></h1>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px;">Admin Dashboard</div>
+    </div>
+    <div class="badge">🔒 Private</div>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <div style="font-size:48px;margin-bottom:16px;">🌺</div>
+      <h2>Admin Login</h2>
+      <p>Enter your password to access the dashboard</p>
+      <input type="password" id="passwordInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+      <button class="btn btn-primary" style="width:100%" onclick="login()">Sign In</button>
+      <div id="loginError" class="status-bar error" style="margin-top:12px;">Incorrect password</div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="dashboard" class="hidden">
+
+    <!-- CURRENT STATUS -->
+    <div class="current-status" id="currentStatus">
+      <div class="item"><div class="label">Data source</div><div class="value" id="statusSource">Loading...</div></div>
+      <div class="item"><div class="label">Last manual update</div><div class="value" id="statusManual">Never</div></div>
+      <div class="item"><div class="label">Server time</div><div class="value" id="statusTime">--</div></div>
+    </div>
+
+    <!-- DAILY ARRIVALS -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">📊 Daily Arrivals</div>
+          <div class="section-sub">Enter today's official numbers from DBEDT</div>
+        </div>
+        <span class="freq-badge freq-daily">Update daily</span>
+      </div>
+
+      <a href="https://dbedt.hawaii.gov/economic/daily-passenger-counts/" target="_blank" class="dbedt-link">
+        🔗 Open DBEDT Daily Passenger Counts
+      </a>
+
+      <div class="info-box">
+        <strong>How to update:</strong> Visit the DBEDT link above → look at today's numbers for each island → enter arrivals and departures below → click Save. Takes about 5 minutes!
+      </div>
+
+      <div class="island-grid">
+        <div class="island-input">
+          <div class="island-name"><span class="island-dot" style="background:#f97316"></span>🏄 Maui</div>
+          <div class="input-row">
+            <div class="input-group"><label>Arrivals</label><input type="number" id="maui_arr" placeholder="4,200"></div>
+            <div class="input-group"><label>Departures</label><input type="number" id="maui_dep" placeholder="3,900"></div>
+            <div class="input-group"><label>Domestic</label><input type="number" id="maui_dom" placeholder="3,700"></div>
+            <div class="input-group"><label>International</label><input type="number" id="maui_intl" placeholder="500"></div>
+          </div>
+        </div>
+        <div class="island-input">
+          <div class="island-name"><span class="island-dot" style="background:#22d3ee"></span>🌆 Oahu</div>
+          <div class="input-row">
+            <div class="input-group"><label>Arrivals</label><input type="number" id="oahu_arr" placeholder="9,400"></div>
+            <div class="input-group"><label>Departures</label><input type="number" id="oahu_dep" placeholder="8,800"></div>
+            <div class="input-group"><label>Domestic</label><input type="number" id="oahu_dom" placeholder="7,200"></div>
+            <div class="input-group"><label>International</label><input type="number" id="oahu_intl" placeholder="2,200"></div>
+          </div>
+        </div>
+        <div class="island-input">
+          <div class="island-name"><span class="island-dot" style="background:#10b981"></span>🌿 Kauai</div>
+          <div class="input-row">
+            <div class="input-group"><label>Arrivals</label><input type="number" id="kauai_arr" placeholder="1,350"></div>
+            <div class="input-group"><label>Departures</label><input type="number" id="kauai_dep" placeholder="1,280"></div>
+            <div class="input-group"><label>Domestic</label><input type="number" id="kauai_dom" placeholder="1,200"></div>
+            <div class="input-group"><label>International</label><input type="number" id="kauai_intl" placeholder="150"></div>
+          </div>
+        </div>
+        <div class="island-input">
+          <div class="island-name"><span class="island-dot" style="background:#fbbf24"></span>🌋 Big Island</div>
+          <div class="input-row">
+            <div class="input-group"><label>Arrivals</label><input type="number" id="big_arr" placeholder="2,100"></div>
+            <div class="input-group"><label>Departures</label><input type="number" id="big_dep" placeholder="1,950"></div>
+            <div class="input-group"><label>Domestic</label><input type="number" id="big_dom" placeholder="1,800"></div>
+            <div class="input-group"><label>International</label><input type="number" id="big_intl" placeholder="300"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveDaily()">💾 Save Daily Numbers</button>
+        <button class="btn btn-danger" onclick="clearDaily()">↩️ Revert to Estimates</button>
+      </div>
+      <div id="dailyStatus" class="status-bar"></div>
+    </div>
+
+    <!-- MONTHLY ORIGINS -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">🌍 Visitor Origins</div>
+          <div class="section-sub">Monthly data from HTA reports</div>
+        </div>
+        <span class="freq-badge freq-monthly">Update monthly</span>
+      </div>
+
+      <a href="https://www.hawaiitourismauthority.org/research/monthly-visitor-statistics/" target="_blank" class="dbedt-link">
+        🔗 Open HTA Monthly Visitor Statistics
+      </a>
+
+      <div class="info-box">
+        <strong>How to update:</strong> Visit the HTA link above → download the latest monthly report → enter the visitor totals by market below → click Save. Do this once per month when HTA releases new data.
+      </div>
+
+      <div class="origins-grid">
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇺🇸</span>US West</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_uswest" placeholder="412"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇺🇸</span>US East</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_useast" placeholder="298"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇯🇵</span>Japan</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_japan" placeholder="87"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇨🇦</span>Canada</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_canada" placeholder="64"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇦🇺</span>Oceania</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_oceania" placeholder="28"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇩🇪</span>Europe</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_europe" placeholder="22"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇰🇷</span>Korea</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_korea" placeholder="19"></div>
+        </div>
+        <div class="origin-row">
+          <div class="origin-label"><span class="flag">🇨🇳</span>China</div>
+          <div class="input-group"><label>Visitors (thousands)</label><input type="number" id="or_china" placeholder="8"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div class="section-title" style="font-size:16px;margin-bottom:16px;">💰 Avg Daily Spend</div>
+        <div class="origins-grid">
+          <div class="origin-row">
+            <div class="origin-label"><span class="flag">🇯🇵</span>Japan spend/day</div>
+            <div class="input-group"><label>$ per day</label><input type="number" id="sp_japan" placeholder="287"></div>
+            <div class="input-group" style="margin-top:8px"><label>Avg days stay</label><input type="number" step="0.1" id="st_japan" placeholder="12.4"></div>
+          </div>
+          <div class="origin-row">
+            <div class="origin-label"><span class="flag">🇦🇺</span>Oceania spend/day</div>
+            <div class="input-group"><label>$ per day</label><input type="number" id="sp_oceania" placeholder="241"></div>
+            <div class="input-group" style="margin-top:8px"><label>Avg days stay</label><input type="number" step="0.1" id="st_oceania" placeholder="10.8"></div>
+          </div>
+          <div class="origin-row">
+            <div class="origin-label"><span class="flag">🇩🇪</span>Europe spend/day</div>
+            <div class="input-group"><label>$ per day</label><input type="number" id="sp_europe" placeholder="228"></div>
+            <div class="input-group" style="margin-top:8px"><label>Avg days stay</label><input type="number" step="0.1" id="st_europe" placeholder="11.2"></div>
+          </div>
+          <div class="origin-row">
+            <div class="origin-label"><span class="flag">🇺🇸</span>US East spend/day</div>
+            <div class="input-group"><label>$ per day</label><input type="number" id="sp_useast" placeholder="198"></div>
+            <div class="input-group" style="margin-top:8px"><label>Avg days stay</label><input type="number" step="0.1" id="st_useast" placeholder="8.1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveOrigins()">💾 Save Monthly Data</button>
+      </div>
+      <div id="originsStatus" class="status-bar"></div>
+    </div>
+
+    <div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0 40px;">
+      Today in Hawaiʻi Admin · <a href="/" style="color:var(--foam)">← Back to site</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let PASSWORD = '';
+
+function login() {
+  const pwd = document.getElementById('passwordInput').value;
+  fetch('/api/admin/save-daily', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password: pwd, islands: {}})
+  }).then(r => {
+    if (r.status === 401) {
+      document.getElementById('loginError').classList.add('show');
+    } else {
+      PASSWORD = pwd;
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      loadStatus();
+    }
+  }).catch(() => {
+    // Try checking status instead
+    PASSWORD = pwd;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    loadStatus();
+  });
+}
+
+function loadStatus() {
+  fetch('/api/status').then(r=>r.json()).then(data => {
+    document.getElementById('statusSource').textContent = data.manual_date ? '✅ Manual data (' + data.manual_date + ')' : '📊 Auto estimates';
+    document.getElementById('statusManual').textContent = data.manual_date || 'Never entered';
+    document.getElementById('statusTime').textContent = new Date(data.server_time).toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+  });
+}
+
+function saveDaily() {
+  const islands = {
+    'Maui': {
+      arrivals: +document.getElementById('maui_arr').value || 0,
+      departures: +document.getElementById('maui_dep').value || 0,
+      domestic: +document.getElementById('maui_dom').value || 0,
+      international: +document.getElementById('maui_intl').value || 0,
+      net_flow: (+document.getElementById('maui_arr').value || 0) - (+document.getElementById('maui_dep').value || 0),
+      change_pct: 0,
+      on_island_est: Math.round((+document.getElementById('maui_arr').value || 0) * 8.9)
+    },
+    'Oahu': {
+      arrivals: +document.getElementById('oahu_arr').value || 0,
+      departures: +document.getElementById('oahu_dep').value || 0,
+      domestic: +document.getElementById('oahu_dom').value || 0,
+      international: +document.getElementById('oahu_intl').value || 0,
+      net_flow: (+document.getElementById('oahu_arr').value || 0) - (+document.getElementById('oahu_dep').value || 0),
+      change_pct: 0,
+      on_island_est: Math.round((+document.getElementById('oahu_arr').value || 0) * 8.9)
+    },
+    'Kauai': {
+      arrivals: +document.getElementById('kauai_arr').value || 0,
+      departures: +document.getElementById('kauai_dep').value || 0,
+      domestic: +document.getElementById('kauai_dom').value || 0,
+      international: +document.getElementById('kauai_intl').value || 0,
+      net_flow: (+document.getElementById('kauai_arr').value || 0) - (+document.getElementById('kauai_dep').value || 0),
+      change_pct: 0,
+      on_island_est: Math.round((+document.getElementById('kauai_arr').value || 0) * 8.9)
+    },
+    'Big Island': {
+      arrivals: +document.getElementById('big_arr').value || 0,
+      departures: +document.getElementById('big_dep').value || 0,
+      domestic: +document.getElementById('big_dom').value || 0,
+      international: +document.getElementById('big_intl').value || 0,
+      net_flow: (+document.getElementById('big_arr').value || 0) - (+document.getElementById('big_dep').value || 0),
+      change_pct: 0,
+      on_island_est: Math.round((+document.getElementById('big_arr').value || 0) * 8.9)
+    }
+  };
+
+  // Validate at least one number entered
+  const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals, 0);
+  if (totalArr === 0) {
+    showStatus('dailyStatus', '⚠️ Please enter at least the arrival numbers!', true);
+    return;
+  }
+
+  fetch('/api/admin/save-daily', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password: PASSWORD, islands})
+  }).then(r=>r.json()).then(data => {
+    if (data.error) { showStatus('dailyStatus', '❌ ' + data.error, true); return; }
+    showStatus('dailyStatus', '✅ Daily numbers saved! todayinhawaii.com is now showing real DBEDT data.');
+    loadStatus();
+  });
+}
+
+function clearDaily() {
+  if (!confirm('This will revert to auto-estimates. Are you sure?')) return;
+  fetch('/api/admin/clear-daily', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password: PASSWORD})
+  }).then(r=>r.json()).then(data => {
+    showStatus('dailyStatus', '↩️ Reverted to auto-estimates successfully.');
+    loadStatus();
+  });
+}
+
+function saveOrigins() {
+  const origins = {
+    markets: {
+      uswest:  +document.getElementById('or_uswest').value  || 412,
+      useast:  +document.getElementById('or_useast').value  || 298,
+      japan:   +document.getElementById('or_japan').value   || 87,
+      canada:  +document.getElementById('or_canada').value  || 64,
+      oceania: +document.getElementById('or_oceania').value || 28,
+      europe:  +document.getElementById('or_europe').value  || 22,
+      korea:   +document.getElementById('or_korea').value   || 19,
+      china:   +document.getElementById('or_china').value   || 8,
+    },
+    spend: {
+      japan:   { amount: +document.getElementById('sp_japan').value   || 287, days: +document.getElementById('st_japan').value   || 12.4 },
+      oceania: { amount: +document.getElementById('sp_oceania').value || 241, days: +document.getElementById('st_oceania').value || 10.8 },
+      europe:  { amount: +document.getElementById('sp_europe').value  || 228, days: +document.getElementById('st_europe').value  || 11.2 },
+      useast:  { amount: +document.getElementById('sp_useast').value  || 198, days: +document.getElementById('st_useast').value  || 8.1  },
+    }
+  };
+
+  fetch('/api/admin/save-origins', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password: PASSWORD, origins})
+  }).then(r=>r.json()).then(data => {
+    if (data.error) { showStatus('originsStatus', '❌ ' + data.error, true); return; }
+    showStatus('originsStatus', '✅ Monthly origins data saved! Site is now showing updated visitor origins.');
+  });
+}
+
+function showStatus(id, msg, isError) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'status-bar show' + (isError ? ' error' : '');
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+// Allow Enter key on password field
+document.getElementById('passwordInput').focus();
+</script>
+</body>
+</html>
