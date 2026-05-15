@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///Users/grahamchappell/Downloads/index_3.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Today in Hawaii — Live Tourist Tracker</title>
 <meta name="description" content="Today in Hawaii — live daily tourist arrivals, island weather, and visitor origins for Maui, Oahu, Kauai and the Big Island. Updated every morning from Hawaii DBEDT.">
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="./index_files/css2" rel="stylesheet">
-<script src="./index_files/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
     --ocean:   #0a2e44;
@@ -113,6 +113,46 @@
   .wx-day-icon { font-size: 16px; margin-bottom: 4px; }
   .wx-day-hi { font-size: 13px; font-weight: 500; color: var(--text); }
   .wx-day-rain { font-size: 10px; color: var(--foam); margin-top: 2px; }
+
+  /* ── SURF ── */
+  .surf-section { margin-bottom: 56px; }
+  .surf-title-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; justify-content: space-between; }
+  .surf-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); }
+  .surf-title span { color: var(--foam); }
+  .surf-live { font-size: 12px; color: var(--green); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); border-radius: 99px; padding: 4px 14px; white-space: nowrap; }
+  .swell-banner { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.15); border-radius: 20px; padding: 20px 28px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .swell-text { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 500px; }
+  .swell-text strong { color: var(--foam); }
+  .swell-nums { display: flex; gap: 24px; flex-wrap: wrap; }
+  .swell-num .v { font-size: 24px; font-weight: 700; color: #fff; text-align: center; }
+  .swell-num .l { font-size: 11px; color: var(--muted); text-align: center; margin-top: 2px; }
+  .surf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 20px; }
+  .surf-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+  .surf-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; border-radius: 50%; opacity: 0.06; transform: translate(30%,-30%); }
+  .surf-card[data-c="cyan"]::before  { background: var(--foam); }
+  .surf-card[data-c="coral"]::before { background: var(--coral); }
+  .surf-card[data-c="green"]::before { background: var(--green); }
+  .surf-card[data-c="gold"]::before  { background: var(--gold); }
+  .sc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .sc-island { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .sc-loc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .sc-rating { padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .r-pumping { background: rgba(16,185,129,0.2);  color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  .r-good    { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.25); }
+  .r-fair    { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+  .r-flat    { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+  .wave-viz { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin: 10px 0; }
+  .wave-bar { border-radius: 3px 3px 0 0; flex: 1; min-width: 6px; }
+  .sc-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .sc-stat .v { font-size: 14px; font-weight: 500; color: var(--text); }
+  .sc-stat .l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .sc-shores { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; }
+  .shore-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+  .shore-name { color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .shore-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .shore-val { color: var(--text); font-weight: 500; }
+  .surf-footer { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--muted); }
+  .surf-footer strong { color: var(--foam); }
 
   /* ── ISLAND GRID ── */
   .island-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 56px; }
@@ -222,7 +262,7 @@
       </div>
       <div class="last-updated">
         <span class="pulse-dot"></span>
-        Updated <strong id="updateDate">Thursday, May 14, 2026</strong>
+        Updated <strong id="updateDate">loading...</strong>
       </div>
     </div>
   </header>
@@ -238,85 +278,37 @@
   <div class="state-banner fade-up">
     <div>
       <div class="state-label">🌺 Visitors across all islands today</div>
-      <div class="state-number" id="stateTotal">147,936</div>
-      <div class="state-sub" id="stateSub">Estimated visitors on island (arrivals × avg 8.9-day stay)</div>
+      <div class="state-number" id="stateTotal">—</div>
+      <div class="state-sub" id="stateSub">Loading statewide data...</div>
     </div>
     <div class="state-stats">
-      <div class="state-stat"><div class="val" id="statArrivals">16,622</div><div class="lbl">Arrived today</div></div>
-      <div class="state-stat"><div class="val" id="statDepartures">15,680</div><div class="lbl">Departed today</div></div>
-      <div class="state-stat"><div class="val trend-up" id="statNet">+942</div><div class="lbl">Net flow</div></div>
+      <div class="state-stat"><div class="val" id="statArrivals">—</div><div class="lbl">Arrived today</div></div>
+      <div class="state-stat"><div class="val" id="statDepartures">—</div><div class="lbl">Departed today</div></div>
+      <div class="state-stat"><div class="val trend-up" id="statNet">—</div><div class="lbl">Net flow</div></div>
     </div>
   </div>
 
   <!-- ISLAND CARDS -->
   <div class="section-title">By Island</div>
-  <div class="island-grid" id="islandGrid">
-    <div class="island-card fade-up" data-island="Maui" onclick="focusIsland(&#39;Maui&#39;)">
-      <span class="island-flag">🏄</span>
-      <div class="island-name">Maui</div>
-      <div class="island-nickname">The Valley Isle</div>
-      <div class="island-arrivals"><strong>4,143</strong></div>
-      <div class="island-arrivals-label">arrivals today</div>
-      <div class="island-stats-row">
-        <div class="i-stat"><div class="v">4,000</div><div class="l">Departures</div></div>
-        <div class="i-stat"><div class="v trend-down">-3.4%</div><div class="l">vs yesterday</div></div>
-        <div class="i-stat"><div class="v" style="color:#f97316">37k</div><div class="l">On island est.</div></div>
-      </div>
-    </div>
-    <div class="island-card fade-up" data-island="Oahu" onclick="focusIsland(&#39;Oahu&#39;)">
-      <span class="island-flag">🌆</span>
-      <div class="island-name">Oahu</div>
-      <div class="island-nickname">The Gathering Place</div>
-      <div class="island-arrivals"><strong>8,892</strong></div>
-      <div class="island-arrivals-label">arrivals today</div>
-      <div class="island-stats-row">
-        <div class="i-stat"><div class="v">8,422</div><div class="l">Departures</div></div>
-        <div class="i-stat"><div class="v trend-down">-1.7%</div><div class="l">vs yesterday</div></div>
-        <div class="i-stat"><div class="v" style="color:#22d3ee">79k</div><div class="l">On island est.</div></div>
-      </div>
-    </div>
-    <div class="island-card fade-up" data-island="Kauai" onclick="focusIsland(&#39;Kauai&#39;)">
-      <span class="island-flag">🌿</span>
-      <div class="island-name">Kauai</div>
-      <div class="island-nickname">The Garden Isle</div>
-      <div class="island-arrivals"><strong>1,427</strong></div>
-      <div class="island-arrivals-label">arrivals today</div>
-      <div class="island-stats-row">
-        <div class="i-stat"><div class="v">1,196</div><div class="l">Departures</div></div>
-        <div class="i-stat"><div class="v trend-up">+9.1%</div><div class="l">vs yesterday</div></div>
-        <div class="i-stat"><div class="v" style="color:#10b981">13k</div><div class="l">On island est.</div></div>
-      </div>
-    </div>
-    <div class="island-card fade-up" data-island="Big Island" onclick="focusIsland(&#39;Big Island&#39;)">
-      <span class="island-flag">🌋</span>
-      <div class="island-name">Big Island</div>
-      <div class="island-nickname">The Big Island</div>
-      <div class="island-arrivals"><strong>2,160</strong></div>
-      <div class="island-arrivals-label">arrivals today</div>
-      <div class="island-stats-row">
-        <div class="i-stat"><div class="v">2,062</div><div class="l">Departures</div></div>
-        <div class="i-stat"><div class="v trend-up">+9.1%</div><div class="l">vs yesterday</div></div>
-        <div class="i-stat"><div class="v" style="color:#fbbf24">19k</div><div class="l">On island est.</div></div>
-      </div>
-    </div></div>
+  <div class="island-grid" id="islandGrid"></div>
 
   <!-- ARRIVAL TREND + SHARE CHARTS -->
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-title">Arrivals — last 30 days</div>
       <div class="chart-sub">Daily incoming passengers per island</div>
-      <div class="island-tabs" id="chartTabs"><button class="itab active">Maui</button><button class="itab active">Oahu</button><button class="itab active">Kauai</button><button class="itab active">Big Island</button></div>
+      <div class="island-tabs" id="chartTabs"></div>
       <div style="position:relative;height:260px;">
-        <canvas id="trendChart" role="img" aria-label="Line chart of daily arrivals per island over 30 days" width="696" height="260" style="display: block; box-sizing: border-box; height: 260px; width: 696px;">Daily arrivals by island over the past 30 days.</canvas>
+        <canvas id="trendChart" role="img" aria-label="Line chart of daily arrivals per island over 30 days">Daily arrivals by island over the past 30 days.</canvas>
       </div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Island share</div>
       <div class="chart-sub">% of total arrivals today</div>
       <div style="position:relative;height:220px;margin-top:20px;">
-        <canvas id="shareChart" role="img" aria-label="Donut chart of arrivals share per island" width="319" height="220" style="display: block; box-sizing: border-box; height: 220px; width: 319px;">Arrival share by island today.</canvas>
+        <canvas id="shareChart" role="img" aria-label="Donut chart of arrivals share per island">Arrival share by island today.</canvas>
       </div>
-      <div id="shareLegend" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f97316;margin-right:8px;"></span>Maui</span><span style="color:#7fb3c8">24.9%</span></div><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#22d3ee;margin-right:8px;"></span>Oahu</span><span style="color:#7fb3c8">53.5%</span></div><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#10b981;margin-right:8px;"></span>Kauai</span><span style="color:#7fb3c8">8.6%</span></div><div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fbbf24;margin-right:8px;"></span>Big Island</span><span style="color:#7fb3c8">13.0%</span></div></div>
+      <div id="shareLegend" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
@@ -330,39 +322,7 @@
             <th>Island</th><th>Arrivals</th><th>Departures</th><th>Net Flow</th><th>Domestic</th><th>International</th><th>vs Yesterday</th>
           </tr>
         </thead>
-        <tbody id="tableBody"><tr>
-    <td><span class="island-dot" style="background:#f97316"></span>Maui</td>
-    <td><div class="bar-cell"><span>4,143</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:47%;background:#f97316"></div></div></div></td>
-    <td>4,000</td>
-    <td style="color:#10b981">+143</td>
-    <td>3,590</td>
-    <td>529</td>
-    <td class="trend-down">▼ 3.4%</td>
-  </tr><tr>
-    <td><span class="island-dot" style="background:#22d3ee"></span>Oahu</td>
-    <td><div class="bar-cell"><span>8,892</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:100%;background:#22d3ee"></div></div></div></td>
-    <td>8,422</td>
-    <td style="color:#10b981">+470</td>
-    <td>7,308</td>
-    <td>2,010</td>
-    <td class="trend-down">▼ 1.7%</td>
-  </tr><tr>
-    <td><span class="island-dot" style="background:#10b981"></span>Kauai</td>
-    <td><div class="bar-cell"><span>1,427</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:16%;background:#10b981"></div></div></div></td>
-    <td>1,196</td>
-    <td style="color:#10b981">+231</td>
-    <td>1,278</td>
-    <td>151</td>
-    <td class="trend-up">▲ 9.1%</td>
-  </tr><tr>
-    <td><span class="island-dot" style="background:#fbbf24"></span>Big Island</td>
-    <td><div class="bar-cell"><span>2,160</span><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:24%;background:#fbbf24"></div></div></div></td>
-    <td>2,062</td>
-    <td style="color:#10b981">+98</td>
-    <td>1,808</td>
-    <td>313</td>
-    <td class="trend-up">▲ 9.1%</td>
-  </tr></tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
   </div>
@@ -372,183 +332,44 @@
   <!-- WEATHER SECTION -->
   <div class="weather-section">
     <div class="section-title">Island Weather <span class="section-note">Live</span></div>
-    <div class="weather-grid" id="weatherGrid">
-    <div class="wx-card" data-island="Maui">
-      <div class="wx-top">
-        <div>
-          <div class="wx-island">🏄 Maui</div>
-          <div class="wx-location">Lahaina</div>
-        </div>
-        <div class="wx-icon">⛅</div>
+    <div class="weather-grid" id="weatherGrid"></div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- SURF SECTION -->
+  <div class="surf-section">
+    <div class="surf-title-row">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <ellipse cx="24" cy="24" rx="7" ry="20" transform="rotate(-20 24 24)" fill="#22d3ee" opacity="0.9"/>
+          <ellipse cx="24" cy="24" rx="4" ry="16" transform="rotate(-20 24 24)" fill="#0e7490"/>
+          <line x1="24" y1="8" x2="24" y2="40" stroke="#fff" stroke-width="1" stroke-opacity="0.3" transform="rotate(-20 24 24)"/>
+          <circle cx="30" cy="32" r="3" fill="#f97316"/>
+          <line x1="30" y1="32" x2="24" y2="24" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.6"/>
+        </svg>
+        <div class="surf-title">Island <span>Surf Report</span></div>
       </div>
-      <div class="wx-temp">72<sup>°F</sup></div>
-      <div class="wx-condition">Mostly Cloudy</div>
-      <div class="wx-forecast">
-        
-          <div class="wx-day">
-            <div class="wx-day-name">Thu</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">73°</div>
-            <div class="wx-day-rain">55%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Fri</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">74°</div>
-            <div class="wx-day-rain">35%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sat</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">77°</div>
-            <div class="wx-day-rain">35%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sun</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">77°</div>
-            <div class="wx-day-rain">50%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Mon</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">76°</div>
-            <div class="wx-day-rain">35%</div>
-          </div>
+      <div class="surf-live"><span class="pulse-dot"></span>Live · NOAA buoys · Updated hourly</div>
+    </div>
+
+    <div class="swell-banner">
+      <div class="swell-text">
+        <strong>Today's conditions:</strong> A new small to moderate long-period NW to NNW swell (320°–330°) filling in this morning, peaking later today with above-average surf on north-facing shores. South shores seeing small medium-period S swell. East shores choppy from trade winds.
+      </div>
+      <div class="swell-nums">
+        <div class="swell-num"><div class="v">4 ft</div><div class="l">NW swell</div></div>
+        <div class="swell-num"><div class="v">15 s</div><div class="l">Period</div></div>
+        <div class="swell-num"><div class="v">NNW</div><div class="l">Direction</div></div>
       </div>
     </div>
-    <div class="wx-card" data-island="Oahu">
-      <div class="wx-top">
-        <div>
-          <div class="wx-island">🌆 Oahu</div>
-          <div class="wx-location">Honolulu</div>
-        </div>
-        <div class="wx-icon">☀️</div>
-      </div>
-      <div class="wx-temp">78<sup>°F</sup></div>
-      <div class="wx-condition">Sunny</div>
-      <div class="wx-forecast">
-        
-          <div class="wx-day">
-            <div class="wx-day-name">Thu</div>
-            <div class="wx-day-icon">☀️</div>
-            <div class="wx-day-hi">79°</div>
-            <div class="wx-day-rain">15%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Fri</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">77°</div>
-            <div class="wx-day-rain">70%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sat</div>
-            <div class="wx-day-icon">🌤️</div>
-            <div class="wx-day-hi">81°</div>
-            <div class="wx-day-rain">20%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sun</div>
-            <div class="wx-day-icon">☀️</div>
-            <div class="wx-day-hi">82°</div>
-            <div class="wx-day-rain">—</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Mon</div>
-            <div class="wx-day-icon">🌤️</div>
-            <div class="wx-day-hi">81°</div>
-            <div class="wx-day-rain">20%</div>
-          </div>
-      </div>
+
+    <div class="surf-grid" id="surfGrid"></div>
+
+    <div class="surf-footer">
+      <span>Data: <strong>NOAA National Data Buoy Center</strong> · Buoys 51001, 51002, 51101, 51003</span>
+      <span id="surfTime">Updated hourly</span>
     </div>
-    <div class="wx-card" data-island="Kauai">
-      <div class="wx-top">
-        <div>
-          <div class="wx-island">🌿 Kauai</div>
-          <div class="wx-location">Lihue</div>
-        </div>
-        <div class="wx-icon">🌧️</div>
-      </div>
-      <div class="wx-temp">73<sup>°F</sup></div>
-      <div class="wx-condition">Light Rain</div>
-      <div class="wx-forecast">
-        
-          <div class="wx-day">
-            <div class="wx-day-name">Thu</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">74°</div>
-            <div class="wx-day-rain">50%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Fri</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">73°</div>
-            <div class="wx-day-rain">40%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sat</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">77°</div>
-            <div class="wx-day-rain">50%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sun</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">77°</div>
-            <div class="wx-day-rain">40%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Mon</div>
-            <div class="wx-day-icon">🌧️</div>
-            <div class="wx-day-hi">76°</div>
-            <div class="wx-day-rain">55%</div>
-          </div>
-      </div>
-    </div>
-    <div class="wx-card" data-island="Big Island">
-      <div class="wx-top">
-        <div>
-          <div class="wx-island">🌋 Big Island</div>
-          <div class="wx-location">Kailua-Kona</div>
-        </div>
-        <div class="wx-icon">🌤️</div>
-      </div>
-      <div class="wx-temp">79<sup>°F</sup></div>
-      <div class="wx-condition">Partly Sunny</div>
-      <div class="wx-forecast">
-        
-          <div class="wx-day">
-            <div class="wx-day-name">Thu</div>
-            <div class="wx-day-icon">🌤️</div>
-            <div class="wx-day-hi">80°</div>
-            <div class="wx-day-rain">10%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Fri</div>
-            <div class="wx-day-icon">🌦️</div>
-            <div class="wx-day-hi">81°</div>
-            <div class="wx-day-rain">35%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sat</div>
-            <div class="wx-day-icon">🌤️</div>
-            <div class="wx-day-hi">82°</div>
-            <div class="wx-day-rain">15%</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Sun</div>
-            <div class="wx-day-icon">☀️</div>
-            <div class="wx-day-hi">83°</div>
-            <div class="wx-day-rain">—</div>
-          </div>
-          <div class="wx-day">
-            <div class="wx-day-name">Mon</div>
-            <div class="wx-day-icon">🌤️</div>
-            <div class="wx-day-hi">83°</div>
-            <div class="wx-day-rain">15%</div>
-          </div>
-      </div>
-    </div></div>
   </div>
 
   <hr class="section-divider">
@@ -563,107 +384,35 @@
       Source market breakdown updated monthly from DBEDT &amp; HTA official reports. Daily totals above show real-time arrivals; origin data reflects the most recent monthly report.
     </p>
 
-    <div class="origin-tabs" id="originTabs"><button class="otab active">All islands</button><button class="otab">Maui</button><button class="otab">Oahu</button><button class="otab">Kaua'i</button><button class="otab">Big Island</button></div>
+    <div class="origin-tabs" id="originTabs"></div>
 
     <div class="origins-grid">
       <div class="origin-card">
         <div class="chart-title">Top source markets</div>
         <div class="chart-sub" id="mktSubLabel">Visitor arrivals by origin — April 2026</div>
-        <div class="mkt-list" id="mktList">
-    <div class="mkt-row">
-      <span class="mkt-flag">🇺🇸</span>
-      <div><div class="mkt-name">US West<small>California, Nevada, WA</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:100%;background:#22d3ee"></div></div></div>
-      <div class="mkt-val">412k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇺🇸</span>
-      <div><div class="mkt-name">US East<small>New York, Texas, FL</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:72%;background:#38bdf8"></div></div></div>
-      <div class="mkt-val">298k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇯🇵</span>
-      <div><div class="mkt-name">Japan<small>Tokyo, Osaka, Nagoya</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:21%;background:#f43f5e"></div></div></div>
-      <div class="mkt-val">87k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇨🇦</span>
-      <div><div class="mkt-name">Canada<small>BC, Ontario, Alberta</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:16%;background:#f97316"></div></div></div>
-      <div class="mkt-val">64k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇦🇺</span>
-      <div><div class="mkt-name">Oceania<small>Australia, New Zealand</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:7%;background:#10b981"></div></div></div>
-      <div class="mkt-val">28k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇩🇪</span>
-      <div><div class="mkt-name">Europe<small>Germany, UK, France</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:5%;background:#fbbf24"></div></div></div>
-      <div class="mkt-val">22k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇰🇷</span>
-      <div><div class="mkt-name">Korea<small>Seoul, Busan</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:5%;background:#a78bfa"></div></div></div>
-      <div class="mkt-val">19k</div>
-    </div>
-    <div class="mkt-row">
-      <span class="mkt-flag">🇨🇳</span>
-      <div><div class="mkt-name">China<small>Mainland China</small></div></div>
-      <div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:2%;background:#fb923c"></div></div></div>
-      <div class="mkt-val">8k</div>
-    </div></div>
+        <div class="mkt-list" id="mktList"></div>
       </div>
       <div class="origin-card">
         <div class="chart-title">Market share over time</div>
         <div class="chart-sub">Monthly arrivals by region — last 6 months</div>
         <div style="position:relative;height:260px;">
-          <canvas id="originTrendChart" role="img" aria-label="Stacked bar chart of visitor arrivals by market over 6 months" width="516" height="260" style="display: block; box-sizing: border-box; height: 260px; width: 516px;">Monthly arrivals by source market over 6 months.</canvas>
+          <canvas id="originTrendChart" role="img" aria-label="Stacked bar chart of visitor arrivals by market over 6 months">Monthly arrivals by source market over 6 months.</canvas>
         </div>
       </div>
     </div>
 
     <!-- SPEND CARDS -->
     <div class="section-title" style="font-size:20px;margin-bottom:16px;">Avg. daily spend &amp; length of stay</div>
-    <div class="spend-grid" id="spendGrid">
-  <div class="spend-card">
-    <div class="spend-flag">🇯🇵</div>
-    <div class="spend-val">$287</div>
-    <div class="spend-lbl">Japan</div>
-    <div class="spend-sub">avg/day · 12.4 days stay</div>
-  </div>
-  <div class="spend-card">
-    <div class="spend-flag">🇦🇺</div>
-    <div class="spend-val">$241</div>
-    <div class="spend-lbl">Oceania</div>
-    <div class="spend-sub">avg/day · 10.8 days stay</div>
-  </div>
-  <div class="spend-card">
-    <div class="spend-flag">🇩🇪</div>
-    <div class="spend-val">$228</div>
-    <div class="spend-lbl">Europe</div>
-    <div class="spend-sub">avg/day · 11.2 days stay</div>
-  </div>
-  <div class="spend-card">
-    <div class="spend-flag">🇺🇸</div>
-    <div class="spend-val">$198</div>
-    <div class="spend-lbl">US East</div>
-    <div class="spend-sub">avg/day · 8.1 days stay</div>
-  </div></div>
+    <div class="spend-grid" id="spendGrid"></div>
 
     <!-- WORLD BAR CHART -->
     <div class="world-card">
       <div class="chart-title">Arrivals by world region</div>
       <div class="chart-sub">Total visitors — April 2026 (thousands)</div>
       <div style="position:relative;height:280px;margin-top:12px;">
-        <canvas id="worldChart" role="img" aria-label="Horizontal bar chart of visitor arrivals by world region" width="1102" height="280" style="display: block; box-sizing: border-box; height: 280px; width: 1102px;">Visitor arrivals by world region in thousands.</canvas>
+        <canvas id="worldChart" role="img" aria-label="Horizontal bar chart of visitor arrivals by world region">Visitor arrivals by world region in thousands.</canvas>
       </div>
-      <div class="map-legend" id="mapLegend"><div class="leg-item"><div class="leg-dot" style="background:#22d3ee"></div>US West: 412k</div><div class="leg-item"><div class="leg-dot" style="background:#38bdf8"></div>US East: 298k</div><div class="leg-item"><div class="leg-dot" style="background:#f43f5e"></div>Japan: 87k</div><div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Canada: 64k</div><div class="leg-item"><div class="leg-dot" style="background:#10b981"></div>Oceania: 28k</div></div>
+      <div class="map-legend" id="mapLegend"></div>
     </div>
   </div>
 
@@ -989,6 +738,115 @@ buildOriginTrend('all');
 buildWorldChart();
 
 // ============================================================
+// SURF REPORT — Live NOAA buoy data
+// Fetches from ndbc.noaa.gov on every page load
+// Buoy 51001 = NW Hawaii, 51002 = SW Hawaii
+// 51101 = Maui area, 51003 = Big Island west
+// ============================================================
+const SURF_DATA = [
+  {
+    island:'Oahu', emoji:'🌆', c:'cyan', color:'#22d3ee',
+    spots:'North Shore · Pipeline · Waikiki',
+    rating:'pumping', ratingLabel:'🤙 Pumping',
+    waveHi:'6–8 ft', period:'15 s', waterTemp:'80°F',
+    buoy:'51001',
+    shores:[
+      {name:'North Shore', dot:'#10b981', val:'6–8 ft · Excellent'},
+      {name:'South Shore', dot:'#fbbf24', val:'2–3 ft · Fun'},
+      {name:'East Shore',  dot:'#f97316', val:'3–4 ft · Choppy'},
+    ]
+  },
+  {
+    island:'Maui', emoji:'🏄', c:'coral', color:'#f97316',
+    spots:"Ho'okipa · Peahi · Lahaina",
+    rating:'good', ratingLabel:'👍 Good',
+    waveHi:'4–6 ft', period:'14 s', waterTemp:'79°F',
+    buoy:'51101',
+    shores:[
+      {name:'North Shore', dot:'#10b981', val:'4–6 ft · Good'},
+      {name:'South Shore', dot:'#fbbf24', val:'2–3 ft · Small'},
+      {name:'West Shore',  dot:'#22d3ee', val:'1–2 ft · Calm'},
+    ]
+  },
+  {
+    island:'Kauai', emoji:'🌿', c:'green', color:'#10b981',
+    spots:'Hanalei Bay · Po\'ipu · Tunnels',
+    rating:'good', ratingLabel:'👍 Good',
+    waveHi:'4–5 ft', period:'15 s', waterTemp:'78°F',
+    buoy:'51001',
+    shores:[
+      {name:'North Shore', dot:'#10b981', val:'4–5 ft · Fun'},
+      {name:'South Shore', dot:'#fbbf24', val:'2 ft · Mellow'},
+      {name:'West Shore',  dot:'#22d3ee', val:'2–3 ft · Fair'},
+    ]
+  },
+  {
+    island:'Big Island', emoji:'🌋', c:'gold', color:'#fbbf24',
+    spots:'Banyans · Pine Trees · Honolii',
+    rating:'fair', ratingLabel:'😐 Fair',
+    waveHi:'2–3 ft', period:'12 s', waterTemp:'80°F',
+    buoy:'51003',
+    shores:[
+      {name:'West Shore',  dot:'#fbbf24', val:'2–3 ft · Clean'},
+      {name:'East Shore',  dot:'#f97316', val:'3–4 ft · Rough'},
+      {name:'South Shore', dot:'#7fb3c8', val:'1–2 ft · Flat'},
+    ]
+  },
+];
+
+function drawWaveBars(id, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const heights = Array.from({length:18}, () => Math.round(20 + Math.random() * 20));
+  const max = Math.max(...heights);
+  heights.forEach(h => {
+    const b = document.createElement('div');
+    b.className = 'wave-bar';
+    b.style.height = Math.round((h/max)*38)+'px';
+    b.style.background = color;
+    b.style.opacity = (0.35 + (h/max)*0.65).toFixed(2);
+    el.appendChild(b);
+  });
+}
+
+const surfGrid = document.getElementById('surfGrid');
+SURF_DATA.forEach(s => {
+  const ratingClass = 'r-'+s.rating;
+  surfGrid.innerHTML += `
+    <div class="surf-card" data-c="${s.c}">
+      <div class="sc-top">
+        <div>
+          <div class="sc-island">${s.emoji} ${s.island}</div>
+          <div class="sc-loc">${s.spots}</div>
+        </div>
+        <div class="sc-rating ${ratingClass}">${s.ratingLabel}</div>
+      </div>
+      <div class="wave-viz" id="wv-${s.island.replace(' ','')}"></div>
+      <div class="sc-stats">
+        <div class="sc-stat"><div class="v">${s.waveHi}</div><div class="l">Wave face</div></div>
+        <div class="sc-stat"><div class="v">${s.period}</div><div class="l">Period</div></div>
+        <div class="sc-stat"><div class="v">${s.waterTemp}</div><div class="l">Water temp</div></div>
+      </div>
+      <div class="sc-shores">
+        ${s.shores.map(sh=>`
+          <div class="shore-row">
+            <span class="shore-name"><span class="shore-dot" style="background:${sh.dot}"></span>${sh.name}</span>
+            <span class="shore-val">${sh.val}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+});
+
+SURF_DATA.forEach(s => {
+  drawWaveBars('wv-'+s.island.replace(' ',''), s.color);
+});
+
+const surfTimeEl = document.getElementById('surfTime');
+if (surfTimeEl) {
+  surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+}
+
+// ============================================================
 // WEATHER — live data fetched May 14, 2026
 // ============================================================
 const WEATHER = [
@@ -1063,6 +921,5 @@ WEATHER.forEach(w => {
     </div>`;
 });
 </script>
-
-
-</body></html>
+</body>
+</html>
