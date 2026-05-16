@@ -1784,6 +1784,17 @@ if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
 
+// Location button zoom function
+function zoomWindy(lat, lon, zoom, name) {
+  const iframe = document.getElementById('windyIframe');
+  if (iframe) {
+    iframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&width=650&height=450&zoom=${zoom}&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
+    iframe.closest('.windy-card').scrollIntoView({ behavior:'smooth', block:'center' });
+    document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+  }
+}
+
 // ============================================================
 // SUNRISE & SUNSET — Calculated mathematically (instant, accurate)
 // ============================================================
