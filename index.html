@@ -1855,11 +1855,11 @@ function buildSunArc(rise, set, color) {
 
 // Render today's sun cards — instant, no API!
 const sunGrid = document.getElementById('sunGrid');
-const today = new Date();
-const todayFormatted = today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+const sunToday = new Date();
+const todayFormatted = sunToday.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
 SUN_ISLANDS.forEach(island => {
-  const sun = calcSunTimes(island.lat, island.lon, today);
+  const sun = calcSunTimes(island.lat, island.lon, sunToday);
   if (!sun) return;
   const rise = minToHST(sun.sunrise);
   const set  = minToHST(sun.sunset);
@@ -1893,7 +1893,7 @@ MONTH_NAMES.forEach((m, i) => {
   const opt = document.createElement('option');
   opt.value = i;
   opt.textContent = m;
-  if (i === today.getMonth()) opt.selected = true;
+  if (i === sunToday.getMonth()) opt.selected = true;
   calMonthEl.appendChild(opt);
 });
 
@@ -1903,7 +1903,7 @@ function loadCalendar() {
   const year  = parseInt(document.getElementById('calYear').value);
   const loc   = SUN_LAT_LON[islandKey];
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayStr = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}-${today.getDate().toString().padStart(2,'0')}`;
+  const todayStr = `${sunToday.getFullYear()}-${(sunToday.getMonth()+1).toString().padStart(2,'0')}-${sunToday.getDate().toString().padStart(2,'0')}`;
   const rows = [];
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
