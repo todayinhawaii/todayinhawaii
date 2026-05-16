@@ -161,6 +161,8 @@
   .cloud-anim { position:absolute; animation:drift 8s ease-in-out infinite alternate; opacity:0.15; }
   @keyframes drift { 0%{transform:translateX(0);} 100%{transform:translateX(10px);} }
 
+  .wx-detail-label { font-size:13px; color:var(--foam); margin-bottom:16px; background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.15); border-radius:99px; padding:6px 16px; display:inline-block; }
+
   /* ── WEATHER ── */
   .weather-section { margin-bottom: 56px; }
   .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
@@ -481,32 +483,43 @@
   <!-- WEATHER SECTION -->
   <div class="weather-section">
     <div class="section-title">🌤️ Island Weather <span class="section-note">Live</span></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Click any island tab to see detailed forecasts for different areas. Live data updates every visit.</p>
 
     <!-- ISLAND WEATHER TABS -->
     <div class="wx-island-tabs" id="wxIslandTabs">
-      <button class="wx-itab active" data-island="maui">🏄 Maui</button>
+      <button class="wx-itab active" data-island="all">🌺 All Islands</button>
+      <button class="wx-itab" data-island="maui">🏄 Maui</button>
       <button class="wx-itab" data-island="oahu">🌆 Oahu</button>
       <button class="wx-itab" data-island="kauai">🌿 Kauaʻi</button>
       <button class="wx-itab" data-island="bigisland">🌋 Big Island</button>
     </div>
 
-    <!-- MAUI -->
-    <div class="wx-island-panel active" id="wx-maui">
+    <!-- ALL ISLANDS (default view - one card per island like before) -->
+    <div class="wx-island-panel active" id="wx-all">
+      <div class="weather-grid" id="wxGrid-all"></div>
+    </div>
+
+    <!-- MAUI - detailed multi-location -->
+    <div class="wx-island-panel" id="wx-maui">
+      <div class="wx-detail-label">4 locations across Maui — 7-day forecast</div>
       <div class="weather-grid" id="wxGrid-maui"></div>
     </div>
 
-    <!-- OAHU -->
+    <!-- OAHU - detailed multi-location -->
     <div class="wx-island-panel" id="wx-oahu">
+      <div class="wx-detail-label">4 locations across Oahu — 7-day forecast</div>
       <div class="weather-grid" id="wxGrid-oahu"></div>
     </div>
 
-    <!-- KAUAI -->
+    <!-- KAUAI - detailed multi-location -->
     <div class="wx-island-panel" id="wx-kauai">
+      <div class="wx-detail-label">4 locations across Kauaʻi — 7-day forecast</div>
       <div class="weather-grid" id="wxGrid-kauai"></div>
     </div>
 
-    <!-- BIG ISLAND -->
+    <!-- BIG ISLAND - detailed multi-location -->
     <div class="wx-island-panel" id="wx-bigisland">
+      <div class="wx-detail-label">4 locations across Big Island — 7-day forecast</div>
       <div class="weather-grid" id="wxGrid-bigisland"></div>
     </div>
 
@@ -1575,30 +1588,37 @@ if (surfTimeEl) {
 // ============================================================
 // WEATHER — Multi-location animated, live from Open-Meteo
 // ============================================================
+const WX_ALL_ISLANDS = [
+  { name:'Maui',       sub:'Lahaina · West Maui',   emoji:'🏄', lat:20.8783, lon:-156.6825 },
+  { name:'Oahu',       sub:'Honolulu · Waikiki',    emoji:'🌆', lat:21.3069, lon:-157.8583 },
+  { name:"Kauaʻi",    sub:'Lihue · East Side',     emoji:'🌿', lat:21.9811, lon:-159.3711 },
+  { name:'Big Island', sub:'Kailua-Kona · West',    emoji:'🌋', lat:19.6400, lon:-155.9969 },
+];
+
 const WX_LOCATIONS = {
   maui: [
-    { name:'West Maui', sub:'Lahaina · Kaanapali', lat:20.8783, lon:-156.6825 },
-    { name:'South Maui', sub:'Wailea · Kihei', lat:20.7544, lon:-156.4450 },
-    { name:'North Maui', sub:"Ho'okipa · Paia", lat:20.9167, lon:-156.3667 },
-    { name:'Upcountry', sub:'Haleakalā · Kula', lat:20.7100, lon:-156.3300 },
+    { name:'West Maui',   sub:'Lahaina · Kaanapali',  lat:20.8783, lon:-156.6825 },
+    { name:'South Maui',  sub:'Wailea · Kihei',       lat:20.7544, lon:-156.4450 },
+    { name:'North Maui',  sub:"Ho'okipa · Paia",      lat:20.9167, lon:-156.3667 },
+    { name:'Upcountry',   sub:'Haleakalā · Kula',     lat:20.7100, lon:-156.3300 },
   ],
   oahu: [
-    { name:'Honolulu', sub:'Waikiki · Downtown', lat:21.3069, lon:-157.8583 },
-    { name:'North Shore', sub:'Pipeline · Sunset', lat:21.6417, lon:-158.0611 },
-    { name:'Windward', sub:'Kailua · Kaneohe', lat:21.3961, lon:-157.7391 },
-    { name:'Leeward', sub:'Ko Olina · Kapolei', lat:21.3439, lon:-158.1239 },
+    { name:'Honolulu',    sub:'Waikiki · Downtown',   lat:21.3069, lon:-157.8583 },
+    { name:'North Shore', sub:'Pipeline · Sunset',    lat:21.6417, lon:-158.0611 },
+    { name:'Windward',    sub:'Kailua · Kaneohe',     lat:21.3961, lon:-157.7391 },
+    { name:'Leeward',     sub:'Ko Olina · Kapolei',   lat:21.3439, lon:-158.1239 },
   ],
   kauai: [
-    { name:'North Shore', sub:'Hanalei · Na Pali', lat:22.2028, lon:-159.5083 },
-    { name:'South Shore', sub:"Po'ipu · Koloa", lat:21.8783, lon:-159.4717 },
-    { name:'East Side', sub:'Kapaa · Lihue', lat:21.9811, lon:-159.3711 },
-    { name:'West Side', sub:'Waimea · Kokee', lat:21.9578, lon:-159.6739 },
+    { name:'North Shore', sub:'Hanalei · Na Pali',    lat:22.2028, lon:-159.5083 },
+    { name:'South Shore', sub:"Po'ipu · Koloa",       lat:21.8783, lon:-159.4717 },
+    { name:'East Side',   sub:'Kapaa · Lihue',        lat:21.9811, lon:-159.3711 },
+    { name:'West Side',   sub:'Waimea · Kokee',       lat:21.9578, lon:-159.6739 },
   ],
   bigisland: [
-    { name:'Kailua-Kona', sub:'West · Sunny Side', lat:19.6400, lon:-155.9969 },
-    { name:'Hilo', sub:'East · Rainforest', lat:19.7297, lon:-155.0900 },
-    { name:'Kohala Coast', sub:'Waikoloa · Mauna Lani', lat:19.9333, lon:-155.8833 },
-    { name:'Volcano', sub:'Kilauea · NP', lat:19.4194, lon:-155.2886 },
+    { name:'Kailua-Kona', sub:'West · Sunny Side',    lat:19.6400, lon:-155.9969 },
+    { name:'Hilo',        sub:'East · Rainforest',    lat:19.7297, lon:-155.0900 },
+    { name:'Kohala Coast',sub:'Waikoloa · Mauna Lani',lat:19.9333, lon:-155.8833 },
+    { name:'Volcano',     sub:'Kilauea · NP',         lat:19.4194, lon:-155.2886 },
   ],
 };
 
@@ -1625,7 +1645,7 @@ function makeSunRays() {
 function getAnimation(code) {
   if (code === 0 || code <= 2) return makeSunRays();
   if (code <= 49) return `<div class="cloud-anim" style="top:8px;right:8px;font-size:32px;">☁️</div>`;
-  if (code <= 67 || code <= 82) return makeRaindrops(18);
+  if (code <= 82) return makeRaindrops(18);
   if (code <= 99) return makeRaindrops(25) + `<div class="cloud-anim" style="top:6px;right:6px;font-size:28px;">⛈️</div>`;
   return '';
 }
@@ -1656,17 +1676,50 @@ function wmoToCondition(code) {
 
 const wxDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function loadWeatherForIsland(islandKey) {
-  const locations = WX_LOCATIONS[islandKey];
-  const gridEl = document.getElementById('wxGrid-' + islandKey);
-  if (!gridEl) return;
+function buildWxCard(loc, data, days) {
+  const curr = data.current;
+  const daily = data.daily;
+  const temp = Math.round(curr.temperature_2m);
+  const code = curr.weather_code;
+  const icon = wmoToIcon(code, curr.is_day);
+  const cond = wmoToCondition(code);
+  const anim = getAnimation(code);
+  // Show up to 7 days (skip index 0 = today)
+  const forecastDays = Math.min(days, daily.time.length - 1);
+  const fcast = daily.time.slice(1, forecastDays + 1).map((dt, i) => {
+    const d = new Date(dt + 'T12:00:00');
+    const rain = daily.precipitation_probability_max[i+1] || 0;
+    return `<div class="wx-day">
+      <div class="wx-day-name">${wxDays[d.getDay()]}</div>
+      <div class="wx-day-icon">${wmoToIcon(daily.weather_code[i+1], true)}</div>
+      <div class="wx-day-hi">${Math.round(daily.temperature_2m_max[i+1])}°</div>
+      <div class="wx-day-rain">${rain > 0 ? rain+'%' : '—'}</div>
+    </div>`;
+  }).join('');
+  const name = loc.emoji ? `${loc.emoji} ${loc.name}` : loc.name;
+  return `<div class="wx-card" style="position:relative;">
+    <div class="wx-anim">${anim}</div>
+    <div class="wx-top">
+      <div><div class="wx-island">${name}</div><div class="wx-location">${loc.sub}</div></div>
+      <div class="wx-icon">${icon}</div>
+    </div>
+    <div class="wx-temp">${temp}<sup>°F</sup></div>
+    <div class="wx-condition">${cond}</div>
+    <div class="wx-forecast">${fcast}</div>
+  </div>`;
+}
 
-  // Show loading placeholders
+function fetchAndBuild(locations, gridId, forecastDays) {
+  const gridEl = document.getElementById(gridId);
+  if (!gridEl || gridEl.dataset.loaded) return;
+  gridEl.dataset.loaded = 'true';
+
+  // Placeholders
   gridEl.innerHTML = locations.map(loc => `
     <div class="wx-card" style="position:relative;">
       <div class="wx-anim"></div>
       <div class="wx-top">
-        <div><div class="wx-island">${loc.name}</div><div class="wx-location">${loc.sub}</div></div>
+        <div><div class="wx-island">${loc.emoji||''} ${loc.name}</div><div class="wx-location">${loc.sub}</div></div>
         <div class="wx-icon">⏳</div>
       </div>
       <div class="wx-temp">--<sup>°F</sup></div>
@@ -1674,44 +1727,12 @@ function loadWeatherForIsland(islandKey) {
       <div class="wx-forecast"></div>
     </div>`).join('');
 
-  // Fetch each location
   locations.forEach((loc, idx) => {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Pacific%2FHonolulu&forecast_days=6`;
-    fetch(url)
-      .then(r => r.json())
-      .then(data => {
-        const curr = data.current;
-        const daily = data.daily;
-        const temp = Math.round(curr.temperature_2m);
-        const code = curr.weather_code;
-        const icon = wmoToIcon(code, curr.is_day);
-        const cond = wmoToCondition(code);
-        const anim = getAnimation(code);
-        const fcast = daily.time.slice(1,6).map((dt,i) => {
-          const d = new Date(dt + 'T12:00:00');
-          const rain = daily.precipitation_probability_max[i+1] || 0;
-          return `<div class="wx-day">
-            <div class="wx-day-name">${wxDays[d.getDay()]}</div>
-            <div class="wx-day-icon">${wmoToIcon(daily.weather_code[i+1], true)}</div>
-            <div class="wx-day-hi">${Math.round(daily.temperature_2m_max[i+1])}°</div>
-            <div class="wx-day-rain">${rain > 0 ? rain+'%' : '—'}</div>
-          </div>`;
-        }).join('');
-
-        const cards = gridEl.querySelectorAll('.wx-card');
-        if (cards[idx]) {
-          cards[idx].innerHTML = `
-            <div class="wx-anim">${anim}</div>
-            <div class="wx-top">
-              <div><div class="wx-island">${loc.name}</div><div class="wx-location">${loc.sub}</div></div>
-              <div class="wx-icon">${icon}</div>
-            </div>
-            <div class="wx-temp">${temp}<sup>°F</sup></div>
-            <div class="wx-condition">${cond}</div>
-            <div class="wx-forecast">${fcast}</div>`;
-        }
-      })
-      .catch(() => {});
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Pacific%2FHonolulu&forecast_days=${forecastDays+1}`;
+    fetch(url).then(r=>r.json()).then(data => {
+      const cards = gridEl.querySelectorAll('.wx-card');
+      if (cards[idx]) cards[idx].outerHTML = buildWxCard(loc, data, forecastDays);
+    }).catch(()=>{});
   });
 }
 
@@ -1723,14 +1744,16 @@ document.querySelectorAll('.wx-itab').forEach(btn => {
     btn.classList.add('active');
     const key = btn.dataset.island;
     document.getElementById('wx-' + key).classList.add('active');
-    // Load weather if not already loaded
-    const grid = document.getElementById('wxGrid-' + key);
-    if (grid && grid.innerHTML === '') loadWeatherForIsland(key);
+    if (key === 'all') {
+      fetchAndBuild(WX_ALL_ISLANDS, 'wxGrid-all', 5);
+    } else {
+      fetchAndBuild(WX_LOCATIONS[key], 'wxGrid-' + key, 7);
+    }
   });
 });
 
-// Load Maui by default (first tab)
-loadWeatherForIsland('maui');
+// Load All Islands by default
+fetchAndBuild(WX_ALL_ISLANDS, 'wxGrid-all', 5);
 </script>
 </body>
 </html>
