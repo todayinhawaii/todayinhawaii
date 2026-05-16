@@ -90,25 +90,23 @@ footer a{color:var(--foam);text-decoration:none;}
   .nav-link{display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:99px;font-size:11.5px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.08);color:#7fb3c8;background:rgba(255,255,255,0.04);transition:all 0.15s;white-space:nowrap;}
   .nav-link:hover{border-color:rgba(255,255,255,0.4);color:#fff;background:rgba(255,255,255,0.1);}
   .nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);font-weight:600;}
-  @media(max-width:900px){.nav-bar{display:none;}}
+  @media(max-width:900px){.nav-bar{display:none;}
+  .nav-wrapper{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;}
+  .desktop-nav{display:flex;gap:6px;flex-wrap:nowrap;justify-content:center;align-items:center;}
+  .nav-link{display:flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
+  .nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);}
+  .hamburger{display:none;position:absolute;left:50%;transform:translateX(-50%);background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 32px;cursor:pointer;color:var(--text);font-size:28px;line-height:1;z-index:5;letter-spacing:4px;margin-top:4px;}
+  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu .mob-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;width:260px;border-radius:16px;font-size:17px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card-bg);transition:all 0.15s;}
+  .mobile-menu .mob-link:hover,.mobile-menu .mob-link.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
+  .mobile-close{position:absolute;top:20px;right:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--text);font-size:18px;}
+  .mob-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--foam);margin-bottom:12px;}
+  @media(max-width:900px){.hamburger{display:block;}.desktop-nav{display:none;}}
+  @media(min-width:901px){.hamburger{display:none;}.desktop-nav{display:flex;}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="nav-bar">
-      <a href="/" class="nav-link">🌺 Home</a>
-      <a href="/oahu" class="nav-link">🌆 Oahu</a>
-      <a href="/maui" class="nav-link">🏄 Maui</a>
-      <a href="/kauai" class="nav-link">🌿 Kauaʻi</a>
-      <a href="/bigisland" class="nav-link">🌋 Big Island</a>
-      <a href="/hiking" class="nav-link">🥾 Hiking</a>
-      <a href="/beaches" class="nav-link">🏖️ Beaches</a>
-      <a href="/food" class="nav-link active">🍽️ Food</a>
-      <a href="/about" class="nav-link">☀️ About</a>
-      <a href="/privacy" class="nav-link">🔒 Privacy</a>
-    </div>
-</div>
-
 <div class="wrap">
   <header>
     <div class="header-inner">
@@ -118,8 +116,9 @@ footer a{color:var(--foam);text-decoration:none;}
       </a>
     </div>
   </header>
-  <nav>
-    <div class="nav-menu">
+      <nav>
+    <div class="nav-wrapper">
+      <div class="desktop-nav">
       <a href="/" class="nav-link">🌺 Home</a>
       <a href="/oahu" class="nav-link">🌆 Oahu</a>
       <a href="/maui" class="nav-link">🏄 Maui</a>
@@ -130,6 +129,22 @@ footer a{color:var(--foam);text-decoration:none;}
       <a href="/food" class="nav-link active">🍽️ Food</a>
       <a href="/about" class="nav-link">☀️ About</a>
       <a href="/privacy" class="nav-link">🔒 Privacy</a>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <button class="mobile-close" onclick="closeMenu()">✕</button>
+      <div class="mob-title">🌊 Today in Hawaiʻi</div>
+      <a href="/" class="mob-link" onclick="closeMenu()">🌺 Home</a>
+      <a href="/oahu" class="mob-link" onclick="closeMenu()">🌆 Oahu</a>
+      <a href="/maui" class="mob-link" onclick="closeMenu()">🏄 Maui</a>
+      <a href="/kauai" class="mob-link" onclick="closeMenu()">🌿 Kauaʻi</a>
+      <a href="/bigisland" class="mob-link" onclick="closeMenu()">🌋 Big Island</a>
+      <a href="/hiking" class="mob-link" onclick="closeMenu()">🥾 Hiking</a>
+      <a href="/beaches" class="mob-link" onclick="closeMenu()">🏖️ Beaches</a>
+      <a href="/food" class="mob-link active" onclick="closeMenu()">🍽️ Food</a>
+      <a href="/about" class="mob-link" onclick="closeMenu()">☀️ About</a>
+      <a href="/privacy" class="mob-link" onclick="closeMenu()">🔒 Privacy</a>
     </div>
   </nav>
   <section class="hero">
@@ -137,6 +152,8 @@ footer a{color:var(--foam);text-decoration:none;}
     <h1>Hawaii <em>Food Guide</em></h1>
     <p class="hero-sub">From poke bowls to malasadas, plate lunches to shave ice — your complete guide to the most delicious food in Hawaii across all four islands.</p>
   </section>
+</div>
+
 </div>
 
 <!-- MUST TRY SECTION -->
@@ -772,5 +789,9 @@ footer a{color:var(--foam);text-decoration:none;}
   </div>
 </footer>
 <script>function toggleMenu(){var m=document.getElementById('mobileMenu');if(m){m.style.display=m.style.display==='flex'?'none':'flex';}}function closeMenu(){var m=document.getElementById('mobileMenu');if(m)m.style.display='none';}</script>
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.body.style.overflow=document.getElementById('mobileMenu').classList.contains('open')?'hidden':'';}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.body.style.overflow='';}
+</script>
 </body>
 </html>
