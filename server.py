@@ -103,6 +103,14 @@ def kauai():
 def bigisland():
     return send_from_directory(".", "bigisland.html")
 
+@app.route("/privacy")
+def privacy():
+    return send_from_directory(".", "privacy.html")
+
+@app.route("/about")
+def about():
+    return send_from_directory(".", "about.html")
+
 @app.route("/admin")
 def admin():
     return send_from_directory(".", "admin.html")
