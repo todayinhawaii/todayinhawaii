@@ -143,6 +143,42 @@
   .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
   .section-note { display: inline-block; font-size: 12px; background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); border-radius: 99px; padding: 3px 12px; margin-left: 10px; vertical-align: middle; }
 
+  /* ── SUNRISE / SUNSET ── */
+  .sun-section { margin-bottom: 56px; }
+  .sun-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 28px; }
+  .sun-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+  .sun-card::before { content: ''; position: absolute; inset: 0; opacity: 0.04; border-radius: 20px; }
+  .sun-card[data-island="Maui"]::before { background: var(--coral); }
+  .sun-card[data-island="Oahu"]::before { background: var(--foam); }
+  .sun-card[data-island="Kauai"]::before { background: var(--green); }
+  .sun-card[data-island="Big Island"]::before { background: var(--gold); }
+  .sun-island { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .sun-date { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .sun-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .sun-row:last-of-type { border-bottom: none; }
+  .sun-label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .sun-time { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
+  .sun-arc { margin: 16px 0 8px; position: relative; height: 60px; }
+  .sun-arc svg { width: 100%; height: 60px; }
+  .sun-daylight { text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sun-daylight strong { color: var(--gold); }
+  .sun-calendar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .sun-cal-header { padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .sun-select { background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+  .sun-select option { background: #0a2e44; }
+  .sun-cal-grid { padding: 20px 24px; }
+  .sun-cal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sun-cal-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .sun-cal-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+  .sun-cal-table tr:last-child td { border-bottom: none; }
+  .sun-cal-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .sun-rise { color: var(--gold); font-weight: 500; }
+  .sun-set { color: var(--coral); font-weight: 500; }
+  .sun-today { background: rgba(34,211,238,0.06) !important; }
+  .sun-today td { color: var(--foam) !important; }
+  .sun-today .sun-rise { color: #fde68a !important; }
+  .sun-today .sun-set { color: #fb923c !important; }
+
   /* ── LOCATION BUTTONS ── */
   .loc-section { margin-top:8px; }
   .loc-island-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
@@ -646,6 +682,46 @@
 
     </div>
 
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- SUNRISE / SUNSET SECTION -->
+  <div class="sun-section">
+    <div class="section-title">🌅 Sunrise & Sunset Times <span class="section-note">Live · Daily</span></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;max-width:620px;line-height:1.6;">
+      Exact sunrise and sunset times for every Hawaiian island — updated daily. Plan your sunrise hike or sunset dinner perfectly!
+    </p>
+
+    <!-- TODAY'S SUN TIMES - 4 ISLANDS -->
+    <div class="sun-grid" id="sunGrid"></div>
+
+    <!-- MONTHLY CALENDAR -->
+    <div class="sun-calendar-card">
+      <div class="sun-cal-header">
+        <div>
+          <div class="chart-title">📅 Full Year Sunrise & Sunset</div>
+          <div class="chart-sub">Every day of the year — select island and month</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <select id="calIsland" class="sun-select">
+            <option value="maui">🏄 Maui</option>
+            <option value="oahu">🌆 Oahu</option>
+            <option value="kauai">🌿 Kauai</option>
+            <option value="bigisland">🌋 Big Island</option>
+          </select>
+          <select id="calMonth" class="sun-select"></select>
+          <select id="calYear" class="sun-select">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+          </select>
+        </div>
+      </div>
+      <div class="sun-cal-grid" id="sunCalGrid">
+        <div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>
+      </div>
+    </div>
   </div>
 
   <hr class="section-divider">
@@ -1708,7 +1784,196 @@ if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
 
-// Location button zoom function
+// ============================================================
+// SUNRISE & SUNSET — Live from sunrise-sunset.org API
+// ============================================================
+const SUN_ISLANDS = [
+  { id:'Maui',       emoji:'🏄', color:'#f97316', lat:20.8783, lon:-156.6825 },
+  { id:'Oahu',       emoji:'🌆', color:'#22d3ee', lat:21.3069, lon:-157.8583 },
+  { id:'Kauai',      emoji:'🌿', color:'#10b981', lat:21.9811, lon:-159.3711 },
+  { id:'Big Island', emoji:'🌋', color:'#fbbf24', lat:19.6400, lon:-155.9969 },
+];
+
+const SUN_LAT_LON = {
+  maui:      { lat:20.8783, lon:-156.6825 },
+  oahu:      { lat:21.3069, lon:-157.8583 },
+  kauai:     { lat:21.9811, lon:-159.3711 },
+  bigisland: { lat:19.6400, lon:-155.9969 },
+};
+
+function utcToHST(utcStr) {
+  const d = new Date(utcStr);
+  // Hawaii is UTC-10, no daylight saving
+  const hst = new Date(d.getTime() - 10 * 60 * 60 * 1000);
+  let h = hst.getUTCHours();
+  const m = hst.getUTCMinutes().toString().padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m} ${ampm}`;
+}
+
+function daylight(sunrise, sunset) {
+  const r = new Date(sunrise);
+  const s = new Date(sunset);
+  const diff = (s - r) / 1000 / 60; // minutes
+  const h = Math.floor(diff / 60);
+  const m = Math.round(diff % 60);
+  return `${h}h ${m}m`;
+}
+
+function buildSunArc(sunriseStr, sunsetStr, color) {
+  const now = new Date();
+  const r = new Date(sunriseStr);
+  const s = new Date(sunsetStr);
+  const totalDay = s - r;
+  const elapsed = now - r;
+  const pct = Math.max(0, Math.min(1, elapsed / totalDay));
+  const angle = pct * Math.PI;
+  const cx = 50, cy = 55, rx = 44, ry = 40;
+  const sx = cx - rx, sy = cy;
+  const ex = cx + rx, ey = cy;
+  const sunX = cx + rx * Math.cos(Math.PI - angle) * -1;
+  const sunY = cy - ry * Math.sin(angle);
+  const isDay = now >= r && now <= s;
+  return `<svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M ${sx} ${sy} A ${rx} ${ry} 0 0 1 ${ex} ${ey}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+    <path d="M ${sx} ${sy} A ${rx} ${ry} 0 0 1 ${sunX} ${sunY}" fill="none" stroke="${color}" stroke-width="2.5" opacity="0.8"/>
+    ${isDay ? `<circle cx="${sunX}" cy="${sunY}" r="4" fill="${color}" opacity="0.9"/>
+    <circle cx="${sunX}" cy="${sunY}" r="6" fill="${color}" opacity="0.3"/>` : ''}
+    <line x1="${sx-4}" y1="${sy}" x2="${ex+4}" y2="${ey}" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="${sx}" y="${sy+10}" font-size="8" fill="#7fb3c8" text-anchor="middle">Rise</text>
+    <text x="${ex}" y="${ey+10}" font-size="8" fill="#7fb3c8" text-anchor="middle">Set</text>
+  </svg>`;
+}
+
+// Load today's sun times for all 4 islands
+const sunGrid = document.getElementById('sunGrid');
+const today = new Date().toISOString().split('T')[0];
+const todayFormatted = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+SUN_ISLANDS.forEach(island => {
+  // Placeholder
+  sunGrid.innerHTML += `
+    <div class="sun-card" data-island="${island.id}" id="sun-${island.id.replace(' ','')}">
+      <div class="sun-island">${island.emoji} ${island.id}</div>
+      <div class="sun-date">${todayFormatted}</div>
+      <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" style="color:var(--gold)">Loading...</span></div>
+      <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" style="color:var(--coral)">Loading...</span></div>
+      <div class="sun-row"><span class="sun-label">☀️ Daylight</span><span class="sun-time" style="font-size:16px;color:var(--text)">--h --m</span></div>
+      <div class="sun-arc"></div>
+    </div>`;
+
+  fetch(`https://api.sunrise-sunset.org/json?lat=${island.lat}&lng=${island.lon}&date=${today}&formatted=0`)
+    .then(r => r.json())
+    .then(data => {
+      const res = data.results;
+      const rise = utcToHST(res.sunrise);
+      const set  = utcToHST(res.sunset);
+      const dl   = daylight(res.sunrise, res.sunset);
+      const arc  = buildSunArc(res.sunrise, res.sunset, island.color);
+      const card = document.getElementById('sun-'+island.id.replace(' ',''));
+      if (card) {
+        card.innerHTML = `
+          <div class="sun-island">${island.emoji} ${island.id}</div>
+          <div class="sun-date">${todayFormatted}</div>
+          <div class="sun-row">
+            <span class="sun-label">🌅 Sunrise</span>
+            <span class="sun-time" style="color:var(--gold)">${rise}</span>
+          </div>
+          <div class="sun-row">
+            <span class="sun-label">🌇 Sunset</span>
+            <span class="sun-time" style="color:var(--coral)">${set}</span>
+          </div>
+          <div class="sun-row">
+            <span class="sun-label">☀️ Daylight</span>
+            <span class="sun-time" style="font-size:16px;color:var(--text)">${dl}</span>
+          </div>
+          <div class="sun-arc">${arc}</div>
+          <div class="sun-daylight">Sun arc — <strong>${dl} of daylight today</strong></div>`;
+      }
+    })
+    .catch(() => {});
+});
+
+// MONTHLY CALENDAR
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const calMonthEl = document.getElementById('calMonth');
+const now2 = new Date();
+MONTH_NAMES.forEach((m, i) => {
+  const opt = document.createElement('option');
+  opt.value = i + 1;
+  opt.textContent = m;
+  if (i === now2.getMonth()) opt.selected = true;
+  calMonthEl.appendChild(opt);
+});
+
+function getDaysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function loadCalendar() {
+  const islandKey = document.getElementById('calIsland').value;
+  const month = parseInt(document.getElementById('calMonth').value);
+  const year  = parseInt(document.getElementById('calYear').value);
+  const loc   = SUN_LAT_LON[islandKey];
+  const days  = getDaysInMonth(year, month);
+  const todayStr = new Date().toISOString().split('T')[0];
+  const grid  = document.getElementById('sunCalGrid');
+  grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Loading calendar...</div>';
+
+  // Fetch all days at once using batch — sunrise-sunset.org supports one date at a time
+  // We'll fetch current month in parallel
+  const promises = [];
+  for (let d = 1; d <= days; d++) {
+    const dateStr = `${year}-${month.toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
+    promises.push(
+      fetch(`https://api.sunrise-sunset.org/json?lat=${loc.lat}&lng=${loc.lon}&date=${dateStr}&formatted=0`)
+        .then(r => r.json())
+        .then(data => ({ day: d, date: dateStr, results: data.results }))
+        .catch(() => ({ day: d, date: dateStr, results: null }))
+    );
+  }
+
+  Promise.all(promises).then(results => {
+    const rows = results.map(r => {
+      const isToday = r.date === todayStr;
+      const rise = r.results ? utcToHST(r.results.sunrise) : '--';
+      const set  = r.results ? utcToHST(r.results.sunset)  : '--';
+      const dl   = r.results ? daylight(r.results.sunrise, r.results.sunset) : '--';
+      const d    = new Date(r.date + 'T12:00:00');
+      const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+      return `<tr class="${isToday ? 'sun-today' : ''}">
+        <td style="color:var(--muted);font-size:12px;">${dayName}</td>
+        <td style="font-weight:500;">${MONTH_NAMES[month-1].slice(0,3)} ${r.day}</td>
+        <td class="sun-rise">${rise}</td>
+        <td class="sun-set">${set}</td>
+        <td style="color:var(--muted);font-size:12px;">${dl}</td>
+      </tr>`;
+    }).join('');
+
+    grid.innerHTML = `
+      <table class="sun-cal-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Date</th>
+            <th>🌅 Sunrise</th>
+            <th>🌇 Sunset</th>
+            <th>☀️ Daylight</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  });
+}
+
+// Load calendar on change
+document.getElementById('calIsland').addEventListener('change', loadCalendar);
+document.getElementById('calMonth').addEventListener('change', loadCalendar);
+document.getElementById('calYear').addEventListener('change', loadCalendar);
+
+// Initial load
+loadCalendar();
 function zoomWindy(lat, lon, zoom, name) {
   const iframe = document.getElementById('windyIframe');
   if (iframe) {
