@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -142,6 +142,14 @@
   /* ── SHARED ── */
   .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
   .section-note { display: inline-block; font-size: 12px; background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); border-radius: 99px; padding: 3px 12px; margin-left: 10px; vertical-align: middle; }
+
+  /* ── WEATHER WIDGET TABS ── */
+  .wx-widget-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .wx-wtab { padding:10px 22px; border-radius:12px; font-size:14px; font-weight:500; border:1px solid var(--border); background:var(--card-bg); color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .wx-wtab.active { background:rgba(34,211,238,0.15); border-color:var(--foam); color:var(--foam); }
+  .wx-wtab:hover { border-color:var(--foam); color:var(--foam); }
+  .wx-widget-panel { display:none; }
+  .wx-widget-panel.active { display:block; }
 
   /* ── WINDY ── */
   .windy-card { background:var(--card-bg); border:1px solid var(--border); border-radius:24px; overflow:hidden; margin-bottom:32px; }
@@ -493,27 +501,85 @@
     <div class="section-title">🌤️ Island Weather <span class="section-note">Live</span></div>
     <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Live animated weather radar for all Hawaiian islands — watch clouds and rain move in real time. Click any island tab for detailed forecasts.</p>
 
-    <!-- WINDY LIVE RADAR -->
-    <div class="windy-card">
-      <div class="windy-label">
-        <span>🌬️ Live Hawaii Weather Radar</span>
-        <span class="windy-badge"><span class="pulse-dot"></span>Live · Windy.com</span>
+    <!-- WEATHER WIDGET TABS -->
+    <div class="wx-widget-tabs">
+      <button class="wx-wtab active" data-widget="windy">🌬️ Windy Radar</button>
+      <button class="wx-wtab" data-widget="owm">🌡️ OpenWeatherMap</button>
+      <button class="wx-wtab" data-widget="wc">☁️ Weather Cloud</button>
+    </div>
+
+    <!-- OPTION 1: WINDY.COM -->
+    <div class="wx-widget-panel active" id="widget-windy">
+      <div class="windy-card">
+        <div class="windy-label">
+          <div>
+            <span style="font-size:16px;font-weight:600;">🌬️ Windy — Live Hawaii Radar</span>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Watch real clouds, rain and wind moving over Hawaii in real time</div>
+          </div>
+          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
+        </div>
+        <div class="windy-embed">
+          <iframe
+            width="100%" height="100%"
+            src="https://embed.windy.com/embed2.html?lat=20.5&lon=-157.5&detailLat=20.8783&detailLon=-156.6825&width=650&height=450&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
+            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
+            title="Live Hawaii Weather Radar — Windy.com">
+          </iframe>
+        </div>
+        <div class="windy-footer">
+          <span>🌧️ Rain · 🌬️ Wind · ☁️ Clouds · 🌊 Waves — all live animated · Powered by Windy.com</span>
+          <a href="https://www.windy.com/?rain,20.5,-157.5,7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
+        </div>
       </div>
-      <div class="windy-embed">
-        <iframe
-          width="100%"
-          height="100%"
-          src="https://embed.windy.com/embed2.html?lat=20.5&lon=-157.5&detailLat=20.8783&detailLon=-156.6825&width=650&height=450&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
-          frameborder="0"
-          style="border:0;"
-          allowfullscreen
-          loading="lazy"
-          title="Live Hawaii Weather Radar">
-        </iframe>
+    </div>
+
+    <!-- OPTION 2: OPENWEATHERMAP -->
+    <div class="wx-widget-panel" id="widget-owm">
+      <div class="windy-card">
+        <div class="windy-label">
+          <div>
+            <span style="font-size:16px;font-weight:600;">🌡️ OpenWeatherMap — Hawaii</span>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Temperature, precipitation and cloud cover with live satellite layer</div>
+          </div>
+          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
+        </div>
+        <div class="windy-embed">
+          <iframe
+            width="100%" height="100%"
+            src="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7"
+            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
+            title="OpenWeatherMap Hawaii">
+          </iframe>
+        </div>
+        <div class="windy-footer">
+          <span>🌧️ Precipitation · 🌡️ Temperature · ☁️ Clouds — Powered by OpenWeatherMap</span>
+          <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
+        </div>
       </div>
-      <div class="windy-footer">
-        <span>🌧️ Rain · 🌬️ Wind · ☁️ Clouds · 🌊 Waves — all animated live</span>
-        <a href="https://www.windy.com/?rain,20.5,-157.5,7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
+    </div>
+
+    <!-- OPTION 3: WEATHER CLOUD / VENTUSKY -->
+    <div class="wx-widget-panel" id="widget-wc">
+      <div class="windy-card">
+        <div class="windy-label">
+          <div>
+            <span style="font-size:16px;font-weight:600;">☁️ Ventusky — Hawaii Forecast</span>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Beautiful animated temperature and weather patterns over Hawaii</div>
+          </div>
+          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
+        </div>
+        <div class="windy-embed">
+          <iframe
+            width="100%" height="100%"
+            src="https://embed.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m"
+            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
+            title="Ventusky Hawaii Weather">
+          </iframe>
+        </div>
+        <div class="windy-footer">
+          <span>🌡️ Temperature · 🌧️ Rain · 💨 Wind — Beautiful animated forecasts · Powered by Ventusky</span>
+          <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
+        </div>
       </div>
     </div>
 
@@ -1616,6 +1682,16 @@ Object.keys(HR_DATA).forEach(key => buildHRCards(key, HR_DATA[key]));
 if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
+
+// Weather widget tab switching
+document.querySelectorAll('.wx-wtab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.wx-wtab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.wx-widget-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('widget-' + btn.dataset.widget).classList.add('active');
+  });
+});
 
 // ============================================================
 // WEATHER — Multi-location animated, live from Open-Meteo
