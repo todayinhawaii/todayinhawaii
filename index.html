@@ -1854,6 +1854,7 @@ function buildSunArc(rise, set, color) {
 }
 
 // Render today's sun cards — instant, no API!
+try {
 const sunGrid = document.getElementById('sunGrid');
 const sunToday = new Date();
 const todayFormatted = sunToday.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
@@ -1885,15 +1886,18 @@ SUN_ISLANDS.forEach(island => {
       <div class="sun-daylight">Sun arc · <strong>${dl} of sunlight today</strong></div>
     </div>`;
 });
+} catch(e) { console.error('Sun cards error:', e); }
 
-// MONTHLY CALENDAR — also instant, no API!
-const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+// MONTHLY CALENDAR — instant, no API!
+try {
+const MONTH_NAMES2 = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const calMonthEl = document.getElementById('calMonth');
-MONTH_NAMES.forEach((m, i) => {
+const sunToday2 = new Date();
+MONTH_NAMES2.forEach((m, i) => {
   const opt = document.createElement('option');
   opt.value = i;
   opt.textContent = m;
-  if (i === sunToday.getMonth()) opt.selected = true;
+  if (i === sunToday2.getMonth()) opt.selected = true;
   calMonthEl.appendChild(opt);
 });
 
@@ -1903,7 +1907,8 @@ function loadCalendar() {
   const year  = parseInt(document.getElementById('calYear').value);
   const loc   = SUN_LAT_LON[islandKey];
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayStr = `${sunToday.getFullYear()}-${(sunToday.getMonth()+1).toString().padStart(2,'0')}-${sunToday.getDate().toString().padStart(2,'0')}`;
+  const sT = new Date();
+  const todayStr = `${sT.getFullYear()}-${(sT.getMonth()+1).toString().padStart(2,'0')}-${sT.getDate().toString().padStart(2,'0')}`;
   const rows = [];
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
@@ -1916,7 +1921,7 @@ function loadCalendar() {
     const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
     rows.push(`<tr class="${isToday?'sun-today':''}">
       <td style="color:var(--muted);font-size:12px;">${dayName}</td>
-      <td style="font-weight:500;">${MONTH_NAMES[month].slice(0,3)} ${d}</td>
+      <td style="font-weight:500;">${MONTH_NAMES2[month].slice(0,3)} ${d}</td>
       <td class="sun-rise">${rise}</td>
       <td class="sun-set">${set}</td>
       <td style="color:var(--muted);font-size:12px;">${dl}</td>
@@ -1933,6 +1938,7 @@ document.getElementById('calIsland').addEventListener('change', loadCalendar);
 document.getElementById('calMonth').addEventListener('change', loadCalendar);
 document.getElementById('calYear').addEventListener('change', loadCalendar);
 loadCalendar();
+} catch(e) { console.error('Calendar error:', e); }
 </script>
 </body>
 </html>
