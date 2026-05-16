@@ -143,6 +143,24 @@
   .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
   .section-note { display: inline-block; font-size: 12px; background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); border-radius: 99px; padding: 3px 12px; margin-left: 10px; vertical-align: middle; }
 
+  /* ── WEATHER TABS ── */
+  .wx-island-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .wx-itab { padding:8px 20px; border-radius:99px; font-size:13px; font-weight:500; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .wx-itab.active { background:rgba(34,211,238,0.15); border-color:var(--foam); color:var(--foam); }
+  .wx-island-panel { display:none; }
+  .wx-island-panel.active { display:block; }
+
+  /* ── ANIMATED WEATHER ── */
+  .wx-anim { position:absolute; inset:0; overflow:hidden; pointer-events:none; border-radius:20px; }
+  .raindrop { position:absolute; width:2px; border-radius:99px; background:rgba(147,197,253,0.6); animation:fall linear infinite; }
+  @keyframes fall { 0%{transform:translateY(-20px);opacity:0;} 10%{opacity:1;} 90%{opacity:1;} 100%{transform:translateY(120px);opacity:0;} }
+  .sun-ray { position:absolute; top:12px; right:12px; width:40px; height:40px; }
+  .sun-circle { width:18px; height:18px; background:#fbbf24; border-radius:50%; position:absolute; top:11px; left:11px; box-shadow:0 0 12px #fbbf24; animation:glow 2s ease-in-out infinite; }
+  @keyframes glow { 0%,100%{box-shadow:0 0 8px #fbbf24;} 50%{box-shadow:0 0 20px #fbbf24,0 0 30px rgba(251,191,36,0.4);} }
+  .sun-ray-line { position:absolute; width:2px; height:6px; background:#fbbf24; border-radius:99px; top:50%; left:50%; transform-origin:0 -10px; opacity:0.8; }
+  .cloud-anim { position:absolute; animation:drift 8s ease-in-out infinite alternate; opacity:0.15; }
+  @keyframes drift { 0%{transform:translateX(0);} 100%{transform:translateX(10px);} }
+
   /* ── WEATHER ── */
   .weather-section { margin-bottom: 56px; }
   .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
@@ -310,10 +328,10 @@
   .hr-tag { font-size:10px; background:rgba(255,255,255,0.07); color:var(--muted); border-radius:4px; padding:2px 6px; }
 
   /* ── NAV MENU ── */
-  .nav-menu { display:flex; gap:8px; flex-wrap:wrap; padding:16px 0; border-bottom:1px solid var(--border); margin-bottom:0; }
-  .nav-link { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:99px; font-size:13px; font-weight:500; text-decoration:none; border:1px solid var(--border); color:var(--muted); background:var(--card-bg); transition:all 0.15s; white-space:nowrap; }
-  .nav-link:hover { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.08); }
-  .nav-link.active { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.12); }
+  .nav-menu { display:flex; gap:12px; flex-wrap:wrap; padding:20px 0; border-bottom:1px solid var(--border); margin-bottom:0; justify-content:center; }
+  .nav-link { display:flex; align-items:center; gap:6px; padding:10px 22px; border-radius:99px; font-size:14px; font-weight:500; text-decoration:none; border:1px solid var(--border); color:var(--muted); background:var(--card-bg); transition:all 0.15s; white-space:nowrap; }
+  .nav-link:hover { border-color:rgba(255,255,255,0.4); color:#fff; background:rgba(255,255,255,0.1); }
+  .nav-link.active { border-color:rgba(255,255,255,0.6); color:#fff; background:rgba(255,255,255,0.15); font-weight:600; }
   .nav-home { color:var(--text) !important; border-color:rgba(255,255,255,0.15) !important; }
 
   /* ── MAPS ── */
@@ -462,8 +480,36 @@
 
   <!-- WEATHER SECTION -->
   <div class="weather-section">
-    <div class="section-title">Island Weather <span class="section-note">Live</span></div>
-    <div class="weather-grid" id="weatherGrid"></div>
+    <div class="section-title">🌤️ Island Weather <span class="section-note">Live</span></div>
+
+    <!-- ISLAND WEATHER TABS -->
+    <div class="wx-island-tabs" id="wxIslandTabs">
+      <button class="wx-itab active" data-island="maui">🏄 Maui</button>
+      <button class="wx-itab" data-island="oahu">🌆 Oahu</button>
+      <button class="wx-itab" data-island="kauai">🌿 Kauaʻi</button>
+      <button class="wx-itab" data-island="bigisland">🌋 Big Island</button>
+    </div>
+
+    <!-- MAUI -->
+    <div class="wx-island-panel active" id="wx-maui">
+      <div class="weather-grid" id="wxGrid-maui"></div>
+    </div>
+
+    <!-- OAHU -->
+    <div class="wx-island-panel" id="wx-oahu">
+      <div class="weather-grid" id="wxGrid-oahu"></div>
+    </div>
+
+    <!-- KAUAI -->
+    <div class="wx-island-panel" id="wx-kauai">
+      <div class="weather-grid" id="wxGrid-kauai"></div>
+    </div>
+
+    <!-- BIG ISLAND -->
+    <div class="wx-island-panel" id="wx-bigisland">
+      <div class="weather-grid" id="wxGrid-bigisland"></div>
+    </div>
+
   </div>
 
   <hr class="section-divider">
@@ -1527,14 +1573,62 @@ if (surfTimeEl) {
 }
 
 // ============================================================
-// WEATHER — Live from Open-Meteo (free, no API key needed)
+// WEATHER — Multi-location animated, live from Open-Meteo
 // ============================================================
-const ISLAND_LOCATIONS = [
-  { island:'Maui',       location:'Lahaina',     emoji:'🏄', lat:20.8783, lon:-156.6825 },
-  { island:'Oahu',       location:'Honolulu',    emoji:'🌆', lat:21.3069, lon:-157.8583 },
-  { island:'Kauai',      location:'Lihue',       emoji:'🌿', lat:21.9811, lon:-159.3711 },
-  { island:'Big Island', location:'Kailua-Kona', emoji:'🌋', lat:19.6400, lon:-155.9969 },
-];
+const WX_LOCATIONS = {
+  maui: [
+    { name:'West Maui', sub:'Lahaina · Kaanapali', lat:20.8783, lon:-156.6825 },
+    { name:'South Maui', sub:'Wailea · Kihei', lat:20.7544, lon:-156.4450 },
+    { name:'North Maui', sub:"Ho'okipa · Paia", lat:20.9167, lon:-156.3667 },
+    { name:'Upcountry', sub:'Haleakalā · Kula', lat:20.7100, lon:-156.3300 },
+  ],
+  oahu: [
+    { name:'Honolulu', sub:'Waikiki · Downtown', lat:21.3069, lon:-157.8583 },
+    { name:'North Shore', sub:'Pipeline · Sunset', lat:21.6417, lon:-158.0611 },
+    { name:'Windward', sub:'Kailua · Kaneohe', lat:21.3961, lon:-157.7391 },
+    { name:'Leeward', sub:'Ko Olina · Kapolei', lat:21.3439, lon:-158.1239 },
+  ],
+  kauai: [
+    { name:'North Shore', sub:'Hanalei · Na Pali', lat:22.2028, lon:-159.5083 },
+    { name:'South Shore', sub:"Po'ipu · Koloa", lat:21.8783, lon:-159.4717 },
+    { name:'East Side', sub:'Kapaa · Lihue', lat:21.9811, lon:-159.3711 },
+    { name:'West Side', sub:'Waimea · Kokee', lat:21.9578, lon:-159.6739 },
+  ],
+  bigisland: [
+    { name:'Kailua-Kona', sub:'West · Sunny Side', lat:19.6400, lon:-155.9969 },
+    { name:'Hilo', sub:'East · Rainforest', lat:19.7297, lon:-155.0900 },
+    { name:'Kohala Coast', sub:'Waikoloa · Mauna Lani', lat:19.9333, lon:-155.8833 },
+    { name:'Volcano', sub:'Kilauea · NP', lat:19.4194, lon:-155.2886 },
+  ],
+};
+
+function makeRaindrops(count) {
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const left = Math.random() * 100;
+    const delay = Math.random() * 2;
+    const duration = 0.6 + Math.random() * 0.8;
+    const height = 8 + Math.random() * 10;
+    html += `<div class="raindrop" style="left:${left}%;height:${height}px;animation-duration:${duration}s;animation-delay:${delay}s;"></div>`;
+  }
+  return html;
+}
+
+function makeSunRays() {
+  let rays = '';
+  for (let i = 0; i < 8; i++) {
+    rays += `<div class="sun-ray-line" style="transform:rotate(${i*45}deg) translateX(-50%) translateY(-10px);"></div>`;
+  }
+  return `<div class="sun-ray"><div class="sun-circle"></div>${rays}</div>`;
+}
+
+function getAnimation(code) {
+  if (code === 0 || code <= 2) return makeSunRays();
+  if (code <= 49) return `<div class="cloud-anim" style="top:8px;right:8px;font-size:32px;">☁️</div>`;
+  if (code <= 67 || code <= 82) return makeRaindrops(18);
+  if (code <= 99) return makeRaindrops(25) + `<div class="cloud-anim" style="top:6px;right:6px;font-size:28px;">⛈️</div>`;
+  return '';
+}
 
 function wmoToIcon(code, isDay) {
   if (code === 0) return isDay ? '☀️' : '🌙';
@@ -1543,9 +1637,7 @@ function wmoToIcon(code, isDay) {
   if (code <= 49) return '🌫️';
   if (code <= 57) return '🌦️';
   if (code <= 67) return '🌧️';
-  if (code <= 77) return '❄️';
   if (code <= 82) return '🌦️';
-  if (code <= 86) return '❄️';
   if (code <= 99) return '⛈️';
   return '🌤️';
 }
@@ -1557,83 +1649,88 @@ function wmoToCondition(code) {
   if (code <= 49) return 'Foggy';
   if (code <= 57) return 'Drizzle';
   if (code <= 67) return 'Rainy';
-  if (code <= 77) return 'Snowy';
   if (code <= 82) return 'Rain Showers';
-  if (code <= 86) return 'Snow Showers';
   if (code <= 99) return 'Thunderstorm';
   return 'Partly Cloudy';
 }
 
-function celsiusToF(c) { return Math.round(c * 9/5 + 32); }
+const wxDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-const wxGrid = document.getElementById('weatherGrid');
+function loadWeatherForIsland(islandKey) {
+  const locations = WX_LOCATIONS[islandKey];
+  const gridEl = document.getElementById('wxGrid-' + islandKey);
+  if (!gridEl) return;
 
-// Show loading placeholders
-ISLAND_LOCATIONS.forEach(loc => {
-  wxGrid.innerHTML += `
-    <div class="wx-card" data-island="${loc.island}" id="wx-${loc.island.replace(' ','')}">
+  // Show loading placeholders
+  gridEl.innerHTML = locations.map(loc => `
+    <div class="wx-card" style="position:relative;">
+      <div class="wx-anim"></div>
       <div class="wx-top">
-        <div>
-          <div class="wx-island">${loc.emoji} ${loc.island}</div>
-          <div class="wx-location">${loc.location}</div>
-        </div>
+        <div><div class="wx-island">${loc.name}</div><div class="wx-location">${loc.sub}</div></div>
         <div class="wx-icon">⏳</div>
       </div>
       <div class="wx-temp">--<sup>°F</sup></div>
       <div class="wx-condition">Loading...</div>
       <div class="wx-forecast"></div>
-    </div>`;
-});
+    </div>`).join('');
 
-// Fetch real weather for each island
-ISLAND_LOCATIONS.forEach(loc => {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Pacific%2FHonolulu&forecast_days=6`;
-  
-  fetch(url)
-    .then(r => r.json())
-    .then(data => {
-      const curr = data.current;
-      const daily = data.daily;
-      const temp = Math.round(curr.temperature_2m);
-      const icon = wmoToIcon(curr.weather_code, curr.is_day);
-      const condition = wmoToCondition(curr.weather_code);
-      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      
-      // Build 5-day forecast (skip today = index 0)
-      const forecastHTML = daily.time.slice(1,6).map((dateStr, i) => {
-        const d = new Date(dateStr + 'T12:00:00');
-        const dayName = days[d.getDay()];
-        const hi = Math.round(daily.temperature_2m_max[i+1]);
-        const rain = daily.precipitation_probability_max[i+1] || 0;
-        const fIcon = wmoToIcon(daily.weather_code[i+1], true);
-        return `
-          <div class="wx-day">
-            <div class="wx-day-name">${dayName}</div>
-            <div class="wx-day-icon">${fIcon}</div>
-            <div class="wx-day-hi">${hi}°</div>
+  // Fetch each location
+  locations.forEach((loc, idx) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Pacific%2FHonolulu&forecast_days=6`;
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        const curr = data.current;
+        const daily = data.daily;
+        const temp = Math.round(curr.temperature_2m);
+        const code = curr.weather_code;
+        const icon = wmoToIcon(code, curr.is_day);
+        const cond = wmoToCondition(code);
+        const anim = getAnimation(code);
+        const fcast = daily.time.slice(1,6).map((dt,i) => {
+          const d = new Date(dt + 'T12:00:00');
+          const rain = daily.precipitation_probability_max[i+1] || 0;
+          return `<div class="wx-day">
+            <div class="wx-day-name">${wxDays[d.getDay()]}</div>
+            <div class="wx-day-icon">${wmoToIcon(daily.weather_code[i+1], true)}</div>
+            <div class="wx-day-hi">${Math.round(daily.temperature_2m_max[i+1])}°</div>
             <div class="wx-day-rain">${rain > 0 ? rain+'%' : '—'}</div>
           </div>`;
-      }).join('');
+        }).join('');
 
-      const card = document.getElementById('wx-'+loc.island.replace(' ',''));
-      if (card) {
-        card.innerHTML = `
-          <div class="wx-top">
-            <div>
-              <div class="wx-island">${loc.emoji} ${loc.island}</div>
-              <div class="wx-location">${loc.location}</div>
+        const cards = gridEl.querySelectorAll('.wx-card');
+        if (cards[idx]) {
+          cards[idx].innerHTML = `
+            <div class="wx-anim">${anim}</div>
+            <div class="wx-top">
+              <div><div class="wx-island">${loc.name}</div><div class="wx-location">${loc.sub}</div></div>
+              <div class="wx-icon">${icon}</div>
             </div>
-            <div class="wx-icon">${icon}</div>
-          </div>
-          <div class="wx-temp">${temp}<sup>°F</sup></div>
-          <div class="wx-condition">${condition}</div>
-          <div class="wx-forecast">${forecastHTML}</div>`;
-      }
-    })
-    .catch(err => {
-      console.warn(`Weather fetch failed for ${loc.island}:`, err);
-    });
+            <div class="wx-temp">${temp}<sup>°F</sup></div>
+            <div class="wx-condition">${cond}</div>
+            <div class="wx-forecast">${fcast}</div>`;
+        }
+      })
+      .catch(() => {});
+  });
+}
+
+// Tab switching
+document.querySelectorAll('.wx-itab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.wx-itab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.wx-island-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const key = btn.dataset.island;
+    document.getElementById('wx-' + key).classList.add('active');
+    // Load weather if not already loaded
+    const grid = document.getElementById('wxGrid-' + key);
+    if (grid && grid.innerHTML === '') loadWeatherForIsland(key);
+  });
 });
+
+// Load Maui by default (first tab)
+loadWeatherForIsland('maui');
 </script>
 </body>
 </html>
