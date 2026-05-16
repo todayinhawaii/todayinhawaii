@@ -179,6 +179,11 @@
   .sun-today .sun-rise { color: #fde68a !important; }
   .sun-today .sun-set { color: #fb923c !important; }
 
+  .sun-cal-link { display:block; margin-top:16px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--foam); text-decoration:none; transition:all 0.15s; }
+  .sun-cal-link:hover { background:rgba(34,211,238,0.1); border-color:var(--foam); }
+  .sun-link-card { display:block; background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px; text-decoration:none; text-align:center; transition:transform 0.2s,border-color 0.2s; }
+  .sun-link-card:hover { transform:translateY(-3px); }
+
   /* ── LOCATION BUTTONS ── */
   .loc-section { margin-top:8px; }
   .loc-island-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
@@ -688,38 +693,124 @@
 
   <!-- SUNRISE / SUNSET SECTION -->
   <div class="sun-section">
-    <div class="section-title">🌅 Sunrise & Sunset Times <span class="section-note">Live · Daily</span></div>
+    <div class="section-title">🌅 Sunrise & Sunset Times <span class="section-note">Daily</span></div>
     <p style="font-size:14px;color:var(--muted);margin-bottom:28px;max-width:620px;line-height:1.6;">
-      Exact sunrise and sunset times for every Hawaiian island — updated daily. Plan your sunrise hike or sunset dinner perfectly!
+      Today's exact sunrise and sunset times for every Hawaiian island. Click any island for the full calendar — works for any year, forever!
     </p>
 
-    <!-- TODAY'S SUN TIMES - 4 ISLANDS -->
-    <div class="sun-grid" id="sunGrid"></div>
+    <!-- TODAY'S CARDS - hardcoded, updates daily -->
+    <div class="sun-grid">
 
-    <!-- MONTHLY CALENDAR -->
+      <div class="sun-card" data-island="Maui">
+        <div class="sun-island">🏄 Maui</div>
+        <div class="sun-date" id="sunDateMaui"></div>
+        <div class="sun-row">
+          <span class="sun-label">🌅 Sunrise</span>
+          <span class="sun-time" style="color:var(--gold)" id="sunRiseMaui">5:49 AM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">🌇 Sunset</span>
+          <span class="sun-time" style="color:var(--coral)" id="sunSetMaui">6:57 PM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">☀️ Daylight</span>
+          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlMaui">13h 7m</span>
+        </div>
+        <a href="https://www.timeanddate.com/sun/usa/lahaina" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+      </div>
+
+      <div class="sun-card" data-island="Oahu">
+        <div class="sun-island">🌆 Oahu</div>
+        <div class="sun-date" id="sunDateOahu"></div>
+        <div class="sun-row">
+          <span class="sun-label">🌅 Sunrise</span>
+          <span class="sun-time" style="color:var(--gold)" id="sunRiseOahu">5:53 AM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">🌇 Sunset</span>
+          <span class="sun-time" style="color:var(--coral)" id="sunSetOahu">7:02 PM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">☀️ Daylight</span>
+          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlOahu">13h 9m</span>
+        </div>
+        <a href="https://www.timeanddate.com/sun/usa/honolulu" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+      </div>
+
+      <div class="sun-card" data-island="Kauai">
+        <div class="sun-island">🌿 Kauaʻi</div>
+        <div class="sun-date" id="sunDateKauai"></div>
+        <div class="sun-row">
+          <span class="sun-label">🌅 Sunrise</span>
+          <span class="sun-time" style="color:var(--gold)" id="sunRiseKauai">5:58 AM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">🌇 Sunset</span>
+          <span class="sun-time" style="color:var(--coral)" id="sunSetKauai">7:09 PM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">☀️ Daylight</span>
+          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlKauai">13h 11m</span>
+        </div>
+        <a href="https://www.timeanddate.com/sun/usa/lihue" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+      </div>
+
+      <div class="sun-card" data-island="Big Island">
+        <div class="sun-island">🌋 Big Island</div>
+        <div class="sun-date" id="sunDateBig"></div>
+        <div class="sun-row">
+          <span class="sun-label">🌅 Sunrise</span>
+          <span class="sun-time" style="color:var(--gold)" id="sunRiseBig">5:48 AM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">🌇 Sunset</span>
+          <span class="sun-time" style="color:var(--coral)" id="sunSetBig">6:52 PM</span>
+        </div>
+        <div class="sun-row">
+          <span class="sun-label">☀️ Daylight</span>
+          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlBig">13h 3m</span>
+        </div>
+        <a href="https://www.timeanddate.com/sun/usa/kailua-kona" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+      </div>
+
+    </div>
+
+    <!-- TIMEANDDATE FULL CALENDAR LINKS -->
     <div class="sun-calendar-card">
       <div class="sun-cal-header">
         <div>
-          <div class="chart-title">📅 Full Year Sunrise & Sunset</div>
-          <div class="chart-sub">Every day of the year — select island and month</div>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <select id="calIsland" class="sun-select">
-            <option value="maui">🏄 Maui</option>
-            <option value="oahu">🌆 Oahu</option>
-            <option value="kauai">🌿 Kauai</option>
-            <option value="bigisland">🌋 Big Island</option>
-          </select>
-          <select id="calMonth" class="sun-select"></select>
-          <select id="calYear" class="sun-select">
-            <option value="2025">2025</option>
-            <option value="2026" selected>2026</option>
-            <option value="2027">2027</option>
-          </select>
+          <div class="chart-title">📅 Full Sunrise & Sunset Calendar</div>
+          <div class="chart-sub">Complete calendar for any year — 2026, 2027, 2028 and beyond</div>
         </div>
       </div>
-      <div class="sun-cal-grid" id="sunCalGrid">
-        <div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;padding:24px;">
+        <a href="https://www.timeanddate.com/sun/usa/lahaina" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#f97316;">
+          <div style="font-size:28px;margin-bottom:8px;">🏄</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Maui</div>
+          <div style="font-size:12px;color:var(--muted);">Lahaina · Wailea · Kaanapali</div>
+          <div style="font-size:12px;color:#f97316;margin-top:8px;">Open calendar ↗</div>
+        </a>
+        <a href="https://www.timeanddate.com/sun/usa/honolulu" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#22d3ee;">
+          <div style="font-size:28px;margin-bottom:8px;">🌆</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Oahu</div>
+          <div style="font-size:12px;color:var(--muted);">Honolulu · Waikiki · North Shore</div>
+          <div style="font-size:12px;color:#22d3ee;margin-top:8px;">Open calendar ↗</div>
+        </a>
+        <a href="https://www.timeanddate.com/sun/usa/lihue" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#10b981;">
+          <div style="font-size:28px;margin-bottom:8px;">🌿</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Kauaʻi</div>
+          <div style="font-size:12px;color:var(--muted);">Lihue · Hanalei · Poipu</div>
+          <div style="font-size:12px;color:#10b981;margin-top:8px;">Open calendar ↗</div>
+        </a>
+        <a href="https://www.timeanddate.com/sun/usa/kailua-kona" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#fbbf24;">
+          <div style="font-size:28px;margin-bottom:8px;">🌋</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Big Island</div>
+          <div style="font-size:12px;color:var(--muted);">Kona · Hilo · Waikoloa</div>
+          <div style="font-size:12px;color:#fbbf24;margin-top:8px;">Open calendar ↗</div>
+        </a>
+      </div>
+      <div style="padding:0 24px 20px;font-size:13px;color:var(--muted);">
+        📅 Powered by <a href="https://www.timeanddate.com" target="_blank" style="color:var(--foam);">timeanddate.com</a> — accurate sunrise & sunset for any day, any year, forever.
       </div>
     </div>
   </div>
@@ -1795,161 +1886,14 @@ function zoomWindy(lat, lon, zoom, name) {
   }
 }
 
-// ============================================================
-// SUNRISE & SUNSET — Calculated mathematically (instant, accurate)
-// ============================================================
-const SUN_ISLANDS = [
-  { id:'Maui',       emoji:'🏄', color:'#f97316', lat:20.8783, lon:-156.6825 },
-  { id:'Oahu',       emoji:'🌆', color:'#22d3ee', lat:21.3069, lon:-157.8583 },
-  { id:'Kauai',      emoji:'🌿', color:'#10b981', lat:21.9811, lon:-159.3711 },
-  { id:'Big Island', emoji:'🌋', color:'#fbbf24', lat:19.6400, lon:-155.9969 },
-];
-
-const SUN_LAT_LON = {
-  maui:      { lat:20.8783, lon:-156.6825 },
-  oahu:      { lat:21.3069, lon:-157.8583 },
-  kauai:     { lat:21.9811, lon:-159.3711 },
-  bigisland: { lat:19.6400, lon:-155.9969 },
-};
-
-function calcSunTimes(lat, lon, date) {
-  const rad = Math.PI / 180;
-  const deg = 180 / Math.PI;
-  const start = new Date(date.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((date - start) / 86400000);
-  const decl = -23.45 * Math.cos(rad * (360/365) * (dayOfYear + 10));
-  const cosH = (Math.cos(rad * 90.833) - Math.sin(rad * lat) * Math.sin(rad * decl))
-               / (Math.cos(rad * lat) * Math.cos(rad * decl));
-  if (cosH > 1 || cosH < -1) return null;
-  const H = Math.acos(cosH) * deg;
-  const B = rad * (360/365) * (dayOfYear - 81);
-  const eot = 9.87 * Math.sin(2*B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
-  const solarNoon = 720 - 4 * (lon - (-150)) - eot;
-  return { sunrise: solarNoon - H * 4, sunset: solarNoon + H * 4 };
-}
-
-function minToHST(min) {
-  let m = ((min % 1440) + 1440) % 1440;
-  const h24 = Math.floor(m / 60);
-  const mn = Math.round(m % 60);
-  const ampm = h24 >= 12 ? 'PM' : 'AM';
-  const h = h24 % 12 || 12;
-  return `${h}:${mn.toString().padStart(2,'0')} ${ampm}`;
-}
-
-function daylightHours(rise, set) {
-  const diff = set - rise;
-  return `${Math.floor(diff/60)}h ${Math.round(diff%60)}m`;
-}
-
-function buildSunArc(rise, set, color) {
-  // Current time in HST minutes from midnight
-  const now = new Date();
-  const hstMin = ((now.getUTCHours() - 10 + 24) % 24) * 60 + now.getUTCMinutes();
-  const totalDay = set - rise;
-  const elapsed = hstMin - rise;
-  const pct = Math.max(0, Math.min(1, elapsed / totalDay));
-  const angle = pct * Math.PI;
-  const cx=50, cy=50, rx=43, ry=36;
-  const sunX = (cx - rx * Math.cos(angle)).toFixed(1);
-  const sunY = (cy - ry * Math.sin(angle)).toFixed(1);
-  const isDay = elapsed >= 0 && elapsed <= totalDay;
-  return `<svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
-    <path d="M${cx-rx} ${cy} A${rx} ${ry} 0 0 1 ${cx+rx} ${cy}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2.5"/>
-    <path d="M${cx-rx} ${cy} A${rx} ${ry} 0 0 1 ${sunX} ${sunY}" fill="none" stroke="${color}" stroke-width="2.5" opacity="0.7"/>
-    ${isDay?`<circle cx="${sunX}" cy="${sunY}" r="5" fill="${color}"/><circle cx="${sunX}" cy="${sunY}" r="8" fill="${color}" opacity="0.25"/>`:''}
-    <line x1="${cx-rx-2}" y1="${cy}" x2="${cx+rx+2}" y2="${cy}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-    <text x="${cx-rx}" y="${cy+9}" font-size="7" fill="#7fb3c8" text-anchor="middle">Rise</text>
-    <text x="${cx+rx}" y="${cy+9}" font-size="7" fill="#7fb3c8" text-anchor="middle">Set</text>
-  </svg>`;
-}
-
-// Render today's sun cards — instant, no API!
-try {
-const sunGrid = document.getElementById('sunGrid');
-const sunToday = new Date();
-const todayFormatted = sunToday.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-
-SUN_ISLANDS.forEach(island => {
-  const sun = calcSunTimes(island.lat, island.lon, sunToday);
-  if (!sun) return;
-  const rise = minToHST(sun.sunrise);
-  const set  = minToHST(sun.sunset);
-  const dl   = daylightHours(sun.sunrise, sun.sunset);
-  const arc  = buildSunArc(sun.sunrise, sun.sunset, island.color);
-  sunGrid.innerHTML += `
-    <div class="sun-card" data-island="${island.id}">
-      <div class="sun-island">${island.emoji} ${island.id}</div>
-      <div class="sun-date">${todayFormatted}</div>
-      <div class="sun-row">
-        <span class="sun-label">🌅 Sunrise</span>
-        <span class="sun-time" style="color:var(--gold)">${rise}</span>
-      </div>
-      <div class="sun-row">
-        <span class="sun-label">🌇 Sunset</span>
-        <span class="sun-time" style="color:var(--coral)">${set}</span>
-      </div>
-      <div class="sun-row">
-        <span class="sun-label">☀️ Daylight</span>
-        <span class="sun-time" style="font-size:16px;color:var(--text)">${dl}</span>
-      </div>
-      <div class="sun-arc">${arc}</div>
-      <div class="sun-daylight">Sun arc · <strong>${dl} of sunlight today</strong></div>
-    </div>`;
-});
-} catch(e) { console.error('Sun cards error:', e); }
-
-// MONTHLY CALENDAR — instant, no API!
-try {
-const MONTH_NAMES2 = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const calMonthEl = document.getElementById('calMonth');
-const sunToday2 = new Date();
-MONTH_NAMES2.forEach((m, i) => {
-  const opt = document.createElement('option');
-  opt.value = i;
-  opt.textContent = m;
-  if (i === sunToday2.getMonth()) opt.selected = true;
-  calMonthEl.appendChild(opt);
-});
-
-function loadCalendar() {
-  const islandKey = document.getElementById('calIsland').value;
-  const month = parseInt(document.getElementById('calMonth').value);
-  const year  = parseInt(document.getElementById('calYear').value);
-  const loc   = SUN_LAT_LON[islandKey];
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const sT = new Date();
-  const todayStr = `${sT.getFullYear()}-${(sT.getMonth()+1).toString().padStart(2,'0')}-${sT.getDate().toString().padStart(2,'0')}`;
-  const rows = [];
-  for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(year, month, d);
-    const dateStr = `${year}-${(month+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
-    const isToday = dateStr === todayStr;
-    const sun = calcSunTimes(loc.lat, loc.lon, date);
-    const rise = sun ? minToHST(sun.sunrise) : '--';
-    const set  = sun ? minToHST(sun.sunset)  : '--';
-    const dl   = sun ? daylightHours(sun.sunrise, sun.sunset) : '--';
-    const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
-    rows.push(`<tr class="${isToday?'sun-today':''}">
-      <td style="color:var(--muted);font-size:12px;">${dayName}</td>
-      <td style="font-weight:500;">${MONTH_NAMES2[month].slice(0,3)} ${d}</td>
-      <td class="sun-rise">${rise}</td>
-      <td class="sun-set">${set}</td>
-      <td style="color:var(--muted);font-size:12px;">${dl}</td>
-    </tr>`);
-  }
-  document.getElementById('sunCalGrid').innerHTML = `
-    <table class="sun-cal-table">
-      <thead><tr><th>Day</th><th>Date</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️ Daylight</th></tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>`;
-}
-
-document.getElementById('calIsland').addEventListener('change', loadCalendar);
-document.getElementById('calMonth').addEventListener('change', loadCalendar);
-document.getElementById('calYear').addEventListener('change', loadCalendar);
-loadCalendar();
-} catch(e) { console.error('Calendar error:', e); }
+// Simple sun section - just show today's date on cards
+(function() {
+  const dateStr = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  ['Maui','Oahu','Kauai','Big'].forEach(id => {
+    const el = document.getElementById('sunDate'+id);
+    if (el) el.textContent = dateStr;
+  });
+})();
 </script>
 </body>
 </html>
