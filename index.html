@@ -1161,7 +1161,7 @@ function renderIslandData(apiData) {
 
   // STATE BANNER
   document.getElementById('stateTotal').textContent     = safeNum(statewide.on_island_est).toLocaleString();
-  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 8.9-day stay)';
+  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 9.2-day stay)';
   document.getElementById('statArrivals').textContent   = safeNum(statewide.arrivals).toLocaleString();
   document.getElementById('statDepartures').textContent = safeNum(statewide.departures).toLocaleString();
   const net = safeNum(statewide.net_flow);
@@ -1187,7 +1187,7 @@ function renderIslandData(apiData) {
         <div class="island-stats-row">
           <div class="i-stat"><div class="v">${dep.toLocaleString()}</div><div class="l">Departures</div></div>
           <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
-          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*8.9/1000)}k</div><div class="l">On island est.</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*9.2/1000)}k</div><div class="l">On island est.</div></div>
         </div>
       </div>`;
   });
@@ -1224,10 +1224,10 @@ function getStableFallback() {
   const today = new Date();
   const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
   const bases = {
-    'Maui':       { arr:4200, dep:3900, dom:3700, intl:500 },
-    'Oahu':       { arr:9400, dep:8800, dom:7200, intl:2200 },
-    'Kauai':      { arr:1350, dep:1280, dom:1200, intl:150 },
-    'Big Island': { arr:2100, dep:1950, dom:1800, intl:300 },
+    'Maui':       { arr:7000,  dep:6500,  dom:6100, intl:900 },
+    'Oahu':       { arr:15800, dep:14800, dom:12000, intl:3800 },
+    'Kauai':      { arr:2200,  dep:2050,  dom:1950, intl:250 },
+    'Big Island': { arr:3500,  dep:3250,  dom:2950, intl:550 },
   };
   const islands = {};
   ISLANDS.forEach(({ id }) => {
@@ -1235,11 +1235,11 @@ function getStableFallback() {
     const v = ((seed * (id.length+7)) % 160) / 1000 - 0.08;
     const arr = Math.round(b.arr * (1+v));
     const dep = Math.round(b.dep * (1+v*0.9));
-    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*8.9) };
+    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*9.2) };
   });
   const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals,0);
   const totalDep = Object.values(islands).reduce((s,d)=>s+d.departures,0);
-  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*8.9) } };
+  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*9.2) } };
 }
 
 // Load data — try API first, fall back to stable estimates
