@@ -130,6 +130,210 @@ footer a{color:var(--foam);text-decoration:none;}
       <a href="/bigisland" class="nav-link">🌋 Big Island</a>
     </div>
   </nav>
+    <!-- BOOKING WIDGET -->
+    <div class="booking-widget">
+      <div class="booking-title">✈️ Search Flights, Hotels & Car Rentals</div>
+      <div class="booking-sub">Search hundreds of travel sites at once — flights to Hawaii, island hotels and rental cars</div>
+
+      <div class="booking-tabs">
+        <button class="booking-tab active" onclick="setBookingTab('flights',this)">✈️ Flights</button>
+        <button class="booking-tab" onclick="setBookingTab('hotels',this)">🏨 Hotels</button>
+        <button class="booking-tab" onclick="setBookingTab('cars',this)">🚗 Car Rental</button>
+        <button class="booking-tab" onclick="setBookingTab('packages',this)">🌺 Packages</button>
+      </div>
+
+      <!-- FLIGHTS -->
+      <div id="booking-flights" class="booking-panel">
+        <div class="booking-form">
+          <div class="booking-field">
+            <label class="booking-label">✈️ Flying from</label>
+            <input type="text" id="fly-from" class="booking-input" placeholder="City or airport (e.g. Los Angeles)">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">🌺 Flying to</label>
+            <select id="fly-to" class="booking-input">
+              <option value="HNL">Honolulu, Oahu (HNL)</option>
+              <option value="OGG">Kahului, Maui (OGG)</option>
+              <option value="LIH">Lihue, Kauai (LIH)</option>
+              <option value="KOA">Kona, Big Island (KOA)</option>
+              <option value="ITO">Hilo, Big Island (ITO)</option>
+            </select>
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Depart</label>
+            <input type="date" id="fly-depart" class="booking-input">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Return</label>
+            <input type="date" id="fly-return" class="booking-input">
+          </div>
+          <div class="booking-row">
+            <div class="booking-field">
+              <label class="booking-label">👥 Passengers</label>
+              <select id="fly-pax" class="booking-input">
+                <option>1 passenger</option>
+                <option>2 passengers</option>
+                <option>3 passengers</option>
+                <option>4 passengers</option>
+                <option>5+ passengers</option>
+              </select>
+            </div>
+            <div class="booking-field">
+              <label class="booking-label">💺 Class</label>
+              <select id="fly-class" class="booking-input">
+                <option>Economy</option>
+                <option>Premium Economy</option>
+                <option>Business</option>
+                <option>First Class</option>
+              </select>
+            </div>
+          </div>
+          <label class="booking-check">
+            <input type="checkbox" id="fly-car">
+            <span>🚗 Add rental car in Hawaii</span>
+          </label>
+          <button class="booking-btn" onclick="searchFlights()">🔍 Search Flights</button>
+        </div>
+      </div>
+
+      <!-- HOTELS -->
+      <div id="booking-hotels" class="booking-panel" style="display:none">
+        <div class="booking-form">
+          <div class="booking-field full">
+            <label class="booking-label">🏨 Destination</label>
+            <select id="hotel-dest" class="booking-input">
+              <option value="Waikiki, Oahu, Hawaii">Waikiki, Oahu</option>
+              <option value="Maui, Hawaii">Maui</option>
+              <option value="Wailea, Maui, Hawaii">Wailea, Maui</option>
+              <option value="Kaanapali, Maui, Hawaii">Kaanapali, Maui</option>
+              <option value="Kauai, Hawaii">Kauai</option>
+              <option value="Poipu, Kauai, Hawaii">Poipu, Kauai</option>
+              <option value="Kona, Big Island, Hawaii">Kailua-Kona, Big Island</option>
+              <option value="Kohala Coast, Hawaii">Kohala Coast, Big Island</option>
+            </select>
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Check in</label>
+            <input type="date" id="hotel-in" class="booking-input">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Check out</label>
+            <input type="date" id="hotel-out" class="booking-input">
+          </div>
+          <div class="booking-row">
+            <div class="booking-field">
+              <label class="booking-label">🛏️ Rooms</label>
+              <select id="hotel-rooms" class="booking-input">
+                <option>1 room</option>
+                <option>2 rooms</option>
+                <option>3 rooms</option>
+              </select>
+            </div>
+            <div class="booking-field">
+              <label class="booking-label">👥 Guests</label>
+              <select id="hotel-guests" class="booking-input">
+                <option>1 guest</option>
+                <option>2 guests</option>
+                <option>3 guests</option>
+                <option>4 guests</option>
+                <option>5+ guests</option>
+              </select>
+            </div>
+          </div>
+          <button class="booking-btn" onclick="searchHotels()">🔍 Search Hotels</button>
+        </div>
+      </div>
+
+      <!-- CARS -->
+      <div id="booking-cars" class="booking-panel" style="display:none">
+        <div class="booking-form">
+          <div class="booking-field full">
+            <label class="booking-label">📍 Pick up location</label>
+            <select id="car-pickup" class="booking-input">
+              <option value="HNL">Honolulu Airport, Oahu (HNL)</option>
+              <option value="OGG">Kahului Airport, Maui (OGG)</option>
+              <option value="LIH">Lihue Airport, Kauai (LIH)</option>
+              <option value="KOA">Kona Airport, Big Island (KOA)</option>
+              <option value="ITO">Hilo Airport, Big Island (ITO)</option>
+            </select>
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Pick up date</label>
+            <input type="date" id="car-from" class="booking-input">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Return date</label>
+            <input type="date" id="car-to" class="booking-input">
+          </div>
+          <div class="booking-field full">
+            <label class="booking-label">🚗 Car type</label>
+            <select id="car-type" class="booking-input">
+              <option>Economy</option>
+              <option>Compact</option>
+              <option>Mid-size</option>
+              <option>Full-size</option>
+              <option>SUV</option>
+              <option>Convertible</option>
+              <option>Minivan</option>
+            </select>
+          </div>
+          <button class="booking-btn" onclick="searchCars()">🔍 Search Car Rentals</button>
+        </div>
+      </div>
+
+      <!-- PACKAGES -->
+      <div id="booking-packages" class="booking-panel" style="display:none">
+        <div class="booking-form">
+          <div class="booking-field">
+            <label class="booking-label">✈️ Flying from</label>
+            <input type="text" id="pkg-from" class="booking-input" placeholder="City or airport">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">🌺 Destination</label>
+            <select id="pkg-to" class="booking-input">
+              <option value="HNL">Honolulu, Oahu</option>
+              <option value="OGG">Maui</option>
+              <option value="LIH">Kauai</option>
+              <option value="KOA">Big Island</option>
+            </select>
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Depart</label>
+            <input type="date" id="pkg-depart" class="booking-input">
+          </div>
+          <div class="booking-field">
+            <label class="booking-label">📅 Return</label>
+            <input type="date" id="pkg-return" class="booking-input">
+          </div>
+          <div class="booking-field full">
+            <label class="booking-label">👥 Travellers</label>
+            <select id="pkg-pax" class="booking-input">
+              <option>1 traveller</option>
+              <option>2 travellers</option>
+              <option>3 travellers</option>
+              <option>4 travellers</option>
+              <option>Family (2 adults + 2 children)</option>
+            </select>
+          </div>
+          <label class="booking-check">
+            <input type="checkbox" id="pkg-car" checked>
+            <span>🚗 Include rental car</span>
+          </label>
+          <button class="booking-btn" onclick="searchPackages()">🔍 Search Hawaii Packages</button>
+        </div>
+      </div>
+
+      <div class="booking-partners">
+        <span>Powered by:</span>
+        <span class="booking-partner-badge">Expedia</span>
+        <span class="booking-partner-badge">Booking.com</span>
+        <span class="booking-partner-badge">Kayak</span>
+        <span class="booking-partner-badge">Rentalcars.com</span>
+        <span class="booking-partner-badge">Skyscanner</span>
+      </div>
+    </div>
+
+    <hr class="section-divider">
   <section class="hero">
     <div class="hero-eyebrow">Maui · The Valley Isle</div>
     <h1>🏄 <em>Maui</em></h1>
@@ -624,6 +828,78 @@ fetch('https://marine-api.open-meteo.com/v1/marine?latitude=20.9&longitude=-156.
     const wv=document.getElementById('waveViz');
     for(let i=0;i<18;i++){const b=document.createElement('div');b.className='wave-bar';const h=20+Math.random()*20;b.style.height=Math.round(h/40*38)+'px';b.style.background='#f97316';b.style.opacity=(0.35+h/40*0.65).toFixed(2);wv.appendChild(b);}
   }).catch(()=>{});
+
+// ============================================================
+// BOOKING WIDGET
+// ============================================================
+// Set default dates
+(function() {
+  const today = new Date();
+  const nextMonth = new Date(today);
+  nextMonth.setDate(today.getDate() + 30);
+  const returnDate = new Date(nextMonth);
+  returnDate.setDate(nextMonth.getDate() + 7);
+  const fmt = d => d.toISOString().split('T')[0];
+
+  ['fly-depart','pkg-depart'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(nextMonth);
+  });
+  ['fly-return','pkg-return'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(returnDate);
+  });
+  ['hotel-in','car-from'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(nextMonth);
+  });
+  ['hotel-out','car-to'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(returnDate);
+  });
+})();
+
+function setBookingTab(tab, btn) {
+  document.querySelectorAll('.booking-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.booking-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('active');
+  document.getElementById('booking-' + tab).style.display = 'block';
+}
+
+function searchFlights() {
+  const from = document.getElementById('fly-from').value || 'Los Angeles';
+  const to = document.getElementById('fly-to').value;
+  const depart = document.getElementById('fly-depart').value;
+  const ret = document.getElementById('fly-return').value;
+  const addCar = document.getElementById('fly-car').checked;
+  const url = `https://www.expedia.com/Flights-Search?leg1=from:${encodeURIComponent(from)},to:${to},departure:${depart}TANYT&leg2=from:${to},to:${encodeURIComponent(from)},departure:${ret}TANYT&trip=roundtrip&passengers=adults:1`;
+  window.open(url, '_blank');
+}
+
+function searchHotels() {
+  const dest = document.getElementById('hotel-dest').value;
+  const checkin = document.getElementById('hotel-in').value;
+  const checkout = document.getElementById('hotel-out').value;
+  const url = `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(dest)}&startDate=${checkin}&endDate=${checkout}&adults=2`;
+  window.open(url, '_blank');
+}
+
+function searchCars() {
+  const pickup = document.getElementById('car-pickup').value;
+  const from = document.getElementById('car-from').value;
+  const to = document.getElementById('car-to').value;
+  const url = `https://www.rentalcars.com/SearchResults.do?pickUpAirport=${pickup}&pickUpDate=${from}&dropOffDate=${to}&country=US`;
+  window.open(url, '_blank');
+}
+
+function searchPackages() {
+  const from = document.getElementById('pkg-from').value || 'Los Angeles';
+  const to = document.getElementById('pkg-to').value;
+  const depart = document.getElementById('pkg-depart').value;
+  const ret = document.getElementById('pkg-return').value;
+  const url = `https://www.expedia.com/Vacations?origin=${encodeURIComponent(from)}&destination=${to}&startDate=${depart}&endDate=${ret}`;
+  window.open(url, '_blank');
+}
 </script>
 </body>
 </html>
