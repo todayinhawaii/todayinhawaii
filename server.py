@@ -2,7 +2,7 @@
 Today in Hawaii — Backend Server
 """
 
-from flask import Flask, jsonify, send_from_directory, request
+from flask import Flask, jsonify, send_from_directory, request, Response
 from flask_cors import CORS
 import csv
 import os
@@ -62,10 +62,10 @@ def generate_stable_data(today):
     month = today.month
     month_mult = 1.08 if month in (12, 1, 2, 3) else (1.05 if month in (6, 7, 8) else (0.92 if month in (9, 10) else 1.0))
     bases = {
-        'Maui':       {'arr': 4200, 'dep': 3900, 'dom': 3700, 'intl': 500},
-        'Oahu':       {'arr': 9400, 'dep': 8800, 'dom': 7200, 'intl': 2200},
-        'Kauai':      {'arr': 1350, 'dep': 1280, 'dom': 1200, 'intl': 150},
-        'Big Island': {'arr': 2100, 'dep': 1950, 'dom': 1800, 'intl': 300},
+        'Maui':       {'arr': 7000,  'dep': 6500,  'dom': 6100, 'intl': 900},
+        'Oahu':       {'arr': 15800, 'dep': 14800, 'dom': 12000, 'intl': 3800},
+        'Kauai':      {'arr': 2200,  'dep': 2050,  'dom': 1950, 'intl': 250},
+        'Big Island': {'arr': 3500,  'dep': 3250,  'dom': 2950, 'intl': 550},
     }
     islands = {}
     for island, b in bases.items():
@@ -78,7 +78,7 @@ def generate_stable_data(today):
         islands[island] = {
             'arrivals': arr, 'departures': dep, 'net_flow': arr - dep,
             'domestic': dom, 'international': intl,
-            'change_pct': round(variation * 10, 1), 'on_island_est': round(arr * 8.9)
+            'change_pct': round(variation * 10, 1), 'on_island_est': round(arr * 9.2)
         }
     return islands
 
@@ -117,7 +117,7 @@ def admin():
 
 @app.route("/sitemap.xml")
 def sitemap():
-    sitemap_content = '''<?xml version="1.0" encoding="UTF-8"?>
+    content = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.todayinhawaii.com/</loc><lastmod>2026-05-16</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.todayinhawaii.com/oahu</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
@@ -127,8 +127,7 @@ def sitemap():
   <url><loc>https://www.todayinhawaii.com/about</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.todayinhawaii.com/privacy</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>'''
-    from flask import Response
-    return Response(sitemap_content, mimetype='application/xml')
+    return Response(content, mimetype='application/xml')
 
 @app.route("/robots.txt")
 def robots():
@@ -147,7 +146,7 @@ def api_today():
             "date": manual['date'], "source": "manual",
             "updated_at": manual.get('updated_at', ''),
             "statewide": {"arrivals": total_arr, "departures": total_dep,
-                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 8.9)},
+                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
             "islands": islands,
         })
 
@@ -171,12 +170,12 @@ def api_today():
                 change_pct = round((arr - prev_arr) / prev_arr * 100, 1) if arr and prev_arr else None
                 islands[island] = {"arrivals": arr, "departures": dep, "net_flow": net,
                                    "domestic": dom, "international": intl,
-                                   "change_pct": change_pct, "on_island_est": round(arr * 8.9) if arr else None}
+                                   "change_pct": change_pct, "on_island_est": round(arr * 9.2) if arr else None}
             total_arr = sum((v["arrivals"] or 0) for v in islands.values())
             total_dep = sum((v["departures"] or 0) for v in islands.values())
             return jsonify({"date": latest_date, "source": "csv", "updated_at": datetime.now().isoformat(),
                             "statewide": {"arrivals": total_arr, "departures": total_dep,
-                                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 8.9)},
+                                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
                             "islands": islands})
 
     islands = generate_stable_data(today)
@@ -184,7 +183,7 @@ def api_today():
     total_dep = sum(v['departures'] for v in islands.values())
     return jsonify({"date": today.isoformat(), "source": "estimate", "updated_at": datetime.now().isoformat(),
                     "statewide": {"arrivals": total_arr, "departures": total_dep,
-                                  "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 8.9)},
+                                  "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
                     "islands": islands})
 
 
