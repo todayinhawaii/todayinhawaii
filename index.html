@@ -143,6 +143,14 @@
   .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
   .section-note { display: inline-block; font-size: 12px; background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); border-radius: 99px; padding: 3px 12px; margin-left: 10px; vertical-align: middle; }
 
+  /* ── LOCATION BUTTONS ── */
+  .loc-section { margin-top:8px; }
+  .loc-island-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .loc-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .loc-btn { padding:8px 16px; border-radius:99px; font-size:13px; font-weight:500; border:1px solid var(--border); background:var(--card-bg); color:var(--text); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .loc-btn:hover { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.1); transform:translateY(-1px); }
+  .loc-btn.active { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.15); }
+
   /* ── WEATHER WIDGET TABS ── */
   .wx-widget-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
   .wx-wtab { padding:10px 22px; border-radius:12px; font-size:14px; font-weight:500; border:1px solid var(--border); background:var(--card-bg); color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
@@ -501,92 +509,97 @@
     <div class="section-title">🌤️ Island Weather <span class="section-note">Live</span></div>
     <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Live animated weather radar for all Hawaiian islands — watch clouds and rain move in real time. Click any island tab for detailed forecasts.</p>
 
-    <!-- WEATHER WIDGET TABS -->
-    <div class="wx-widget-tabs">
-      <button class="wx-wtab active" data-widget="windy">🌬️ Windy Radar</button>
-      <button class="wx-wtab" data-widget="owm">🌡️ OpenWeatherMap</button>
-      <button class="wx-wtab" data-widget="ventusky">☁️ Ventusky</button>
-    </div>
-
-    <!-- OPTION 1: WINDY.COM — embedded live -->
-    <div class="wx-widget-panel active" id="widget-windy">
-      <div class="windy-card">
-        <div class="windy-label">
-          <div>
-            <span style="font-size:16px;font-weight:600;">🌬️ Windy — Live Hawaii Radar</span>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Watch real clouds, rain and wind moving over Hawaii in real time</div>
-          </div>
-          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
+    <!-- WINDY LIVE RADAR -->
+    <div class="windy-card">
+      <div class="windy-label">
+        <div>
+          <span style="font-size:16px;font-weight:600;">🌬️ Live Hawaii Weather Radar</span>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px;">Real clouds, rain and wind moving over Hawaii — updated every 3 hours</div>
         </div>
-        <div class="windy-embed">
-          <iframe width="100%" height="100%"
-            src="https://embed.windy.com/embed2.html?lat=20.5&lon=-157.5&detailLat=20.8783&detailLon=-156.6825&width=650&height=450&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
-            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
-            title="Live Hawaii Weather Radar — Windy.com">
-          </iframe>
-        </div>
-        <div class="windy-footer">
-          <span>🌧️ Rain · 🌬️ Wind · ☁️ Clouds · 🌊 Waves — all live animated · Powered by Windy.com</span>
-          <a href="https://www.windy.com/?rain,20.5,-157.5,7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
-        </div>
+        <span class="windy-badge"><span class="pulse-dot"></span>Live · Windy.com</span>
+      </div>
+      <div class="windy-embed" id="windyFrame">
+        <iframe id="windyIframe" width="100%" height="100%"
+          src="https://embed.windy.com/embed2.html?lat=20.5&lon=-157.5&detailLat=20.5&detailLon=-157.5&width=650&height=450&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
+          frameborder="0" style="border:0;" allowfullscreen
+          title="Live Hawaii Weather Radar">
+        </iframe>
+      </div>
+      <div class="windy-footer">
+        <span>🌧️ Rain · 🌬️ Wind · ☁️ Clouds · 🌊 Waves — all animated live</span>
+        <a href="https://www.windy.com/?rain,20.5,-157.5,7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
       </div>
     </div>
 
-    <!-- OPTION 2: OPENWEATHERMAP — link card -->
-    <div class="wx-widget-panel" id="widget-owm">
-      <div class="windy-card">
-        <div class="windy-label">
-          <div>
-            <span style="font-size:16px;font-weight:600;">🌡️ OpenWeatherMap — Hawaii</span>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Temperature, precipitation and cloud cover — click to open live map</div>
-          </div>
-          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
-        </div>
-        <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="display:block;text-decoration:none;">
-          <div style="background:linear-gradient(135deg,#0c4a6e,#0369a1);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-            <div style="font-size:64px;">🌡️</div>
-            <div style="text-align:center;">
-              <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Open OpenWeatherMap Hawaii</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Live precipitation · Temperature · Cloud cover map</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:10px 28px;font-size:14px;font-weight:600;color:#fff;">
-              🔗 Open Live Map ↗
-            </div>
-          </div>
-        </a>
-        <div class="windy-footer">
-          <span>🌧️ Precipitation · 🌡️ Temperature · ☁️ Clouds — Powered by OpenWeatherMap</span>
-          <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
-        </div>
-      </div>
-    </div>
+    <!-- LOCATION BUTTONS -->
+    <div class="loc-section">
+      <div class="section-title" style="font-size:20px;margin-bottom:8px;">📍 Check weather by location</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Click any location to zoom the map above to that exact spot — live conditions right there!</p>
 
-    <!-- OPTION 3: VENTUSKY — link card -->
-    <div class="wx-widget-panel" id="widget-ventusky">
-      <div class="windy-card">
-        <div class="windy-label">
-          <div>
-            <span style="font-size:16px;font-weight:600;">☁️ Ventusky — Hawaii Forecast</span>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Beautiful animated temperature and weather patterns — click to open</div>
-          </div>
-          <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
-        </div>
-        <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m" target="_blank" rel="noopener" style="display:block;text-decoration:none;">
-          <div style="background:linear-gradient(135deg,#064e3b,#0f766e);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-            <div style="font-size:64px;">🌈</div>
-            <div style="text-align:center;">
-              <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Open Ventusky Hawaii</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Beautiful animated temperature · Rain · Wind forecasts</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:10px 28px;font-size:14px;font-weight:600;color:#fff;">
-              🔗 Open Live Map ↗
-            </div>
-          </div>
-        </a>
-        <div class="windy-footer">
-          <span>🌡️ Temperature · 🌧️ Rain · 💨 Wind — Beautiful animated forecasts · Powered by Ventusky</span>
-          <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
-        </div>
+      <!-- MAUI -->
+      <div class="loc-island-title"><span style="color:#f97316">🏄</span> Maui</div>
+      <div class="loc-grid">
+        <button class="loc-btn" onclick="zoomWindy(20.8783,-156.6825,11,'Lahaina')">Lahaina</button>
+        <button class="loc-btn" onclick="zoomWindy(20.9228,-156.6906,12,'Kaanapali')">Kaanapali</button>
+        <button class="loc-btn" onclick="zoomWindy(21.0194,-156.6731,12,'Kapalua')">Kapalua</button>
+        <button class="loc-btn" onclick="zoomWindy(20.7544,-156.4450,12,'Wailea')">Wailea</button>
+        <button class="loc-btn" onclick="zoomWindy(20.7653,-156.4611,12,'Kihei')">Kihei</button>
+        <button class="loc-btn" onclick="zoomWindy(20.9103,-156.3736,12,'Paia')">Paia</button>
+        <button class="loc-btn" onclick="zoomWindy(20.7597,-156.0131,12,'Hana')">Hana</button>
+        <button class="loc-btn" onclick="zoomWindy(20.7100,-156.3300,11,'Upcountry')">Upcountry</button>
+        <button class="loc-btn" onclick="zoomWindy(20.8894,-156.4729,11,'Kahului')">Kahului</button>
+        <button class="loc-btn" onclick="zoomWindy(20.8656,-156.5047,12,'Wailuku')">Wailuku</button>
+        <button class="loc-btn" onclick="zoomWindy(20.6506,-156.3481,12,'Makena')">Makena</button>
+        <button class="loc-btn" onclick="zoomWindy(20.9561,-156.6942,12,'Napili')">Napili</button>
+      </div>
+
+      <!-- OAHU -->
+      <div class="loc-island-title" style="margin-top:24px;"><span style="color:#22d3ee">🌆</span> Oahu</div>
+      <div class="loc-grid">
+        <button class="loc-btn" onclick="zoomWindy(21.2793,-157.8294,13,'Waikiki')">Waikiki</button>
+        <button class="loc-btn" onclick="zoomWindy(21.3069,-157.8583,12,'Honolulu')">Honolulu</button>
+        <button class="loc-btn" onclick="zoomWindy(21.6417,-158.0611,12,'North Shore')">North Shore</button>
+        <button class="loc-btn" onclick="zoomWindy(21.6500,-158.0000,12,'Haleiwa')">Haleiwa</button>
+        <button class="loc-btn" onclick="zoomWindy(21.4022,-157.7394,12,'Kailua')">Kailua</button>
+        <button class="loc-btn" onclick="zoomWindy(21.4089,-157.8003,12,'Kaneohe')">Kaneohe</button>
+        <button class="loc-btn" onclick="zoomWindy(21.3439,-158.1239,12,'Ko Olina')">Ko Olina</button>
+        <button class="loc-btn" onclick="zoomWindy(21.3072,-158.0214,12,'Kapolei')">Kapolei</button>
+        <button class="loc-btn" onclick="zoomWindy(21.5450,-158.1989,12,'Waianae')">Waianae</button>
+        <button class="loc-btn" onclick="zoomWindy(21.3894,-157.9561,12,'Pearl City')">Pearl City</button>
+        <button class="loc-btn" onclick="zoomWindy(21.6353,-158.0536,13,'Pipeline')">Pipeline</button>
+        <button class="loc-btn" onclick="zoomWindy(21.6631,-158.0508,13,'Sunset Beach')">Sunset Beach</button>
+      </div>
+
+      <!-- KAUAI -->
+      <div class="loc-island-title" style="margin-top:24px;"><span style="color:#10b981">🌿</span> Kauaʻi</div>
+      <div class="loc-grid">
+        <button class="loc-btn" onclick="zoomWindy(22.2028,-159.5083,12,'Hanalei')">Hanalei</button>
+        <button class="loc-btn" onclick="zoomWindy(22.2178,-159.4783,12,'Princeville')">Princeville</button>
+        <button class="loc-btn" onclick="zoomWindy(21.8783,-159.4717,12,'Poipu')">Poipu</button>
+        <button class="loc-btn" onclick="zoomWindy(21.9064,-159.5236,12,'Koloa')">Koloa</button>
+        <button class="loc-btn" onclick="zoomWindy(22.0750,-159.3194,12,'Kapaa')">Kapaa</button>
+        <button class="loc-btn" onclick="zoomWindy(21.9811,-159.3711,12,'Lihue')">Lihue</button>
+        <button class="loc-btn" onclick="zoomWindy(21.9578,-159.6739,11,'Waimea')">Waimea</button>
+        <button class="loc-btn" onclick="zoomWindy(22.1667,-159.6333,11,'Kokee')">Kokee</button>
+        <button class="loc-btn" onclick="zoomWindy(22.1356,-159.3242,12,'Anahola')">Anahola</button>
+        <button class="loc-btn" onclick="zoomWindy(22.2083,-159.5667,12,'Haena')">Haena</button>
+      </div>
+
+      <!-- BIG ISLAND -->
+      <div class="loc-island-title" style="margin-top:24px;"><span style="color:#fbbf24">🌋</span> Big Island</div>
+      <div class="loc-grid">
+        <button class="loc-btn" onclick="zoomWindy(19.6400,-155.9969,12,'Kailua-Kona')">Kailua-Kona</button>
+        <button class="loc-btn" onclick="zoomWindy(19.7297,-155.0900,12,'Hilo')">Hilo</button>
+        <button class="loc-btn" onclick="zoomWindy(19.9333,-155.8833,12,'Waikoloa')">Waikoloa</button>
+        <button class="loc-btn" onclick="zoomWindy(19.4194,-155.2886,11,'Volcano')">Volcano</button>
+        <button class="loc-btn" onclick="zoomWindy(20.0194,-155.6667,12,'Waimea')">Waimea</button>
+        <button class="loc-btn" onclick="zoomWindy(20.2333,-155.8167,12,'Kohala')">Kohala</button>
+        <button class="loc-btn" onclick="zoomWindy(19.0783,-155.8303,12,'Ka Lae')">Ka Lae</button>
+        <button class="loc-btn" onclick="zoomWindy(19.8397,-155.9969,12,'Mauna Kea')">Mauna Kea</button>
+        <button class="loc-btn" onclick="zoomWindy(19.5194,-154.9200,12,'Pahoa')">Pahoa</button>
+        <button class="loc-btn" onclick="zoomWindy(19.6069,-155.8264,12,'Keauhou')">Keauhou</button>
+        <button class="loc-btn" onclick="zoomWindy(20.1167,-155.8333,12,'Hawi')">Hawi</button>
+        <button class="loc-btn" onclick="zoomWindy(19.7289,-156.0553,12,'Kealakekua')">Kealakekua</button>
       </div>
     </div>
 
@@ -1690,14 +1703,26 @@ if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
 
+// Location button zoom function
+function zoomWindy(lat, lon, zoom, name) {
+  const iframe = document.getElementById('windyIframe');
+  if (iframe) {
+    iframe.src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&width=650&height=450&zoom=${zoom}&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
+    // Scroll to map
+    iframe.closest('.windy-card').scrollIntoView({ behavior:'smooth', block:'center' });
+    // Highlight active button
+    document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+}
+
 // Weather widget tab switching
 document.querySelectorAll('.wx-wtab').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.wx-wtab').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.wx-widget-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    const key = btn.dataset.widget;
-    const panel = document.getElementById('widget-' + key);
+    const panel = document.getElementById('widget-' + btn.dataset.widget);
     if (panel) panel.classList.add('active');
   });
 });
