@@ -179,7 +179,13 @@
   .sun-today .sun-rise { color: #fde68a !important; }
   .sun-today .sun-set { color: #fb923c !important; }
 
-  .sun-cal-link { display:block; margin-top:16px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--foam); text-decoration:none; transition:all 0.15s; }
+  .sun-week-table { width:100%; border-collapse:collapse; font-size:12px; margin:12px 0; }
+  .sun-week-table th { text-align:left; padding:6px 8px; font-size:10px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+  .sun-week-table td { padding:8px 8px; border-bottom:1px solid rgba(255,255,255,0.03); color:var(--text); }
+  .sun-week-table tr:last-child td { border-bottom:none; }
+  .sun-week-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+  .sun-cal-link { display:block; margin-top:12px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--foam); text-decoration:none; transition:all 0.15s; }
   .sun-cal-link:hover { background:rgba(34,211,238,0.1); border-color:var(--foam); }
   .sun-link-card { display:block; background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px; text-decoration:none; text-align:center; transition:transform 0.2s,border-color 0.2s; }
   .sun-link-card:hover { transform:translateY(-3px); }
@@ -695,122 +701,120 @@
   <div class="sun-section">
     <div class="section-title">🌅 Sunrise & Sunset Times <span class="section-note">Daily</span></div>
     <p style="font-size:14px;color:var(--muted);margin-bottom:28px;max-width:620px;line-height:1.6;">
-      Today's exact sunrise and sunset times for every Hawaiian island. Click any island for the full calendar — works for any year, forever!
+      Today and the next 7 days for every Hawaiian island. Click any island for the full calendar — works for 2026, 2027, 2028 and beyond!
     </p>
 
-    <!-- TODAY'S CARDS - hardcoded, updates daily -->
     <div class="sun-grid">
 
       <div class="sun-card" data-island="Maui">
         <div class="sun-island">🏄 Maui</div>
-        <div class="sun-date" id="sunDateMaui"></div>
-        <div class="sun-row">
-          <span class="sun-label">🌅 Sunrise</span>
-          <span class="sun-time" style="color:var(--gold)" id="sunRiseMaui">5:49 AM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">🌇 Sunset</span>
-          <span class="sun-time" style="color:var(--coral)" id="sunSetMaui">6:57 PM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">☀️ Daylight</span>
-          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlMaui">13h 7m</span>
-        </div>
-        <a href="https://www.timeanddate.com/sun/usa/lahaina" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+        <table class="sun-week-table">
+          <thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead>
+          <tbody>
+            <tr class="sun-today"><td><strong>Today</strong></td><td class="sun-rise">5:49 AM</td><td class="sun-set">6:57 PM</td><td>13h 7m</td></tr>
+            <tr><td>Sat May 17</td><td class="sun-rise">5:49 AM</td><td class="sun-set">6:57 PM</td><td>13h 8m</td></tr>
+            <tr><td>Sun May 18</td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:58 PM</td><td>13h 9m</td></tr>
+            <tr><td>Mon May 19</td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:58 PM</td><td>13h 10m</td></tr>
+            <tr><td>Tue May 20</td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:59 PM</td><td>13h 11m</td></tr>
+            <tr><td>Wed May 21</td><td class="sun-rise">5:47 AM</td><td class="sun-set">6:59 PM</td><td>13h 11m</td></tr>
+            <tr><td>Thu May 22</td><td class="sun-rise">5:47 AM</td><td class="sun-set">7:00 PM</td><td>13h 12m</td></tr>
+            <tr><td>Fri May 23</td><td class="sun-rise">5:47 AM</td><td class="sun-set">7:00 PM</td><td>13h 13m</td></tr>
+          </tbody>
+        </table>
+        <a href="https://www.timeanddate.com/sun/@5850862" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Oahu">
         <div class="sun-island">🌆 Oahu</div>
-        <div class="sun-date" id="sunDateOahu"></div>
-        <div class="sun-row">
-          <span class="sun-label">🌅 Sunrise</span>
-          <span class="sun-time" style="color:var(--gold)" id="sunRiseOahu">5:53 AM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">🌇 Sunset</span>
-          <span class="sun-time" style="color:var(--coral)" id="sunSetOahu">7:02 PM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">☀️ Daylight</span>
-          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlOahu">13h 9m</span>
-        </div>
-        <a href="https://www.timeanddate.com/sun/usa/honolulu" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+        <table class="sun-week-table">
+          <thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead>
+          <tbody>
+            <tr class="sun-today"><td><strong>Today</strong></td><td class="sun-rise">5:53 AM</td><td class="sun-set">7:02 PM</td><td>13h 9m</td></tr>
+            <tr><td>Sat May 17</td><td class="sun-rise">5:53 AM</td><td class="sun-set">7:03 PM</td><td>13h 10m</td></tr>
+            <tr><td>Sun May 18</td><td class="sun-rise">5:52 AM</td><td class="sun-set">7:03 PM</td><td>13h 10m</td></tr>
+            <tr><td>Mon May 19</td><td class="sun-rise">5:52 AM</td><td class="sun-set">7:04 PM</td><td>13h 11m</td></tr>
+            <tr><td>Tue May 20</td><td class="sun-rise">5:52 AM</td><td class="sun-set">7:04 PM</td><td>13h 12m</td></tr>
+            <tr><td>Wed May 21</td><td class="sun-rise">5:51 AM</td><td class="sun-set">7:05 PM</td><td>13h 13m</td></tr>
+            <tr><td>Thu May 22</td><td class="sun-rise">5:51 AM</td><td class="sun-set">7:05 PM</td><td>13h 14m</td></tr>
+            <tr><td>Fri May 23</td><td class="sun-rise">5:51 AM</td><td class="sun-set">7:05 PM</td><td>13h 14m</td></tr>
+          </tbody>
+        </table>
+        <a href="https://www.timeanddate.com/sun/@5856195" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Kauai">
         <div class="sun-island">🌿 Kauaʻi</div>
-        <div class="sun-date" id="sunDateKauai"></div>
-        <div class="sun-row">
-          <span class="sun-label">🌅 Sunrise</span>
-          <span class="sun-time" style="color:var(--gold)" id="sunRiseKauai">5:58 AM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">🌇 Sunset</span>
-          <span class="sun-time" style="color:var(--coral)" id="sunSetKauai">7:09 PM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">☀️ Daylight</span>
-          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlKauai">13h 11m</span>
-        </div>
-        <a href="https://www.timeanddate.com/sun/usa/lihue" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+        <table class="sun-week-table">
+          <thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead>
+          <tbody>
+            <tr class="sun-today"><td><strong>Today</strong></td><td class="sun-rise">5:58 AM</td><td class="sun-set">7:09 PM</td><td>13h 11m</td></tr>
+            <tr><td>Sat May 17</td><td class="sun-rise">5:58 AM</td><td class="sun-set">7:10 PM</td><td>13h 12m</td></tr>
+            <tr><td>Sun May 18</td><td class="sun-rise">5:57 AM</td><td class="sun-set">7:10 PM</td><td>13h 13m</td></tr>
+            <tr><td>Mon May 19</td><td class="sun-rise">5:57 AM</td><td class="sun-set">7:11 PM</td><td>13h 14m</td></tr>
+            <tr><td>Tue May 20</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:11 PM</td><td>13h 14m</td></tr>
+            <tr><td>Wed May 21</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:12 PM</td><td>13h 15m</td></tr>
+            <tr><td>Thu May 22</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:12 PM</td><td>13h 16m</td></tr>
+            <tr><td>Fri May 23</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:13 PM</td><td>13h 17m</td></tr>
+          </tbody>
+        </table>
+        <a href="https://www.timeanddate.com/sun/@5850098" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Big Island">
         <div class="sun-island">🌋 Big Island</div>
-        <div class="sun-date" id="sunDateBig"></div>
-        <div class="sun-row">
-          <span class="sun-label">🌅 Sunrise</span>
-          <span class="sun-time" style="color:var(--gold)" id="sunRiseBig">5:48 AM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">🌇 Sunset</span>
-          <span class="sun-time" style="color:var(--coral)" id="sunSetBig">6:52 PM</span>
-        </div>
-        <div class="sun-row">
-          <span class="sun-label">☀️ Daylight</span>
-          <span class="sun-time" style="font-size:16px;color:var(--text)" id="sunDlBig">13h 3m</span>
-        </div>
-        <a href="https://www.timeanddate.com/sun/usa/kailua-kona" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
+        <table class="sun-week-table">
+          <thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead>
+          <tbody>
+            <tr class="sun-today"><td><strong>Today</strong></td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:52 PM</td><td>13h 3m</td></tr>
+            <tr><td>Sat May 17</td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:53 PM</td><td>13h 4m</td></tr>
+            <tr><td>Sun May 18</td><td class="sun-rise">5:48 AM</td><td class="sun-set">6:53 PM</td><td>13h 5m</td></tr>
+            <tr><td>Mon May 19</td><td class="sun-rise">5:47 AM</td><td class="sun-set">6:53 PM</td><td>13h 6m</td></tr>
+            <tr><td>Tue May 20</td><td class="sun-rise">5:47 AM</td><td class="sun-set">6:54 PM</td><td>13h 6m</td></tr>
+            <tr><td>Wed May 21</td><td class="sun-rise">5:47 AM</td><td class="sun-set">6:54 PM</td><td>13h 7m</td></tr>
+            <tr><td>Thu May 22</td><td class="sun-rise">5:46 AM</td><td class="sun-set">6:55 PM</td><td>13h 8m</td></tr>
+            <tr><td>Fri May 23</td><td class="sun-rise">5:46 AM</td><td class="sun-set">6:55 PM</td><td>13h 8m</td></tr>
+          </tbody>
+        </table>
+        <a href="https://www.timeanddate.com/sun/@5854686" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
     </div>
 
-    <!-- TIMEANDDATE FULL CALENDAR LINKS -->
     <div class="sun-calendar-card">
       <div class="sun-cal-header">
         <div>
           <div class="chart-title">📅 Full Sunrise & Sunset Calendar</div>
-          <div class="chart-sub">Complete calendar for any year — 2026, 2027, 2028 and beyond</div>
+          <div class="chart-sub">Any month, any year — 2026 through 2030 and beyond</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;padding:24px;">
-        <a href="https://www.timeanddate.com/sun/usa/lahaina" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#f97316;">
+        <a href="https://www.timeanddate.com/sun/@5850862" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#f97316;">
           <div style="font-size:28px;margin-bottom:8px;">🏄</div>
           <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Maui</div>
           <div style="font-size:12px;color:var(--muted);">Lahaina · Wailea · Kaanapali</div>
-          <div style="font-size:12px;color:#f97316;margin-top:8px;">Open calendar ↗</div>
+          <div style="font-size:12px;color:#f97316;margin-top:8px;">Open full calendar ↗</div>
         </a>
-        <a href="https://www.timeanddate.com/sun/usa/honolulu" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#22d3ee;">
+        <a href="https://www.timeanddate.com/sun/@5856195" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#22d3ee;">
           <div style="font-size:28px;margin-bottom:8px;">🌆</div>
           <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Oahu</div>
           <div style="font-size:12px;color:var(--muted);">Honolulu · Waikiki · North Shore</div>
-          <div style="font-size:12px;color:#22d3ee;margin-top:8px;">Open calendar ↗</div>
+          <div style="font-size:12px;color:#22d3ee;margin-top:8px;">Open full calendar ↗</div>
         </a>
-        <a href="https://www.timeanddate.com/sun/usa/lihue" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#10b981;">
+        <a href="https://www.timeanddate.com/sun/@5850098" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#10b981;">
           <div style="font-size:28px;margin-bottom:8px;">🌿</div>
           <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Kauaʻi</div>
           <div style="font-size:12px;color:var(--muted);">Lihue · Hanalei · Poipu</div>
-          <div style="font-size:12px;color:#10b981;margin-top:8px;">Open calendar ↗</div>
+          <div style="font-size:12px;color:#10b981;margin-top:8px;">Open full calendar ↗</div>
         </a>
-        <a href="https://www.timeanddate.com/sun/usa/kailua-kona" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#fbbf24;">
+        <a href="https://www.timeanddate.com/sun/@5854686" target="_blank" rel="noopener" class="sun-link-card" style="border-color:#fbbf24;">
           <div style="font-size:28px;margin-bottom:8px;">🌋</div>
           <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Big Island</div>
           <div style="font-size:12px;color:var(--muted);">Kona · Hilo · Waikoloa</div>
-          <div style="font-size:12px;color:#fbbf24;margin-top:8px;">Open calendar ↗</div>
+          <div style="font-size:12px;color:#fbbf24;margin-top:8px;">Open full calendar ↗</div>
         </a>
       </div>
       <div style="padding:0 24px 20px;font-size:13px;color:var(--muted);">
-        📅 Powered by <a href="https://www.timeanddate.com" target="_blank" style="color:var(--foam);">timeanddate.com</a> — accurate sunrise & sunset for any day, any year, forever.
+        📅 Powered by <a href="https://www.timeanddate.com" target="_blank" style="color:var(--foam);">timeanddate.com</a> — accurate for any day, any year, forever.
       </div>
     </div>
   </div>
