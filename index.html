@@ -505,10 +505,10 @@
     <div class="wx-widget-tabs">
       <button class="wx-wtab active" data-widget="windy">🌬️ Windy Radar</button>
       <button class="wx-wtab" data-widget="owm">🌡️ OpenWeatherMap</button>
-      <button class="wx-wtab" data-widget="wc">☁️ Weather Cloud</button>
+      <button class="wx-wtab" data-widget="ventusky">☁️ Ventusky</button>
     </div>
 
-    <!-- OPTION 1: WINDY.COM -->
+    <!-- OPTION 1: WINDY.COM — embedded live -->
     <div class="wx-widget-panel active" id="widget-windy">
       <div class="windy-card">
         <div class="windy-label">
@@ -519,8 +519,7 @@
           <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
         </div>
         <div class="windy-embed">
-          <iframe
-            width="100%" height="100%"
+          <iframe width="100%" height="100%"
             src="https://embed.windy.com/embed2.html?lat=20.5&lon=-157.5&detailLat=20.8783&detailLon=-156.6825&width=650&height=450&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
             frameborder="0" style="border:0;" allowfullscreen loading="lazy"
             title="Live Hawaii Weather Radar — Windy.com">
@@ -533,24 +532,28 @@
       </div>
     </div>
 
-    <!-- OPTION 2: OPENWEATHERMAP -->
+    <!-- OPTION 2: OPENWEATHERMAP — link card -->
     <div class="wx-widget-panel" id="widget-owm">
       <div class="windy-card">
         <div class="windy-label">
           <div>
             <span style="font-size:16px;font-weight:600;">🌡️ OpenWeatherMap — Hawaii</span>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Temperature, precipitation and cloud cover with live satellite layer</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Temperature, precipitation and cloud cover — click to open live map</div>
           </div>
           <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
         </div>
-        <div class="windy-embed">
-          <iframe
-            width="100%" height="100%"
-            src="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7"
-            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
-            title="OpenWeatherMap Hawaii">
-          </iframe>
-        </div>
+        <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="display:block;text-decoration:none;">
+          <div style="background:linear-gradient(135deg,#0c4a6e,#0369a1);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <div style="font-size:64px;">🌡️</div>
+            <div style="text-align:center;">
+              <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Open OpenWeatherMap Hawaii</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Live precipitation · Temperature · Cloud cover map</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:10px 28px;font-size:14px;font-weight:600;color:#fff;">
+              🔗 Open Live Map ↗
+            </div>
+          </div>
+        </a>
         <div class="windy-footer">
           <span>🌧️ Precipitation · 🌡️ Temperature · ☁️ Clouds — Powered by OpenWeatherMap</span>
           <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
@@ -558,24 +561,28 @@
       </div>
     </div>
 
-    <!-- OPTION 3: WEATHER CLOUD / VENTUSKY -->
-    <div class="wx-widget-panel" id="widget-wc">
+    <!-- OPTION 3: VENTUSKY — link card -->
+    <div class="wx-widget-panel" id="widget-ventusky">
       <div class="windy-card">
         <div class="windy-label">
           <div>
             <span style="font-size:16px;font-weight:600;">☁️ Ventusky — Hawaii Forecast</span>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Beautiful animated temperature and weather patterns over Hawaii</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Beautiful animated temperature and weather patterns — click to open</div>
           </div>
           <span class="windy-badge"><span class="pulse-dot"></span>Live</span>
         </div>
-        <div class="windy-embed">
-          <iframe
-            width="100%" height="100%"
-            src="https://embed.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m"
-            frameborder="0" style="border:0;" allowfullscreen loading="lazy"
-            title="Ventusky Hawaii Weather">
-          </iframe>
-        </div>
+        <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m" target="_blank" rel="noopener" style="display:block;text-decoration:none;">
+          <div style="background:linear-gradient(135deg,#064e3b,#0f766e);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <div style="font-size:64px;">🌈</div>
+            <div style="text-align:center;">
+              <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Open Ventusky Hawaii</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Beautiful animated temperature · Rain · Wind forecasts</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:10px 28px;font-size:14px;font-weight:600;color:#fff;">
+              🔗 Open Live Map ↗
+            </div>
+          </div>
+        </a>
         <div class="windy-footer">
           <span>🌡️ Temperature · 🌧️ Rain · 💨 Wind — Beautiful animated forecasts · Powered by Ventusky</span>
           <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=temperature-2m" target="_blank" rel="noopener" style="color:var(--foam);text-decoration:none;font-size:12px;">Open full screen ↗</a>
@@ -1689,7 +1696,9 @@ document.querySelectorAll('.wx-wtab').forEach(btn => {
     document.querySelectorAll('.wx-wtab').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.wx-widget-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('widget-' + btn.dataset.widget).classList.add('active');
+    const key = btn.dataset.widget;
+    const panel = document.getElementById('widget-' + key);
+    if (panel) panel.classList.add('active');
   });
 });
 
