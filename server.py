@@ -87,6 +87,22 @@ def generate_stable_data(today):
 def index():
     return send_from_directory(".", "index.html")
 
+@app.route("/oahu")
+def oahu():
+    return send_from_directory(".", "oahu.html")
+
+@app.route("/maui")
+def maui():
+    return send_from_directory(".", "maui.html")
+
+@app.route("/kauai")
+def kauai():
+    return send_from_directory(".", "kauai.html")
+
+@app.route("/bigisland")
+def bigisland():
+    return send_from_directory(".", "bigisland.html")
+
 @app.route("/admin")
 def admin():
     return send_from_directory(".", "admin.html")
