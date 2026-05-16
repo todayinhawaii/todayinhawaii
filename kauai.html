@@ -32,8 +32,9 @@ header{padding:32px 0 0;position:relative;z-index:1;}
 .logo-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
 .logo-text span{color:var(--foam);}
 .nav-menu{display:flex;gap:8px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--border);}
-.nav-link{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:99px;font-size:13px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
-.nav-link:hover,.nav-link.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.08);}
+.nav-menu{justify-content:center;gap:12px;}
+.nav-link{display:flex;align-items:center;gap:6px;padding:10px 22px;border-radius:99px;font-size:14px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
+.nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);font-weight:600;}
 .hero{padding:56px 0 40px;text-align:center;}
 .hero-eyebrow{font-size:12px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--island-color);margin-bottom:16px;}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.05;color:var(--text);margin-bottom:20px;}
@@ -115,7 +116,7 @@ footer a{color:var(--foam);text-decoration:none;}
       <a href="/" class="nav-link">🌺 Home</a>
       <a href="/oahu" class="nav-link">🌆 Oahu</a>
       <a href="/maui" class="nav-link">🏄 Maui</a>
-      <a href="/kauai" class="nav-linkactive">🌿 Kauaʻi</a>
+      <a href="/kauai" class="nav-link active">🌿 Kauaʻi</a>
       <a href="/bigisland" class="nav-link">🌋 Big Island</a>
     </div>
   </nav>
