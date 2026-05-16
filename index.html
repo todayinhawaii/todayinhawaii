@@ -278,6 +278,37 @@
   .otab { padding: 6px 16px; border-radius: 99px; font-size: 13px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
   .otab.active, .otab:hover { background: rgba(34,211,238,0.15); border-color: var(--foam); color: var(--foam); }
 
+  /* ── HOTELS & RESTAURANTS ── */
+  .hr-section { margin-bottom: 56px; }
+  .hr-island-block { margin-bottom: 56px; }
+  .hr-island-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .hr-island-name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--text); }
+  .hr-island-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .hr-sub-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin: 32px 0 16px; display: flex; align-items: center; gap: 10px; }
+  .hr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+  .hr-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; cursor: pointer; text-decoration: none; display: block; }
+  .hr-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); }
+  .hr-banner { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .hr-body { padding: 12px 14px; }
+  .hr-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+  .hr-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .hr-stars { color: #fbbf24; font-size: 11px; }
+  .hr-price { font-size: 11px; color: var(--muted); }
+  .hr-tag { font-size: 10px; background: rgba(255,255,255,0.07); color: var(--muted); border-radius: 4px; padding: 2px 6px; margin-top: 4px; }
+
+  /* ── HOTELS & RESTAURANTS ── */
+  .hr-island-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 20px; }
+  .hr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-bottom:8px; }
+  .hr-card { background:var(--card-bg); border:1px solid var(--border); border-radius:18px; overflow:hidden; text-decoration:none; display:block; transition:transform 0.2s,border-color 0.2s; }
+  .hr-card:hover { transform:translateY(-3px); border-color:rgba(34,211,238,0.3); }
+  .hr-banner { height:120px; display:flex; align-items:center; justify-content:center; position:relative; }
+  .hr-body { padding:14px; }
+  .hr-name { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; line-height:1.3; }
+  .hr-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .hr-stars { color:#f59e0b; font-size:11px; letter-spacing:1px; }
+  .hr-price { font-size:11px; color:var(--muted); }
+  .hr-tag { font-size:10px; background:rgba(255,255,255,0.07); color:var(--muted); border-radius:4px; padding:2px 6px; }
+
   /* ── MAPS ── */
   .maps-section { margin-bottom: 56px; }
   .map-card-big { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; margin-bottom: 24px; }
@@ -522,7 +553,7 @@
           <div class="cam-loc">📍 Waikiki Beach · Honolulu</div>
         </div>
       </a>
-      <a href="https://www.sheratonwaikiki.com/live-cam" target="_blank" rel="noopener" class="cam-card">
+      <a href="https://www.livebeaches.com/webcams/sheraton-waikiki-webcam/" target="_blank" rel="noopener" class="cam-card">
         <div class="cam-thumb" style="background:linear-gradient(135deg,#0369a1,#38bdf8)">
           <div class="cam-play">▶</div>
           <div class="cam-live-dot"><span class="pulse-dot"></span>LIVE</div>
@@ -800,6 +831,46 @@
     </div>
   </div>
 </div><!-- /maps wrap -->
+
+<!-- HOTELS & RESTAURANTS SECTION -->
+<div class="wrap">
+  <hr class="section-divider">
+  <div class="section-title">🏨 Top Hotels & Restaurants</div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:40px;max-width:620px;line-height:1.6;">
+    The finest places to stay and eat across all Hawaiian islands — from legendary beachfront resorts to hidden local gems.
+  </p>
+
+  <!-- ══ OAHU ══ -->
+  <div class="hr-island-title">🌆 Oʻahu — Hotels</div>
+  <div class="hr-grid" id="oahuHotels"></div>
+  <div class="hr-island-title" style="margin-top:32px">🌆 Oʻahu — Restaurants</div>
+  <div class="hr-grid" id="oahuRestaurants"></div>
+
+  <hr class="section-divider">
+
+  <!-- ══ MAUI ══ -->
+  <div class="hr-island-title">🏄 Maui — Hotels</div>
+  <div class="hr-grid" id="mauiHotels"></div>
+  <div class="hr-island-title" style="margin-top:32px">🏄 Maui — Restaurants</div>
+  <div class="hr-grid" id="mauiRestaurants"></div>
+
+  <hr class="section-divider">
+
+  <!-- ══ KAUAI ══ -->
+  <div class="hr-island-title">🌿 Kauaʻi — Hotels</div>
+  <div class="hr-grid" id="kauaiHotels"></div>
+  <div class="hr-island-title" style="margin-top:32px">🌿 Kauaʻi — Restaurants</div>
+  <div class="hr-grid" id="kauaiRestaurants"></div>
+
+  <hr class="section-divider">
+
+  <!-- ══ BIG ISLAND ══ -->
+  <div class="hr-island-title">🌋 Big Island — Hotels</div>
+  <div class="hr-grid" id="bigHotels"></div>
+  <div class="hr-island-title" style="margin-top:32px">🌋 Big Island — Restaurants</div>
+  <div class="hr-grid" id="bigRestaurants"></div>
+
+</div><!-- /hotels wrap -->
 
 <footer>
   <div class="wrap">
@@ -1354,7 +1425,200 @@ SURF_LOCATIONS.forEach(s => {
     .catch(err => console.warn(`Surf fetch failed for ${s.island}:`, err));
 });
 
-const surfTimeEl = document.getElementById('surfTime');
+// ============================================================
+// HOTELS & RESTAURANTS
+// ============================================================
+const FLOWERS = [
+  // Hibiscus
+  `<svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="52" rx="12" ry="18" fill="rgba(255,255,255,0.2)"/><ellipse cx="40" cy="52" rx="8" ry="13" fill="rgba(255,255,255,0.3)"/><ellipse cx="20" cy="42" rx="11" ry="17" fill="rgba(255,255,255,0.2)" transform="rotate(-38 20 42)"/><ellipse cx="20" cy="42" rx="7" ry="12" fill="rgba(255,255,255,0.3)" transform="rotate(-38 20 42)"/><ellipse cx="60" cy="42" rx="11" ry="17" fill="rgba(255,255,255,0.2)" transform="rotate(38 60 42)"/><ellipse cx="60" cy="42" rx="7" ry="12" fill="rgba(255,255,255,0.3)" transform="rotate(38 60 42)"/><ellipse cx="27" cy="25" rx="11" ry="17" fill="rgba(255,255,255,0.2)" transform="rotate(-68 27 25)"/><ellipse cx="27" cy="25" rx="7" ry="12" fill="rgba(255,255,255,0.3)" transform="rotate(-68 27 25)"/><ellipse cx="53" cy="25" rx="11" ry="17" fill="rgba(255,255,255,0.2)" transform="rotate(68 53 25)"/><ellipse cx="53" cy="25" rx="7" ry="12" fill="rgba(255,255,255,0.3)" transform="rotate(68 53 25)"/><circle cx="40" cy="44" r="8" fill="#fbbf24"/><circle cx="40" cy="44" r="5" fill="#f59e0b"/></svg>`,
+  // Plumeria
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 15 C40 15 30 30 30 42 C30 54 40 62 40 62 C40 62 50 54 50 42 C50 30 40 15 40 15Z" fill="rgba(255,255,255,0.25)"/><path d="M15 35 C15 35 28 38 35 44 C42 50 42 62 42 62 C42 62 32 52 28 44 C24 36 15 35 15 35Z" fill="rgba(255,255,255,0.25)"/><path d="M65 35 C65 35 52 38 45 44 C38 50 38 62 38 62 C38 62 48 52 52 44 C56 36 65 35 65 35Z" fill="rgba(255,255,255,0.25)"/><path d="M20 18 C20 18 30 28 33 38 C36 48 34 62 34 62 C34 62 26 50 26 40 C26 30 20 18 20 18Z" fill="rgba(255,255,255,0.2)"/><path d="M60 18 C60 18 50 28 47 38 C44 48 46 62 46 62 C46 62 54 50 54 40 C54 30 60 18 60 18Z" fill="rgba(255,255,255,0.2)"/><circle cx="40" cy="50" r="7" fill="#fbbf24"/><circle cx="40" cy="50" r="4" fill="#f59e0b"/></svg>`,
+  // 6-petal
+  `<svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="26" rx="7" ry="14" fill="rgba(255,255,255,0.25)"/><ellipse cx="24" cy="33" rx="7" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(-60 24 33)"/><ellipse cx="56" cy="33" rx="7" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(60 56 33)"/><ellipse cx="20" cy="50" rx="7" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(-120 20 50)"/><ellipse cx="60" cy="50" rx="7" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(120 60 50)"/><ellipse cx="40" cy="58" rx="7" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(180 40 58)"/><circle cx="40" cy="42" r="8" fill="#fbbf24"/><circle cx="40" cy="42" r="5" fill="#f59e0b"/></svg>`,
+  // Star
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 20 Q50 30 58 28 Q52 38 58 48 Q48 44 40 52 Q32 44 22 48 Q28 38 22 28 Q30 30 40 20Z" fill="rgba(255,255,255,0.25)"/><circle cx="40" cy="38" r="6" fill="#fbbf24"/><circle cx="40" cy="38" r="3.5" fill="#f59e0b"/></svg>`,
+  // Ginger
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 62 L40 22" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/><path d="M40 35 Q28 28 20 18" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 35 Q52 28 60 18" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 46 Q30 40 24 30" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M40 46 Q50 40 56 30" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="19" cy="16" rx="8" ry="5" fill="rgba(255,255,255,0.3)" transform="rotate(-28 19 16)"/><ellipse cx="61" cy="16" rx="8" ry="5" fill="rgba(255,255,255,0.3)" transform="rotate(28 61 16)"/><circle cx="40" cy="22" r="5" fill="#fbbf24"/></svg>`,
+  // Bird of Paradise
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 20 C36 28 26 30 22 38 C18 46 22 56 30 60 C34 62 36 60 40 58 C44 60 46 62 50 60 C58 56 62 46 58 38 C54 30 44 28 40 20Z" fill="rgba(255,255,255,0.2)"/><path d="M40 28 C37 34 30 36 28 42 C26 48 29 54 35 57 C37 58 39 57 40 56 C41 57 43 58 45 57 C51 54 54 48 52 42 C50 36 43 34 40 28Z" fill="rgba(255,255,255,0.3)"/><circle cx="40" cy="44" r="6" fill="#fbbf24"/><circle cx="40" cy="44" r="3.5" fill="#f59e0b"/></svg>`,
+  // Ohia Lehua
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 62 L40 25" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/><path d="M40 38 Q28 32 22 22" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 38 Q52 32 58 22" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 48 Q32 44 26 34" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M40 48 Q48 44 54 34" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="21" cy="20" rx="8" ry="5" fill="rgba(255,255,255,0.35)" transform="rotate(-30 21 20)"/><ellipse cx="59" cy="20" rx="8" ry="5" fill="rgba(255,255,255,0.35)" transform="rotate(30 59 20)"/><circle cx="40" cy="25" r="5" fill="#fde68a"/></svg>`,
+  // Pikake
+  `<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="18" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><ellipse cx="40" cy="24" rx="6" ry="12" fill="rgba(255,255,255,0.25)"/><ellipse cx="24" cy="32" rx="6" ry="12" fill="rgba(255,255,255,0.25)" transform="rotate(-60 24 32)"/><ellipse cx="56" cy="32" rx="6" ry="12" fill="rgba(255,255,255,0.25)" transform="rotate(60 56 32)"/><ellipse cx="20" cy="50" rx="6" ry="12" fill="rgba(255,255,255,0.25)" transform="rotate(-120 20 50)"/><ellipse cx="60" cy="50" rx="6" ry="12" fill="rgba(255,255,255,0.25)" transform="rotate(120 60 50)"/><ellipse cx="40" cy="56" rx="6" ry="12" fill="rgba(255,255,255,0.25)" transform="rotate(180 40 56)"/><circle cx="40" cy="40" r="7" fill="#fbbf24"/><circle cx="40" cy="40" r="4" fill="#f59e0b"/></svg>`,
+  // Ilima
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 20 Q45 28 55 28 Q47 34 50 44 Q42 38 40 44 Q38 38 30 44 Q33 34 25 28 Q35 28 40 20Z" fill="rgba(255,255,255,0.25)"/><circle cx="40" cy="36" r="5" fill="#fbbf24"/><circle cx="40" cy="36" r="3" fill="#f59e0b"/><path d="M40 50 L40 65" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/><path d="M34 56 Q40 54 46 56" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`,
+  // Puakenikeni
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 20 C40 20 28 32 28 44 C28 56 34 64 40 64 C46 64 52 56 52 44 C52 32 40 20 40 20Z" fill="rgba(255,255,255,0.2)"/><path d="M40 27 C40 27 31 37 31 46 C31 55 35 61 40 61 C45 61 49 55 49 46 C49 37 40 27 40 27Z" fill="rgba(255,255,255,0.3)"/><circle cx="40" cy="44" r="6" fill="#fbbf24"/><circle cx="40" cy="44" r="3.5" fill="#f59e0b"/></svg>`,
+  // Jacaranda
+  `<svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="50" rx="10" ry="16" fill="rgba(255,255,255,0.25)"/><ellipse cx="22" cy="40" rx="10" ry="16" fill="rgba(255,255,255,0.2)" transform="rotate(-44 22 40)"/><ellipse cx="58" cy="40" rx="10" ry="16" fill="rgba(255,255,255,0.2)" transform="rotate(44 58 40)"/><ellipse cx="28" cy="23" rx="10" ry="16" fill="rgba(255,255,255,0.2)" transform="rotate(-74 28 23)"/><ellipse cx="52" cy="23" rx="10" ry="16" fill="rgba(255,255,255,0.2)" transform="rotate(74 52 23)"/><circle cx="40" cy="40" r="7" fill="#fde68a"/><circle cx="40" cy="40" r="4" fill="#fbbf24"/></svg>`,
+  // Princess Flower
+  `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 20 Q50 30 60 28 Q52 40 58 50 Q46 44 40 54 Q34 44 22 50 Q28 40 20 28 Q30 30 40 20Z" fill="rgba(255,255,255,0.25)"/><circle cx="40" cy="38" r="6" fill="#fde68a"/><circle cx="40" cy="38" r="3.5" fill="#fbbf24"/></svg>`,
+];
+
+const GRADIENTS = [
+  'linear-gradient(135deg,#0c4a6e,#0369a1)',
+  'linear-gradient(135deg,#164e63,#0e7490)',
+  'linear-gradient(135deg,#1e3a5f,#2563eb)',
+  'linear-gradient(135deg,#065f46,#059669)',
+  'linear-gradient(135deg,#4a1942,#7c3aed)',
+  'linear-gradient(135deg,#7c2d12,#ea580c)',
+  'linear-gradient(135deg,#134e4a,#0f766e)',
+  'linear-gradient(135deg,#1e1b4b,#4338ca)',
+  'linear-gradient(135deg,#14532d,#16a34a)',
+  'linear-gradient(135deg,#78350f,#b45309)',
+  'linear-gradient(135deg,#0f172a,#1e3a5f)',
+  'linear-gradient(135deg,#3b0764,#7e22ce)',
+  'linear-gradient(135deg,#7f1d1d,#dc2626)',
+  'linear-gradient(135deg,#052e16,#166534)',
+  'linear-gradient(135deg,#0c4a6e,#0284c7)',
+  'linear-gradient(135deg,#4a1942,#9333ea)',
+  'linear-gradient(135deg,#292524,#57534e)',
+  'linear-gradient(135deg,#1e3a5f,#1d4ed8)',
+  'linear-gradient(135deg,#7c1d1d,#b91c1c)',
+  'linear-gradient(135deg,#064e3b,#047857)',
+  'linear-gradient(135deg,#431407,#c2410c)',
+  'linear-gradient(135deg,#1e1b4b,#3730a3)',
+  'linear-gradient(135deg,#0f172a,#334155)',
+  'linear-gradient(135deg,#14532d,#15803d)',
+];
+
+function buildHRCards(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = items.map((item, i) => `
+    <a href="${item.url}" target="_blank" rel="noopener" class="hr-card">
+      <div class="hr-banner" style="background:${GRADIENTS[i % GRADIENTS.length]}">
+        ${FLOWERS[i % FLOWERS.length]}
+      </div>
+      <div class="hr-body">
+        <div class="hr-name">${item.name}</div>
+        <div class="hr-meta">
+          <span class="hr-stars">${'★'.repeat(item.stars)}</span>
+          <span class="hr-price">${item.price}</span>
+        </div>
+        <div class="hr-meta">
+          ${item.tags.map(t=>`<span class="hr-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </a>`).join('');
+}
+
+const HR_DATA = {
+  oahuHotels: [
+    {name:'Royal Hawaiian Resort',stars:5,price:'$$$$',tags:['Beachfront','Waikiki'],url:'https://www.royal-hawaiian.com'},
+    {name:'Halekulani Hotel',stars:5,price:'$$$$',tags:['Luxury','Waikiki'],url:'https://www.halekulani.com'},
+    {name:'Four Seasons Oahu',stars:5,price:'$$$$',tags:['Ko Olina','Spa'],url:'https://www.fourseasons.com/oahu'},
+    {name:'Turtle Bay Resort',stars:4,price:'$$$',tags:['North Shore','Golf'],url:'https://www.turtlebayresort.com'},
+    {name:'Hilton Hawaiian Village',stars:4,price:'$$$',tags:['Lagoon','Waikiki'],url:'https://www.hilton.com/en/hotels/hnlhvhh-hilton-hawaiian-village-waikiki-beach-resort'},
+    {name:'Sheraton Waikiki',stars:4,price:'$$$',tags:['Ocean View','Pool'],url:'https://www.marriott.com/hotels/travel/hnlsi-sheraton-waikiki'},
+    {name:'Moana Surfrider',stars:5,price:'$$$$',tags:['Historic','Waikiki'],url:'https://www.marriott.com/hotels/travel/hnlws-moana-surfrider-a-westin-resort-and-spa-waikiki-beach'},
+    {name:'Aulani, A Disney Resort',stars:5,price:'$$$$',tags:['Ko Olina','Family'],url:'https://www.disneyaulani.com'},
+    {name:'Kahala Hotel & Resort',stars:5,price:'$$$$',tags:['Secluded','Dolphins'],url:'https://www.kahalaresort.com'},
+    {name:'Waikiki Beach Marriott',stars:4,price:'$$$',tags:['Central','Waikiki'],url:'https://www.marriott.com/hotels/travel/hnlmc-waikiki-beach-marriott-resort-and-spa'},
+    {name:'Prince Waikiki',stars:4,price:'$$$',tags:['Marina View','Modern'],url:'https://www.princewaikiki.com'},
+    {name:'Ritz-Carlton Residences',stars:5,price:'$$$$',tags:['Ultra Luxury','Waikiki'],url:'https://www.ritzcarlton.com/en/hotels/hawaii/waikiki'},
+  ],
+  oahuRestaurants: [
+    {name:'Nobu Honolulu',stars:5,price:'$$$$',tags:['Japanese','Celebrity'],url:'https://www.noburestaurants.com/honolulu'},
+    {name:"Alan Wong's",stars:5,price:'$$$$',tags:['Hawaiian','Farm-to-Table'],url:'https://www.alanwongs.com'},
+    {name:'House Without A Key',stars:5,price:'$$$',tags:['Oceanfront','Halekulani'],url:'https://www.halekulani.com/dining/house-without-a-key'},
+    {name:'La Mer',stars:5,price:'$$$$',tags:['French','Fine Dining'],url:'https://www.halekulani.com/dining/la-mer'},
+    {name:'Senia',stars:5,price:'$$$$',tags:['Modern American'],url:'https://www.restaurantsenia.com'},
+    {name:'Japengo',stars:4,price:'$$$',tags:['Pacific Rim','Hyatt'],url:'https://www.hyatt.com/en-US/hotel/hawaii/hyatt-regency-waikiki-beach-resort-and-spa/hnlrw/dining'},
+    {name:"Nico's Pier 38",stars:4,price:'$$',tags:['Fresh Fish','Harbor'],url:'https://www.nicospier38.com'},
+    {name:"Mama's Fish House",stars:5,price:'$$$$',tags:['Seafood','Iconic'],url:'https://www.mamasfishhouse.com'},
+    {name:"Duke's Waikiki",stars:4,price:'$$',tags:['Beach Bar','Casual'],url:'https://www.dukeswaikiki.com'},
+    {name:'Livestock Tavern',stars:4,price:'$$$',tags:['Gastropub','Chinatown'],url:'https://www.livestocktavern.com'},
+    {name:'Morimoto Asia',stars:5,price:'$$$$',tags:['Asian','Iron Chef'],url:'https://www.morimotoasia.com/waikiki'},
+    {name:"Helena's Hawaiian Food",stars:5,price:'$',tags:['Local','James Beard'],url:'https://www.helenashawaiianfood.com'},
+  ],
+  mauiHotels: [
+    {name:'Four Seasons Maui',stars:5,price:'$$$$',tags:['Wailea','Beachfront'],url:'https://www.fourseasons.com/maui'},
+    {name:'Grand Wailea Resort',stars:5,price:'$$$$',tags:['Wailea','Water Park'],url:'https://www.grandwailea.com'},
+    {name:'Andaz Maui at Wailea',stars:5,price:'$$$$',tags:['Boutique','Wailea'],url:'https://www.hyatt.com/en-US/hotel/hawaii/andaz-maui-at-wailea-resort/hnmwa'},
+    {name:'Ritz-Carlton Kapalua',stars:5,price:'$$$$',tags:['Kapalua','Golf'],url:'https://www.ritzcarlton.com/en/hotels/hawaii/kapalua'},
+    {name:'Fairmont Kea Lani',stars:5,price:'$$$$',tags:['All-Suite','Wailea'],url:'https://www.fairmont.com/kea-lani-maui'},
+    {name:'Montage Kapalua Bay',stars:5,price:'$$$$',tags:['Kapalua','Residences'],url:'https://www.montagehotels.com/kapaluabay'},
+    {name:'Hyatt Regency Maui',stars:4,price:'$$$',tags:['Kaanapali','Penguin'],url:'https://www.hyatt.com/en-US/hotel/hawaii/hyatt-regency-maui-resort-and-spa/hnmrm'},
+    {name:'Sheraton Maui Resort',stars:4,price:'$$$',tags:['Black Rock','Kaanapali'],url:'https://www.marriott.com/hotels/travel/oggsi-sheraton-maui-resort-and-spa'},
+    {name:'Ka\'anapali Beach Hotel',stars:4,price:'$$',tags:['Authentic','Hawaiian'],url:'https://www.kbhmaui.com'},
+    {name:'Wailea Beach Resort',stars:4,price:'$$$',tags:['Marriott','Wailea'],url:'https://www.marriott.com/hotels/travel/oggmc-wailea-beach-resort-marriott-maui'},
+    {name:'Hotel Wailea',stars:5,price:'$$$$',tags:['Adults Only','Boutique'],url:'https://www.hotelwailea.com'},
+    {name:'Travaasa Hana',stars:5,price:'$$$$',tags:['Hana','Remote'],url:'https://www.travaasa.com/hana'},
+  ],
+  mauiRestaurants: [
+    {name:"Mama's Fish House",stars:5,price:'$$$$',tags:['Seafood','Legendary'],url:'https://www.mamasfishhouse.com'},
+    {name:'Lineage',stars:5,price:'$$$',tags:['Hawaiian','Wailea'],url:'https://www.lineagemaui.com'},
+    {name:'Spago Maui',stars:5,price:'$$$$',tags:['Wolfgang Puck','Four Seasons'],url:'https://www.wolfgangpuck.com/dining/spago-maui'},
+    {name:'Humble Market Kitchin',stars:5,price:'$$$',tags:['Local','Farm-to-Table'],url:'https://www.humblemarketkitchin.com'},
+    {name:'Migrant Maui',stars:5,price:'$$$',tags:['Pacific Rim','Wailea'],url:'https://www.migrantmaui.com'},
+    {name:'Ferraro\'s Bar e Ristorante',stars:5,price:'$$$$',tags:['Italian','Ocean View'],url:'https://www.fourseasons.com/maui/dining/restaurants/ferraros_bar_e_ristorante'},
+    {name:'Lahaina Grill',stars:5,price:'$$$$',tags:['New American','Fine Dining'],url:'https://www.lahainagrill.com'},
+    {name:'Monkeypod Kitchen',stars:4,price:'$$',tags:['Local','Craft Beer'],url:'https://www.monkeypodkitchen.com'},
+    {name:'Leoda\'s Kitchen & Pie Shop',stars:4,price:'$',tags:['Local','Pies'],url:'https://www.leodas.com'},
+    {name:'Café O\'Lei',stars:4,price:'$$',tags:['Local','Casual'],url:'https://www.cafeoleirestaurants.com'},
+    {name:'Tin Roof Maui',stars:4,price:'$',tags:['Local','Sheldon Simeon'],url:'https://www.tinroofmaui.com'},
+    {name:'Geste Shrimp Truck',stars:4,price:'$',tags:['Food Truck','Famous'],url:'https://maps.google.com/?q=Geste+Shrimp+Truck+Maui'},
+  ],
+  kauaiHotels: [
+    {name:'Grand Hyatt Kauai',stars:5,price:'$$$$',tags:['Poipu','Lagoon'],url:'https://www.hyatt.com/en-US/hotel/hawaii/grand-hyatt-kauai-resort-and-spa/kauig'},
+    {name:'St. Regis Princeville',stars:5,price:'$$$$',tags:['Princeville','Cliff Views'],url:'https://www.marriott.com/hotels/travel/lihxr-the-st-regis-princeville-resort'},
+    {name:'1 Hotel Hanalei Bay',stars:5,price:'$$$$',tags:['Hanalei','Eco-Luxury'],url:'https://www.1hotels.com/hanalei-bay'},
+    {name:'Koloa Landing Resort',stars:5,price:'$$$$',tags:['Poipu','All-Suite'],url:'https://www.marriott.com/hotels/travel/lihak-koloa-landing-resort-at-poipu-autograph-collection'},
+    {name:'Koa Kea Hotel & Resort',stars:4,price:'$$$',tags:['Poipu','Adults Only'],url:'https://www.koakea.com'},
+    {name:'Hanalei Colony Resort',stars:4,price:'$$$',tags:['Na Pali','Secluded'],url:'https://www.hcr.com'},
+    {name:'Waimea Plantation Cottages',stars:4,price:'$$',tags:['Historic','Waimea'],url:'https://www.waimeaplantation.com'},
+    {name:'Sheraton Kauai Resort',stars:4,price:'$$$',tags:['Poipu','Beachfront'],url:'https://www.marriott.com/hotels/travel/lihsi-sheraton-kauai-resort'},
+    {name:'Poipu Beach Athletic Club',stars:4,price:'$$',tags:['Poipu','Tennis'],url:'https://maps.google.com/?q=Poipu+Beach+Kauai'},
+    {name:'Aston Islander on the Beach',stars:3,price:'$$',tags:['Kapaa','Value'],url:'https://www.astonhotels.com/hotel/aston-islander-on-the-beach'},
+    {name:'Kokee Lodge',stars:3,price:'$',tags:['Waimea Canyon','Rustic'],url:'https://www.thecampingcollective.com/kokee-state-park'},
+    {name:'Kauai Shores Hotel',stars:3,price:'$$',tags:['Kapaa','Beachfront'],url:'https://www.kauaishoreshotel.com'},
+  ],
+  kauaiRestaurants: [
+    {name:"Bar Acuda",stars:5,price:'$$$',tags:['Tapas','Hanalei'],url:'https://www.restaurantbaracuda.com'},
+    {name:'Hukilau Lanai',stars:5,price:'$$$',tags:['Seafood','Kapaa'],url:'https://www.hukilaulanai.com'},
+    {name:"Merriman's Fish House",stars:5,price:'$$$$',tags:['Poipu','Local'],url:'https://www.merrimanshawaii.com/kauai'},
+    {name:'Red Salt',stars:5,price:'$$$$',tags:['Fine Dining','Poipu'],url:'https://www.koakea.com/dining'},
+    {name:'The Dolphin Restaurant',stars:4,price:'$$$',tags:['Seafood','Hanalei'],url:'https://www.hanaleigaupotel.com/dolphin'},
+    {name:'Postcards Café',stars:4,price:'$$',tags:['Vegetarian','Hanalei'],url:'https://www.postcardscafe.com'},
+    {name:'Kauai Pasta',stars:4,price:'$$',tags:['Italian','Kapaa'],url:'https://www.kauaipasta.com'},
+    {name:"Hamura Saimin",stars:5,price:'$',tags:['Local','Legendary'],url:'https://maps.google.com/?q=Hamura+Saimin+Lihue+Kauai'},
+    {name:"Pono Market",stars:4,price:'$',tags:['Poke','Local'],url:'https://maps.google.com/?q=Pono+Market+Kauai'},
+    {name:'Kalaheo Café',stars:4,price:'$',tags:['Breakfast','Local'],url:'https://www.kalaheo.com'},
+    {name:"Mark's Place",stars:4,price:'$',tags:['Local','Plate Lunch'],url:'https://maps.google.com/?q=Marks+Place+Lihue+Kauai'},
+    {name:'Kenji Burger',stars:4,price:'$',tags:['Burgers','Unique'],url:'https://maps.google.com/?q=Kenji+Burger+Kauai'},
+  ],
+  bigHotels: [
+    {name:'Four Seasons Hualalai',stars:5,price:'$$$$',tags:['Kona','Ultra Luxury'],url:'https://www.fourseasons.com/hualalai'},
+    {name:'Mauna Kea Beach Hotel',stars:5,price:'$$$$',tags:['Kohala','Historic'],url:'https://www.maunakeasortresort.com'},
+    {name:'Fairmont Orchid',stars:5,price:'$$$$',tags:['Kohala Coast','Spa'],url:'https://www.fairmont.com/orchid-hawaii'},
+    {name:'Mauna Lani Resort',stars:5,price:'$$$$',tags:['Kohala','Auberge'],url:'https://www.maunalani.com'},
+    {name:'Hilton Waikoloa Village',stars:4,price:'$$$',tags:['Waikoloa','Dolphins'],url:'https://www.hiltonwaikoloavillage.com'},
+    {name:'Waikoloa Beach Marriott',stars:4,price:'$$$',tags:['Waikoloa','Golf'],url:'https://www.marriott.com/hotels/travel/koamc-waikoloa-beach-marriott-resort-and-spa'},
+    {name:'King Kamehameha Hotel',stars:4,price:'$$',tags:['Kailua-Kona','Historic'],url:'https://www.konabeachhotel.com'},
+    {name:'Outrigger Kona Resort',stars:4,price:'$$$',tags:['Kona','Manta Rays'],url:'https://www.outrigger.com/hotels-resorts/hawaii/big-island/outrigger-kona-resort-and-spa'},
+    {name:'Hilo Hawaiian Hotel',stars:3,price:'$$',tags:['Hilo','Bay View'],url:'https://www.castlehotels.com/hotel/hilo-hawaiian-hotel'},
+    {name:'Volcano House',stars:3,price:'$$',tags:['Volcano NP','Unique'],url:'https://www.hawaiivolcanohouse.com'},
+    {name:'Waimea Country Lodge',stars:3,price:'$',tags:['Waimea','Upcountry'],url:'https://maps.google.com/?q=Waimea+Country+Lodge+Big+Island'},
+    {name:'Sheraton Kona Resort',stars:4,price:'$$$',tags:['Keauhou','Ocean View'],url:'https://www.marriott.com/hotels/travel/koash-sheraton-kona-resort-and-spa-at-keauhou-bay'},
+  ],
+  bigRestaurants: [
+    {name:"Brown's Beach House",stars:5,price:'$$$$',tags:['Oceanfront','Fairmont'],url:'https://www.fairmont.com/orchid-hawaii/dining/browns-beach-house'},
+    {name:'Merriman\'s Waimea',stars:5,price:'$$$$',tags:['Farm-to-Table','Pioneer'],url:'https://www.merrimanshawaii.com/waimea'},
+    {name:'Holuakoa Café',stars:4,price:'$$',tags:['Coffee Farm','Kona'],url:'https://maps.google.com/?q=Holuakoa+Cafe+Big+Island'},
+    {name:"Jackie Rey's Ohana Grill",stars:4,price:'$$',tags:['Local','Kona'],url:'https://www.jackiereys.com'},
+    {name:"Kenichi Pacific",stars:5,price:'$$$',tags:['Japanese','Kona'],url:'https://www.kenichipacific.com'},
+    {name:'Lava Lava Beach Club',stars:4,price:'$$',tags:['Beachfront','Waikoloa'],url:'https://www.lavalavabeachclub.com'},
+    {name:"Island Lava Java",stars:4,price:'$',tags:['Breakfast','Kona'],url:'https://www.islandlavajava.com'},
+    {name:'Cafe Pesto',stars:4,price:'$$',tags:['Pizza','Hilo'],url:'https://www.cafepesto.com'},
+    {name:"Tex Drive-In",stars:4,price:'$',tags:['Malasadas','Iconic'],url:'https://maps.google.com/?q=Tex+Drive+In+Honokaa+Big+Island'},
+    {name:"KPC - Kilauea Pub",stars:4,price:'$$',tags:['Gastropub','Volcano'],url:'https://maps.google.com/?q=Kilauea+Pub+Volcano+Big+Island'},
+    {name:"Sushi Shiono",stars:5,price:'$$$',tags:['Japanese','Kona'],url:'https://maps.google.com/?q=Sushi+Shiono+Kona'},
+    {name:"Quinn's Almost By The Sea",stars:4,price:'$',tags:['Local','Bar'],url:'https://maps.google.com/?q=Quinns+Almost+By+The+Sea+Kona'},
+  ],
+};
+
+Object.keys(HR_DATA).forEach(key => buildHRCards(key, HR_DATA[key]));
 if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
