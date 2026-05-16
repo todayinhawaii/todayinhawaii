@@ -115,6 +115,14 @@ def about():
 def hiking():
     return send_from_directory(".", "hiking.html")
 
+@app.route("/beaches")
+def beaches():
+    return send_from_directory(".", "beaches.html")
+
+@app.route("/food")
+def food():
+    return send_from_directory(".", "food.html")
+
 @app.route("/admin")
 def admin():
     return send_from_directory(".", "admin.html")
@@ -128,6 +136,8 @@ def sitemap():
   <url><loc>https://www.todayinhawaii.com/maui</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://www.todayinhawaii.com/kauai</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://www.todayinhawaii.com/bigisland</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.todayinhawaii.com/food</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.todayinhawaii.com/beaches</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.todayinhawaii.com/hiking</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.todayinhawaii.com/about</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.todayinhawaii.com/privacy</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
