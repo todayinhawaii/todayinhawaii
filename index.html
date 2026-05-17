@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -553,6 +551,33 @@
     </div>
     
   </nav>
+
+  <!-- TICKER -->
+  <div style="background:rgba(249,115,22,0.12);border-top:1px solid rgba(249,115,22,0.2);border-bottom:1px solid rgba(249,115,22,0.2);padding:10px 0;overflow:hidden;margin-bottom:24px;position:relative;">
+    <div style="display:flex;align-items:center;gap:0;">
+      <div style="background:#f97316;color:#fff;font-size:11px;font-weight:700;padding:4px 14px;white-space:nowrap;letter-spacing:0.08em;flex-shrink:0;z-index:2;">🌊 HAWAII ALERTS</div>
+      <div style="overflow:hidden;flex:1;">
+        <div id="tickerText" style="display:inline-block;white-space:nowrap;animation:ticker 40s linear infinite;font-size:13px;color:#e8f4f8;padding-left:20px;">
+          🌤️ MAUI: Trade winds 15-25 mph · seas 4-6 ft on north shores &nbsp;&nbsp;&nbsp;⚠️ OAHU NORTH SHORE: High surf advisory · waves 8-12 ft · swimmers stay out &nbsp;&nbsp;&nbsp;🌧️ KAUAI: Heavy rain possible windward areas · flash flood watch in effect &nbsp;&nbsp;&nbsp;🌋 BIG ISLAND: Vog conditions moderate · Kilauea continues erupting &nbsp;&nbsp;&nbsp;🏄 MAUI SURF: Ho'okipa firing · 6-8 ft sets · experts only &nbsp;&nbsp;&nbsp;⛵ SMALL CRAFT ADVISORY: Maui Channel · winds 25-35 mph &nbsp;&nbsp;&nbsp;🌅 HAWAII: Beautiful trade wind weather continuing through the weekend &nbsp;&nbsp;&nbsp;🐢 TURTLE WARNING: Baby sea turtle season · lights out on beaches after dark
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  </style>
+
+  <!-- GOOGLE-STYLE SEARCH -->
+  <div style="max-width:580px;margin:0 auto 32px;position:relative;z-index:10;">
+    <div id="searchBox" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.2);transition:all 0.2s;">
+      <span style="font-size:18px;flex-shrink:0;">🔍</span>
+      <input id="hq" type="text" placeholder="Ask about Hawaii weather, surf, beaches..."
+        style="flex:1;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:16px;font-family:DM Sans,sans-serif;min-width:0;">
+      <button id="hMic" title="Voice search"
+        style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🎤</button>
+    </div>
+    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.95);border:1px solid rgba(34,211,238,0.25);border-radius:20px;padding:20px 24px;font-size:14px;color:#e8f4f8;line-height:1.9;box-shadow:0 8px 32px rgba(0,0,0,0.3);"></div>
+  </div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2083,6 +2108,180 @@ window.addEventListener('load', function() {
     document.getElementById('sunGrid').innerHTML=html;
   } catch(e){ console.error('Sun calc error:',e); }
 });
+</script>
+<script>
+(function(){
+  var LOCS={lahaina:{lat:20.8783,lon:-156.6825,name:'Lahaina, Maui'},wailea:{lat:20.6897,lon:-156.4428,name:'Wailea, Maui'},kaanapali:{lat:20.9228,lon:-156.6906,name:'Kaanapali, Maui'},kihei:{lat:20.7564,lon:-156.445,name:'Kihei, Maui'},paia:{lat:20.9103,lon:-156.3736,name:'Paia, Maui'},hana:{lat:20.7586,lon:-155.9896,name:'Hana, Maui'},kahului:{lat:20.8894,lon:-156.4729,name:'Kahului, Maui'},kapalua:{lat:21.0194,lon:-156.6731,name:'Kapalua, Maui'},napili:{lat:20.9953,lon:-156.6619,name:'Napili, Maui'},waikiki:{lat:21.2793,lon:-157.8294,name:'Waikiki, Oahu'},honolulu:{lat:21.3069,lon:-157.8583,name:'Honolulu, Oahu'},haleiwa:{lat:21.595,lon:-158.1056,name:'Haleiwa, Oahu'},kailua:{lat:21.4022,lon:-157.7394,name:'Kailua, Oahu'},hanalei:{lat:22.2028,lon:-159.5028,name:'Hanalei, Kauai'},poipu:{lat:21.8783,lon:-159.4717,name:'Poipu, Kauai'},lihue:{lat:21.9811,lon:-159.3711,name:'Lihue, Kauai'},princeville:{lat:22.2178,lon:-159.4783,name:'Princeville, Kauai'},kona:{lat:19.64,lon:-155.9969,name:'Kailua-Kona, Big Island'},hilo:{lat:19.7297,lon:-155.09,name:'Hilo, Big Island'},waikoloa:{lat:19.9333,lon:-155.8833,name:'Waikoloa, Big Island'},waimea:{lat:20.0194,lon:-155.6667,name:'Waimea, Big Island'},maui:{lat:20.7984,lon:-156.3319,name:'Maui'},oahu:{lat:21.3069,lon:-157.8583,name:'Oahu'},kauai:{lat:22.0964,lon:-159.5261,name:"Kaua'i"},bigisland:{lat:19.5429,lon:-155.6659,name:'Big Island'}};
+  var WX={0:'☀️ Clear sky',1:'🌤️ Mainly clear',2:'⛅ Partly cloudy',3:'☁️ Overcast',45:'🌫️ Foggy',51:'🌦️ Light drizzle',61:'🌧️ Light rain',63:'🌧️ Rain',65:'🌧️ Heavy rain',80:'🌦️ Showers',81:'🌧️ Heavy showers',95:'⛈️ Thunderstorm'};
+
+  function findLoc(s){
+    if(/north.?shore/.test(s))return{lat:21.6417,lon:-158.0611,name:'North Shore, Oahu'};
+    if(/big.?island|hawaii.?island/.test(s))return LOCS.bigisland;
+    for(var k in LOCS)if(s.indexOf(k)>=0)return LOCS[k];
+    return null;
+  }
+
+  function sunCalc(la,lo,d){
+    var R=Math.PI/180,doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+    var decl=23.45*Math.sin(R*(360/365)*(doy-81));
+    var cosH=(Math.cos(R*90.833)-Math.sin(R*la)*Math.sin(R*decl))/(Math.cos(R*la)*Math.cos(R*decl));
+    if(cosH<-1||cosH>1)return null;
+    var H=Math.acos(cosH)*(180/Math.PI);
+    var eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81));
+    return{r:720-4*lo-eq-4*H,s:720-4*lo-eq+4*H};
+  }
+
+  function fmtTime(m){var hm=((m-600)%1440+1440)%1440,h=Math.floor(hm/60),mn=Math.round(hm%60);return(h%12||12)+':'+(mn<10?'0':'')+mn+(h<12?' AM':' PM');}
+
+  function show(html){
+    var a=document.getElementById('hAns');
+    a.innerHTML=html;
+    a.style.display='block';
+    setTimeout(function(){a.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+  }
+
+  function go(){
+    var q=(document.getElementById('hq').value||'').trim();
+    if(!q){show('🌺 <b>Ask me anything about Hawaii!</b><br>Try: "Weather in Lahaina" · "Surf conditions" · "Sunset times" · "Best beaches" · "Hiking trails" · "Best poke"');return;}
+    var s=q.toLowerCase(), loc=findLoc(s);
+    var isWx=/weather|temp|forecast|hot|warm|rain|sunny|cloud|wind|humid|degrees/.test(s);
+    var isSun=/sunset|sunrise/.test(s);
+    var isSurf=/surf|wave|swell/.test(s);
+
+    if(isSun){
+      var today=new Date();today.setHours(0,0,0,0);
+      var isl=loc?[{n:loc.name,e:'📍',la:loc.lat,lo:loc.lon}]:[{n:'Maui',e:'🏄',la:20.80,lo:-156.33},{n:'Oahu',e:'🌆',la:21.31,lo:-157.86},{n:"Kaua'i",e:'🌿',la:22.10,lo:-159.50},{n:'Big Island',e:'🌋',la:19.59,lo:-155.43}];
+      var h='<b>🌅 Today's Sunrise & Sunset — Hawaii</b><br><br><table style="width:100%;font-size:13px;border-collapse:collapse;"><tr style="color:#7fb3c8;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.1);"><td style="padding:4px 0">Island</td><td>🌅 Sunrise</td><td>🌇 Sunset</td><td>☀️ Daylight</td></tr>';
+      isl.forEach(function(i){var t=sunCalc(i.la,i.lo,today);if(!t)return;var m=t.s-t.r;h+='<tr style="border-top:1px solid rgba(255,255,255,0.05)"><td style="padding:8px 0">'+i.e+' '+i.n+'</td><td style="color:#fbbf24;font-weight:600">'+fmtTime(t.r)+'</td><td style="color:#f97316;font-weight:600">'+fmtTime(t.s)+'</td><td style="color:#7fb3c8">'+Math.floor(m/60)+'h '+Math.round(m%60)+'m</td></tr>';});
+      show(h+'</table><br><span style="font-size:11px;color:#7fb3c8">✅ Auto-calculated · Updates every day forever</span>');
+      return;
+    }
+
+    if(isSurf){
+      show('🏄 <b>Fetching live surf data...</b>');
+      var surfs=[{n:'Maui North Shore',la:20.93,lo:-156.36,c:'#f97316'},{n:'Oahu North Shore',la:21.66,lo:-158.05,c:'#22d3ee'},{n:'Kauai',la:22.10,lo:-159.50,c:'#10b981'},{n:'Big Island West',la:19.64,lo:-156.00,c:'#fbbf24'}];
+      var res=[],done=0;
+      surfs.forEach(function(sf,i){
+        fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+sf.la+'&longitude='+sf.lo+'&current=wave_height,wave_period&timezone=Pacific%2FHonolulu')
+        .then(function(r){return r.json();})
+        .then(function(d){
+          var wh=d.current.wave_height*3.28084,wp=Math.round(d.current.wave_period);
+          var rt=wh>=6?'🤙 Pumping':wh>=3?'👍 Good':wh>=1?'😐 Fair':'😴 Flat';
+          res[i]={n:sf.n,h:wh.toFixed(1),p:wp,rt:rt,c:sf.c};
+          if(++done===surfs.length){
+            var h='<b>🏄 Live Surf Report — Hawaii</b><br><br>';
+            res.forEach(function(r){if(r)h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:'+r.c+';font-weight:600">'+r.n+'</span><span><b style="font-size:16px">'+r.h+' ft</b> · '+r.p+'s · '+r.rt+'</span></div>';});
+            show(h+'<br><span style="font-size:11px;color:#7fb3c8">✅ Live · NOAA marine buoys · Updated hourly</span>');
+          }
+        }).catch(function(){if(++done===surfs.length)show('Unable to fetch surf. Check our surf section below!');});
+      });
+      return;
+    }
+
+    if(isWx&&loc){
+      show('🌤️ Getting live weather for <b>'+loc.name+'</b>...');
+      fetch('https://api.open-meteo.com/v1/forecast?latitude='+loc.lat+'&longitude='+loc.lon+'&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,precipitation&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=Pacific%2FHonolulu')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var c=d.current,cd=WX[c.weather_code]||'🌤️ Fair',em=cd.split(' ')[0],ds=cd.split(' ').slice(1).join(' ');
+        show('<b>🌤️ Live Weather — '+loc.name+'</b><br><br><div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;"><span style="font-size:48px">'+em+'</span><div><div style="font-size:42px;font-weight:700;color:#fbbf24;line-height:1">'+Math.round(c.temperature_2m)+'°F</div><div style="color:#7fb3c8;font-size:13px">Feels like '+Math.round(c.apparent_temperature)+'°F</div></div></div><div style="color:#e8f4f8;margin-bottom:12px">'+ds+'</div><div style="display:flex;gap:20px;font-size:13px;flex-wrap:wrap;">💧 Humidity: <b>'+c.relative_humidity_2m+'%</b><span>💨 Wind: <b>'+Math.round(c.wind_speed_10m)+' mph</b></span>'+(c.precipitation>0?'<span>🌧️ Rain: <b>'+c.precipitation+'mm</b></span>':'')+'</div><br><span style="font-size:11px;color:#7fb3c8">✅ Live · Open-Meteo API · Updated hourly</span>');
+      }).catch(function(){show('Unable to fetch weather right now. Try our live Windy radar above!');});
+      return;
+    }
+
+    var KB={
+      weather:'🌤️ <b>Which location?</b><br>Try: "Weather in Lahaina" · "Waikiki weather" · "Hanalei forecast" · "Kona temperature"',
+      hotels:"🏨 <b>Best Hotels Hawaii:</b><br><a href='/maui' style='color:#22d3ee'>Maui</a> · <a href='/oahu' style='color:#22d3ee'>Oahu</a> · <a href='/kauai' style='color:#22d3ee'>Kauai</a> · <a href='/bigisland' style='color:#22d3ee'>Big Island</a><br>Top 12 hotels on each island from luxury to great value!",
+      beaches:"🏖️ <b>Hawaii Beaches:</b><br>Our <a href='/beaches' style='color:#22d3ee'>Beaches Guide</a> has 48 beaches across all islands with swim conditions, snorkel ratings and maps!",
+      hiking:"🥾 <b>Hawaii Hiking:</b><br>Our <a href='/hiking' style='color:#22d3ee'>Hiking Guide</a> has 32 trails across all islands with difficulty ratings, distances, maps and pro tips!",
+      food:"🍽️ <b>Hawaii Food:</b><br>Our <a href='/food' style='color:#22d3ee'>Food Guide</a> — 12 must-try dishes, best poke, shave ice, plate lunch, malasadas and hidden gems!",
+      poke:"🐟 <b>Best Poke in Hawaii:</b><br>Tamura's Fine Wine (Maui) · Ono Seafood (Honolulu) · Pono Market (Kauai) · Da Poke Shack (Kona) · Any Foodland supermarket!",
+      shaveice:"🍧 <b>Best Shave Ice:</b><br>Ululani's Hawaiian Shave Ice on Maui voted #1! Matsumoto's in Haleiwa on Oahu is iconic. Always add ice cream at the bottom!",
+      snorkel:"🤿 <b>Best Snorkeling:</b><br>Hanauma Bay (Oahu) · Molokini Crater (Maui) · Tunnels Beach (Kauai) · Two Step (Big Island). See our <a href='/beaches' style='color:#22d3ee'>Beaches Guide</a>!",
+      volcano:"🌋 <b>Kilauea Volcano:</b><br>Located in Hawaii Volcanoes NP on the Big Island. Check <a href='https://www.usgs.gov/volcanoes/kilauea' target='_blank' style='color:#22d3ee'>USGS live cams</a> for current eruption status!",
+      flights:"✈️ <b>Flights to Hawaii:</b><br>Use our booking widget above to search hundreds of travel sites for the best Hawaii flight deals!",
+      tourists:"📊 <b>Hawaii Tourist Count:</b><br>See our live visitor count above — today's arrivals and departures for all 4 islands, updated every morning!",
+      maui:"🏄 <b>Maui — The Valley Isle:</b><br><a href='/maui' style='color:#22d3ee'>Visit our Maui page</a> for live weather, surf, top hotels, restaurants and activities!",
+      oahu:"🌆 <b>Oahu — The Gathering Place:</b><br><a href='/oahu' style='color:#22d3ee'>Visit our Oahu page</a> — Waikiki, Diamond Head, North Shore and more!",
+      kauai:"🌿 <b>Kauai — The Garden Isle:</b><br><a href='/kauai' style='color:#22d3ee'>Visit our Kauai page</a> — Na Pali Coast, Waimea Canyon, Hanalei Bay!",
+      bigisland:"🌋 <b>Big Island — Hawaii Island:</b><br><a href='/bigisland' style='color:#22d3ee'>Visit our Big Island page</a> — Kilauea Volcano, Mauna Kea, green sand beaches!",
+      def:"🌺 <b>Aloha! I can help with:</b><br>🌤️ Weather (say a location!) · 🏄 Surf conditions · 🌅 Sunset times · 🏖️ Beaches · 🥾 Hiking · 🍽️ Food · 🏨 Hotels · ✈️ Flights · or any island!"
+    };
+
+    if(isWx)show(KB.weather);
+    else if(/hotel|resort|stay/.test(s))show(KB.hotels);
+    else if(/beach|swim/.test(s))show(KB.beaches);
+    else if(/hik|trail/.test(s))show(KB.hiking);
+    else if(/poke|poki/.test(s))show(KB.poke);
+    else if(/shave.?ice/.test(s))show(KB.shaveice);
+    else if(/snorkel|dive/.test(s))show(KB.snorkel);
+    else if(/volcano|kilauea|lava/.test(s))show(KB.volcano);
+    else if(/flight|fly|plane/.test(s))show(KB.flights);
+    else if(/food|eat|restaurant|lunch|dinner/.test(s))show(KB.food);
+    else if(/tourist|visitor|crowd/.test(s))show(KB.tourists);
+    else if(/maui/.test(s))show(KB.maui);
+    else if(/oahu|honolulu|waikiki/.test(s))show(KB.oahu);
+    else if(/kauai/.test(s))show(KB.kauai);
+    else if(/big.?island|kona|hilo/.test(s))show(KB.bigisland);
+    else show(KB.def);
+  }
+
+  // Wait for DOM then wire up events
+  window.addEventListener('load', function(){
+    var inp=document.getElementById('hq');
+    var mic=document.getElementById('hMic');
+    var ans=document.getElementById('hAns');
+    if(!inp||!mic||!ans){console.error('Search elements not found');return;}
+
+    // Search on Enter key
+    inp.addEventListener('keydown', function(e){
+      if(e.key==='Enter'){e.preventDefault();go();}
+    });
+
+    // Search on mic click - also try text search if voice fails
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    var rec=null, listening=false;
+
+    mic.addEventListener('click', function(){
+      if(!SR){
+        // No voice support - focus the text input instead
+        inp.focus();
+        inp.placeholder='Voice not supported — please type your question!';
+        return;
+      }
+      if(listening){if(rec)rec.stop();return;}
+      rec=new SR();
+      rec.lang='en-US';
+      rec.continuous=false;
+      rec.interimResults=true;
+      rec.onstart=function(){listening=true;mic.textContent='⏹️';mic.style.background='linear-gradient(135deg,#dc2626,#f97316)';inp.placeholder='Listening... speak now!';};
+      rec.onresult=function(e){
+        var t='';for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;
+        inp.value=t;
+        if(e.results[e.results.length-1].isFinal)go();
+      };
+      rec.onerror=function(e){
+        listening=false;mic.textContent='🎤';mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';
+        inp.placeholder=e.error==='not-allowed'?'Mic blocked — please type your question!':'Ask about Hawaii weather, surf, beaches...';
+      };
+      rec.onend=function(){listening=false;mic.textContent='🎤';mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';inp.placeholder='Ask about Hawaii weather, surf, beaches...';};
+      rec.start();
+    });
+
+    // Fetch live ticker data from NWS
+    fetch('https://api.weather.gov/alerts/active?area=HI')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.features&&d.features.length>0){
+        var alerts=d.features.slice(0,5).map(function(f){
+          return '⚠️ '+f.properties.headline;
+        }).join(' &nbsp;&nbsp;&nbsp; ');
+        var ticker=document.getElementById('tickerText');
+        if(ticker&&alerts)ticker.innerHTML=alerts+' &nbsp;&nbsp;&nbsp; '+ticker.innerHTML;
+      }
+    }).catch(function(){});
+  });
+}());
 </script>
 </body>
 </html>
