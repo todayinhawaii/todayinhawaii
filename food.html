@@ -126,21 +126,9 @@ footer a{color:var(--foam);text-decoration:none;}
       <a href="/about" class="nav-link">☀️ About</a>
       <a href="/privacy" class="nav-link">🔒 Privacy</a>
     </nav>
-    <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu">☰</button>
-
-
-    <a href="/" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🌺 Home</a>
-    <a href="/oahu" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🌆 Oahu</a>
-    <a href="/maui" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🏄 Maui</a>
-    <a href="/kauai" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🌿 Kauaʻi</a>
-    <a href="/bigisland" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🌋 Big Island</a>
-    <a href="/hiking" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🥾 Hiking</a>
-    <a href="/beaches" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🏖️ Beaches</a>
-    <a href="/food" class="mob-link active" onclick="document.getElementById('mobileMenu').classList.remove('open')">🍽️ Food</a>
-    <a href="/about" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">☀️ About</a>
-    <a href="/privacy" class="mob-link" onclick="document.getElementById('mobileMenu').classList.remove('open')">🔒 Privacy</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
   </div>
-<div class="wrap">
+
 <section class="hero">
     <div class="hero-eyebrow">12 Must-Try Dishes · Island Food Guides · Hidden Gems</div>
     <h1>Hawaii <em>Food Guide</em></h1>
@@ -781,8 +769,27 @@ footer a{color:var(--foam);text-decoration:none;}
     <p style="margin-top:6px;">Today in Hawaiʻi — Not affiliated with the State of Hawaii · © 2026</p>
   </div>
 </footer>
-<div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-close" onclick="document.getElementById('mobileMenu').classList.remove('open')">✕</button>
-  <div class="mob-title">🌊 Today in Hawaiʻi</div>
+
+<div class="mobile-menu" id="mobileMenu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+  <button onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('mobileMenu').style.display='none';" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;cursor:pointer;color:#e8f4f8;font-size:20px;">✕</button>
+  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#22d3ee;margin-bottom:12px;">🌊 Today in Hawaiʻi</div>
+  <a href="/" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌺 Home</a>
+  <a href="/oahu" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌆 Oahu</a>
+  <a href="/maui" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🏄 Maui</a>
+  <a href="/kauai" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌿 Kauaʻi</a>
+  <a href="/bigisland" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌋 Big Island</a>
+  <a href="/hiking" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🥾 Hiking</a>
+  <a href="/beaches" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🏖️ Beaches</a>
+  <a href="/food" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.15);color:#22d3ee;background:rgba(34,211,238,0.1);margin:3px 0;">🍽️ Food</a>
+  <a href="/about" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">☀️ About</a>
+  <a href="/privacy" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🔒 Privacy</a>
+</div>
+<script>
+function toggleMenu(){
+  var m=document.getElementById('mobileMenu');
+  if(m.style.display==='flex'){m.style.display='none';document.body.style.overflow='';}
+  else{m.style.display='flex';document.body.style.overflow='hidden';}
+}
+</script>
 </body>
 </html>
