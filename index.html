@@ -604,8 +604,54 @@
     </div>
     <div id="booking-flights" class="booking-panel">
       <div class="booking-form">
-        <div class="booking-field"><label class="booking-label">✈️ Flying from</label><input type="text" id="fly-from" class="booking-input" placeholder="City or airport (e.g. Los Angeles)"></div>
-        <div class="booking-field"><label class="booking-label">🌺 Flying to</label><select id="fly-to" class="booking-input"><option value="HNL">Honolulu, Oahu (HNL)</option><option value="OGG">Kahului, Maui (OGG)</option><option value="LIH">Lihue, Kauai (LIH)</option><option value="KOA">Kona, Big Island (KOA)</option><option value="ITO">Hilo, Big Island (ITO)</option></select></div>
+        <div class="booking-field"><label class="booking-label">✈️ Flying from</label>
+<input type="text" id="fly-from" class="booking-input" placeholder="City or airport (e.g. Los Angeles, OGG)" list="airports-from">
+<datalist id="airports-from">
+  <option value="Kahului, Maui (OGG)">
+  <option value="Honolulu, Hawaii (HNL)">
+  <option value="Lihue, Kauai (LIH)">
+  <option value="Kona, Big Island (KOA)">
+  <option value="Hilo, Big Island (ITO)">
+  <option value="Los Angeles (LAX)">
+  <option value="San Francisco (SFO)">
+  <option value="Seattle (SEA)">
+  <option value="New York (JFK)">
+  <option value="Las Vegas (LAS)">
+  <option value="Chicago (ORD)">
+  <option value="Dallas (DFW)">
+  <option value="Phoenix (PHX)">
+  <option value="Denver (DEN)">
+  <option value="Portland (PDX)">
+  <option value="Vancouver (YVR)">
+  <option value="Tokyo (NRT)">
+  <option value="Sydney (SYD)">
+  <option value="London (LHR)">
+  <option value="Toronto (YYZ)">
+</datalist></div>
+        <div class="booking-field"><label class="booking-label">🌺 Flying to</label>
+<input type="text" id="fly-to" class="booking-input" placeholder="City or airport (e.g. Honolulu, Paris, Tokyo)" list="airports-to">
+<datalist id="airports-to">
+  <option value="Honolulu, Hawaii (HNL)">
+  <option value="Kahului, Maui (OGG)">
+  <option value="Lihue, Kauai (LIH)">
+  <option value="Kona, Big Island (KOA)">
+  <option value="Hilo, Big Island (ITO)">
+  <option value="New York (JFK)">
+  <option value="Los Angeles (LAX)">
+  <option value="San Francisco (SFO)">
+  <option value="Seattle (SEA)">
+  <option value="Las Vegas (LAS)">
+  <option value="Chicago (ORD)">
+  <option value="Dallas (DFW)">
+  <option value="London (LHR)">
+  <option value="Tokyo (NRT)">
+  <option value="Sydney (SYD)">
+  <option value="Vancouver (YVR)">
+  <option value="Toronto (YYZ)">
+  <option value="Paris (CDG)">
+  <option value="Cancun (CUN)">
+  <option value="Bangkok (BKK)">
+</datalist></div>
         <div class="booking-field"><label class="booking-label">📅 Depart</label><input type="date" id="fly-depart" class="booking-input"></div>
         <div class="booking-field"><label class="booking-label">📅 Return</label><input type="date" id="fly-return" class="booking-input"></div>
         <div class="booking-row">
@@ -2030,11 +2076,10 @@ function setBookingTab(tab, btn) {
 
 function searchFlights() {
   var from = (document.getElementById('fly-from').value || 'Los Angeles').trim();
-  var to = document.getElementById('fly-to').value;
-  var toName = document.getElementById('fly-to').options[document.getElementById('fly-to').selectedIndex].text;
+  var to = (document.getElementById('fly-to').value || 'Honolulu Hawaii').trim();
   var depart = document.getElementById('fly-depart').value;
   var ret = document.getElementById('fly-return').value;
-  var q = from + ' to ' + toName + ' flights ' + depart;
+  var q = from + ' to ' + to + ' flights ' + depart + ' return ' + ret;
   var url = 'https://www.google.com/travel/flights?q=' + encodeURIComponent(q);
   window.open(url, '_blank');
 }
