@@ -1,120 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today in Hawaii — Live Tourist &amp; Visitor Count | todayinhawaii.com</title>
+<meta name="description" content="How many tourists are in Hawaii today? Live daily visitor arrivals for Maui, Oahu, Kauai and the Big Island. Plus live weather, surf report and where visitors come from. Updated every morning from Hawaii DBEDT.">
+
+<!-- SEO Keywords -->
+<meta name="keywords" content="Hawaii tourists today, how many tourists in Hawaii, Hawaii visitor count, Maui tourists, Oahu visitors, Hawaii daily arrivals, Hawaii tourism statistics, Hawaii travel data, tourists in Hawaii, Hawaii visitor tracker, Hawaii live webcam, Maui live camera, Oahu live webcam, Kauai live camera, Big Island live webcam, Hawaii beach cam, Waikiki live cam, Hawaii surf cam, Hawaii volcano cam, live camera Hawaii">
+<meta name="author" content="Today in Hawaii">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.todayinhawaii.com">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+
+<!-- Open Graph for Social Sharing -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.todayinhawaii.com">
+<meta property="og:title" content="Today in Hawaii — How Many Tourists Are Here Right Now?">
+<meta property="og:description" content="Live daily tourist arrivals for Maui, Oahu, Kauai and the Big Island. Weather, surf and visitor origins updated every morning from official Hawaii state data.">
+<meta property="og:image" content="https://www.todayinhawaii.com/og-image.jpg">
+<meta property="og:site_name" content="Today in Hawaii">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://www.todayinhawaii.com">
+<meta name="twitter:title" content="Today in Hawaii — Live Tourist Tracker">
+<meta name="twitter:description" content="How many tourists are in Hawaii today? Live daily visitor counts for all Hawaiian islands plus weather and surf.">
+<meta name="twitter:image" content="https://www.todayinhawaii.com/og-image.jpg">
+
+<!-- Structured Data for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Today in Hawaii",
+  "url": "https://www.todayinhawaii.com",
+  "description": "Live daily tourist arrivals, weather and surf report for all Hawaiian islands. Data from Hawaii DBEDT updated every morning.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Today in Hawaii",
+    "url": "https://www.todayinhawaii.com"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.todayinhawaii.com",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYT8G6PD8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2SYT8G6PD8');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --ocean:   #0a2e44;
+    --deep:    #061d2c;
+    --wave:    #0e7490;
+    --foam:    #22d3ee;
+    --sand:    #f5e6c8;
+    --coral:   #f97316;
+    --gold:    #fbbf24;
+    --green:   #10b981;
+    --text:    #e8f4f8;
+    --muted:   #7fb3c8;
+    --card-bg: rgba(255,255,255,0.04);
+    --border:  rgba(255,255,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(14,116,144,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(249,115,22,0.12) 0%, transparent 50%),
+      linear-gradient(180deg, #061d2c 0%, #0a2e44 50%, #061d2c 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(-8deg, transparent, transparent 80px, rgba(14,116,144,0.04) 80px, rgba(14,116,144,0.04) 81px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── HEADER ── */
+  header { padding: 32px 0 0; position: relative; z-index: 1; }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(--wave), var(--foam)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .logo-text span { color: var(--foam); }
+  .last-updated { font-size: 13px; color: var(--muted); background: var(--card-bg); border: 1px solid var(--border); border-radius: 99px; padding: 6px 16px; }
+  .last-updated strong { color: var(--foam); }
+
+  /* ── HERO ── */
+  .hero { padding: 56px 0 40px; text-align: center; }
+  .hero-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--foam); margin-bottom: 16px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 72px); font-weight: 900; line-height: 1.05; color: var(--text); margin-bottom: 20px; }
+  .hero h1 em { font-style: normal; color: var(--foam); }
+  .hero-sub { font-size: 17px; color: var(--muted); font-weight: 300; max-width: 520px; margin: 0 auto 40px; line-height: 1.6; }
+
+  /* ── STATE BANNER ── */
+  .state-banner { background: linear-gradient(135deg, rgba(14,116,144,0.3), rgba(34,211,238,0.1)); border: 1px solid rgba(34,211,238,0.2); border-radius: 20px; padding: 28px 36px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 48px; }
+  .state-label { font-size: 13px; color: var(--foam); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 6px; }
+  .state-number { font-family: 'Playfair Display', serif; font-size: clamp(40px, 6vw, 64px); font-weight: 900; color: #fff; line-height: 1; }
+  .state-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .state-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+  .state-stat { text-align: center; }
+  .state-stat .val { font-size: 24px; font-weight: 500; color: var(--text); }
+  .state-stat .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pulse-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+
+  /* ── SHARED ── */
+  .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
+  .section-note { display: inline-block; font-size: 12px; background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); border-radius: 99px; padding: 3px 12px; margin-left: 10px; vertical-align: middle; }
+
+  /* ── SUNRISE / SUNSET ── */
+  .sun-section { margin-bottom: 56px; }
+  .sun-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 28px; }
+  .sun-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+  .sun-card::before { content: ''; position: absolute; inset: 0; opacity: 0.04; border-radius: 20px; }
+  .sun-card[data-island="Maui"]::before { background: var(--coral); }
+  .sun-card[data-island="Oahu"]::before { background: var(--foam); }
+  .sun-card[data-island="Kauai"]::before { background: var(--green); }
+  .sun-card[data-island="Big Island"]::before { background: var(--gold); }
+  .sun-island { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .sun-date { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .sun-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .sun-row:last-of-type { border-bottom: none; }
+  .sun-label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .sun-time { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
+  .sun-arc { margin: 16px 0 8px; position: relative; height: 60px; }
+  .sun-arc svg { width: 100%; height: 60px; }
+  .sun-daylight { text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sun-daylight strong { color: var(--gold); }
+  .sun-calendar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .sun-cal-header { padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .sun-select { background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+  .sun-select option { background: #0a2e44; }
+  .sun-cal-grid { padding: 20px 24px; }
+  .sun-cal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sun-cal-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .sun-cal-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+  .sun-cal-table tr:last-child td { border-bottom: none; }
+  .sun-cal-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .sun-rise { color: var(--gold); font-weight: 500; }
+  .sun-set { color: var(--coral); font-weight: 500; }
+  .sun-today { background: rgba(34,211,238,0.06) !important; }
+  .sun-today td { color: var(--foam) !important; }
+  .sun-today .sun-rise { color: #fde68a !important; }
+  .sun-today .sun-set { color: #fb923c !important; }
+
+  .sun-week-table { width:100%; border-collapse:collapse; font-size:12px; margin:12px 0; }
+  .sun-week-table th { text-align:left; padding:6px 8px; font-size:10px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+  .sun-week-table td { padding:8px 8px; border-bottom:1px solid rgba(255,255,255,0.03); color:var(--text); }
+  .sun-week-table tr:last-child td { border-bottom:none; }
+  .sun-week-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+  .sun-cal-link { display:block; margin-top:12px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--foam); text-decoration:none; transition:all 0.15s; }
+  .sun-cal-link:hover { background:rgba(34,211,238,0.1); border-color:var(--foam); }
+  .sun-link-card { display:block; background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px; text-decoration:none; text-align:center; transition:transform 0.2s,border-color 0.2s; }
+  .sun-link-card:hover { transform:translateY(-3px); }
+
+  /* ── LOCATION BUTTONS ── */
+  .loc-section { margin-top:8px; }
+  .loc-island-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .loc-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .loc-btn { padding:8px 16px; border-radius:99px; font-size:13px; font-weight:500; border:1px solid var(--border); background:var(--card-bg); color:var(--text); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .loc-btn:hover { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.1); transform:translateY(-1px); }
+  .loc-btn.active { border-color:var(--foam); color:var(--foam); background:rgba(34,211,238,0.15); }
+
+  /* ── WEATHER WIDGET TABS ── */
+  .wx-widget-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .wx-wtab { padding:10px 22px; border-radius:12px; font-size:14px; font-weight:500; border:1px solid var(--border); background:var(--card-bg); color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .wx-wtab.active { background:rgba(34,211,238,0.15); border-color:var(--foam); color:var(--foam); }
+  .wx-wtab:hover { border-color:var(--foam); color:var(--foam); }
+  .wx-widget-panel { display:none; }
+  .wx-widget-panel.active { display:block; }
+
+  /* ── WINDY ── */
+  .windy-card { background:var(--card-bg); border:1px solid var(--border); border-radius:24px; overflow:hidden; margin-bottom:32px; }
+  .windy-label { display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid var(--border); font-size:15px; font-weight:500; color:var(--text); }
+  .windy-badge { font-size:12px; color:var(--green); background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); border-radius:99px; padding:4px 14px; display:flex; align-items:center; gap:4px; }
+  .windy-embed { width:100%; aspect-ratio:16/9; min-height:400px; }
+  .windy-embed iframe { width:100%; height:100%; display:block; }
+  .windy-footer { display:flex; align-items:center; justify-content:space-between; padding:12px 24px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); flex-wrap:wrap; gap:8px; }
+
+  /* ── WEATHER TABS ── */
+  .wx-island-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .wx-itab { padding:8px 20px; border-radius:99px; font-size:13px; font-weight:500; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .wx-itab.active { background:rgba(34,211,238,0.15); border-color:var(--foam); color:var(--foam); }
+  .wx-island-panel { display:none; }
+  .wx-island-panel.active { display:block; }
+
+  /* ── ANIMATED WEATHER ── */
+  .wx-anim { position:absolute; inset:0; overflow:hidden; pointer-events:none; border-radius:20px; }
+  .raindrop { position:absolute; width:2px; border-radius:99px; background:rgba(147,197,253,0.6); animation:fall linear infinite; }
+  @keyframes fall { 0%{transform:translateY(-20px);opacity:0;} 10%{opacity:1;} 90%{opacity:1;} 100%{transform:translateY(120px);opacity:0;} }
+  .sun-ray { position:absolute; top:12px; right:12px; width:40px; height:40px; }
+  .sun-circle { width:18px; height:18px; background:#fbbf24; border-radius:50%; position:absolute; top:11px; left:11px; box-shadow:0 0 12px #fbbf24; animation:glow 2s ease-in-out infinite; }
+  @keyframes glow { 0%,100%{box-shadow:0 0 8px #fbbf24;} 50%{box-shadow:0 0 20px #fbbf24,0 0 30px rgba(251,191,36,0.4);} }
+  .sun-ray-line { position:absolute; width:2px; height:6px; background:#fbbf24; border-radius:99px; top:50%; left:50%; transform-origin:0 -10px; opacity:0.8; }
+  .cloud-anim { position:absolute; animation:drift 8s ease-in-out infinite alternate; opacity:0.15; }
+  @keyframes drift { 0%{transform:translateX(0);} 100%{transform:translateX(10px);} }
+
+  .wx-detail-label { font-size:13px; color:var(--foam); margin-bottom:16px; background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.15); border-radius:99px; padding:6px 16px; display:inline-block; }
+
+  /* ── WEATHER ── */
+  .weather-section { margin-bottom: 56px; }
+  .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .wx-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+  .wx-card::before { content: ''; position: absolute; inset: 0; opacity: 0.04; border-radius: 20px; }
+  .wx-card[data-island="Maui"]::before       { background: var(--coral); }
+  .wx-card[data-island="Oahu"]::before       { background: var(--foam); }
+  .wx-card[data-island="Kauai"]::before      { background: var(--green); }
+  .wx-card[data-island="Big Island"]::before { background: var(--gold); }
+  .wx-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .wx-island { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .wx-location { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .wx-icon { font-size: 36px; line-height: 1; }
+  .wx-temp { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; }
+  .wx-temp sup { font-size: 22px; vertical-align: super; font-weight: 400; color: var(--muted); }
+  .wx-condition { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .wx-forecast { display: flex; gap: 0; border-top: 1px solid var(--border); padding-top: 14px; }
+  .wx-day { flex: 1; text-align: center; padding: 0 4px; }
+  .wx-day-name { font-size: 10px; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .wx-day-icon { font-size: 16px; margin-bottom: 4px; }
+  .wx-day-hi { font-size: 13px; font-weight: 500; color: var(--text); }
+  .wx-day-rain { font-size: 10px; color: var(--foam); margin-top: 2px; }
+
+  /* ── SURF ── */
+  .surf-section { margin-bottom: 56px; }
+  .surf-title-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; justify-content: space-between; }
+  .surf-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); }
+  .surf-title span { color: var(--foam); }
+  .surf-live { font-size: 12px; color: var(--green); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); border-radius: 99px; padding: 4px 14px; white-space: nowrap; }
+  .swell-banner { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.15); border-radius: 20px; padding: 20px 28px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .swell-text { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 500px; }
+  .swell-text strong { color: var(--foam); }
+  .swell-nums { display: flex; gap: 24px; flex-wrap: wrap; }
+  .swell-num .v { font-size: 24px; font-weight: 700; color: #fff; text-align: center; }
+  .swell-num .l { font-size: 11px; color: var(--muted); text-align: center; margin-top: 2px; }
+  .surf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 20px; }
+  .surf-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+  .surf-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; border-radius: 50%; opacity: 0.06; transform: translate(30%,-30%); }
+  .surf-card[data-c="cyan"]::before  { background: var(--foam); }
+  .surf-card[data-c="coral"]::before { background: var(--coral); }
+  .surf-card[data-c="green"]::before { background: var(--green); }
+  .surf-card[data-c="gold"]::before  { background: var(--gold); }
+  .sc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .sc-island { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .sc-loc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .sc-rating { padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .r-pumping { background: rgba(16,185,129,0.2);  color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  .r-good    { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.25); }
+  .r-fair    { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+  .r-flat    { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+  .wave-viz { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin: 10px 0; }
+  .wave-bar { border-radius: 3px 3px 0 0; flex: 1; min-width: 6px; }
+  .sc-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .sc-stat .v { font-size: 14px; font-weight: 500; color: var(--text); }
+  .sc-stat .l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .sc-shores { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; }
+  .shore-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+  .shore-name { color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .shore-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .shore-val { color: var(--text); font-weight: 500; }
+  .surf-footer { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--muted); }
+  .surf-footer strong { color: var(--foam); }
+
+  /* ── ISLAND GRID ── */
+  .island-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 56px; }
+  .island-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 28px; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.2s; cursor: pointer; }
+  .island-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.25); }
+  .island-card::before { content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px; border-radius: 50%; opacity: 0.08; transform: translate(30%, -30%); }
+  .island-card[data-island="Maui"]::before       { background: var(--coral); }
+  .island-card[data-island="Oahu"]::before       { background: var(--foam); }
+  .island-card[data-island="Kauai"]::before      { background: var(--green); }
+  .island-card[data-island="Big Island"]::before { background: var(--gold); }
+  .island-flag { font-size: 28px; margin-bottom: 12px; display: block; }
+  .island-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .island-nickname { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .island-arrivals { font-size: 38px; font-weight: 300; color: #fff; line-height: 1; margin-bottom: 4px; }
+  .island-arrivals strong { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .island-arrivals-label { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .island-stats-row { display: flex; gap: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .i-stat { flex: 1; }
+  .i-stat .v { font-size: 16px; font-weight: 500; color: var(--text); }
+  .i-stat .l { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .trend-up   { color: var(--green) !important; }
+  .trend-down { color: var(--coral) !important; }
+
+  /* ── CHARTS SECTION ── */
+  .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 56px; }
+  @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+  .chart-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 28px; }
+  .chart-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .chart-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .island-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .itab { padding: 6px 16px; border-radius: 99px; font-size: 13px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .itab.active, .itab:hover { background: rgba(34,211,238,0.15); border-color: var(--foam); color: var(--foam); }
+
+  /* ── DATA TABLE ── */
+  .data-table-section { margin-bottom: 56px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .island-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .bar-cell { display: flex; align-items: center; gap: 10px; }
+  .mini-bar-bg { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 99px; }
+
+  /* ── ORIGINS SECTION ── */
+  .origins-section { margin-bottom: 56px; }
+  .origins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 768px) { .origins-grid { grid-template-columns: 1fr; } }
+  .origin-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  .mkt-list { display: flex; flex-direction: column; gap: 12px; }
+  .mkt-row { display: grid; grid-template-columns: 28px 1fr 70px 52px; align-items: center; gap: 10px; }
+  .mkt-flag { font-size: 20px; line-height: 1; }
+  .mkt-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .mkt-name small { display: block; font-size: 10px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .mkt-bar-bg { height: 5px; background: rgba(255,255,255,0.07); border-radius: 99px; overflow: hidden; }
+  .mkt-bar-fill { height: 100%; border-radius: 99px; }
+  .mkt-val { font-size: 12px; color: var(--text); text-align: right; }
+  .spend-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 600px) { .spend-grid { grid-template-columns: repeat(2,1fr); } }
+  .spend-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; }
+  .spend-flag { font-size: 26px; margin-bottom: 8px; }
+  .spend-val { font-size: 22px; font-weight: 700; color: #fff; }
+  .spend-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .spend-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .world-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  .map-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .origin-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .otab { padding: 6px 16px; border-radius: 99px; font-size: 13px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .otab.active, .otab:hover { background: rgba(34,211,238,0.15); border-color: var(--foam); color: var(--foam); }
+
+  /* ── HOTELS & RESTAURANTS ── */
+  .hr-section { margin-bottom: 56px; }
+  .hr-island-block { margin-bottom: 56px; }
+  .hr-island-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .hr-island-name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--text); }
+  .hr-island-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .hr-sub-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin: 32px 0 16px; display: flex; align-items: center; gap: 10px; }
+  .hr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+  .hr-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; cursor: pointer; text-decoration: none; display: block; }
+  .hr-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); }
+  .hr-banner { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .hr-body { padding: 12px 14px; }
+  .hr-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+  .hr-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .hr-stars { color: #fbbf24; font-size: 11px; }
+  .hr-price { font-size: 11px; color: var(--muted); }
+  .hr-tag { font-size: 10px; background: rgba(255,255,255,0.07); color: var(--muted); border-radius: 4px; padding: 2px 6px; margin-top: 4px; }
+
+  /* ── HOTELS & RESTAURANTS ── */
+  .hr-island-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); margin:0 0 20px; }
+  .hr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-bottom:8px; }
+  .hr-card { background:var(--card-bg); border:1px solid var(--border); border-radius:18px; overflow:hidden; text-decoration:none; display:block; transition:transform 0.2s,border-color 0.2s; }
+  .hr-card:hover { transform:translateY(-3px); border-color:rgba(34,211,238,0.3); }
+  .hr-banner { height:120px; display:flex; align-items:center; justify-content:center; position:relative; }
+  .hr-body { padding:14px; }
+  .hr-name { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; line-height:1.3; }
+  .hr-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .hr-stars { color:#f59e0b; font-size:11px; letter-spacing:1px; }
+  .hr-price { font-size:11px; color:var(--muted); }
+  .hr-tag { font-size:10px; background:rgba(255,255,255,0.07); color:var(--muted); border-radius:4px; padding:2px 6px; }
+
+  /* ── NAV MENU ── */
+  .nav-menu { display:flex; gap:12px; flex-wrap:wrap; padding:20px 0; border-bottom:1px solid var(--border); margin-bottom:0; justify-content:center; }
+  .nav-link { display:flex; align-items:center; gap:6px; padding:10px 22px; border-radius:99px; font-size:14px; font-weight:500; text-decoration:none; border:1px solid var(--border); color:var(--muted); background:var(--card-bg); transition:all 0.15s; white-space:nowrap; }
+  .nav-link:hover { border-color:rgba(255,255,255,0.4); color:#fff; background:rgba(255,255,255,0.1); }
+  .nav-link.active { border-color:rgba(255,255,255,0.6); color:#fff; background:rgba(255,255,255,0.15); font-weight:600; }
+  .nav-home { color:var(--text) !important; border-color:rgba(255,255,255,0.15) !important; }
+
+  /* ── MAPS ── */
+  .maps-section { margin-bottom: 56px; }
+  .map-card-big { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; margin-bottom: 24px; }
+  .map-label { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .map-label-icon { font-size: 28px; }
+  .map-label-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .map-label-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .map-embed-big { width: 100%; aspect-ratio: 16/9; }
+  .map-embed-big iframe { width: 100%; height: 100%; display: block; }
+  .maps-stack { display: flex; flex-direction: column; gap: 24px; }
+  .maps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .map-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+  .map-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.25); }
+  .map-embed { width: 100%; aspect-ratio: 4/3; }
+  .map-embed iframe { width: 100%; height: 100%; display: block; }
+
+  /* ── WEBCAMS ── */
+  .webcam-section { margin-bottom: 56px; }
+  .cam-island-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin: 32px 0 16px; }
+  .cam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 8px; }
+  .cam-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; text-decoration: none; transition: transform 0.2s, border-color 0.2s; display: block; }
+  .cam-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); }
+  .cam-thumb { position: relative; height: 110px; display: flex; align-items: center; justify-content: center; }
+  .cam-play { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.3); transition: all 0.2s; padding-left: 4px; }
+  .cam-card:hover .cam-play { background: rgba(255,255,255,0.35); transform: scale(1.1); }
+  .cam-live-dot { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.4); border-radius: 99px; padding: 4px 10px; font-size: 11px; color: #fff; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
+  .cam-info { padding: 14px 16px; }
+  .cam-name { font-weight: 500; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .cam-loc { font-size: 12px; color: var(--muted); }
+
+  /* ── DIVIDER ── */
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; font-size: 13px; color: var(--muted); line-height: 1.8; }
+  footer a { color: var(--foam); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(24px); animation: fadeUp 0.6s ease forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .island-card:nth-child(1) { animation-delay: 0.05s; }
+  .island-card:nth-child(2) { animation-delay: 0.12s; }
+  .island-card:nth-child(3) { animation-delay: 0.19s; }
+  .island-card:nth-child(4) { animation-delay: 0.26s; }
+
+  @media (max-width: 600px) {
+    .state-banner { flex-direction: column; text-align: center; }
+    .state-stats  { justify-content: center; }
+    .hero { padding: 36px 0 28px; }
+  }
+</style>
+</head>
 <body>
-<div class="site-header">
-  <div class="site-header-inner">
-    <div class="logo-row">
-      <a href="/" class="logo">
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
         <div class="logo-icon">🌊</div>
         <div class="logo-text">Today in <span>Hawaiʻi</span></div>
-      </a>
+      </div>
+      <div class="last-updated">
+        <span class="pulse-dot"></span>
+        Updated <strong id="updateDate">loading...</strong>
+      </div>
     </div>
-    <!-- Desktop nav -->
-    <nav class="desktop-nav">
-      <a href="/" class="nav-link active">🌺 Home</a>
+  </header>
+
+  <!-- NAV MENU -->
+  <nav>
+    <div class="nav-menu">
+      <a href="/" class="nav-link nav-home active">🌺 Home</a>
       <a href="/oahu" class="nav-link">🌆 Oahu</a>
       <a href="/maui" class="nav-link">🏄 Maui</a>
       <a href="/kauai" class="nav-link">🌿 Kauaʻi</a>
       <a href="/bigisland" class="nav-link">🌋 Big Island</a>
-      <a href="/hiking" class="nav-link">🥾 Hiking</a>
-      <a href="/beaches" class="nav-link">🏖️ Beaches</a>
-      <a href="/food" class="nav-link">🍽️ Food</a>
-      <a href="/about" class="nav-link">☀️ About</a>
-      <a href="/privacy" class="nav-link">🔒 Privacy</a>
-    </nav>
-    <!-- Mobile hamburger bar -->
-    <div class="mob-ham-bar">
-      <button class="mob-ham-btn" onclick="mobMenuOpen()" aria-label="Open menu">☰</button>
     </div>
-  </div>
-</div>
-<!-- Mobile overlay menu -->
-<div class="mob-overlay" id="mobOverlay">
-  <button class="mob-overlay-close" onclick="mobMenuClose()">✕</button>
-  <div class="mob-overlay-title">🌊 Today in Hawaiʻi</div>
-    <a href="/" class="mob-nav-link active" onclick="mobMenuClose()">🌺 Home</a>
-    <a href="/oahu" class="mob-nav-link" onclick="mobMenuClose()">🌆 Oahu</a>
-    <a href="/maui" class="mob-nav-link" onclick="mobMenuClose()">🏄 Maui</a>
-    <a href="/kauai" class="mob-nav-link" onclick="mobMenuClose()">🌿 Kauaʻi</a>
-    <a href="/bigisland" class="mob-nav-link" onclick="mobMenuClose()">🌋 Big Island</a>
-    <a href="/hiking" class="mob-nav-link" onclick="mobMenuClose()">🥾 Hiking</a>
-    <a href="/beaches" class="mob-nav-link" onclick="mobMenuClose()">🏖️ Beaches</a>
-    <a href="/food" class="mob-nav-link" onclick="mobMenuClose()">🍽️ Food</a>
-    <a href="/about" class="mob-nav-link" onclick="mobMenuClose()">☀️ About</a>
-    <a href="/privacy" class="mob-nav-link" onclick="mobMenuClose()">🔒 Privacy</a>
-</div>
+  </nav>
+
   <!-- HERO -->
   <section class="hero fade-up">
-    <div class="hero-eyebrow">Hawaii's Complete Travel Resource — Updated Daily</div>
-    <h1>Your Complete<br><em>Hawaii Travel Guide</em></h1>
-    <p class="hero-sub">Live tourist counts, real-time weather & surf, sunrise & sunset times, live cameras, top hotels, restaurants, activities and flight booking — everything you need for Hawaii in one place.</p>
+    <div class="hero-eyebrow">Hawaii Visitor Intelligence — Updated Daily</div>
+    <h1>How many tourists<br>are in <em>Hawaii today?</em></h1>
+    <p class="hero-sub">Live daily tourist arrivals for Maui, Oahu, Kauai and the Big Island — pulled straight from Hawaii's official state data. Plus live weather and surf report. Updated every morning.</p>
   </section>
-
-  <!-- BOOKING WIDGET -->
-  <div class="booking-widget">
-    <div class="booking-title">✈️ Search Flights, Hotels & Car Rentals</div>
-    <div class="booking-sub">Search hundreds of travel sites at once — flights to Hawaii, island hotels and rental cars</div>
-    <div class="booking-tabs">
-      <button class="booking-tab active" onclick="setBookingTab('flights',this)">✈️ Flights</button>
-      <button class="booking-tab" onclick="setBookingTab('hotels',this)">🏨 Hotels</button>
-      <button class="booking-tab" onclick="setBookingTab('cars',this)">🚗 Car Rental</button>
-      <button class="booking-tab" onclick="setBookingTab('packages',this)">🌺 Packages</button>
-    </div>
-    <div id="booking-flights" class="booking-panel">
-      <div class="booking-form">
-        <div class="booking-field"><label class="booking-label">✈️ Flying from</label><input type="text" id="fly-from" class="booking-input" placeholder="City or airport (e.g. Los Angeles)"></div>
-        <div class="booking-field"><label class="booking-label">🌺 Flying to</label><select id="fly-to" class="booking-input"><option value="HNL">Honolulu, Oahu (HNL)</option><option value="OGG">Kahului, Maui (OGG)</option><option value="LIH">Lihue, Kauai (LIH)</option><option value="KOA">Kona, Big Island (KOA)</option><option value="ITO">Hilo, Big Island (ITO)</option></select></div>
-        <div class="booking-field"><label class="booking-label">📅 Depart</label><input type="date" id="fly-depart" class="booking-input"></div>
-        <div class="booking-field"><label class="booking-label">📅 Return</label><input type="date" id="fly-return" class="booking-input"></div>
-        <div class="booking-row">
-          <div class="booking-field"><label class="booking-label">👥 Passengers</label><select id="fly-pax" class="booking-input"><option>1 passenger</option><option>2 passengers</option><option>3 passengers</option><option>4 passengers</option><option>5+ passengers</option></select></div>
-          <div class="booking-field"><label class="booking-label">💺 Class</label><select id="fly-class" class="booking-input"><option>Economy</option><option>Premium Economy</option><option>Business</option><option>First Class</option></select></div>
-        </div>
-        <label class="booking-check"><input type="checkbox" id="fly-car"><span>🚗 Add rental car in Hawaii</span></label>
-        <button class="booking-btn" onclick="searchFlights()">🔍 Search Flights</button>
-      </div>
-    </div>
-    <div id="booking-hotels" class="booking-panel" style="display:none">
-      <div class="booking-form">
-        <div class="booking-field full"><label class="booking-label">🏨 Destination</label><select id="hotel-dest" class="booking-input"><option value="Waikiki, Oahu, Hawaii">Waikiki, Oahu</option><option value="Maui, Hawaii">Maui</option><option value="Wailea, Maui, Hawaii">Wailea, Maui</option><option value="Kaanapali, Maui, Hawaii">Kaanapali, Maui</option><option value="Kauai, Hawaii">Kauai</option><option value="Poipu, Kauai, Hawaii">Poipu, Kauai</option><option value="Kona, Big Island, Hawaii">Kailua-Kona, Big Island</option><option value="Kohala Coast, Hawaii">Kohala Coast, Big Island</option></select></div>
-        <div class="booking-field"><label class="booking-label">📅 Check in</label><input type="date" id="hotel-in" class="booking-input"></div>
-        <div class="booking-field"><label class="booking-label">📅 Check out</label><input type="date" id="hotel-out" class="booking-input"></div>
-        <div class="booking-row">
-          <div class="booking-field"><label class="booking-label">🛏️ Rooms</label><select id="hotel-rooms" class="booking-input"><option>1 room</option><option>2 rooms</option><option>3 rooms</option></select></div>
-          <div class="booking-field"><label class="booking-label">👥 Guests</label><select id="hotel-guests" class="booking-input"><option>1 guest</option><option>2 guests</option><option>3 guests</option><option>4 guests</option><option>5+ guests</option></select></div>
-        </div>
-        <button class="booking-btn" onclick="searchHotels()">🔍 Search Hotels</button>
-      </div>
-    </div>
-    <div id="booking-cars" class="booking-panel" style="display:none">
-      <div class="booking-form">
-        <div class="booking-field full"><label class="booking-label">📍 Pick up location</label><select id="car-pickup" class="booking-input"><option value="HNL">Honolulu Airport, Oahu (HNL)</option><option value="OGG">Kahului Airport, Maui (OGG)</option><option value="LIH">Lihue Airport, Kauai (LIH)</option><option value="KOA">Kona Airport, Big Island (KOA)</option><option value="ITO">Hilo Airport, Big Island (ITO)</option></select></div>
-        <div class="booking-field"><label class="booking-label">📅 Pick up date</label><input type="date" id="car-from" class="booking-input"></div>
-        <div class="booking-field"><label class="booking-label">📅 Return date</label><input type="date" id="car-to" class="booking-input"></div>
-        <div class="booking-field full"><label class="booking-label">🚗 Car type</label><select id="car-type" class="booking-input"><option>Economy</option><option>Compact</option><option>Mid-size</option><option>Full-size</option><option>SUV</option><option>Convertible</option><option>Minivan</option></select></div>
-        <button class="booking-btn" onclick="searchCars()">🔍 Search Car Rentals</button>
-      </div>
-    </div>
-    <div id="booking-packages" class="booking-panel" style="display:none">
-      <div class="booking-form">
-        <div class="booking-field"><label class="booking-label">✈️ Flying from</label><input type="text" id="pkg-from" class="booking-input" placeholder="City or airport"></div>
-        <div class="booking-field"><label class="booking-label">🌺 Destination</label><select id="pkg-to" class="booking-input"><option value="HNL">Honolulu, Oahu</option><option value="OGG">Maui</option><option value="LIH">Kauai</option><option value="KOA">Big Island</option></select></div>
-        <div class="booking-field"><label class="booking-label">📅 Depart</label><input type="date" id="pkg-depart" class="booking-input"></div>
-        <div class="booking-field"><label class="booking-label">📅 Return</label><input type="date" id="pkg-return" class="booking-input"></div>
-        <div class="booking-field full"><label class="booking-label">👥 Travellers</label><select id="pkg-pax" class="booking-input"><option>1 traveller</option><option>2 travellers</option><option>3 travellers</option><option>4 travellers</option><option>Family (2 adults + 2 children)</option></select></div>
-        <label class="booking-check"><input type="checkbox" id="pkg-car" checked><span>🚗 Include rental car</span></label>
-        <button class="booking-btn" onclick="searchPackages()">🔍 Search Hawaii Packages</button>
-      </div>
-    </div>
-    <div class="booking-partners">
-      <span>Powered by:</span>
-      <span class="booking-partner-badge">Expedia</span>
-      <span class="booking-partner-badge">Booking.com</span>
-      <span class="booking-partner-badge">Kayak</span>
-      <span class="booking-partner-badge">Rentalcars.com</span>
-      <span class="booking-partner-badge">Skyscanner</span>
-    </div>
-  </div>
-
-  <hr class="section-divider">
 
   <!-- STATE BANNER -->
   <div class="state-banner fade-up">
@@ -341,6 +721,7 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:47 AM</td><td class="sun-set">7:00 PM</td><td>13h 13m</td></tr>
           </tbody>
         </table>
+        <a href="https://www.timeanddate.com/sun/@5850862" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Oahu">
@@ -358,6 +739,7 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:51 AM</td><td class="sun-set">7:05 PM</td><td>13h 14m</td></tr>
           </tbody>
         </table>
+        <a href="https://www.timeanddate.com/sun/@5856195" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Kauai">
@@ -375,6 +757,7 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:13 PM</td><td>13h 17m</td></tr>
           </tbody>
         </table>
+        <a href="https://www.timeanddate.com/sun/@5850098" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Big Island">
@@ -392,6 +775,7 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:46 AM</td><td class="sun-set">6:55 PM</td><td>13h 8m</td></tr>
           </tbody>
         </table>
+        <a href="https://www.timeanddate.com/sun/@5854686" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
     </div>
@@ -781,7 +1165,7 @@ function renderIslandData(apiData) {
 
   // STATE BANNER
   document.getElementById('stateTotal').textContent     = safeNum(statewide.on_island_est).toLocaleString();
-  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 9.2-day stay)';
+  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 8.9-day stay)';
   document.getElementById('statArrivals').textContent   = safeNum(statewide.arrivals).toLocaleString();
   document.getElementById('statDepartures').textContent = safeNum(statewide.departures).toLocaleString();
   const net = safeNum(statewide.net_flow);
@@ -807,7 +1191,7 @@ function renderIslandData(apiData) {
         <div class="island-stats-row">
           <div class="i-stat"><div class="v">${dep.toLocaleString()}</div><div class="l">Departures</div></div>
           <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
-          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*9.2/1000)}k</div><div class="l">On island est.</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*8.9/1000)}k</div><div class="l">On island est.</div></div>
         </div>
       </div>`;
   });
@@ -844,10 +1228,10 @@ function getStableFallback() {
   const today = new Date();
   const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
   const bases = {
-    'Maui':       { arr:7000,  dep:6500,  dom:6100, intl:900 },
-    'Oahu':       { arr:15800, dep:14800, dom:12000, intl:3800 },
-    'Kauai':      { arr:2200,  dep:2050,  dom:1950, intl:250 },
-    'Big Island': { arr:3500,  dep:3250,  dom:2950, intl:550 },
+    'Maui':       { arr:4200, dep:3900, dom:3700, intl:500 },
+    'Oahu':       { arr:9400, dep:8800, dom:7200, intl:2200 },
+    'Kauai':      { arr:1350, dep:1280, dom:1200, intl:150 },
+    'Big Island': { arr:2100, dep:1950, dom:1800, intl:300 },
   };
   const islands = {};
   ISLANDS.forEach(({ id }) => {
@@ -855,11 +1239,11 @@ function getStableFallback() {
     const v = ((seed * (id.length+7)) % 160) / 1000 - 0.08;
     const arr = Math.round(b.arr * (1+v));
     const dep = Math.round(b.dep * (1+v*0.9));
-    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*9.2) };
+    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*8.9) };
   });
   const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals,0);
   const totalDep = Object.values(islands).reduce((s,d)=>s+d.departures,0);
-  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*9.2) } };
+  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*8.9) } };
 }
 
 // Load data — try API first, fall back to stable estimates
@@ -1514,85 +1898,6 @@ function zoomWindy(lat, lon, zoom, name) {
     if (el) el.textContent = dateStr;
   });
 })();
-
-// ============================================================
-// BOOKING WIDGET
-// ============================================================
-// Set default dates
-(function() {
-  const today = new Date();
-  const nextMonth = new Date(today);
-  nextMonth.setDate(today.getDate() + 30);
-  const returnDate = new Date(nextMonth);
-  returnDate.setDate(nextMonth.getDate() + 7);
-  const fmt = d => d.toISOString().split('T')[0];
-
-  ['fly-depart','pkg-depart'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = fmt(nextMonth);
-  });
-  ['fly-return','pkg-return'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = fmt(returnDate);
-  });
-  ['hotel-in','car-from'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = fmt(nextMonth);
-  });
-  ['hotel-out','car-to'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = fmt(returnDate);
-  });
-})();
-
-function setBookingTab(tab, btn) {
-  document.querySelectorAll('.booking-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.booking-panel').forEach(p => p.style.display = 'none');
-  btn.classList.add('active');
-  document.getElementById('booking-' + tab).style.display = 'block';
-}
-
-function searchFlights() {
-  const from = document.getElementById('fly-from').value || 'Los Angeles';
-  const to = document.getElementById('fly-to').value;
-  const depart = document.getElementById('fly-depart').value;
-  const ret = document.getElementById('fly-return').value;
-  const addCar = document.getElementById('fly-car').checked;
-  const url = `https://www.expedia.com/Flights-Search?leg1=from:${encodeURIComponent(from)},to:${to},departure:${depart}TANYT&leg2=from:${to},to:${encodeURIComponent(from)},departure:${ret}TANYT&trip=roundtrip&passengers=adults:1`;
-  window.open(url, '_blank');
-}
-
-function searchHotels() {
-  const dest = document.getElementById('hotel-dest').value;
-  const checkin = document.getElementById('hotel-in').value;
-  const checkout = document.getElementById('hotel-out').value;
-  const url = `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(dest)}&startDate=${checkin}&endDate=${checkout}&adults=2`;
-  window.open(url, '_blank');
-}
-
-function searchCars() {
-  const pickup = document.getElementById('car-pickup').value;
-  const from = document.getElementById('car-from').value;
-  const to = document.getElementById('car-to').value;
-  const url = `https://www.rentalcars.com/SearchResults.do?pickUpAirport=${pickup}&pickUpDate=${from}&dropOffDate=${to}&country=US`;
-  window.open(url, '_blank');
-}
-
-function searchPackages() {
-  const from = document.getElementById('pkg-from').value || 'Los Angeles';
-  const to = document.getElementById('pkg-to').value;
-  const depart = document.getElementById('pkg-depart').value;
-  const ret = document.getElementById('pkg-return').value;
-  const url = `https://www.expedia.com/Vacations?origin=${encodeURIComponent(from)}&destination=${to}&startDate=${depart}&endDate=${ret}`;
-  window.open(url, '_blank');
-}
-</script>
-
-
-
-<script>
-function mobMenuOpen(){document.getElementById('mobOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function mobMenuClose(){document.getElementById('mobOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>
