@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Today in Hawaii — Live Tourist &amp; Visitor Count | todayinhawaii.com</title>
-<meta name="description" content="How many tourists are in Hawaii today? Live daily visitor arrivals for Maui, Oahu, Kauai and the Big Island. Plus live weather, surf report and where visitors come from. Updated every morning from Hawaii DBEDT.">
+<title>Today in Hawaii — Live Tourist Count, Weather, Surf & Travel Guide | todayinhawaii.com</title>
+<meta name="description" content="Your complete Hawaii travel resource. Live daily visitor counts, real-time weather and surf report, sunrise & sunset times, live webcams, top hotels, restaurants, activities and flight booking for Maui, Oahu, Kauai and Big Island.">
 
 <!-- SEO Keywords -->
-<meta name="keywords" content="Hawaii tourists today, how many tourists in Hawaii, Hawaii visitor count, Maui tourists, Oahu visitors, Hawaii daily arrivals, Hawaii tourism statistics, Hawaii travel data, tourists in Hawaii, Hawaii visitor tracker, Hawaii live webcam, Maui live camera, Oahu live webcam, Kauai live camera, Big Island live webcam, Hawaii beach cam, Waikiki live cam, Hawaii surf cam, Hawaii volcano cam, live camera Hawaii">
+<meta name="keywords" content="Hawaii tourists today, how many tourists in Hawaii, Hawaii visitor count, Hawaii weather, Hawaii surf report, Hawaii hotels, Hawaii restaurants, Hawaii activities, flights to Hawaii, Hawaii travel guide, Hawaii webcams, Hawaii sunrise sunset, Maui Oahu Kauai Big Island">
 <meta name="author" content="Today in Hawaii">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.todayinhawaii.com">
@@ -16,8 +16,8 @@
 <!-- Open Graph for Social Sharing -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.todayinhawaii.com">
-<meta property="og:title" content="Today in Hawaii — How Many Tourists Are Here Right Now?">
-<meta property="og:description" content="Live daily tourist arrivals for Maui, Oahu, Kauai and the Big Island. Weather, surf and visitor origins updated every morning from official Hawaii state data.">
+<meta property="og:title" content="Today in Hawaii — Live Weather, Surf, Tourist Count & Travel Guide">
+<meta property="og:description" content="Everything Hawaii in one place. Live tourist counts, weather, surf report, webcams, hotels, restaurants, activities and flight booking for all Hawaiian islands.">
 <meta property="og:image" content="https://www.todayinhawaii.com/og-image.jpg">
 <meta property="og:site_name" content="Today in Hawaii">
 <meta property="og:locale" content="en_US">
@@ -25,8 +25,8 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://www.todayinhawaii.com">
-<meta name="twitter:title" content="Today in Hawaii — Live Tourist Tracker">
-<meta name="twitter:description" content="How many tourists are in Hawaii today? Live daily visitor counts for all Hawaiian islands plus weather and surf.">
+<meta name="twitter:title" content="Today in Hawaii — Live Weather, Surf, Tourist Count & Travel Guide">
+<meta name="twitter:description" content="Everything Hawaii in one place. Live tourist counts, weather, surf report, webcams, hotels, restaurants, activities and flight booking for all Hawaiian islands.">
 <meta name="twitter:image" content="https://www.todayinhawaii.com/og-image.jpg">
 
 <!-- Structured Data for Google -->
@@ -36,7 +36,7 @@
   "@type": "WebSite",
   "name": "Today in Hawaii",
   "url": "https://www.todayinhawaii.com",
-  "description": "Live daily tourist arrivals, weather and surf report for all Hawaiian islands. Data from Hawaii DBEDT updated every morning.",
+  "description": "Your complete Hawaii travel resource. Live tourist counts, weather, surf, webcams, hotels, restaurants, activities and flight booking for all Hawaiian islands.",
   "publisher": {
     "@type": "Organization",
     "name": "Today in Hawaii",
@@ -53,12 +53,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYT8G6PD8"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7H0QG9BBG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-2SYT8G6PD8');
+  gtag('config', 'G-Q7H0QG9BBG');
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -400,12 +400,40 @@
   .hr-price { font-size:11px; color:var(--muted); }
   .hr-tag { font-size:10px; background:rgba(255,255,255,0.07); color:var(--muted); border-radius:4px; padding:2px 6px; }
 
+
+  /* ── BOOKING WIDGET ── */
+  .booking-widget { background:linear-gradient(135deg,rgba(14,116,144,0.4),rgba(6,29,44,0.9)); border:1px solid rgba(34,211,238,0.25); border-radius:24px; padding:28px 32px; margin-bottom:0; position:relative; overflow:hidden; }
+  .booking-widget::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(34,211,238,0.08),transparent); pointer-events:none; }
+  .booking-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .booking-sub { font-size:13px; color:#7fb3c8; margin-bottom:20px; }
+  .booking-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .booking-tab { padding:8px 18px; border-radius:99px; font-size:13px; font-weight:500; border:1px solid rgba(255,255,255,0.15); background:transparent; color:#7fb3c8; cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+  .booking-tab.active { background:rgba(34,211,238,0.2); border-color:var(--foam); color:#22d3ee; }
+  .booking-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:600px) { .booking-form { grid-template-columns:1fr; } }
+  .booking-field { display:flex; flex-direction:column; gap:5px; }
+  .booking-field.full { grid-column:1/-1; }
+  .booking-label { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:#7fb3c8; }
+  .booking-input { padding:12px 16px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:12px; color:#e8f4f8; font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.15s; width:100%; }
+  .booking-input:focus { outline:none; border-color:#22d3ee; background:rgba(34,211,238,0.08); }
+  .booking-input option { background:#0a2e44; color:#e8f4f8; }
+  .booking-row { display:flex; gap:12px; grid-column:1/-1; flex-wrap:wrap; }
+  .booking-row .booking-field { flex:1; min-width:140px; }
+  .booking-check { display:flex; align-items:center; gap:10px; grid-column:1/-1; cursor:pointer; padding:4px 0; }
+  .booking-check input { width:18px; height:18px; cursor:pointer; accent-color:#22d3ee; }
+  .booking-check span { font-size:14px; color:#e8f4f8; }
+  .booking-btn { grid-column:1/-1; padding:16px; background:linear-gradient(135deg,#0e7490,#22d3ee); border:none; border-radius:14px; color:#fff; font-size:16px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s; margin-top:4px; letter-spacing:0.02em; }
+  .booking-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(34,211,238,0.3); }
+  .booking-partners { display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; }
+  .booking-partners span { font-size:11px; color:#7fb3c8; }
+  .booking-partner-badge { font-size:11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:3px 10px; color:#7fb3c8; }
+
   /* ── NAV MENU ── */
-  .nav-menu { display:flex; gap:12px; flex-wrap:wrap; padding:20px 0; border-bottom:1px solid var(--border); margin-bottom:0; justify-content:center; }
-  .nav-link { display:flex; align-items:center; gap:6px; padding:10px 22px; border-radius:99px; font-size:14px; font-weight:500; text-decoration:none; border:1px solid var(--border); color:var(--muted); background:var(--card-bg); transition:all 0.15s; white-space:nowrap; }
-  .nav-link:hover { border-color:rgba(255,255,255,0.4); color:#fff; background:rgba(255,255,255,0.1); }
+  
+  
+  
   .nav-link.active { border-color:rgba(255,255,255,0.6); color:#fff; background:rgba(255,255,255,0.15); font-weight:600; }
-  .nav-home { color:var(--text) !important; border-color:rgba(255,255,255,0.15) !important; }
+  
 
   /* ── MAPS ── */
   .maps-section { margin-bottom: 56px; }
@@ -458,6 +486,23 @@
     .state-stats  { justify-content: center; }
     .hero { padding: 36px 0 28px; }
   }
+
+  
+
+  /* ── NAVIGATION ── */
+  .nav-wrapper{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;}
+  .desktop-nav{display:flex;gap:6px;flex-wrap:nowrap;justify-content:center;align-items:center;}
+  .nav-link{display:flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
+  .nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);}
+  .hamburger{display:none;position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text);font-size:18px;line-height:1;z-index:5;}
+  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu .mob-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;width:260px;border-radius:16px;font-size:17px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card-bg);transition:all 0.15s;}
+  .mobile-menu .mob-link:hover,.mobile-menu .mob-link.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
+  .mobile-close{position:absolute;top:20px;right:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--text);font-size:18px;}
+  .mob-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--foam);margin-bottom:12px;}
+  @media(max-width:900px){.hamburger{display:block;}.desktop-nav{display:none;}}
+  @media(min-width:901px){.hamburger{display:none;}.desktop-nav{display:flex;}}
 </style>
 </head>
 <body>
@@ -479,22 +524,112 @@
   </header>
 
   <!-- NAV MENU -->
-  <nav>
-    <div class="nav-menu">
-      <a href="/" class="nav-link nav-home active">🌺 Home</a>
+      <nav>
+    <div class="nav-wrapper">
+      <div class="desktop-nav">
+      <a href="/" class="nav-link active">🌺 Home</a>
       <a href="/oahu" class="nav-link">🌆 Oahu</a>
       <a href="/maui" class="nav-link">🏄 Maui</a>
       <a href="/kauai" class="nav-link">🌿 Kauaʻi</a>
       <a href="/bigisland" class="nav-link">🌋 Big Island</a>
+      <a href="/hiking" class="nav-link">🥾 Hiking</a>
+      <a href="/beaches" class="nav-link">🏖️ Beaches</a>
+      <a href="/food" class="nav-link">🍽️ Food</a>
+      <a href="/about" class="nav-link">☀️ About</a>
+      <a href="/privacy" class="nav-link">🔒 Privacy</a>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <button class="mobile-close" onclick="closeMenu()">✕</button>
+      <div class="mob-title">🌊 Today in Hawaiʻi</div>
+      <a href="/" class="mob-link active" onclick="closeMenu()">🌺 Home</a>
+      <a href="/oahu" class="mob-link" onclick="closeMenu()">🌆 Oahu</a>
+      <a href="/maui" class="mob-link" onclick="closeMenu()">🏄 Maui</a>
+      <a href="/kauai" class="mob-link" onclick="closeMenu()">🌿 Kauaʻi</a>
+      <a href="/bigisland" class="mob-link" onclick="closeMenu()">🌋 Big Island</a>
+      <a href="/hiking" class="mob-link" onclick="closeMenu()">🥾 Hiking</a>
+      <a href="/beaches" class="mob-link" onclick="closeMenu()">🏖️ Beaches</a>
+      <a href="/food" class="mob-link" onclick="closeMenu()">🍽️ Food</a>
+      <a href="/about" class="mob-link" onclick="closeMenu()">☀️ About</a>
+      <a href="/privacy" class="mob-link" onclick="closeMenu()">🔒 Privacy</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero fade-up">
-    <div class="hero-eyebrow">Hawaii Visitor Intelligence — Updated Daily</div>
-    <h1>How many tourists<br>are in <em>Hawaii today?</em></h1>
-    <p class="hero-sub">Live daily tourist arrivals for Maui, Oahu, Kauai and the Big Island — pulled straight from Hawaii's official state data. Plus live weather and surf report. Updated every morning.</p>
+    <div class="hero-eyebrow">Hawaii's Complete Travel Resource — Updated Daily</div>
+    <h1>Your Complete<br><em>Hawaii Travel Guide</em></h1>
+    <p class="hero-sub">Live tourist counts, real-time weather & surf, sunrise & sunset times, live cameras, top hotels, restaurants, activities and flight booking — everything you need for Hawaii in one place.</p>
   </section>
+
+  <!-- BOOKING WIDGET -->
+  <div class="booking-widget">
+    <div class="booking-title">✈️ Search Flights, Hotels & Car Rentals</div>
+    <div class="booking-sub">Search hundreds of travel sites at once — flights to Hawaii, island hotels and rental cars</div>
+    <div class="booking-tabs">
+      <button class="booking-tab active" onclick="setBookingTab('flights',this)">✈️ Flights</button>
+      <button class="booking-tab" onclick="setBookingTab('hotels',this)">🏨 Hotels</button>
+      <button class="booking-tab" onclick="setBookingTab('cars',this)">🚗 Car Rental</button>
+      <button class="booking-tab" onclick="setBookingTab('packages',this)">🌺 Packages</button>
+    </div>
+    <div id="booking-flights" class="booking-panel">
+      <div class="booking-form">
+        <div class="booking-field"><label class="booking-label">✈️ Flying from</label><input type="text" id="fly-from" class="booking-input" placeholder="City or airport (e.g. Los Angeles)"></div>
+        <div class="booking-field"><label class="booking-label">🌺 Flying to</label><select id="fly-to" class="booking-input"><option value="HNL">Honolulu, Oahu (HNL)</option><option value="OGG">Kahului, Maui (OGG)</option><option value="LIH">Lihue, Kauai (LIH)</option><option value="KOA">Kona, Big Island (KOA)</option><option value="ITO">Hilo, Big Island (ITO)</option></select></div>
+        <div class="booking-field"><label class="booking-label">📅 Depart</label><input type="date" id="fly-depart" class="booking-input"></div>
+        <div class="booking-field"><label class="booking-label">📅 Return</label><input type="date" id="fly-return" class="booking-input"></div>
+        <div class="booking-row">
+          <div class="booking-field"><label class="booking-label">👥 Passengers</label><select id="fly-pax" class="booking-input"><option>1 passenger</option><option>2 passengers</option><option>3 passengers</option><option>4 passengers</option><option>5+ passengers</option></select></div>
+          <div class="booking-field"><label class="booking-label">💺 Class</label><select id="fly-class" class="booking-input"><option>Economy</option><option>Premium Economy</option><option>Business</option><option>First Class</option></select></div>
+        </div>
+        <label class="booking-check"><input type="checkbox" id="fly-car"><span>🚗 Add rental car in Hawaii</span></label>
+        <button class="booking-btn" onclick="searchFlights()">🔍 Search Flights</button>
+      </div>
+    </div>
+    <div id="booking-hotels" class="booking-panel" style="display:none">
+      <div class="booking-form">
+        <div class="booking-field full"><label class="booking-label">🏨 Destination</label><select id="hotel-dest" class="booking-input"><option value="Waikiki, Oahu, Hawaii">Waikiki, Oahu</option><option value="Maui, Hawaii">Maui</option><option value="Wailea, Maui, Hawaii">Wailea, Maui</option><option value="Kaanapali, Maui, Hawaii">Kaanapali, Maui</option><option value="Kauai, Hawaii">Kauai</option><option value="Poipu, Kauai, Hawaii">Poipu, Kauai</option><option value="Kona, Big Island, Hawaii">Kailua-Kona, Big Island</option><option value="Kohala Coast, Hawaii">Kohala Coast, Big Island</option></select></div>
+        <div class="booking-field"><label class="booking-label">📅 Check in</label><input type="date" id="hotel-in" class="booking-input"></div>
+        <div class="booking-field"><label class="booking-label">📅 Check out</label><input type="date" id="hotel-out" class="booking-input"></div>
+        <div class="booking-row">
+          <div class="booking-field"><label class="booking-label">🛏️ Rooms</label><select id="hotel-rooms" class="booking-input"><option>1 room</option><option>2 rooms</option><option>3 rooms</option></select></div>
+          <div class="booking-field"><label class="booking-label">👥 Guests</label><select id="hotel-guests" class="booking-input"><option>1 guest</option><option>2 guests</option><option>3 guests</option><option>4 guests</option><option>5+ guests</option></select></div>
+        </div>
+        <button class="booking-btn" onclick="searchHotels()">🔍 Search Hotels</button>
+      </div>
+    </div>
+    <div id="booking-cars" class="booking-panel" style="display:none">
+      <div class="booking-form">
+        <div class="booking-field full"><label class="booking-label">📍 Pick up location</label><select id="car-pickup" class="booking-input"><option value="HNL">Honolulu Airport, Oahu (HNL)</option><option value="OGG">Kahului Airport, Maui (OGG)</option><option value="LIH">Lihue Airport, Kauai (LIH)</option><option value="KOA">Kona Airport, Big Island (KOA)</option><option value="ITO">Hilo Airport, Big Island (ITO)</option></select></div>
+        <div class="booking-field"><label class="booking-label">📅 Pick up date</label><input type="date" id="car-from" class="booking-input"></div>
+        <div class="booking-field"><label class="booking-label">📅 Return date</label><input type="date" id="car-to" class="booking-input"></div>
+        <div class="booking-field full"><label class="booking-label">🚗 Car type</label><select id="car-type" class="booking-input"><option>Economy</option><option>Compact</option><option>Mid-size</option><option>Full-size</option><option>SUV</option><option>Convertible</option><option>Minivan</option></select></div>
+        <button class="booking-btn" onclick="searchCars()">🔍 Search Car Rentals</button>
+      </div>
+    </div>
+    <div id="booking-packages" class="booking-panel" style="display:none">
+      <div class="booking-form">
+        <div class="booking-field"><label class="booking-label">✈️ Flying from</label><input type="text" id="pkg-from" class="booking-input" placeholder="City or airport"></div>
+        <div class="booking-field"><label class="booking-label">🌺 Destination</label><select id="pkg-to" class="booking-input"><option value="HNL">Honolulu, Oahu</option><option value="OGG">Maui</option><option value="LIH">Kauai</option><option value="KOA">Big Island</option></select></div>
+        <div class="booking-field"><label class="booking-label">📅 Depart</label><input type="date" id="pkg-depart" class="booking-input"></div>
+        <div class="booking-field"><label class="booking-label">📅 Return</label><input type="date" id="pkg-return" class="booking-input"></div>
+        <div class="booking-field full"><label class="booking-label">👥 Travellers</label><select id="pkg-pax" class="booking-input"><option>1 traveller</option><option>2 travellers</option><option>3 travellers</option><option>4 travellers</option><option>Family (2 adults + 2 children)</option></select></div>
+        <label class="booking-check"><input type="checkbox" id="pkg-car" checked><span>🚗 Include rental car</span></label>
+        <button class="booking-btn" onclick="searchPackages()">🔍 Search Hawaii Packages</button>
+      </div>
+    </div>
+    <div class="booking-partners">
+      <span>Powered by:</span>
+      <span class="booking-partner-badge">Expedia</span>
+      <span class="booking-partner-badge">Booking.com</span>
+      <span class="booking-partner-badge">Kayak</span>
+      <span class="booking-partner-badge">Rentalcars.com</span>
+      <span class="booking-partner-badge">Skyscanner</span>
+    </div>
+  </div>
+
+  <hr class="section-divider">
 
   <!-- STATE BANNER -->
   <div class="state-banner fade-up">
@@ -721,7 +856,6 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:47 AM</td><td class="sun-set">7:00 PM</td><td>13h 13m</td></tr>
           </tbody>
         </table>
-        <a href="https://www.timeanddate.com/sun/@5850862" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Oahu">
@@ -739,7 +873,6 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:51 AM</td><td class="sun-set">7:05 PM</td><td>13h 14m</td></tr>
           </tbody>
         </table>
-        <a href="https://www.timeanddate.com/sun/@5856195" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Kauai">
@@ -757,7 +890,6 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:56 AM</td><td class="sun-set">7:13 PM</td><td>13h 17m</td></tr>
           </tbody>
         </table>
-        <a href="https://www.timeanddate.com/sun/@5850098" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
       <div class="sun-card" data-island="Big Island">
@@ -775,7 +907,6 @@
             <tr><td>Fri May 23</td><td class="sun-rise">5:46 AM</td><td class="sun-set">6:55 PM</td><td>13h 8m</td></tr>
           </tbody>
         </table>
-        <a href="https://www.timeanddate.com/sun/@5854686" target="_blank" rel="noopener" class="sun-cal-link">📅 Full calendar — any year ↗</a>
       </div>
 
     </div>
@@ -1165,7 +1296,7 @@ function renderIslandData(apiData) {
 
   // STATE BANNER
   document.getElementById('stateTotal').textContent     = safeNum(statewide.on_island_est).toLocaleString();
-  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 8.9-day stay)';
+  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 9.2-day stay)';
   document.getElementById('statArrivals').textContent   = safeNum(statewide.arrivals).toLocaleString();
   document.getElementById('statDepartures').textContent = safeNum(statewide.departures).toLocaleString();
   const net = safeNum(statewide.net_flow);
@@ -1191,7 +1322,7 @@ function renderIslandData(apiData) {
         <div class="island-stats-row">
           <div class="i-stat"><div class="v">${dep.toLocaleString()}</div><div class="l">Departures</div></div>
           <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
-          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*8.9/1000)}k</div><div class="l">On island est.</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*9.2/1000)}k</div><div class="l">On island est.</div></div>
         </div>
       </div>`;
   });
@@ -1228,10 +1359,10 @@ function getStableFallback() {
   const today = new Date();
   const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
   const bases = {
-    'Maui':       { arr:4200, dep:3900, dom:3700, intl:500 },
-    'Oahu':       { arr:9400, dep:8800, dom:7200, intl:2200 },
-    'Kauai':      { arr:1350, dep:1280, dom:1200, intl:150 },
-    'Big Island': { arr:2100, dep:1950, dom:1800, intl:300 },
+    'Maui':       { arr:7000,  dep:6500,  dom:6100, intl:900 },
+    'Oahu':       { arr:15800, dep:14800, dom:12000, intl:3800 },
+    'Kauai':      { arr:2200,  dep:2050,  dom:1950, intl:250 },
+    'Big Island': { arr:3500,  dep:3250,  dom:2950, intl:550 },
   };
   const islands = {};
   ISLANDS.forEach(({ id }) => {
@@ -1239,11 +1370,11 @@ function getStableFallback() {
     const v = ((seed * (id.length+7)) % 160) / 1000 - 0.08;
     const arr = Math.round(b.arr * (1+v));
     const dep = Math.round(b.dep * (1+v*0.9));
-    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*8.9) };
+    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*9.2) };
   });
   const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals,0);
   const totalDep = Object.values(islands).reduce((s,d)=>s+d.departures,0);
-  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*8.9) } };
+  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*9.2) } };
 }
 
 // Load data — try API first, fall back to stable estimates
@@ -1898,6 +2029,91 @@ function zoomWindy(lat, lon, zoom, name) {
     if (el) el.textContent = dateStr;
   });
 })();
+
+// ============================================================
+// BOOKING WIDGET
+// ============================================================
+// Set default dates
+(function() {
+  const today = new Date();
+  const nextMonth = new Date(today);
+  nextMonth.setDate(today.getDate() + 30);
+  const returnDate = new Date(nextMonth);
+  returnDate.setDate(nextMonth.getDate() + 7);
+  const fmt = d => d.toISOString().split('T')[0];
+
+  ['fly-depart','pkg-depart'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(nextMonth);
+  });
+  ['fly-return','pkg-return'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(returnDate);
+  });
+  ['hotel-in','car-from'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(nextMonth);
+  });
+  ['hotel-out','car-to'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = fmt(returnDate);
+  });
+})();
+
+function setBookingTab(tab, btn) {
+  document.querySelectorAll('.booking-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.booking-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('active');
+  document.getElementById('booking-' + tab).style.display = 'block';
+}
+
+function searchFlights() {
+  const from = document.getElementById('fly-from').value || 'Los Angeles';
+  const to = document.getElementById('fly-to').value;
+  const depart = document.getElementById('fly-depart').value;
+  const ret = document.getElementById('fly-return').value;
+  const addCar = document.getElementById('fly-car').checked;
+  const url = `https://www.expedia.com/Flights-Search?leg1=from:${encodeURIComponent(from)},to:${to},departure:${depart}TANYT&leg2=from:${to},to:${encodeURIComponent(from)},departure:${ret}TANYT&trip=roundtrip&passengers=adults:1`;
+  window.open(url, '_blank');
+}
+
+function searchHotels() {
+  const dest = document.getElementById('hotel-dest').value;
+  const checkin = document.getElementById('hotel-in').value;
+  const checkout = document.getElementById('hotel-out').value;
+  const url = `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(dest)}&startDate=${checkin}&endDate=${checkout}&adults=2`;
+  window.open(url, '_blank');
+}
+
+function searchCars() {
+  const pickup = document.getElementById('car-pickup').value;
+  const from = document.getElementById('car-from').value;
+  const to = document.getElementById('car-to').value;
+  const url = `https://www.rentalcars.com/SearchResults.do?pickUpAirport=${pickup}&pickUpDate=${from}&dropOffDate=${to}&country=US`;
+  window.open(url, '_blank');
+}
+
+function searchPackages() {
+  const from = document.getElementById('pkg-from').value || 'Los Angeles';
+  const to = document.getElementById('pkg-to').value;
+  const depart = document.getElementById('pkg-depart').value;
+  const ret = document.getElementById('pkg-return').value;
+  const url = `https://www.expedia.com/Vacations?origin=${encodeURIComponent(from)}&destination=${to}&startDate=${depart}&endDate=${ret}`;
+  window.open(url, '_blank');
+}
+</script>
+
+
+<script>
+function toggleMenu(){
+  const m=document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow='';
+}
 </script>
 </body>
 </html>
