@@ -512,6 +512,18 @@
     .nav-link{font-size:11px;padding:6px 10px;}
     .hamburger{display:none !important;}
   }
+
+  /* ── VOICE SEARCH ── */
+  .voice-search-bar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:12px 20px;margin:0 auto 32px;max-width:560px;cursor:pointer;transition:all 0.2s;}
+  .voice-search-bar:hover{background:rgba(34,211,238,0.1);border-color:rgba(34,211,238,0.3);}
+  .voice-search-bar.listening{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.5);animation:pulse-border 1s ease-in-out infinite;}
+  @keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.3);}50%{box-shadow:0 0 0 8px rgba(249,115,22,0);}}
+  .mic-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;transition:all 0.2s;}
+  .voice-search-bar.listening .mic-btn{background:linear-gradient(135deg,#dc2626,#f97316);}
+  .voice-text{font-size:15px;color:var(--muted);flex:1;}
+  .voice-search-bar.listening .voice-text{color:var(--coral);}
+  .voice-result{margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:14px 20px;font-size:14px;color:var(--text);display:none;line-height:1.6;}
+  .voice-result.show{display:block;}
 </style>
 </head>
 <body>
@@ -2081,6 +2093,80 @@ window.addEventListener('load', function() {
     document.getElementById('sunGrid').innerHTML=html;
   } catch(e){ console.error('Sun calc error:',e); }
 });
+</script>
+
+<script>
+// ── VOICE SEARCH ──
+var recognition = null;
+var listening = false;
+
+function startVoice() {
+  var bar = document.getElementById('voiceBar');
+  var txt = document.getElementById('voiceText');
+  var result = document.getElementById('voiceResult');
+
+  // Check browser support
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    // Fallback - open Google search for Hawaii
+    window.open('https://www.google.com/search?q=Hawaii+weather+today', '_blank');
+    return;
+  }
+
+  if (listening) {
+    if (recognition) recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    listening = true;
+    bar.classList.add('listening');
+    txt.textContent = '🎤 Listening... speak now';
+    result.classList.remove('show');
+  };
+
+  recognition.onresult = function(e) {
+    var transcript = '';
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
+    txt.textContent = '🎤 "' + transcript + '"';
+
+    if (e.results[e.results.length-1].isFinal) {
+      // Search Google with Hawaii context added
+      var query = transcript;
+      if (query.toLowerCase().indexOf('hawaii') < 0) {
+        query = query + ' Hawaii';
+      }
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+    }
+  };
+
+  recognition.onerror = function(e) {
+    listening = false;
+    bar.classList.remove('listening');
+    if (e.error === 'not-allowed') {
+      txt.textContent = '🎤 Microphone access denied — please allow mic access';
+    } else {
+      txt.textContent = 'Ask about Hawaii weather, surf, beaches...';
+    }
+  };
+
+  recognition.onend = function() {
+    listening = false;
+    bar.classList.remove('listening');
+    setTimeout(function() {
+      txt.textContent = 'Ask about Hawaii weather, surf, beaches...';
+    }, 2000);
+  };
+
+  recognition.start();
+}
 </script>
 </body>
 </html>
