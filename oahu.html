@@ -152,7 +152,7 @@ footer a{color:var(--foam);text-decoration:none;}
   .nav-link{display:flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
   .nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);}
   .hamburger{display:none;position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text);font-size:18px;line-height:1;z-index:5;}
-  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
   .mobile-menu.open{display:flex;}
   .mobile-menu .mob-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;width:260px;border-radius:16px;font-size:17px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card-bg);transition:all 0.15s;}
   .mobile-menu .mob-link:hover,.mobile-menu .mob-link.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
@@ -188,20 +188,7 @@ footer a{color:var(--foam);text-decoration:none;}
       </div>
       <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">☰</button>
     </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <button class="mobile-close" onclick="closeMenu()">✕</button>
-      <div class="mob-title">🌊 Today in Hawaiʻi</div>
-      <a href="/" class="mob-link" onclick="closeMenu()">🌺 Home</a>
-      <a href="/oahu" class="mob-link active" onclick="closeMenu()">🌆 Oahu</a>
-      <a href="/maui" class="mob-link" onclick="closeMenu()">🏄 Maui</a>
-      <a href="/kauai" class="mob-link" onclick="closeMenu()">🌿 Kauaʻi</a>
-      <a href="/bigisland" class="mob-link" onclick="closeMenu()">🌋 Big Island</a>
-      <a href="/hiking" class="mob-link" onclick="closeMenu()">🥾 Hiking</a>
-      <a href="/beaches" class="mob-link" onclick="closeMenu()">🏖️ Beaches</a>
-      <a href="/food" class="mob-link" onclick="closeMenu()">🍽️ Food</a>
-      <a href="/about" class="mob-link" onclick="closeMenu()">☀️ About</a>
-      <a href="/privacy" class="mob-link" onclick="closeMenu()">🔒 Privacy</a>
-    </div>
+  
   </nav>
   <section class="hero">
     <div class="hero-eyebrow">Oʻahu — The Gathering Place</div>
@@ -841,15 +828,27 @@ function searchPackages() {
 </script>
 
 
+
+
+<div id="mobileMenu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+  <button onclick="document.getElementById('mobileMenu').style.display='none';document.body.style.overflow='';" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;cursor:pointer;color:#e8f4f8;font-size:20px;">✕</button>
+  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#22d3ee;margin-bottom:12px;">🌊 Today in Hawaiʻi</div>
+  <a href="/" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌺 Home</a>
+  <a href="/oahu" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.15);color:#22d3ee;background:rgba(34,211,238,0.1);margin:3px 0;">🌆 Oahu</a>
+  <a href="/maui" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🏄 Maui</a>
+  <a href="/kauai" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌿 Kauaʻi</a>
+  <a href="/bigisland" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🌋 Big Island</a>
+  <a href="/hiking" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🥾 Hiking</a>
+  <a href="/beaches" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🏖️ Beaches</a>
+  <a href="/food" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🍽️ Food</a>
+  <a href="/about" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">☀️ About</a>
+  <a href="/privacy" style="display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);margin:3px 0;">🔒 Privacy</a>
+</div>
 <script>
 function toggleMenu(){
-  const m=document.getElementById('mobileMenu');
-  m.classList.toggle('open');
-  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
-}
-function closeMenu(){
-  document.getElementById('mobileMenu').classList.remove('open');
-  document.body.style.overflow='';
+  var m=document.getElementById('mobileMenu');
+  if(m.style.display==='flex'){m.style.display='none';document.body.style.overflow='';}
+  else{m.style.display='flex';document.body.style.overflow='hidden';}
 }
 </script>
 </body>
