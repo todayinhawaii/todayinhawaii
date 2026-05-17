@@ -568,8 +568,8 @@
       <input type="text" id="hq" placeholder="Ask about Hawaii — weather, surf, beaches, hiking..." onkeydown="if(event.key==='Enter'){event.preventDefault();hGo();}">
       <button class="hsearch-go" onclick="hGo()" title="Search">🔍</button>
     </div>
-    <div class="hans" id="hAns"></div>
   </div>
+  <div id="hAns" style="display:none;margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 20px;font-size:14px;color:#e8f4f8;line-height:1.8;position:relative;z-index:2;"></div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2126,7 +2126,7 @@ function hFmt(m){var hm=((m-600)%1440+1440)%1440,h=Math.floor(hm/60),mn=Math.rou
 function hGo(){
   var q=(document.getElementById('hq').value||'').trim();
   if(!q)return;
-  var ans=document.getElementById('hAns');
+  var ans=document.getElementById('hAns');if(!ans){return;}
   var s=q.toLowerCase();
   var loc=hFindLoc(s);
   var isWx=/weather|temperature|temp|forecast|hot|warm|rain|sunny|cloud|wind|humid|degrees/.test(s);
