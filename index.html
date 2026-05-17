@@ -2029,12 +2029,13 @@ function setBookingTab(tab, btn) {
 }
 
 function searchFlights() {
-  var from = document.getElementById('fly-from').value || 'Los Angeles';
+  var from = (document.getElementById('fly-from').value || 'Los-Angeles').trim().replace(/\s+/g, '-');
   var to = document.getElementById('fly-to').value;
   var depart = document.getElementById('fly-depart').value;
   var ret = document.getElementById('fly-return').value;
-  var pax = (document.getElementById('fly-pax').value||'1').split(' ')[0];
-  var url = 'https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:' + from + ',to:' + to + ',departure:' + depart + 'TANYT&leg2=from:' + to + ',to:' + from + ',departure:' + ret + 'TANYT&passengers=adults:' + pax + ',children:0';
+  var pax = (document.getElementById('fly-pax').value||'1 passenger').split(' ')[0];
+  // Use Kayak - most reliable URL format
+  var url = 'https://www.kayak.com/flights/' + encodeURIComponent(from) + '-' + to + '/' + depart + '/' + ret + '/' + pax + 'adults';
   window.open(url, '_blank');
 }
 
@@ -2043,7 +2044,7 @@ function searchHotels() {
   var checkin = document.getElementById('hotel-in').value;
   var checkout = document.getElementById('hotel-out').value;
   var guests = (document.getElementById('hotel-guests').value||'2 guests').split(' ')[0];
-  var url = 'https://www.expedia.com/Hotel-Search?destination=' + encodeURIComponent(dest) + '&startDate=' + checkin + '&endDate=' + checkout + '&adults=' + guests;
+  var url = 'https://www.kayak.com/hotels/' + encodeURIComponent(dest) + '/' + checkin + '/' + checkout + '/' + guests + 'adults';
   window.open(url, '_blank');
 }
 
@@ -2051,16 +2052,16 @@ function searchCars() {
   var pickup = document.getElementById('car-pickup').value;
   var from = document.getElementById('car-from').value;
   var to = document.getElementById('car-to').value;
-  var url = 'https://www.rentalcars.com/SearchResults.do?pickUpAirport=' + pickup + '&pickUpDate=' + from + '&dropOffDate=' + to + '&country=US';
+  var url = 'https://www.kayak.com/cars/' + pickup + '/' + from + '/' + to;
   window.open(url, '_blank');
 }
 
 function searchPackages() {
-  var from = document.getElementById('pkg-from').value || 'Los Angeles';
+  var from = (document.getElementById('pkg-from').value || 'Los-Angeles').trim().replace(/\s+/g,'-');
   var to = document.getElementById('pkg-to').value;
   var depart = document.getElementById('pkg-depart').value;
   var ret = document.getElementById('pkg-return').value;
-  var url = 'https://www.expedia.com/Vacations?origin=' + encodeURIComponent(from) + '&destination=' + to + '&startDate=' + depart + '&endDate=' + ret;
+  var url = 'https://www.kayak.com/packages/' + encodeURIComponent(from) + '-' + to + '/' + depart + '/' + ret;
   window.open(url, '_blank');
 }
 </script>
