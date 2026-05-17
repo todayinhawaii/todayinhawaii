@@ -2069,7 +2069,7 @@ window.addEventListener('load', function() {
       var doy=Math.floor((date-new Date(date.getFullYear(),0,0))/864e5);
       var decl=23.45*Math.sin(R*(360/365)*(doy-81));
       var cosH=(Math.cos(R*90.833)-Math.sin(R*lat)*Math.sin(R*decl))/(Math.cos(R*lat)*Math.cos(R*decl));
-      if(cosH<-1||cosH>1)return null;
+      if(Math.abs(cosH)>1)return null;
       var H=Math.acos(cosH)*D;
       var eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81));
       var noon=720-4*lon-eq;
@@ -2111,7 +2111,7 @@ window.addEventListener('load', function() {
 </script>
 <script>
 (function(){
-  var LOCS={lahaina:{lat:20.8783,lon:-156.6825,name:'Lahaina, Maui'},wailea:{lat:20.6897,lon:-156.4428,name:'Wailea, Maui'},kaanapali:{lat:20.9228,lon:-156.6906,name:'Kaanapali, Maui'},kihei:{lat:20.7564,lon:-156.445,name:'Kihei, Maui'},paia:{lat:20.9103,lon:-156.3736,name:'Paia, Maui'},hana:{lat:20.7586,lon:-155.9896,name:'Hana, Maui'},kahului:{lat:20.8894,lon:-156.4729,name:'Kahului, Maui'},kapalua:{lat:21.0194,lon:-156.6731,name:'Kapalua, Maui'},napili:{lat:20.9953,lon:-156.6619,name:'Napili, Maui'},waikiki:{lat:21.2793,lon:-157.8294,name:'Waikiki, Oahu'},honolulu:{lat:21.3069,lon:-157.8583,name:'Honolulu, Oahu'},haleiwa:{lat:21.595,lon:-158.1056,name:'Haleiwa, Oahu'},kailua:{lat:21.4022,lon:-157.7394,name:'Kailua, Oahu'},hanalei:{lat:22.2028,lon:-159.5028,name:'Hanalei, Kauai'},poipu:{lat:21.8783,lon:-159.4717,name:'Poipu, Kauai'},lihue:{lat:21.9811,lon:-159.3711,name:'Lihue, Kauai'},princeville:{lat:22.2178,lon:-159.4783,name:'Princeville, Kauai'},kona:{lat:19.64,lon:-155.9969,name:'Kailua-Kona, Big Island'},hilo:{lat:19.7297,lon:-155.09,name:'Hilo, Big Island'},waikoloa:{lat:19.9333,lon:-155.8833,name:'Waikoloa, Big Island'},waimea:{lat:20.0194,lon:-155.6667,name:'Waimea, Big Island'},maui:{lat:20.7984,lon:-156.3319,name:'Maui'},oahu:{lat:21.3069,lon:-157.8583,name:'Oahu'},kauai:{lat:22.0964,lon:-159.5261,name:"Kaua'i"},bigisland:{lat:19.5429,lon:-155.6659,name:'Big Island'}};
+  var LOCS={lahaina:{lat:20.8783,lon:-156.6825,name:'Lahaina, Maui'},wailea:{lat:20.6897,lon:-156.4428,name:'Wailea, Maui'},kaanapali:{lat:20.9228,lon:-156.6906,name:'Kaanapali, Maui'},kihei:{lat:20.7564,lon:-156.445,name:'Kihei, Maui'},paia:{lat:20.9103,lon:-156.3736,name:'Paia, Maui'},hana:{lat:20.7586,lon:-155.9896,name:'Hana, Maui'},kahului:{lat:20.8894,lon:-156.4729,name:'Kahului, Maui'},kapalua:{lat:21.0194,lon:-156.6731,name:'Kapalua, Maui'},napili:{lat:20.9953,lon:-156.6619,name:'Napili, Maui'},waikiki:{lat:21.2793,lon:-157.8294,name:'Waikiki, Oahu'},honolulu:{lat:21.3069,lon:-157.8583,name:'Honolulu, Oahu'},haleiwa:{lat:21.595,lon:-158.1056,name:'Haleiwa, Oahu'},kailua:{lat:21.4022,lon:-157.7394,name:'Kailua, Oahu'},hanalei:{lat:22.2028,lon:-159.5028,name:'Hanalei, Kauai'},poipu:{lat:21.8783,lon:-159.4717,name:'Poipu, Kauai'},lihue:{lat:21.9811,lon:-159.3711,name:'Lihue, Kauai'},princeville:{lat:22.2178,lon:-159.4783,name:'Princeville, Kauai'},kona:{lat:19.64,lon:-155.9969,name:'Kailua-Kona, Big Island'},hilo:{lat:19.7297,lon:-155.09,name:'Hilo, Big Island'},waikoloa:{lat:19.9333,lon:-155.8833,name:'Waikoloa, Big Island'},waimea:{lat:20.0194,lon:-155.6667,name:'Waimea, Big Island'},maui:{lat:20.7984,lon:-156.3319,name:'Maui'},oahu:{lat:21.3069,lon:-157.8583,name:'Oahu'},kauai:{lat:22.0964,lon:-159.5261,name:'Kauai'},bigisland:{lat:19.5429,lon:-155.6659,name:'Big Island'}};
   var WX={0:'☀️ Clear sky',1:'🌤️ Mainly clear',2:'⛅ Partly cloudy',3:'☁️ Overcast',45:'🌫️ Foggy',51:'🌦️ Light drizzle',61:'🌧️ Light rain',63:'🌧️ Rain',65:'🌧️ Heavy rain',80:'🌦️ Showers',81:'🌧️ Heavy showers',95:'⛈️ Thunderstorm'};
 
   function findLoc(s){
@@ -2125,13 +2125,13 @@ window.addEventListener('load', function() {
     var R=Math.PI/180,doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
     var decl=23.45*Math.sin(R*(360/365)*(doy-81));
     var cosH=(Math.cos(R*90.833)-Math.sin(R*la)*Math.sin(R*decl))/(Math.cos(R*la)*Math.cos(R*decl));
-    if(cosH<-1||cosH>1)return null;
+    if(Math.abs(cosH)>1)return null;
     var H=Math.acos(cosH)*(180/Math.PI);
     var eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81));
     return{r:720-4*lo-eq-4*H,s:720-4*lo-eq+4*H};
   }
 
-  function fmtTime(m){var hm=((m-600)%1440+1440)%1440,h=Math.floor(hm/60),mn=Math.round(hm%60);return(h%12||12)+':'+(mn<10?'0':'')+mn+(h<12?' AM':' PM');}
+  function fmtTime(m){var hm=((m-600)%1440+1440)%1440,h=Math.floor(hm/60),mn=Math.round(hm%60);return(h%12||12)+':'+(mn>9?'':0+'')+mn+(h<12?' AM':' PM');}
 
   function show(html){
     var a=document.getElementById('hAns');
@@ -2256,7 +2256,7 @@ window.addEventListener('load', function() {
       rec.interimResults=true;
       rec.onstart=function(){listening=true;mic.textContent='⏹️';mic.style.background='linear-gradient(135deg,#dc2626,#f97316)';inp.placeholder='Listening... speak now!';};
       rec.onresult=function(e){
-        var t='';for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;
+        var t='';for(var i=e.resultIndex,len=e.results.length;i!==len;i++)t+=e.results[i][0].transcript;
         inp.value=t;
         if(e.results[e.results.length-1].isFinal)go();
       };
