@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -551,18 +553,6 @@
     </div>
     
   </nav>
-
-  <!-- HAWAII SEARCH -->
-  <div style="max-width:560px;margin:0 auto 24px;">
-    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:99px;padding:8px 8px 8px 20px;">
-      <input id="hq" type="text" placeholder="Ask about Hawaii weather, surf, beaches..." 
-        style="flex:1;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;"
-        onkeydown="if(event.key==='Enter')hGo()">
-      <button onclick="hGo()" 
-        style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:18px;color:#fff;flex-shrink:0;">🔍</button>
-    </div>
-    <div id="hAns" style="display:none;margin-top:12px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 20px;font-size:14px;color:#e8f4f8;line-height:1.8;"></div>
-  </div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2093,58 +2083,6 @@ window.addEventListener('load', function() {
     document.getElementById('sunGrid').innerHTML=html;
   } catch(e){ console.error('Sun calc error:',e); }
 });
-</script>
-<script>
-var HLOCS={lahaina:{lat:20.8783,lon:-156.6825,name:'Lahaina, Maui'},wailea:{lat:20.6897,lon:-156.4428,name:'Wailea, Maui'},kaanapali:{lat:20.9228,lon:-156.6906,name:'Kaanapali, Maui'},kihei:{lat:20.7564,lon:-156.445,name:'Kihei, Maui'},paia:{lat:20.9103,lon:-156.3736,name:'Paia, Maui'},hana:{lat:20.7586,lon:-155.9896,name:'Hana, Maui'},kahului:{lat:20.8894,lon:-156.4729,name:'Kahului, Maui'},kapalua:{lat:21.0194,lon:-156.6731,name:'Kapalua, Maui'},waikiki:{lat:21.2793,lon:-157.8294,name:'Waikiki, Oahu'},honolulu:{lat:21.3069,lon:-157.8583,name:'Honolulu, Oahu'},haleiwa:{lat:21.595,lon:-158.1056,name:'Haleiwa, Oahu'},hanalei:{lat:22.2028,lon:-159.5028,name:'Hanalei, Kauai'},poipu:{lat:21.8783,lon:-159.4717,name:'Poipu, Kauai'},lihue:{lat:21.9811,lon:-159.3711,name:'Lihue, Kauai'},kona:{lat:19.64,lon:-155.9969,name:'Kailua-Kona, Big Island'},hilo:{lat:19.7297,lon:-155.09,name:'Hilo, Big Island'},maui:{lat:20.7984,lon:-156.3319,name:'Maui'},oahu:{lat:21.3069,lon:-157.8583,name:'Oahu'},kauai:{lat:22.0964,lon:-159.5261,name:"Kaua'i"},bigisland:{lat:19.5429,lon:-155.6659,name:'Big Island'}};
-var WX={0:'☀️ Clear sky',1:'🌤️ Mainly clear',2:'⛅ Partly cloudy',3:'☁️ Overcast',51:'🌦️ Drizzle',61:'🌧️ Rain',63:'🌧️ Rain',80:'🌦️ Showers',95:'⛈️ Thunderstorm'};
-function hFindLoc(s){if(/north.?shore/.test(s))return{lat:21.6417,lon:-158.0611,name:'North Shore, Oahu'};if(/big.?island/.test(s))return HLOCS.bigisland;for(var k in HLOCS)if(s.indexOf(k)>=0)return HLOCS[k];return null;}
-function hSunCalc(la,lo,d){var R=Math.PI/180,doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5),decl=23.45*Math.sin(R*(360/365)*(doy-81)),cosH=(Math.cos(R*90.833)-Math.sin(R*la)*Math.sin(R*decl))/(Math.cos(R*la)*Math.cos(R*decl));if(cosH<-1||cosH>1)return null;var H=Math.acos(cosH)*(180/Math.PI),eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81)),noon=720-4*lo-eq;return{r:noon-4*H,s:noon+4*H};}
-function hFmt(m){var hm=((m-600)%1440+1440)%1440,h=Math.floor(hm/60),mn=Math.round(hm%60);return(h%12||12)+':'+(mn<10?'0':'')+mn+(h<12?' AM':' PM');}
-function hShow(html){var a=document.getElementById('hAns');a.innerHTML=html;a.style.display='block';a.scrollIntoView({behavior:'smooth',block:'nearest'});}
-function hGo(){
-  var q=(document.getElementById('hq').value||'').trim();
-  if(!q){hShow('🌺 Please type a question first!');return;}
-  var s=q.toLowerCase(),loc=hFindLoc(s);
-  var isWx=/weather|temp|forecast|hot|warm|rain|sunny|cloud|wind|humid/.test(s);
-  var isSun=/sunset|sunrise/.test(s);
-  var isSurf=/surf|wave|swell/.test(s);
-  if(isSun){
-    var today=new Date();today.setHours(0,0,0,0);
-    var isl=loc?[{n:loc.name,e:'📍',la:loc.lat,lo:loc.lon}]:[{n:'Maui',e:'🏄',la:20.80,lo:-156.33},{n:'Oahu',e:'🌆',la:21.31,lo:-157.86},{n:"Kaua'i",e:'🌿',la:22.10,lo:-159.50},{n:'Big Island',e:'🌋',la:19.59,lo:-155.43}];
-    var h='<b>🌅 Today's Sunrise & Sunset</b><br><br><table style="width:100%;font-size:13px;border-collapse:collapse;"><tr style="color:#7fb3c8;font-size:11px;"><td>Island</td><td>🌅 Sunrise</td><td>🌇 Sunset</td><td>Daylight</td></tr>';
-    isl.forEach(function(i){var t=hSunCalc(i.la,i.lo,today);if(!t)return;var m=t.s-t.r;h+='<tr style="border-top:1px solid rgba(255,255,255,0.06)"><td style="padding:7px 0">'+i.e+' '+i.n+'</td><td style="color:#fbbf24;font-weight:600">'+hFmt(t.r)+'</td><td style="color:#f97316;font-weight:600">'+hFmt(t.s)+'</td><td style="color:#7fb3c8">'+Math.floor(m/60)+'h '+Math.round(m%60)+'m</td></tr>';});
-    hShow(h+'</table><span style="font-size:11px;color:#7fb3c8">Updates automatically every day</span>');
-    return;
-  }
-  if(isSurf){
-    hShow('🏄 <b>Fetching live surf...</b>');
-    var surfs=[{n:'Maui North Shore',la:20.93,lo:-156.36,c:'#f97316'},{n:'Oahu North Shore',la:21.66,lo:-158.05,c:'#22d3ee'},{n:'Kauai',la:22.10,lo:-159.50,c:'#10b981'},{n:'Big Island',la:19.64,lo:-156.00,c:'#fbbf24'}];
-    var res=[],done=0;
-    surfs.forEach(function(sf,i){fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+sf.la+'&longitude='+sf.lo+'&current=wave_height,wave_period&timezone=Pacific%2FHonolulu').then(function(r){return r.json();}).then(function(d){var wh=d.current.wave_height*3.28084,wp=Math.round(d.current.wave_period),rt=wh>=6?'🤙 Pumping':wh>=3?'👍 Good':wh>=1?'😐 Fair':'😴 Flat';res[i]={n:sf.n,h:wh.toFixed(1),p:wp,rt:rt,c:sf.c};if(++done===surfs.length){var h='<b>🏄 Live Surf — Hawaii</b><br><br>';res.forEach(function(r){if(r)h+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="color:'+r.c+';font-weight:500">'+r.n+'</span><span><b>'+r.h+' ft</b> · '+r.p+'s · '+r.rt+'</span></div>';});hShow(h+'<span style="font-size:11px;color:#7fb3c8">Live · NOAA buoys · Updated hourly</span>');}}).catch(function(){done++;});});
-    return;
-  }
-  if(isWx&&loc){
-    hShow('🌤️ Getting weather for <b>'+loc.name+'</b>...');
-    fetch('https://api.open-meteo.com/v1/forecast?latitude='+loc.lat+'&longitude='+loc.lon+'&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=Pacific%2FHonolulu').then(function(r){return r.json();}).then(function(d){var c=d.current,cd=WX[c.weather_code]||'🌤️ Fair',em=cd.split(' ')[0],ds=cd.split(' ').slice(1).join(' ');hShow('<b>🌤️ Live Weather — '+loc.name+'</b><br><span style="font-size:36px;line-height:1.8">'+em+'</span> <span style="font-size:28px;font-weight:700;color:#fbbf24">'+Math.round(c.temperature_2m)+'°F</span> <span style="color:#7fb3c8;font-size:13px">feels like '+Math.round(c.apparent_temperature)+'°F</span><br>'+ds+'<br><br>💧 Humidity: <b>'+c.relative_humidity_2m+'%</b> &nbsp;·&nbsp; 💨 Wind: <b>'+Math.round(c.wind_speed_10m)+' mph</b><br><span style="font-size:11px;color:#7fb3c8">Live · Open-Meteo · Updated hourly</span>');}).catch(function(){hShow('Unable to fetch weather. Try our Windy radar above!');});
-    return;
-  }
-  if(isWx){hShow('🌤️ <b>Which location?</b><br>Try: "Weather in Lahaina" · "Waikiki weather" · "Kona temperature"');return;}
-  if(/hotel|resort|stay/.test(s)){hShow("🏨 <b>Best Hotels:</b><br><a href='/maui' style='color:#22d3ee'>Maui</a> · <a href='/oahu' style='color:#22d3ee'>Oahu</a> · <a href='/kauai' style='color:#22d3ee'>Kauai</a> · <a href='/bigisland' style='color:#22d3ee'>Big Island</a> — top 12 hotels on each island!");return;}
-  if(/beach|swim/.test(s)){hShow("🏖️ <b>Hawaii Beaches:</b><br>Our <a href='/beaches' style='color:#22d3ee'>Beaches Guide</a> has 48 beaches with swim conditions, snorkel ratings and maps!");return;}
-  if(/hik|trail/.test(s)){hShow("🥾 <b>Hawaii Hiking:</b><br>Our <a href='/hiking' style='color:#22d3ee'>Hiking Guide</a> has 32 trails with difficulty, maps and pro tips!");return;}
-  if(/poke/.test(s)){hShow("🐟 <b>Best Poke:</b><br>Tamura's (Maui) · Ono Seafood (Honolulu) · Pono Market (Kauai) · Da Poke Shack (Kona)!");return;}
-  if(/shave.?ice/.test(s)){hShow("🍧 <b>Best Shave Ice:</b><br>Ululani's on Maui voted #1! Matsumoto's in Haleiwa on Oahu is iconic. Add ice cream at the bottom!");return;}
-  if(/snorkel|dive/.test(s)){hShow("🤿 <b>Best Snorkeling:</b><br>Hanauma Bay (Oahu) · Molokini (Maui) · Tunnels (Kauai) · Two Step (Big Island)!");return;}
-  if(/volcano|kilauea|lava/.test(s)){hShow("🌋 <b>Kilauea Volcano:</b><br>Check <a href='https://www.usgs.gov/volcanoes/kilauea' target='_blank' style='color:#22d3ee'>USGS live cams</a> for eruption status!");return;}
-  if(/flight|fly|plane/.test(s)){hShow("✈️ <b>Flights to Hawaii:</b><br>Use our booking widget above to find the best Hawaii flight deals!");return;}
-  if(/food|eat|restaurant|lunch|dinner/.test(s)){hShow("🍽️ <b>Hawaii Food:</b><br>Our <a href='/food' style='color:#22d3ee'>Food Guide</a> — best poke, shave ice, plate lunch and hidden gems on every island!");return;}
-  if(/tourist|visitor|crowd/.test(s)){hShow("📊 <b>Tourist Count:</b><br>See our live visitor count above — today's arrivals for all islands updated every morning!");return;}
-  if(/maui/.test(s)){hShow("🏄 <b>Maui:</b><br><a href='/maui' style='color:#22d3ee'>Visit our Maui page</a> — weather, surf, hotels, restaurants and activities!");return;}
-  if(/oahu|honolulu|waikiki/.test(s)){hShow("🌆 <b>Oahu:</b><br><a href='/oahu' style='color:#22d3ee'>Visit our Oahu page</a> — Waikiki, Diamond Head, North Shore!");return;}
-  if(/kauai/.test(s)){hShow("🌿 <b>Kauai:</b><br><a href='/kauai' style='color:#22d3ee'>Visit our Kauai page</a> — Na Pali Coast, Waimea Canyon, Hanalei!");return;}
-  if(/big.?island|kona|hilo/.test(s)){hShow("🌋 <b>Big Island:</b><br><a href='/bigisland' style='color:#22d3ee'>Visit our Big Island page</a> — Volcanoes, Mauna Kea, green sand beaches!");return;}
-  hShow("🌺 <b>Aloha! Ask me anything:</b><br>Weather in Lahaina · Surf conditions · Sunset times · Best beaches · Hiking trails · Best poke · Shave ice · Hotels · Flights");
-}
 </script>
 </body>
 </html>
