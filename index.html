@@ -512,6 +512,8 @@
     .nav-link{font-size:11px;padding:6px 10px;}
     .hamburger{display:none !important;}
   }
+
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.4);} 50%{box-shadow:0 0 0 10px rgba(249,115,22,0);} }
 </style>
 
 </head>
@@ -2027,37 +2029,38 @@ function setBookingTab(tab, btn) {
 }
 
 function searchFlights() {
-  const from = document.getElementById('fly-from').value || 'Los Angeles';
-  const to = document.getElementById('fly-to').value;
-  const depart = document.getElementById('fly-depart').value;
-  const ret = document.getElementById('fly-return').value;
-  const addCar = document.getElementById('fly-car').checked;
-  const url = `https://www.expedia.com/Flights-Search?leg1=from:${encodeURIComponent(from)},to:${to},departure:${depart}TANYT&leg2=from:${to},to:${encodeURIComponent(from)},departure:${ret}TANYT&trip=roundtrip&passengers=adults:1`;
+  var from = document.getElementById('fly-from').value || 'Los Angeles';
+  var to = document.getElementById('fly-to').value;
+  var depart = document.getElementById('fly-depart').value;
+  var ret = document.getElementById('fly-return').value;
+  var pax = (document.getElementById('fly-pax').value||'1').split(' ')[0];
+  var url = 'https://www.expedia.com/Flights-Search?trip=roundtrip&leg1=from:' + from + ',to:' + to + ',departure:' + depart + 'TANYT&leg2=from:' + to + ',to:' + from + ',departure:' + ret + 'TANYT&passengers=adults:' + pax + ',children:0';
   window.open(url, '_blank');
 }
 
 function searchHotels() {
-  const dest = document.getElementById('hotel-dest').value;
-  const checkin = document.getElementById('hotel-in').value;
-  const checkout = document.getElementById('hotel-out').value;
-  const url = `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(dest)}&startDate=${checkin}&endDate=${checkout}&adults=2`;
+  var dest = document.getElementById('hotel-dest').value;
+  var checkin = document.getElementById('hotel-in').value;
+  var checkout = document.getElementById('hotel-out').value;
+  var guests = (document.getElementById('hotel-guests').value||'2 guests').split(' ')[0];
+  var url = 'https://www.expedia.com/Hotel-Search?destination=' + encodeURIComponent(dest) + '&startDate=' + checkin + '&endDate=' + checkout + '&adults=' + guests;
   window.open(url, '_blank');
 }
 
 function searchCars() {
-  const pickup = document.getElementById('car-pickup').value;
-  const from = document.getElementById('car-from').value;
-  const to = document.getElementById('car-to').value;
-  const url = `https://www.rentalcars.com/SearchResults.do?pickUpAirport=${pickup}&pickUpDate=${from}&dropOffDate=${to}&country=US`;
+  var pickup = document.getElementById('car-pickup').value;
+  var from = document.getElementById('car-from').value;
+  var to = document.getElementById('car-to').value;
+  var url = 'https://www.rentalcars.com/SearchResults.do?pickUpAirport=' + pickup + '&pickUpDate=' + from + '&dropOffDate=' + to + '&country=US';
   window.open(url, '_blank');
 }
 
 function searchPackages() {
-  const from = document.getElementById('pkg-from').value || 'Los Angeles';
-  const to = document.getElementById('pkg-to').value;
-  const depart = document.getElementById('pkg-depart').value;
-  const ret = document.getElementById('pkg-return').value;
-  const url = `https://www.expedia.com/Vacations?origin=${encodeURIComponent(from)}&destination=${to}&startDate=${depart}&endDate=${ret}`;
+  var from = document.getElementById('pkg-from').value || 'Los Angeles';
+  var to = document.getElementById('pkg-to').value;
+  var depart = document.getElementById('pkg-depart').value;
+  var ret = document.getElementById('pkg-return').value;
+  var url = 'https://www.expedia.com/Vacations?origin=' + encodeURIComponent(from) + '&destination=' + to + '&startDate=' + depart + '&endDate=' + ret;
   window.open(url, '_blank');
 }
 </script>
@@ -2153,57 +2156,84 @@ window.addEventListener('load', function() {
       rec.lang = 'en-US';
       rec.continuous = true;
       rec.interimResults = true;
-
-      var finalTranscript = '';
+      var transcript = '';
       var searchTimer = null;
 
       rec.onstart = function() {
-        on=true;
-        finalTranscript = '';
-        mic.innerHTML='&#9209;';
-        mic.style.background='linear-gradient(135deg,#dc2626,#f97316)';
-        inp.placeholder='Listening... speak now, click stop when done';
+        on = true;
+        transcript = '';
         inp.value = '';
+        mic.innerHTML = '&#9209;';
+        mic.style.background = 'linear-gradient(135deg,#dc2626,#f97316)';
+        mic.style.animation = 'pulse 1s infinite';
+        inp.placeholder = 'Listening... click mic again to search';
       };
 
       rec.onresult = function(e) {
-        var interim = '';
-        for (var i = e.resultIndex; i !== e.results.length; i++) {
-          if (e.results[i].isFinal) {
-            finalTranscript += e.results[i][0].transcript;
-          } else {
-            interim += e.results[i][0].transcript;
-          }
+        transcript = '';
+        for (var i = 0; i !== e.results.length; i++) {
+          transcript += e.results[i][0].transcript;
         }
-        inp.value = finalTranscript || interim;
-
-        // Auto search 1.5 seconds after user stops talking
-        if (finalTranscript) {
-          clearTimeout(searchTimer);
-          searchTimer = setTimeout(function() {
-            if (finalTranscript.trim()) {
-              rec.stop();
-              doSearch(finalTranscript.trim());
-            }
-          }, 1500);
-        }
+        inp.value = transcript;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function(){
+          if (on && transcript.trim()) { rec.stop(); }
+        }, 3000);
       };
 
-      rec.onerror = function(e) {
-        on=false;
-        mic.innerHTML='&#127908;';
-        mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';
-        inp.placeholder = e.error === 'not-allowed' ? 'Mic blocked - allow access in browser settings' : 'Search anything...';
+      rec.onspeechend = function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function(){
+          if (on) rec.stop();
+        }, 1000);
+      };
+
+      rec.onerror = function(err) {
+        clearTimeout(searchTimer);
+        on = false;
+        mic.innerHTML = '&#127908;';
+        mic.style.background = 'linear-gradient(135deg,#0e7490,#22d3ee)';
+        mic.style.animation = '';
+        if (err.error === 'not-allowed') {
+          inp.placeholder = 'Mic blocked - see instructions below';
+          var a = document.getElementById('hAns');
+          var r = document.getElementById('hResults');
+          a.style.display = 'block';
+          r.innerHTML = 
+            '<div style="padding:16px;">' +
+            '<div style="font-size:15px;font-weight:600;color:#fbbf24;margin-bottom:12px;">&#127908; Allow Microphone Access</div>' +
+            '<div style="font-size:13px;color:#e8f4f8;line-height:1.9;">' +
+            '<b style="color:#22d3ee">Chrome on Mac/PC:</b><br>' +
+            '1. Click the <b>lock icon &#128274;</b> in the address bar<br>' +
+            '2. Click <b>Site settings</b><br>' +
+            '3. Set <b>Microphone</b> to <b>Allow</b><br>' +
+            '4. Refresh the page &#8635;<br><br>' +
+            '<b style="color:#22d3ee">Chrome on Android:</b><br>' +
+            '1. Tap the <b>3 dots menu</b> top right<br>' +
+            '2. Go to <b>Settings → Site Settings → Microphone</b><br>' +
+            '3. Find todayinhawaii.com and set to <b>Allow</b><br><br>' +
+            '<b style="color:#10b981">&#10003; Already works on:</b> Safari (Mac + iPhone), Chrome (Android)<br><br>' +
+            '<div style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:10px;font-size:12px;color:#7fb3c8;">&#128161; Tip: You can also just <b style="color:#e8f4f8">type your question</b> in the search box and press Enter!</div>' +
+            '</div></div>';
+        } else if (err.error === 'no-speech') {
+          inp.placeholder = 'No speech heard - try speaking louder or closer to mic';
+        } else {
+          inp.placeholder = 'Search anything...';
+        }
       };
 
       rec.onend = function() {
-        on=false;
-        mic.innerHTML='&#127908;';
-        mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';
-        inp.placeholder='Search anything... weather, surf, news, sports, travel...';
+        clearTimeout(searchTimer);
+        on = false;
+        mic.innerHTML = '&#127908;';
+        mic.style.background = 'linear-gradient(135deg,#0e7490,#22d3ee)';
+        mic.style.animation = '';
+        inp.placeholder = 'Search anything... weather, surf, news, sports, travel...';
+        if (transcript.trim()) doSearch(transcript.trim());
       };
 
-      rec.start();
+      try { rec.start(); }
+      catch(startErr) { on = false; inp.placeholder = 'Could not start mic - try again'; }
     });
   }
 });
