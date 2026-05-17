@@ -567,6 +567,7 @@
     <div class="mic-btn">🎤</div>
     <div class="voice-text" id="voiceText">Ask about Hawaii weather, surf, beaches...</div>
   </div>
+  <div id="voiceResult" style="display:none;margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 20px;font-size:14px;color:#e8f4f8;line-height:1.8;"></div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2101,12 +2102,101 @@ window.addEventListener('load', function() {
 
 <script>
 var recognition=null,listening=false;
+
+// Hawaii knowledge base for instant on-page answers
+var HAWAII_KB = {
+  weather: function() {
+    return '🌤️ <strong>Hawaii Weather right now:</strong><br>Use our live Windy radar above — click any location button to see current conditions for Lahaina, Wailea, Waikiki, Hanalei and 40+ spots across all islands!';
+  },
+  surf: function() {
+    return '🏄 <strong>Hawaii Surf Conditions:</strong><br>Check our live surf report section below — showing current wave heights for Oahu North Shore, Maui, Kauai and Big Island updated hourly from NOAA buoys!';
+  },
+  sunset: function() {
+    return '🌅 <strong>Sunrise & Sunset Times:</strong><br>See our auto-updating sunrise/sunset table above — showing exact times for Maui, Oahu, Kauai and Big Island for today and the next 8 days!';
+  },
+  sunrise: function() {
+    return '🌅 <strong>Sunrise Times:</strong><br>Check our sunrise/sunset table above! Today on Maui sunrise is around 5:47 AM. The table updates automatically every day for all 4 islands!';
+  },
+  tourists: function() {
+    return '📊 <strong>Hawaii Visitor Count:</strong><br>See our live tourist count at the top of the page — showing today's arrivals and departures for Maui, Oahu, Kauai and Big Island, updated every morning!';
+  },
+  hotels: function() {
+    return '🏨 <strong>Best Hotels in Hawaii:</strong><br>Visit our island pages! We list the top 12 hotels on each island — Maui, Oahu, Kauai and Big Island — from luxury resorts to great value options!';
+  },
+  restaurants: function() {
+    return '🍽️ <strong>Best Restaurants:</strong><br>Check our <a href="/food" style="color:#22d3ee">Hawaii Food Guide</a> — featuring must-try dishes, best poke spots, plate lunch, shave ice, malasadas and hidden gems on every island!';
+  },
+  food: function() {
+    return '🍜 <strong>Hawaii Food Guide:</strong><br>Visit our <a href="/food" style="color:#22d3ee">Food page</a> for the complete guide — 12 must-try dishes, best poke, shave ice, plate lunch, food trucks and hidden gems on every island!';
+  },
+  beaches: function() {
+    return '🏖️ <strong>Hawaii Beaches:</strong><br>We have a complete <a href="/beaches" style="color:#22d3ee">Beaches Guide</a> with 48 beaches across all islands — swim conditions, snorkeling ratings, parking tips and maps!';
+  },
+  hiking: function() {
+    return '🥾 <strong>Hawaii Hiking Trails:</strong><br>Check our <a href="/hiking" style="color:#22d3ee">Hiking Guide</a> — 32 trails across Maui, Oahu, Kauai and Big Island with difficulty ratings, distances, maps and pro tips!';
+  },
+  flights: function() {
+    return '✈️ <strong>Flights to Hawaii:</strong><br>Use our travel booking widget above to search hundreds of travel sites at once for the best flight deals to Hawaii — just enter your city and travel dates!';
+  },
+  maui: function() {
+    return '🏄 <strong>Maui — The Valley Isle:</strong><br>Visit our <a href="/maui" style="color:#22d3ee">Maui page</a> for live weather, surf, top hotels, restaurants, activities and booking. Home to Haleakalā, Road to Hana and world-class beaches!';
+  },
+  oahu: function() {
+    return '🌆 <strong>Oahu — The Gathering Place:</strong><br>Visit our <a href="/oahu" style="color:#22d3ee">Oahu page</a> for live weather, surf, top hotels, restaurants and activities. Home to Waikiki, Diamond Head and the North Shore!';
+  },
+  kauai: function() {
+    return '🌿 <strong>Kauai — The Garden Isle:</strong><br>Visit our <a href="/kauai" style="color:#22d3ee">Kauai page</a> for live weather, surf, top hotels and activities. Home to the Na Pali Coast, Waimea Canyon and Hanalei Bay!';
+  },
+  bigisland: function() {
+    return '🌋 <strong>Big Island — Hawaii Island:</strong><br>Visit our <a href="/bigisland" style="color:#22d3ee">Big Island page</a> for live weather, surf, hotels and activities. Home to Kilauea Volcano, Mauna Kea and green sand beaches!';
+  },
+  volcano: function() {
+    return '🌋 <strong>Kilauea Volcano:</strong><br>Hawaii Volcanoes National Park on the Big Island. Check the <a href="https://www.usgs.gov/volcanoes/kilauea" target="_blank" style="color:#22d3ee">USGS live webcam</a> for current eruption status. Entry fee required for the park.';
+  },
+  snorkel: function() {
+    return '🤿 <strong>Best Snorkeling in Hawaii:</strong><br>Top spots: Hanauma Bay (Oahu), Molokini Crater (Maui), Tunnels Beach (Kauai), Two Step (Big Island). Check our <a href="/beaches" style="color:#22d3ee">Beaches Guide</a> for snorkel ratings on every beach!';
+  },
+  poke: function() {
+    return '🐟 <strong>Best Poke in Hawaii:</strong><br>Tamura's Fine Wine on Maui, Ono Seafood in Honolulu, Pono Market on Kauai, Da Poke Shack in Kona. Or check any Foodland supermarket — surprisingly amazing poke! See our <a href="/food" style="color:#22d3ee">Food Guide</a>!';
+  },
+  shaveice: function() {
+    return '🍧 <strong>Best Shave Ice:</strong><br>Ululani's Hawaiian Shave Ice on Maui is voted best in Hawaii! Matsumoto's in Haleiwa on Oahu is iconic. Always add ice cream at the bottom and mochi on top!';
+  },
+};
+
+function getAnswer(query) {
+  var q = query.toLowerCase();
+  if (q.match(/weather|rain|cloud|temperature|forecast|wind/)) return HAWAII_KB.weather();
+  if (q.match(/surf|wave|swell|surfing|pipeline|hookipa/)) return HAWAII_KB.surf();
+  if (q.match(/sunset/)) return HAWAII_KB.sunset();
+  if (q.match(/sunrise/)) return HAWAII_KB.sunrise();
+  if (q.match(/tourist|visitor|crowd|busy|people/)) return HAWAII_KB.tourists();
+  if (q.match(/hotel|resort|stay|accommodation|where to stay/)) return HAWAII_KB.hotels();
+  if (q.match(/restaurant|eat|food|dinner|lunch|breakfast|dining/) && !q.match(/poke|shave|malasada/)) return HAWAII_KB.restaurants();
+  if (q.match(/beach|beaches|swimming|swim/)) return HAWAII_KB.beaches();
+  if (q.match(/hik|trail|walk|trek/)) return HAWAII_KB.hiking();
+  if (q.match(/flight|fly|plane|airport|ticket/)) return HAWAII_KB.flights();
+  if (q.match(/poke|poki/)) return HAWAII_KB.poke();
+  if (q.match(/shave ice|shaveice|snow cone/)) return HAWAII_KB.shaveice();
+  if (q.match(/snorkel|scuba|dive|underwater|fish/)) return HAWAII_KB.snorkel();
+  if (q.match(/volcano|kilauea|lava|eruption/)) return HAWAII_KB.volcano();
+  if (q.match(/maui/)) return HAWAII_KB.maui();
+  if (q.match(/oahu|honolulu|waikiki/)) return HAWAII_KB.oahu();
+  if (q.match(/kauai|kaua/)) return HAWAII_KB.kauai();
+  if (q.match(/big island|hawaii island|kona|hilo/)) return HAWAII_KB.bigisland();
+  if (q.match(/food|eat|malasada|plate lunch|loco moco|spam|musubi/)) return HAWAII_KB.food();
+  // Default
+  return '🌺 <strong>Great question!</strong><br>Explore todayinhawaii.com for live weather, surf, tourist counts, hotels, restaurants, hiking trails, beaches and much more across all 4 Hawaiian islands! Use the navigation menu above to explore.';
+}
+
 function startVoice(){
   var bar=document.getElementById('voiceBar');
   var txt=document.getElementById('voiceText');
+  var result=document.getElementById('voiceResult');
   var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SpeechRecognition){
-    window.open('https://www.google.com/search?q=Hawaii+weather+today','_blank');
+    result.innerHTML='🎤 Voice search not supported in this browser. Try Chrome on Android or Safari on iPhone!';
+    result.style.display='block';
     return;
   }
   if(listening){if(recognition)recognition.stop();return;}
@@ -2118,15 +2208,16 @@ function startVoice(){
     listening=true;
     bar.classList.add('listening');
     txt.textContent='🎤 Listening... speak now';
+    result.style.display='none';
   };
   recognition.onresult=function(e){
     var t='';
     for(var i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
     txt.textContent='🎤 "'+t+'"';
     if(e.results[e.results.length-1].isFinal){
-      var q=t;
-      if(q.toLowerCase().indexOf('hawaii')<0) q=q+' Hawaii';
-      window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank');
+      result.innerHTML=getAnswer(t);
+      result.style.display='block';
+      result.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   };
   recognition.onerror=function(e){
@@ -2137,7 +2228,7 @@ function startVoice(){
   recognition.onend=function(){
     listening=false;
     bar.classList.remove('listening');
-    setTimeout(function(){txt.textContent='Ask about Hawaii weather, surf, beaches...';},2000);
+    setTimeout(function(){txt.textContent='Ask about Hawaii weather, surf, beaches...';},1500);
   };
   recognition.start();
 }
