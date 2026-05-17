@@ -514,14 +514,14 @@
   }
 
   /* ── VOICE SEARCH ── */
-  .voice-search-bar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:12px 20px;margin:0 auto 32px;max-width:560px;cursor:pointer;transition:all 0.2s;}
+  .voice-search-bar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:12px 20px;margin:0 auto 24px;max-width:560px;cursor:pointer;transition:all 0.2s;}
   .voice-search-bar:hover{background:rgba(34,211,238,0.1);border-color:rgba(34,211,238,0.3);}
-  .voice-search-bar.listening{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.5);animation:pulse-border 1s ease-in-out infinite;}
-  @keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.3);}50%{box-shadow:0 0 0 8px rgba(249,115,22,0);}}
-  .mic-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;transition:all 0.2s;}
+  .voice-search-bar.listening{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.5);animation:vspulse 1s ease-in-out infinite;}
+  @keyframes vspulse{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.3);}50%{box-shadow:0 0 0 8px rgba(249,115,22,0);}}
+  .mic-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
   .voice-search-bar.listening .mic-btn{background:linear-gradient(135deg,#dc2626,#f97316);}
   .voice-text{font-size:15px;color:var(--muted);flex:1;}
-  .voice-search-bar.listening .voice-text{color:var(--coral);}
+  .voice-answer{display:none;margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 20px;font-size:14px;color:#e8f4f8;line-height:1.8;}
 </style>
 </head>
 <body>
@@ -563,11 +563,11 @@
   </nav>
 
   <!-- VOICE SEARCH -->
-  <div class="voice-search-bar" id="voiceBar" onclick="startVoice()">
+  <div class="voice-search-bar" id="vsBar" onclick="vsStart()">
     <div class="mic-btn">🎤</div>
-    <div class="voice-text" id="voiceText">Ask about Hawaii weather, surf, beaches...</div>
+    <span class="voice-text" id="vsTxt">Ask about Hawaii weather, surf, beaches...</span>
   </div>
-  <div id="voiceResult" style="display:none;margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 20px;font-size:14px;color:#e8f4f8;line-height:1.8;"></div>
+  <div class="voice-answer" id="vsAns"></div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2099,138 +2099,83 @@ window.addEventListener('load', function() {
   } catch(e){ console.error('Sun calc error:',e); }
 });
 </script>
-
 <script>
-var recognition=null,listening=false;
-
-// Hawaii knowledge base for instant on-page answers
-var HAWAII_KB = {
-  weather: function() {
-    return '🌤️ <strong>Hawaii Weather right now:</strong><br>Use our live Windy radar above — click any location button to see current conditions for Lahaina, Wailea, Waikiki, Hanalei and 40+ spots across all islands!';
-  },
-  surf: function() {
-    return '🏄 <strong>Hawaii Surf Conditions:</strong><br>Check our live surf report section below — showing current wave heights for Oahu North Shore, Maui, Kauai and Big Island updated hourly from NOAA buoys!';
-  },
-  sunset: function() {
-    return '🌅 <strong>Sunrise & Sunset Times:</strong><br>See our auto-updating sunrise/sunset table above — showing exact times for Maui, Oahu, Kauai and Big Island for today and the next 8 days!';
-  },
-  sunrise: function() {
-    return '🌅 <strong>Sunrise Times:</strong><br>Check our sunrise/sunset table above! Today on Maui sunrise is around 5:47 AM. The table updates automatically every day for all 4 islands!';
-  },
-  tourists: function() {
-    return '📊 <strong>Hawaii Visitor Count:</strong><br>See our live tourist count at the top of the page — showing today's arrivals and departures for Maui, Oahu, Kauai and Big Island, updated every morning!';
-  },
-  hotels: function() {
-    return '🏨 <strong>Best Hotels in Hawaii:</strong><br>Visit our island pages! We list the top 12 hotels on each island — Maui, Oahu, Kauai and Big Island — from luxury resorts to great value options!';
-  },
-  restaurants: function() {
-    return '🍽️ <strong>Best Restaurants:</strong><br>Check our <a href="/food" style="color:#22d3ee">Hawaii Food Guide</a> — featuring must-try dishes, best poke spots, plate lunch, shave ice, malasadas and hidden gems on every island!';
-  },
-  food: function() {
-    return '🍜 <strong>Hawaii Food Guide:</strong><br>Visit our <a href="/food" style="color:#22d3ee">Food page</a> for the complete guide — 12 must-try dishes, best poke, shave ice, plate lunch, food trucks and hidden gems on every island!';
-  },
-  beaches: function() {
-    return '🏖️ <strong>Hawaii Beaches:</strong><br>We have a complete <a href="/beaches" style="color:#22d3ee">Beaches Guide</a> with 48 beaches across all islands — swim conditions, snorkeling ratings, parking tips and maps!';
-  },
-  hiking: function() {
-    return '🥾 <strong>Hawaii Hiking Trails:</strong><br>Check our <a href="/hiking" style="color:#22d3ee">Hiking Guide</a> — 32 trails across Maui, Oahu, Kauai and Big Island with difficulty ratings, distances, maps and pro tips!';
-  },
-  flights: function() {
-    return '✈️ <strong>Flights to Hawaii:</strong><br>Use our travel booking widget above to search hundreds of travel sites at once for the best flight deals to Hawaii — just enter your city and travel dates!';
-  },
-  maui: function() {
-    return '🏄 <strong>Maui — The Valley Isle:</strong><br>Visit our <a href="/maui" style="color:#22d3ee">Maui page</a> for live weather, surf, top hotels, restaurants, activities and booking. Home to Haleakalā, Road to Hana and world-class beaches!';
-  },
-  oahu: function() {
-    return '🌆 <strong>Oahu — The Gathering Place:</strong><br>Visit our <a href="/oahu" style="color:#22d3ee">Oahu page</a> for live weather, surf, top hotels, restaurants and activities. Home to Waikiki, Diamond Head and the North Shore!';
-  },
-  kauai: function() {
-    return '🌿 <strong>Kauai — The Garden Isle:</strong><br>Visit our <a href="/kauai" style="color:#22d3ee">Kauai page</a> for live weather, surf, top hotels and activities. Home to the Na Pali Coast, Waimea Canyon and Hanalei Bay!';
-  },
-  bigisland: function() {
-    return '🌋 <strong>Big Island — Hawaii Island:</strong><br>Visit our <a href="/bigisland" style="color:#22d3ee">Big Island page</a> for live weather, surf, hotels and activities. Home to Kilauea Volcano, Mauna Kea and green sand beaches!';
-  },
-  volcano: function() {
-    return '🌋 <strong>Kilauea Volcano:</strong><br>Hawaii Volcanoes National Park on the Big Island. Check the <a href="https://www.usgs.gov/volcanoes/kilauea" target="_blank" style="color:#22d3ee">USGS live webcam</a> for current eruption status. Entry fee required for the park.';
-  },
-  snorkel: function() {
-    return '🤿 <strong>Best Snorkeling in Hawaii:</strong><br>Top spots: Hanauma Bay (Oahu), Molokini Crater (Maui), Tunnels Beach (Kauai), Two Step (Big Island). Check our <a href="/beaches" style="color:#22d3ee">Beaches Guide</a> for snorkel ratings on every beach!';
-  },
-  poke: function() {
-    return '🐟 <strong>Best Poke in Hawaii:</strong><br>Tamura's Fine Wine on Maui, Ono Seafood in Honolulu, Pono Market on Kauai, Da Poke Shack in Kona. Or check any Foodland supermarket — surprisingly amazing poke! See our <a href="/food" style="color:#22d3ee">Food Guide</a>!';
-  },
-  shaveice: function() {
-    return '🍧 <strong>Best Shave Ice:</strong><br>Ululani's Hawaiian Shave Ice on Maui is voted best in Hawaii! Matsumoto's in Haleiwa on Oahu is iconic. Always add ice cream at the bottom and mochi on top!';
-  },
+var vsRec=null,vsOn=false;
+var KB={
+  weather:"🌤️ <b>Hawaii Weather:</b> Use our live Windy radar above — click any location button to check Lahaina, Waikiki, Hanalei and 40+ spots!",
+  surf:"🏄 <b>Surf Conditions:</b> See our live surf report below — wave heights for all islands updated hourly from NOAA buoys!",
+  sunset:"🌅 <b>Sunset & Sunrise:</b> Check our auto-updating sunrise/sunset table above — exact times for all 4 islands today and next 8 days!",
+  sunrise:"🌅 <b>Sunrise Times:</b> See our sunrise/sunset table above — updates automatically every day for Maui, Oahu, Kauai and Big Island!",
+  tourists:"📊 <b>Tourist Count:</b> See our live visitor count at the top — today's arrivals and departures for all islands, updated every morning!",
+  hotels:"🏨 <b>Best Hotels:</b> Visit our island pages — top 12 hotels on Maui, Oahu, Kauai and Big Island from luxury to great value!",
+  beaches:"🏖️ <b>Hawaii Beaches:</b> Check our <a href='/beaches' style='color:#22d3ee'>Beaches Guide</a> — 48 beaches with swim conditions, snorkel ratings and maps!",
+  hiking:"🥾 <b>Hiking Trails:</b> See our <a href='/hiking' style='color:#22d3ee'>Hiking Guide</a> — 32 trails across all islands with difficulty, maps and tips!",
+  food:"🍽️ <b>Hawaii Food:</b> Visit our <a href='/food' style='color:#22d3ee'>Food Guide</a> — 12 must-try dishes, best poke, shave ice, food trucks and hidden gems!",
+  poke:"🐟 <b>Best Poke:</b> Tamura's on Maui, Ono Seafood in Honolulu, Pono Market on Kauai, Da Poke Shack in Kona. Or try any Foodland supermarket!",
+  shaveice:"🍧 <b>Best Shave Ice:</b> Ululani's on Maui is voted #1 in Hawaii! Matsumoto's in Haleiwa on Oahu is iconic. Add ice cream at the bottom!",
+  snorkel:"🤿 <b>Best Snorkeling:</b> Hanauma Bay (Oahu), Molokini Crater (Maui), Tunnels Beach (Kauai), Two Step (Big Island). Check our <a href='/beaches' style='color:#22d3ee'>Beaches Guide</a>!",
+  volcano:"🌋 <b>Kilauea Volcano:</b> Located in Hawaii Volcanoes National Park on the Big Island. Check <a href='https://www.usgs.gov/volcanoes/kilauea' target='_blank' style='color:#22d3ee'>USGS live cams</a> for eruption status!",
+  flights:"✈️ <b>Flights to Hawaii:</b> Use our booking widget above to search hundreds of travel sites for the best flight deals!",
+  maui:"🏄 <b>Maui — The Valley Isle:</b> <a href='/maui' style='color:#22d3ee'>Visit our Maui page</a> — live weather, surf, top hotels, restaurants and activities!",
+  oahu:"🌆 <b>Oahu — The Gathering Place:</b> <a href='/oahu' style='color:#22d3ee'>Visit our Oahu page</a> — live weather, surf, Waikiki, Diamond Head and more!",
+  kauai:"🌿 <b>Kauai — The Garden Isle:</b> <a href='/kauai' style='color:#22d3ee'>Visit our Kauai page</a> — Na Pali Coast, Waimea Canyon, Hanalei Bay!",
+  bigisland:"🌋 <b>Big Island:</b> <a href='/bigisland' style='color:#22d3ee'>Visit our Big Island page</a> — Kilauea Volcano, Mauna Kea, green sand beaches!",
+  default:"🌺 <b>Aloha!</b> Explore todayinhawaii.com for live weather, surf, tourist counts, hotels, restaurants, hiking, beaches and more across all 4 islands!"
 };
-
-function getAnswer(query) {
-  var q = query.toLowerCase();
-  if (q.match(/weather|rain|cloud|temperature|forecast|wind/)) return HAWAII_KB.weather();
-  if (q.match(/surf|wave|swell|surfing|pipeline|hookipa/)) return HAWAII_KB.surf();
-  if (q.match(/sunset/)) return HAWAII_KB.sunset();
-  if (q.match(/sunrise/)) return HAWAII_KB.sunrise();
-  if (q.match(/tourist|visitor|crowd|busy|people/)) return HAWAII_KB.tourists();
-  if (q.match(/hotel|resort|stay|accommodation|where to stay/)) return HAWAII_KB.hotels();
-  if (q.match(/restaurant|eat|food|dinner|lunch|breakfast|dining/) && !q.match(/poke|shave|malasada/)) return HAWAII_KB.restaurants();
-  if (q.match(/beach|beaches|swimming|swim/)) return HAWAII_KB.beaches();
-  if (q.match(/hik|trail|walk|trek/)) return HAWAII_KB.hiking();
-  if (q.match(/flight|fly|plane|airport|ticket/)) return HAWAII_KB.flights();
-  if (q.match(/poke|poki/)) return HAWAII_KB.poke();
-  if (q.match(/shave ice|shaveice|snow cone/)) return HAWAII_KB.shaveice();
-  if (q.match(/snorkel|scuba|dive|underwater|fish/)) return HAWAII_KB.snorkel();
-  if (q.match(/volcano|kilauea|lava|eruption/)) return HAWAII_KB.volcano();
-  if (q.match(/maui/)) return HAWAII_KB.maui();
-  if (q.match(/oahu|honolulu|waikiki/)) return HAWAII_KB.oahu();
-  if (q.match(/kauai|kaua/)) return HAWAII_KB.kauai();
-  if (q.match(/big island|hawaii island|kona|hilo/)) return HAWAII_KB.bigisland();
-  if (q.match(/food|eat|malasada|plate lunch|loco moco|spam|musubi/)) return HAWAII_KB.food();
-  // Default
-  return '🌺 <strong>Great question!</strong><br>Explore todayinhawaii.com for live weather, surf, tourist counts, hotels, restaurants, hiking trails, beaches and much more across all 4 Hawaiian islands! Use the navigation menu above to explore.';
+function vsAnswer(q){
+  var s=q.toLowerCase();
+  if(/weather|rain|cloud|temp|forecast|wind|climate/.test(s)) return KB.weather;
+  if(/surf|wave|swell|surfing|pipeline|hookipa/.test(s)) return KB.surf;
+  if(/sunset/.test(s)) return KB.sunset;
+  if(/sunrise/.test(s)) return KB.sunrise;
+  if(/tourist|visitor|crowd|busy|how many people/.test(s)) return KB.tourists;
+  if(/hotel|resort|stay|accommodation|where to stay/.test(s)) return KB.hotels;
+  if(/beach|swim/.test(s)) return KB.beaches;
+  if(/hik|trail|walk|trek/.test(s)) return KB.hiking;
+  if(/poke|poki/.test(s)) return KB.poke;
+  if(/shave ice|shaveice|snow cone/.test(s)) return KB.shaveice;
+  if(/snorkel|dive|scuba|underwater/.test(s)) return KB.snorkel;
+  if(/volcano|kilauea|lava|eruption/.test(s)) return KB.volcano;
+  if(/flight|fly|plane|airport|ticket/.test(s)) return KB.flights;
+  if(/food|eat|restaurant|dinner|lunch|malasada|plate lunch|loco moco/.test(s)) return KB.food;
+  if(/maui/.test(s)) return KB.maui;
+  if(/oahu|honolulu|waikiki/.test(s)) return KB.oahu;
+  if(/kauai|kaua/.test(s)) return KB.kauai;
+  if(/big island|kona|hilo/.test(s)) return KB.bigisland;
+  return KB.default;
 }
-
-function startVoice(){
-  var bar=document.getElementById('voiceBar');
-  var txt=document.getElementById('voiceText');
-  var result=document.getElementById('voiceResult');
-  var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
-    result.innerHTML='🎤 Voice search not supported in this browser. Try Chrome on Android or Safari on iPhone!';
-    result.style.display='block';
+function vsStart(){
+  var bar=document.getElementById('vsBar');
+  var txt=document.getElementById('vsTxt');
+  var ans=document.getElementById('vsAns');
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    ans.innerHTML='🎤 Voice search not supported. Try Chrome on Android or Safari on iPhone!';
+    ans.style.display='block';
     return;
   }
-  if(listening){if(recognition)recognition.stop();return;}
-  recognition=new SpeechRecognition();
-  recognition.lang='en-US';
-  recognition.continuous=false;
-  recognition.interimResults=true;
-  recognition.onstart=function(){
-    listening=true;
-    bar.classList.add('listening');
-    txt.textContent='🎤 Listening... speak now';
-    result.style.display='none';
-  };
-  recognition.onresult=function(e){
+  if(vsOn){if(vsRec)vsRec.stop();return;}
+  vsRec=new SR();
+  vsRec.lang='en-US';
+  vsRec.continuous=false;
+  vsRec.interimResults=true;
+  vsRec.onstart=function(){vsOn=true;bar.classList.add('listening');txt.textContent='🎤 Listening... speak now!';ans.style.display='none';};
+  vsRec.onresult=function(e){
     var t='';
-    for(var i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
+    for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;
     txt.textContent='🎤 "'+t+'"';
     if(e.results[e.results.length-1].isFinal){
-      result.innerHTML=getAnswer(t);
-      result.style.display='block';
-      result.scrollIntoView({behavior:'smooth',block:'nearest'});
+      ans.innerHTML=vsAnswer(t);
+      ans.style.display='block';
+      ans.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   };
-  recognition.onerror=function(e){
-    listening=false;
-    bar.classList.remove('listening');
-    txt.textContent=e.error==='not-allowed'?'🎤 Please allow microphone access':'Ask about Hawaii weather, surf, beaches...';
+  vsRec.onerror=function(e){
+    vsOn=false;bar.classList.remove('listening');
+    txt.textContent=e.error==='not-allowed'?'🎤 Please allow mic access in your browser':'Ask about Hawaii weather, surf, beaches...';
   };
-  recognition.onend=function(){
-    listening=false;
-    bar.classList.remove('listening');
-    setTimeout(function(){txt.textContent='Ask about Hawaii weather, surf, beaches...';},1500);
-  };
-  recognition.start();
+  vsRec.onend=function(){vsOn=false;bar.classList.remove('listening');setTimeout(function(){txt.textContent='Ask about Hawaii weather, surf, beaches...';},2000);};
+  vsRec.start();
 }
 </script>
 </body>
