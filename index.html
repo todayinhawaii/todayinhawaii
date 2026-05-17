@@ -2144,18 +2144,65 @@ window.addEventListener('load', function() {
   if (mic) {
     mic.addEventListener('click', function() {
       if (!SR) { inp.focus(); inp.placeholder = 'Voice not supported - type here!'; return; }
-      if (on) { if (rec) rec.stop(); return; }
+      if (on) {
+        if (rec) rec.stop();
+        if (inp.value.trim()) doSearch(inp.value.trim());
+        return;
+      }
       rec = new SR();
-      rec.lang = 'en-US'; rec.continuous = false; rec.interimResults = true;
-      rec.onstart = function() { on=true; mic.innerHTML='&#9209;'; mic.style.background='linear-gradient(135deg,#dc2626,#f97316)'; inp.placeholder='Listening...'; };
-      rec.onresult = function(e) {
-        var t='', i=e.resultIndex;
-        while (i !== e.results.length) { t += e.results[i][0].transcript; i++; }
-        inp.value = t;
-        if (e.results[e.results.length-1].isFinal) doSearch(t);
+      rec.lang = 'en-US';
+      rec.continuous = true;
+      rec.interimResults = true;
+
+      var finalTranscript = '';
+      var searchTimer = null;
+
+      rec.onstart = function() {
+        on=true;
+        finalTranscript = '';
+        mic.innerHTML='&#9209;';
+        mic.style.background='linear-gradient(135deg,#dc2626,#f97316)';
+        inp.placeholder='Listening... speak now, click stop when done';
+        inp.value = '';
       };
-      rec.onerror = function() { on=false; mic.innerHTML='&#127908;'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii...'; };
-      rec.onend = function() { on=false; mic.innerHTML='&#127908;'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii news, weather, surf...'; };
+
+      rec.onresult = function(e) {
+        var interim = '';
+        for (var i = e.resultIndex; i !== e.results.length; i++) {
+          if (e.results[i].isFinal) {
+            finalTranscript += e.results[i][0].transcript;
+          } else {
+            interim += e.results[i][0].transcript;
+          }
+        }
+        inp.value = finalTranscript || interim;
+
+        // Auto search 1.5 seconds after user stops talking
+        if (finalTranscript) {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(function() {
+            if (finalTranscript.trim()) {
+              rec.stop();
+              doSearch(finalTranscript.trim());
+            }
+          }, 1500);
+        }
+      };
+
+      rec.onerror = function(e) {
+        on=false;
+        mic.innerHTML='&#127908;';
+        mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';
+        inp.placeholder = e.error === 'not-allowed' ? 'Mic blocked - allow access in browser settings' : 'Search anything...';
+      };
+
+      rec.onend = function() {
+        on=false;
+        mic.innerHTML='&#127908;';
+        mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)';
+        inp.placeholder='Search anything... weather, surf, news, sports, travel...';
+      };
+
       rec.start();
     });
   }
