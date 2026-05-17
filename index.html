@@ -2029,13 +2029,13 @@ function setBookingTab(tab, btn) {
 }
 
 function searchFlights() {
-  var from = (document.getElementById('fly-from').value || 'Los-Angeles').trim().replace(/\s+/g, '-');
+  var from = (document.getElementById('fly-from').value || 'Los Angeles').trim();
   var to = document.getElementById('fly-to').value;
+  var toName = document.getElementById('fly-to').options[document.getElementById('fly-to').selectedIndex].text;
   var depart = document.getElementById('fly-depart').value;
   var ret = document.getElementById('fly-return').value;
-  var pax = (document.getElementById('fly-pax').value||'1 passenger').split(' ')[0];
-  // Use Kayak - most reliable URL format
-  var url = 'https://www.kayak.com/flights/' + encodeURIComponent(from) + '-' + to + '/' + depart + '/' + ret + '/' + pax + 'adults';
+  var q = from + ' to ' + toName + ' flights ' + depart;
+  var url = 'https://www.google.com/travel/flights?q=' + encodeURIComponent(q);
   window.open(url, '_blank');
 }
 
@@ -2044,24 +2044,26 @@ function searchHotels() {
   var checkin = document.getElementById('hotel-in').value;
   var checkout = document.getElementById('hotel-out').value;
   var guests = (document.getElementById('hotel-guests').value||'2 guests').split(' ')[0];
-  var url = 'https://www.kayak.com/hotels/' + encodeURIComponent(dest) + '/' + checkin + '/' + checkout + '/' + guests + 'adults';
+  var url = 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(dest) + '&checkin=' + checkin + '&checkout=' + checkout + '&group_adults=' + guests + '&no_rooms=1';
   window.open(url, '_blank');
 }
 
 function searchCars() {
   var pickup = document.getElementById('car-pickup').value;
+  var pickupName = document.getElementById('car-pickup').options[document.getElementById('car-pickup').selectedIndex].text;
   var from = document.getElementById('car-from').value;
   var to = document.getElementById('car-to').value;
-  var url = 'https://www.kayak.com/cars/' + pickup + '/' + from + '/' + to;
+  var url = 'https://www.rentalcars.com/SearchResults.do?pickUpAirport=' + pickup + '&pickUpDate=' + from + '&dropOffDate=' + to + '&affiliateCode=google&preflang=en_US';
   window.open(url, '_blank');
 }
 
 function searchPackages() {
-  var from = (document.getElementById('pkg-from').value || 'Los-Angeles').trim().replace(/\s+/g,'-');
-  var to = document.getElementById('pkg-to').value;
+  var from = (document.getElementById('pkg-from').value || 'Los Angeles').trim();
+  var toName = document.getElementById('pkg-to').options[document.getElementById('pkg-to').selectedIndex].text;
   var depart = document.getElementById('pkg-depart').value;
   var ret = document.getElementById('pkg-return').value;
-  var url = 'https://www.kayak.com/packages/' + encodeURIComponent(from) + '-' + to + '/' + depart + '/' + ret;
+  var q = from + ' to ' + toName + ' vacation package ' + depart;
+  var url = 'https://www.google.com/travel/flights?q=' + encodeURIComponent(q);
   window.open(url, '_blank');
 }
 </script>
