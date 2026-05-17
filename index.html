@@ -576,30 +576,8 @@
       <button id="hMic" title="Voice search"
         style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🎤</button>
     </div>
-    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.95);border:1px solid rgba(34,211,238,0.25);border-radius:20px;padding:20px 24px;font-size:14px;color:#e8f4f8;line-height:1.9;box-shadow:0 8px 32px rgba(0,0,0,0.3);"></div>
+    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.97);border:1px solid rgba(34,211,238,0.3);border-radius:20px;padding:16px;color:#e8f4f8;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:500px;"></div>
   </div>
-
-  <!-- HAWAII SEARCH -->
-  <div style="max-width:600px;margin:0 auto 32px;position:relative;z-index:10;">
-
-    <!-- Search bar -->
-    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
-      <span style="font-size:18px;flex-shrink:0;">🔍</span>
-      <input id="hq" type="text" placeholder="Ask about Hawaii weather, surf, beaches..."
-        style="flex:1;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:16px;font-family:DM Sans,sans-serif;min-width:0;">
-      <button id="hMic" title="Voice search"
-        style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🎤</button>
-    </div>
-
-    <!-- Results box - Google Custom Search renders here -->
-    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.97);border:1px solid rgba(34,211,238,0.25);border-radius:20px;padding:20px 24px;color:#e8f4f8;box-shadow:0 8px 32px rgba(0,0,0,0.4);max-height:500px;overflow-y:auto;">
-      <div id="gcse-results"></div>
-    </div>
-
-  </div>
-
-  <!-- Google Custom Search Engine -->
-  <script async src="https://cse.google.com/cse.js?cx=partner-pub-hawaii"></script>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2149,7 +2127,7 @@ window.addEventListener('load', function() {
     results.innerHTML = 
       '<div style="font-size:12px;color:#7fb3c8;margin-bottom:12px;">🔍 Searching for: <b style="color:#22d3ee">' + query + '</b></div>' +
       '<iframe src="https://www.google.com/search?q=' + encodeURIComponent(query + ' Hawaii todayinhawaii.com') + '&igu=1" ' +
-      'style="width:100%;height:400px;border:none;border-radius:12px;background:#fff;" ' +
+      'style="width:100%;height:520px;border:none;border-radius:12px;background:#fff;" ' +
       'title="Search results" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>' +
       '<div style="margin-top:10px;text-align:center;">' +
       '<a href="https://www.google.com/search?q=' + encodeURIComponent(query + ' Hawaii') + '" target="_blank" ' +
