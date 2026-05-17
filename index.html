@@ -522,8 +522,6 @@
   .voice-search-bar.listening .mic-btn{background:linear-gradient(135deg,#dc2626,#f97316);}
   .voice-text{font-size:15px;color:var(--muted);flex:1;}
   .voice-search-bar.listening .voice-text{color:var(--coral);}
-  .voice-result{margin:0 auto 24px;max-width:560px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:14px 20px;font-size:14px;color:var(--text);display:none;line-height:1.6;}
-  .voice-result.show{display:block;}
 </style>
 </head>
 <body>
@@ -563,6 +561,12 @@
     </div>
     
   </nav>
+
+  <!-- VOICE SEARCH -->
+  <div class="voice-search-bar" id="voiceBar" onclick="startVoice()">
+    <div class="mic-btn">🎤</div>
+    <div class="voice-text" id="voiceText">Ask about Hawaii weather, surf, beaches...</div>
+  </div>
 
   <!-- HERO -->
   <section class="hero fade-up">
@@ -2096,75 +2100,45 @@ window.addEventListener('load', function() {
 </script>
 
 <script>
-// ── VOICE SEARCH ──
-var recognition = null;
-var listening = false;
-
-function startVoice() {
-  var bar = document.getElementById('voiceBar');
-  var txt = document.getElementById('voiceText');
-  var result = document.getElementById('voiceResult');
-
-  // Check browser support
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    // Fallback - open Google search for Hawaii
-    window.open('https://www.google.com/search?q=Hawaii+weather+today', '_blank');
+var recognition=null,listening=false;
+function startVoice(){
+  var bar=document.getElementById('voiceBar');
+  var txt=document.getElementById('voiceText');
+  var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    window.open('https://www.google.com/search?q=Hawaii+weather+today','_blank');
     return;
   }
-
-  if (listening) {
-    if (recognition) recognition.stop();
-    return;
-  }
-
-  recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.continuous = false;
-  recognition.interimResults = true;
-
-  recognition.onstart = function() {
-    listening = true;
+  if(listening){if(recognition)recognition.stop();return;}
+  recognition=new SpeechRecognition();
+  recognition.lang='en-US';
+  recognition.continuous=false;
+  recognition.interimResults=true;
+  recognition.onstart=function(){
+    listening=true;
     bar.classList.add('listening');
-    txt.textContent = '🎤 Listening... speak now';
-    result.classList.remove('show');
+    txt.textContent='🎤 Listening... speak now';
   };
-
-  recognition.onresult = function(e) {
-    var transcript = '';
-    for (var i = e.resultIndex; i < e.results.length; i++) {
-      transcript += e.results[i][0].transcript;
-    }
-    txt.textContent = '🎤 "' + transcript + '"';
-
-    if (e.results[e.results.length-1].isFinal) {
-      // Search Google with Hawaii context added
-      var query = transcript;
-      if (query.toLowerCase().indexOf('hawaii') < 0) {
-        query = query + ' Hawaii';
-      }
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+  recognition.onresult=function(e){
+    var t='';
+    for(var i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
+    txt.textContent='🎤 "'+t+'"';
+    if(e.results[e.results.length-1].isFinal){
+      var q=t;
+      if(q.toLowerCase().indexOf('hawaii')<0) q=q+' Hawaii';
+      window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank');
     }
   };
-
-  recognition.onerror = function(e) {
-    listening = false;
+  recognition.onerror=function(e){
+    listening=false;
     bar.classList.remove('listening');
-    if (e.error === 'not-allowed') {
-      txt.textContent = '🎤 Microphone access denied — please allow mic access';
-    } else {
-      txt.textContent = 'Ask about Hawaii weather, surf, beaches...';
-    }
+    txt.textContent=e.error==='not-allowed'?'🎤 Please allow microphone access':'Ask about Hawaii weather, surf, beaches...';
   };
-
-  recognition.onend = function() {
-    listening = false;
+  recognition.onend=function(){
+    listening=false;
     bar.classList.remove('listening');
-    setTimeout(function() {
-      txt.textContent = 'Ask about Hawaii weather, surf, beaches...';
-    }, 2000);
+    setTimeout(function(){txt.textContent='Ask about Hawaii weather, surf, beaches...';},2000);
   };
-
   recognition.start();
 }
 </script>
