@@ -835,7 +835,9 @@
       Today and the next 7 days for every Hawaiian island. Click any island for the full calendar — works for 2026, 2027, 2028 and beyond!
     </p>
 
-    <div class="sun-grid" id="sunGrid"></div>
+    <div class="sun-grid" id="sunGrid">
+  <!-- Loading sunrise/sunset times... -->
+</div>
 
     <div class="sun-calendar-card">
       <div class="sun-cal-header">
@@ -2033,60 +2035,52 @@ function searchPackages() {
 
 
 <script>
-// ── AUTO SUNRISE/SUNSET — updates every day forever ──
-function getSunTimes(lat, lon, date) {
-  var rad = Math.PI/180, deg = 180/Math.PI;
-  var start = new Date(date.getFullYear(),0,0);
-  var dayOfYear = Math.floor((date-start)/86400000);
-  var decl = 23.45*Math.sin(rad*(360/365)*(dayOfYear-81));
-  var cosH = (Math.cos(rad*90.833)-Math.sin(rad*lat)*Math.sin(rad*decl))/(Math.cos(rad*lat)*Math.cos(rad*decl));
-  if(cosH<-1||cosH>1) return null;
-  var H = Math.acos(cosH)*deg;
-  var eqTime = 9.87*Math.sin(rad*2*(360/365)*(dayOfYear-81))-7.53*Math.cos(rad*(360/365)*(dayOfYear-81))-1.5*Math.sin(rad*(360/365)*(dayOfYear-81));
-  var solarNoon = 720-4*lon-eqTime;
-  return {sunrise:solarNoon-4*H, sunset:solarNoon+4*H};
-}
-function minToTime(mins) {
-  var hm = mins-600;
-  while(hm<0) hm+=1440;
-  while(hm>=1440) hm-=1440;
-  var h=Math.floor(hm/60), m=Math.round(hm%60);
-  var ampm=h<12?'AM':'PM', h12=h%12||12;
-  return h12+':'+(m<10?'0':'')+m+' '+ampm;
-}
-function dayLen(r,s) {
-  var mins=s-r, h=Math.floor(mins/60), m=Math.round(mins%60);
-  return h+'h '+m+'m';
-}
-function fmtDay(date,isToday) {
-  if(isToday) return '<strong>Today</strong>';
-  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return days[date.getDay()]+' '+months[date.getMonth()]+' '+date.getDate();
-}
-var ISLANDS=[
-  {id:'Maui',      emoji:'🏄',lat:20.80,lon:-156.33},
-  {id:'Oahu',      emoji:'🌆',lat:21.31,lon:-157.86},
-  {id:"Kauaʻi",emoji:'🌿',lat:22.10,lon:-159.50},
-  {id:'Big Island',emoji:'🌋',lat:19.59,lon:-155.43},
-];
-function buildSunGrid() {
-  var grid=document.getElementById('sunGrid');
-  if(!grid) return;
-  var today=new Date(); today.setHours(0,0,0,0);
-  grid.innerHTML=ISLANDS.map(function(isl) {
-    var rows='';
-    for(var i=0;i<8;i++) {
-      var d=new Date(today); d.setDate(today.getDate()+i);
-      var t=getSunTimes(isl.lat,isl.lon,d);
-      if(!t) continue;
-      var cls=i===0?' class="sun-today"':'';
-      rows+='<tr'+cls+'><td>'+fmtDay(d,i===0)+'</td><td class="sun-rise">'+minToTime(t.sunrise)+'</td><td class="sun-set">'+minToTime(t.sunset)+'</td><td>'+dayLen(t.sunrise,t.sunset)+'</td></tr>';
+window.addEventListener('load', function() {
+  try {
+    function getSunTimes(lat,lon,date){
+      var R=Math.PI/180,D=180/Math.PI;
+      var doy=Math.floor((date-new Date(date.getFullYear(),0,0))/864e5);
+      var decl=23.45*Math.sin(R*(360/365)*(doy-81));
+      var cosH=(Math.cos(R*90.833)-Math.sin(R*lat)*Math.sin(R*decl))/(Math.cos(R*lat)*Math.cos(R*decl));
+      if(cosH<-1||cosH>1)return null;
+      var H=Math.acos(cosH)*D;
+      var eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81));
+      var noon=720-4*lon-eq;
+      return{r:noon-4*H,s:noon+4*H};
     }
-    return '<div class="sun-card" data-island="'+isl.id+'"><div class="sun-island">'+isl.emoji+' '+isl.id+'</div><table class="sun-week-table"><thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
-  }).join('');
-}
-buildSunGrid();
+    function fmt(m){
+      var hm=((m-600)%1440+1440)%1440;
+      var h=Math.floor(hm/60),mn=Math.round(hm%60);
+      return (h%12||12)+':'+(mn<10?'0':'')+mn+(h<12?' AM':' PM');
+    }
+    function dlen(r,s){var m=s-r;return Math.floor(m/60)+'h '+Math.round(m%60)+'m';}
+    function fday(d,i){
+      if(i===0)return '<strong>Today</strong>';
+      var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var mths=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return days[d.getDay()]+' '+mths[d.getMonth()]+' '+d.getDate();
+    }
+    var islands=[
+      {n:'Maui',e:'🏄',la:20.80,lo:-156.33},
+      {n:'Oahu',e:'🌆',la:21.31,lo:-157.86},
+      {n:"Kauaʻi",e:'🌿',la:22.10,lo:-159.50},
+      {n:'Big Island',e:'🌋',la:19.59,lo:-155.43}
+    ];
+    var today=new Date();today.setHours(0,0,0,0);
+    var html='';
+    islands.forEach(function(isl){
+      var rows='';
+      for(var i=0;i<8;i++){
+        var d=new Date(today);d.setDate(today.getDate()+i);
+        var t=getSunTimes(isl.la,isl.lo,d);
+        if(!t)continue;
+        rows+='<tr'+(i===0?' class="sun-today"':'')+'><td>'+fday(d,i)+'</td><td class="sun-rise">'+fmt(t.r)+'</td><td class="sun-set">'+fmt(t.s)+'</td><td>'+dlen(t.r,t.s)+'</td></tr>';
+      }
+      html+='<div class="sun-card" data-island="'+isl.n+'"><div class="sun-island">'+isl.e+' '+isl.n+'</div><table class="sun-week-table"><thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    });
+    document.getElementById('sunGrid').innerHTML=html;
+  } catch(e){ console.error('Sun calc error:',e); }
+});
 </script>
 </body>
 </html>
