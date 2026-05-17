@@ -81,29 +81,14 @@ header{padding:32px 0 0;}
 .food-island-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:20px 0;justify-content:center;position:sticky;top:0;background:rgba(6,29,44,0.95);backdrop-filter:blur(10px);z-index:10;border-bottom:1px solid var(--border);margin-bottom:40px;}
 .food-tab{padding:10px 22px;border-radius:99px;font-size:14px;font-weight:500;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);cursor:pointer;text-decoration:none;transition:all 0.15s;white-space:nowrap;}
 .food-tab:hover{border-color:var(--coral);color:var(--coral);background:rgba(249,115,22,0.08);}
+
+.place-card-link{text-decoration:none;display:block;}
+.place-card{cursor:pointer;}
+.place-card:hover{border-color:rgba(249,115,22,0.4);transform:translateY(-3px);}
+.place-link-icon{font-size:12px;color:var(--foam);margin-left:4px;}
 footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.8;margin-top:40px;}
 footer a{color:var(--foam);text-decoration:none;}
-@media(max-width:600px){.must-try-grid,.places-grid{grid-template-columns:1fr;}}
-
-  /* NAV */
-  .header-inner{display:flex;align-items:center;}
-  .logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-  .logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#0e7490,#22d3ee);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
-  .logo-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#e8f4f8;}
-  .logo-text span{color:#22d3ee;}
-  .nav-wrapper{padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;}
-  .desktop-nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;justify-content:center;align-items:center;}
-  .nav-link{display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:99px;font-size:11.5px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.08);color:#7fb3c8;background:rgba(255,255,255,0.04);transition:all 0.15s;white-space:nowrap;}
-  .nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.5);color:#fff;background:rgba(255,255,255,0.12);}
-  .hamburger{display:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:10px 28px;cursor:pointer;color:#e8f4f8;font-size:24px;letter-spacing:4px;line-height:1;}
-  .mobile-menu{display:none;position:fixed;inset:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
-  .mobile-menu.open{display:flex;}
-  .mobile-menu .mob-link{display:flex;align-items:center;justify-content:center;gap:8px;width:260px;padding:12px 0;border-radius:14px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;background:rgba(255,255,255,0.05);}
-  .mobile-menu .mob-link:hover,.mobile-menu .mob-link.active{border-color:#22d3ee;color:#22d3ee;}
-  .mobile-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;cursor:pointer;color:#e8f4f8;font-size:20px;}
-  .mob-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#22d3ee;margin-bottom:12px;}
-  @media(max-width:900px){.desktop-nav{display:none;}.hamburger{display:block;}}
-  @media(min-width:901px){.desktop-nav{display:flex;}.hamburger{display:none;}}
+@media(max-width:600px){.must-try-grid,.places-grid{grid-template-columns:1fr;}
 
   @media(max-width:900px){
     .desktop-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:12px 8px;}
@@ -116,11 +101,14 @@ footer a{color:var(--foam);text-decoration:none;}
 <div class="wrap">
   <header>
     <div class="header-inner">
-      <a href="/" class="logo"><div class="logo-icon">🌊</div><div class="logo-text">Today in <span>Hawaiʻi</span></div></a>
+      <a href="/" class="logo">
+        <div class="logo-icon">🌊</div>
+        <div class="logo-text">Today in <span>Hawaiʻi</span></div>
+      </a>
     </div>
   </header>
-  <div class="nav-wrapper">
-    <nav class="desktop-nav">
+  <nav>
+    <div class="nav-menu">
       <a href="/" class="nav-link">🌺 Home</a>
       <a href="/oahu" class="nav-link">🌆 Oahu</a>
       <a href="/maui" class="nav-link">🏄 Maui</a>
@@ -131,16 +119,13 @@ footer a{color:var(--foam);text-decoration:none;}
       <a href="/food" class="nav-link active">🍽️ Food</a>
       <a href="/about" class="nav-link">☀️ About</a>
       <a href="/privacy" class="nav-link">🔒 Privacy</a>
-    </nav>
-    
-  </div>
-
-<section class="hero">
+    </div>
+  </nav>
+  <section class="hero">
     <div class="hero-eyebrow">12 Must-Try Dishes · Island Food Guides · Hidden Gems</div>
     <h1>Hawaii <em>Food Guide</em></h1>
     <p class="hero-sub">From poke bowls to malasadas, plate lunches to shave ice — your complete guide to the most delicious food in Hawaii across all four islands.</p>
   </section>
-</div>
 </div>
 
 <!-- MUST TRY SECTION -->
@@ -327,6 +312,7 @@ footer a{color:var(--foam);text-decoration:none;}
 
 <div class="wrap">
 
+
   <div class="island-section" id="food-maui">
     <div class="island-header">
       <div class="island-icon">🏄</div>
@@ -338,110 +324,138 @@ footer a{color:var(--foam);text-decoration:none;}
     <div class="food-category">
       <div class="food-cat-title">🐟 Best Poke</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Tamura's Fine Wine & Liquors</div>
-          <div class="place-area">📍 Multiple locations <span class="place-price">$$</span></div>
-          <p class="place-desc">Maui's most beloved poke counter. Fresh daily varieties including shoyu ahi, spicy ahi and Hawaiian-style. Locals swear by it.</p>
-          <div class="place-tip">💡 Go early for the freshest selection</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Foodland Farms</div>
-          <div class="place-area">📍 Kahului & Kihei <span class="place-price">$</span></div>
-          <p class="place-desc">Don't underestimate the supermarket — Foodland's poke counter is legendary among locals for quality and variety.</p>
-          <div class="place-tip">💡 Best selection between 10am-2pm</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Paia Fish Market</div>
-          <div class="place-area">📍 Paia · North Shore <span class="place-price">$$</span></div>
-          <p class="place-desc">Fresh local fish served simply and perfectly in a casual surf-town setting. The fish and chips are equally incredible.</p>
-          <div class="place-tip">💡 Try the fresh catch of the day</div>
-        </div>
+        <a href="https://www.tamurasfinewine.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Tamura's Fine Wine & Liquors <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Multiple locations <span class="place-price">$$</span></div>
+            <p class="place-desc">Maui's most beloved poke counter. Fresh daily varieties including shoyu ahi, spicy ahi and Hawaiian-style. Locals swear by it.</p>
+            <div class="place-tip">💡 Go early for the freshest selection</div>
+          </div>
+        </a>
+        <a href="https://www.foodland.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Foodland Farms <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kahului & Kihei <span class="place-price">$</span></div>
+            <p class="place-desc">Don't underestimate the supermarket — Foodland's poke counter is legendary among locals for quality and variety.</p>
+            <div class="place-tip">💡 Best selection between 10am-2pm</div>
+          </div>
+        </a>
+        <a href="https://www.paiafishmarket.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Paia Fish Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Paia · North Shore <span class="place-price">$$</span></div>
+            <p class="place-desc">Fresh local fish served simply and perfectly in a casual surf-town setting. The fish and chips are equally incredible.</p>
+            <div class="place-tip">💡 Try the fresh catch of the day</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍱 Best Plate Lunch</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Da Kitchen</div>
-          <div class="place-area">📍 Kahului <span class="place-price">$</span></div>
-          <p class="place-desc">Maui's most famous plate lunch spot. Giant portions of local favorites — loco moco, katsu chicken and kalua pork. Cash only.</p>
-          <div class="place-tip">💡 Come hungry — portions are enormous</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Tin Roof</div>
-          <div class="place-area">📍 Kahului <span class="place-price">$</span></div>
-          <p class="place-desc">Chef Sheldon Simeon's casual spot serving elevated local food. The garlic noodles with spam and egg are life changing.</p>
-          <div class="place-tip">💡 Follow on Instagram for daily specials</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Tasty Crust</div>
-          <div class="place-area">📍 Wailuku <span class="place-price">$</span></div>
-          <p class="place-desc">Open since 1944 — the oldest restaurant on Maui. Locals pack this diner for the hotcakes, loco moco and local comfort food.</p>
-          <div class="place-tip">💡 Go for breakfast — the pancakes are legendary</div>
-        </div>
+        <a href="https://www.dakitchen.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Da Kitchen <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kahului <span class="place-price">$</span></div>
+            <p class="place-desc">Maui's most famous plate lunch spot. Giant portions of local favorites — loco moco, katsu chicken and kalua pork.</p>
+            <div class="place-tip">💡 Come hungry — portions are enormous</div>
+          </div>
+        </a>
+        <a href="https://www.tinroofmaui.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Tin Roof <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kahului <span class="place-price">$</span></div>
+            <p class="place-desc">Chef Sheldon Simeon's casual spot serving elevated local food. The garlic noodles with spam and egg are life changing.</p>
+            <div class="place-tip">💡 Follow on Instagram for daily specials</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Tasty+Crust+Wailuku+Maui" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Tasty Crust <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Wailuku <span class="place-price">$</span></div>
+            <p class="place-desc">Open since 1944 — the oldest restaurant on Maui. Locals pack this diner for the hotcakes, loco moco and local comfort food.</p>
+            <div class="place-tip">💡 Go for breakfast — the pancakes are legendary</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍧 Best Shave Ice</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Ululani's Hawaiian Shave Ice</div>
-          <div class="place-area">📍 Multiple locations <span class="place-price">$</span></div>
-          <p class="place-desc">Voted best shave ice in Hawaii multiple times. Ultra-fine silky shave ice with house-made natural syrups. Absolutely perfect.</p>
-          <div class="place-tip">💡 Add ice cream bottom and mochi — non-negotiable</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Local Boys Shave Ice</div>
-          <div class="place-area">📍 Kihei & Lahaina <span class="place-price">$</span></div>
-          <p class="place-desc">A close second to Ululani's with creative flavor combinations and excellent quality. Great for south Maui visitors.</p>
-          <div class="place-tip">💡 Try the li hing mui (salted plum) flavor</div>
-        </div>
+        <a href="https://www.ululanishawaiianshaveice.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Ululani's Hawaiian Shave Ice <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Multiple locations <span class="place-price">$</span></div>
+            <p class="place-desc">Voted best shave ice in Hawaii multiple times. Ultra-fine silky shave ice with house-made natural syrups.</p>
+            <div class="place-tip">💡 Add ice cream bottom and mochi — non-negotiable</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Local+Boys+Shave+Ice+Maui" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Local Boys Shave Ice <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kihei & Lahaina <span class="place-price">$</span></div>
+            <p class="place-desc">A close second to Ululani's with creative flavor combinations and excellent quality.</p>
+            <div class="place-tip">💡 Try the li hing mui (salted plum) flavor</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🚚 Best Food Trucks</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Geste Shrimp Truck</div>
-          <div class="place-area">📍 Kahului · Near Airport <span class="place-price">$</span></div>
-          <p class="place-desc">Famous garlic butter shrimp truck that locals drive across the island for. Massive portions, incredible flavor. Cash only.</p>
-          <div class="place-tip">💡 The garlic butter shrimp plate is the only order</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Maui Tacos</div>
-          <div class="place-area">📍 Multiple Maui locations <span class="place-price">$</span></div>
-          <p class="place-desc">The original Hawaii Mexican fusion. Fresh fish tacos and burritos using local catch and Hawaiian ingredients. Iconic.</p>
-          <div class="place-tip">💡 Fresh catch fish tacos change daily</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Leoda's Kitchen & Pie Shop</div>
-          <div class="place-area">📍 Olowalu · West Maui <span class="place-price">$</span></div>
-          <p class="place-desc">Famous for Hawaiian pies — banana cream, haupia and mac nut. Also serves incredible local sandwiches and plate food.</p>
-          <div class="place-tip">💡 Get a whole pie to take back to your hotel</div>
-        </div>
+        <a href="https://maps.google.com/?q=Geste+Shrimp+Truck+Kahului+Maui" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Geste Shrimp Truck <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kahului · Near Airport <span class="place-price">$</span></div>
+            <p class="place-desc">Famous garlic butter shrimp truck that locals drive across the island for. Massive portions, incredible flavor.</p>
+            <div class="place-tip">💡 The garlic butter shrimp plate is the only order</div>
+          </div>
+        </a>
+        <a href="https://www.mauitacos.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Maui Tacos <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Multiple Maui locations <span class="place-price">$</span></div>
+            <p class="place-desc">The original Hawaii Mexican fusion. Fresh fish tacos and burritos using local catch and Hawaiian ingredients.</p>
+            <div class="place-tip">💡 Fresh catch fish tacos change daily</div>
+          </div>
+        </a>
+        <a href="https://www.leodas.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Leoda's Kitchen & Pie Shop <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Olowalu · West Maui <span class="place-price">$</span></div>
+            <p class="place-desc">Famous for Hawaiian pies — banana cream, haupia and mac nut. Also serves incredible local sandwiches.</p>
+            <div class="place-tip">💡 Get a whole pie to take back to your hotel</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🌟 Hidden Gems</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Sam Sato's</div>
-          <div class="place-area">📍 Wailuku <span class="place-price">$</span></div>
-          <p class="place-desc">Maui's most beloved saimin spot since 1933. The dry mein (noodles with broth on the side) is extraordinary. Cash only.</p>
-          <div class="place-tip">💡 Order the dry mein — a Maui institution</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Cafe des Amis</div>
-          <div class="place-area">📍 Paia · North Shore <span class="place-price">$$</span></div>
-          <p class="place-desc">A charming French-Indian cafe in bohemian Paia serving incredible crepes, curries and fresh juices. Perfect after Ho'okipa.</p>
-          <div class="place-tip">💡 The buckwheat crepes are extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">The Paia Fish Market</div>
-          <div class="place-area">📍 Paia <span class="place-price">$$</span></div>
-          <p class="place-desc">Fresh local fish served simply in a casual setting. The best fish sandwich on Maui using whatever was caught that morning.</p>
-          <div class="place-tip">💡 Ask what came off the boat today</div>
-        </div>
+        <a href="https://maps.google.com/?q=Sam+Satos+Wailuku+Maui" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Sam Sato's <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Wailuku <span class="place-price">$</span></div>
+            <p class="place-desc">Maui's most beloved saimin spot since 1933. The dry mein (noodles with broth on the side) is extraordinary.</p>
+            <div class="place-tip">💡 Order the dry mein — a Maui institution</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Cafe+des+Amis+Paia+Maui" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Cafe des Amis <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Paia · North Shore <span class="place-price">$$</span></div>
+            <p class="place-desc">A charming French-Indian cafe in bohemian Paia serving incredible crepes, curries and fresh juices.</p>
+            <div class="place-tip">💡 The buckwheat crepes are extraordinary</div>
+          </div>
+        </a>
+        <a href="https://www.paiafishmarket.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">The Paia Fish Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Paia <span class="place-price">$$</span></div>
+            <p class="place-desc">Fresh local fish served simply in a casual setting. The best fish sandwich on Maui.</p>
+            <div class="place-tip">💡 Ask what came off the boat today</div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -457,104 +471,130 @@ footer a{color:var(--foam);text-decoration:none;}
     <div class="food-category">
       <div class="food-cat-title">🍩 Best Malasadas</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Leonard's Bakery</div>
-          <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">THE original malasada bakery since 1952. The line out the door every morning tells you everything. Hot, fresh, perfect.</p>
-          <div class="place-tip">💡 Go early morning for the freshest — try the haupia filled</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Champion Malasadas</div>
-          <div class="place-area">📍 Beretania · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">Leonard's biggest rival and some say better. Lighter, airier malasadas with incredible filled varieties.</p>
-          <div class="place-tip">💡 The dobash (chocolate cream) filled is extraordinary</div>
-        </div>
+        <a href="https://www.leonardshawaii.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Leonard's Bakery <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">THE original malasada bakery since 1952. The line out the door every morning tells you everything.</p>
+            <div class="place-tip">💡 Go early morning — try the haupia filled</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Champion+Malasadas+Honolulu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Champion Malasadas <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Beretania · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">Leonard's biggest rival and some say better. Lighter, airier malasadas with incredible filled varieties.</p>
+            <div class="place-tip">💡 The dobash (chocolate cream) filled is extraordinary</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🐟 Best Poke</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Ono Seafood</div>
-          <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">A tiny no-frills poke shop with some of the freshest and most authentic poke bowls in Honolulu. Locals only (until now).</p>
-          <div class="place-tip">💡 The traditional Hawaiian poke with limu seaweed is extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Foodland Farms Ala Moana</div>
-          <div class="place-area">📍 Ala Moana Center <span class="place-price">$</span></div>
-          <p class="place-desc">40+ poke varieties daily including rare Hawaiian-style pokes. The quality is extraordinary for a supermarket.</p>
-          <div class="place-tip">💡 Arrive by 11am for best selection</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Tamashiro Market</div>
-          <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">The oldest fish market in Hawaii (1944). Multiple poke varieties made daily with fish from their own boats.</p>
-          <div class="place-tip">💡 The ahi limu poke is legendary among locals</div>
-        </div>
+        <a href="https://maps.google.com/?q=Ono+Seafood+Honolulu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Ono Seafood <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">A tiny no-frills poke shop with some of the freshest and most authentic poke bowls in Honolulu.</p>
+            <div class="place-tip">💡 The traditional Hawaiian poke with limu seaweed is extraordinary</div>
+          </div>
+        </a>
+        <a href="https://www.foodland.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Foodland Farms Ala Moana <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Ala Moana Center <span class="place-price">$</span></div>
+            <p class="place-desc">40+ poke varieties daily. The quality is extraordinary for a supermarket.</p>
+            <div class="place-tip">💡 Arrive by 11am for best selection</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Tamashiro+Market+Honolulu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Tamashiro Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">The oldest fish market in Hawaii (1944). Multiple poke varieties made daily with fish from their own boats.</p>
+            <div class="place-tip">💡 The ahi limu poke is legendary among locals</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍧 Best Shave Ice</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Matsumoto Shave Ice</div>
-          <div class="place-area">📍 Haleiwa · North Shore <span class="place-price">$</span></div>
-          <p class="place-desc">Possibly the most famous shave ice shop in the world. A Haleiwa institution since 1951. The line is always worth it.</p>
-          <div class="place-tip">💡 Add ice cream and azuki beans for the full experience</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Waiola Shave Ice</div>
-          <div class="place-area">📍 Kaheka · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">The local favorite shave ice shop in Honolulu since 1940. Loved by locals who know to skip the tourist spots.</p>
-          <div class="place-tip">💡 The rainbow with ice cream is the classic order</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Aoki's Shave Ice</div>
-          <div class="place-area">📍 Haleiwa · North Shore <span class="place-price">$</span></div>
-          <p class="place-desc">Right next to Matsumoto's — equally excellent and usually shorter line. Try the tropical flavors unique to this shop.</p>
-          <div class="place-tip">💡 Shorter line than Matsumoto's with equal quality</div>
-        </div>
+        <a href="https://matsumotoshaveice.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Matsumoto Shave Ice <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Haleiwa · North Shore <span class="place-price">$</span></div>
+            <p class="place-desc">Possibly the most famous shave ice shop in the world. A Haleiwa institution since 1951.</p>
+            <div class="place-tip">💡 Add ice cream and azuki beans for the full experience</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Waiola+Shave+Ice+Honolulu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Waiola Shave Ice <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kaheka · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">The local favorite shave ice shop in Honolulu since 1940.</p>
+            <div class="place-tip">💡 The rainbow with ice cream is the classic order</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Aokis+Shave+Ice+Haleiwa" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Aoki's Shave Ice <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Haleiwa · North Shore <span class="place-price">$</span></div>
+            <p class="place-desc">Right next to Matsumoto's — equally excellent and usually shorter line.</p>
+            <div class="place-tip">💡 Shorter line than Matsumoto's with equal quality</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍱 Best Plate Lunch</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Rainbow Drive-In</div>
-          <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">An Oahu institution since 1961. The mixed plate is iconic — a little bit of everything Hawaii on one plate.</p>
-          <div class="place-tip">💡 The mixed plate with beef stew is the classic order</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Zippy's</div>
-          <div class="place-area">📍 Multiple Oahu locations <span class="place-price">$</span></div>
-          <p class="place-desc">Hawaii's favorite fast food chain. Available island-wide, open 24 hours and serving local comfort food that mainlanders can't find.</p>
-          <div class="place-tip">💡 The chili and the napoleons (pastry) are legendary</div>
-        </div>
+        <a href="https://www.rainbowdrivein.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Rainbow Drive-In <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kapahulu · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">An Oahu institution since 1961. The mixed plate is iconic — a little bit of everything Hawaii on one plate.</p>
+            <div class="place-tip">💡 The mixed plate with beef stew is the classic order</div>
+          </div>
+        </a>
+        <a href="https://www.zippys.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Zippy's <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Multiple Oahu locations <span class="place-price">$</span></div>
+            <p class="place-desc">Hawaii's favorite fast food chain. Open 24 hours and serving local comfort food.</p>
+            <div class="place-tip">💡 The chili and the napoleons (pastry) are legendary</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🌟 Hidden Gems</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Helena's Hawaiian Food</div>
-          <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$$</span></div>
-          <p class="place-desc">James Beard Award winning Hawaiian food restaurant. The most authentic traditional Hawaiian cuisine in Honolulu. A living treasure.</p>
-          <div class="place-tip">💡 Try the pipikaula (dried beef) and lomi salmon — extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Ethel's Grill</div>
-          <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$</span></div>
-          <p class="place-desc">A tiny hole-in-the-wall lunch spot serving some of the best local Japanese-Hawaiian food in Honolulu. No frills, all flavor.</p>
-          <div class="place-tip">💡 Cash only, tiny space, worth every minute of the wait</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Boots & Kimo's</div>
-          <div class="place-area">📍 Kailua <span class="place-price">$</span></div>
-          <p class="place-desc">Famous for macadamia nut pancakes smothered in mac nut cream sauce. The line starts before opening — and it's worth it.</p>
-          <div class="place-tip">💡 Arrive 30 min before opening or expect a long wait</div>
-        </div>
+        <a href="https://www.helenashawaiianfood.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Helena's Hawaiian Food <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$$</span></div>
+            <p class="place-desc">James Beard Award winning Hawaiian food restaurant. The most authentic traditional Hawaiian cuisine in Honolulu.</p>
+            <div class="place-tip">💡 Try the pipikaula (dried beef) and lomi salmon</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Ethels+Grill+Honolulu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Ethel's Grill <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kalihi · Honolulu <span class="place-price">$</span></div>
+            <p class="place-desc">A tiny hole-in-the-wall lunch spot serving some of the best local Japanese-Hawaiian food in Honolulu.</p>
+            <div class="place-tip">💡 Cash only, tiny space, worth every minute of the wait</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Boots+and+Kimos+Kailua+Oahu" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Boots & Kimo's <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kailua <span class="place-price">$</span></div>
+            <p class="place-desc">Famous for macadamia nut pancakes smothered in mac nut cream sauce.</p>
+            <div class="place-tip">💡 Arrive 30 min before opening or expect a long wait</div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -570,92 +610,114 @@ footer a{color:var(--foam);text-decoration:none;}
     <div class="food-category">
       <div class="food-cat-title">🍜 Best Saimin</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Hamura Saimin</div>
-          <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
-          <p class="place-desc">A pilgrimage for any serious foodie visiting Kauai. This legendary tiny shop has been serving perfect saimin since 1952. Cash only.</p>
-          <div class="place-tip">💡 Order the large saimin with wonton and a liliko'i chiffon pie</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Pho Kauai</div>
-          <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
-          <p class="place-desc">Don't let the name fool you — they also serve excellent local noodle dishes in the same spirit as saimin.</p>
-          <div class="place-tip">💡 The beef noodle soup is extraordinary value</div>
-        </div>
+        <a href="https://maps.google.com/?q=Hamura+Saimin+Lihue+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Hamura Saimin <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
+            <p class="place-desc">A pilgrimage for any serious foodie visiting Kauai. This legendary tiny shop has been serving perfect saimin since 1952.</p>
+            <div class="place-tip">💡 Order the large saimin with wonton and a liliko'i chiffon pie</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Pho+Kauai+Lihue" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Pho Kauai <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
+            <p class="place-desc">Excellent local noodle dishes in the same spirit as saimin.</p>
+            <div class="place-tip">💡 The beef noodle soup is extraordinary value</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🐟 Best Poke</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Pono Market</div>
-          <div class="place-area">📍 Kapaa · East Side <span class="place-price">$</span></div>
-          <p class="place-desc">Kauai's most beloved local poke and plate lunch spot. Fresh daily poke varieties alongside classic plate lunches.</p>
-          <div class="place-tip">💡 The poke bowls and kalua pig plate are both outstanding</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Fish Express</div>
-          <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
-          <p class="place-desc">Fresh fish straight from local fishermen daily. Multiple poke varieties and fresh fish prepared simply and perfectly.</p>
-          <div class="place-tip">💡 Ask what was caught this morning</div>
-        </div>
+        <a href="https://maps.google.com/?q=Pono+Market+Kapaa+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Pono Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kapaa · East Side <span class="place-price">$</span></div>
+            <p class="place-desc">Kauai's most beloved local poke and plate lunch spot. Fresh daily poke varieties alongside classic plate lunches.</p>
+            <div class="place-tip">💡 The poke bowls and kalua pig plate are both outstanding</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Fish+Express+Lihue+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Fish Express <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
+            <p class="place-desc">Fresh fish straight from local fishermen daily. Multiple poke varieties and fresh fish.</p>
+            <div class="place-tip">💡 Ask what was caught this morning</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍱 Best Plate Lunch</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Mark's Place</div>
-          <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
-          <p class="place-desc">The most beloved plate lunch spot on Kauai. Enormous portions of incredibly cooked local favorites. A true Kauai institution.</p>
-          <div class="place-tip">💡 The kalua pork and cabbage plate is extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Koloa Fish Market</div>
-          <div class="place-area">📍 Koloa · South Shore <span class="place-price">$</span></div>
-          <p class="place-desc">Fresh fish plate lunches and poke near Poipu. A local favorite in the otherwise touristy south shore area.</p>
-          <div class="place-tip">💡 Fresh catch changes daily — ask what's in</div>
-        </div>
+        <a href="https://maps.google.com/?q=Marks+Place+Lihue+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Mark's Place <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Lihue <span class="place-price">$</span></div>
+            <p class="place-desc">The most beloved plate lunch spot on Kauai. Enormous portions of incredibly cooked local favorites.</p>
+            <div class="place-tip">💡 The kalua pork and cabbage plate is extraordinary</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Koloa+Fish+Market+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Koloa Fish Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Koloa · South Shore <span class="place-price">$</span></div>
+            <p class="place-desc">Fresh fish plate lunches and poke near Poipu. A local favorite in the south shore area.</p>
+            <div class="place-tip">💡 Fresh catch changes daily — ask what's in</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🚚 Best Food Trucks</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Pono Burger</div>
-          <div class="place-area">📍 Kapaa <span class="place-price">$$</span></div>
-          <p class="place-desc">Gourmet local burgers made with Big Island beef and topped with local produce. One of Hawaii's best burgers.</p>
-          <div class="place-tip">💡 The Pono Burger with local cheese is the must-order</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Kickshaws</div>
-          <div class="place-area">📍 Hanapepe <span class="place-price">$</span></div>
-          <p class="place-desc">Vegan and vegetarian food truck in the charming art town of Hanapepe. Creative, delicious plant-based Hawaii food.</p>
-          <div class="place-tip">💡 Visit on Friday night for the Hanapepe Art Walk</div>
-        </div>
+        <a href="https://maps.google.com/?q=Pono+Burger+Kapaa+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Pono Burger <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kapaa <span class="place-price">$$</span></div>
+            <p class="place-desc">Gourmet local burgers made with Big Island beef and topped with local produce.</p>
+            <div class="place-tip">💡 The Pono Burger with local cheese is the must-order</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Kickshaws+Hanapepe+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Kickshaws <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Hanapepe <span class="place-price">$</span></div>
+            <p class="place-desc">Vegan and vegetarian food truck in the charming art town of Hanapepe.</p>
+            <div class="place-tip">💡 Visit on Friday night for the Hanapepe Art Walk</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🌟 Hidden Gems</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Kalaheo Cafe & Coffee Co.</div>
-          <div class="place-area">📍 Kalaheo <span class="place-price">$</span></div>
-          <p class="place-desc">A charming local cafe serving excellent breakfast and lunch with Kauai-grown coffee. Loved by locals, unknown to most tourists.</p>
-          <div class="place-tip">💡 The Portuguese sausage omelette is extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Wrangler's Steakhouse</div>
-          <div class="place-area">📍 Waimea <span class="place-price">$$</span></div>
-          <p class="place-desc">A Kauai landmark in the historic Waimea area serving local beef and plantation-era recipes in a gorgeous old building.</p>
-          <div class="place-tip">💡 Visit after Waimea Canyon — perfect timing and location</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Hanalei Dolphin</div>
-          <div class="place-area">📍 Hanalei <span class="place-price">$$$</span></div>
-          <p class="place-desc">Fresh fish restaurant in the most beautiful location in Hawaii — right on the Hanalei River with mountain views.</p>
-          <div class="place-tip">💡 Watch for monk seals in the river while you eat</div>
-        </div>
+        <a href="https://www.kalaheo.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Kalaheo Cafe & Coffee Co. <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kalaheo <span class="place-price">$</span></div>
+            <p class="place-desc">A charming local cafe serving excellent breakfast and lunch with Kauai-grown coffee.</p>
+            <div class="place-tip">💡 The Portuguese sausage omelette is extraordinary</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Wranglers+Steakhouse+Waimea+Kauai" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Wrangler's Steakhouse <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Waimea <span class="place-price">$$</span></div>
+            <p class="place-desc">A Kauai landmark serving local beef and plantation-era recipes in a gorgeous old building.</p>
+            <div class="place-tip">💡 Visit after Waimea Canyon — perfect timing</div>
+          </div>
+        </a>
+        <a href="https://www.hanaleidolphin.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Hanalei Dolphin <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Hanalei <span class="place-price">$$$</span></div>
+            <p class="place-desc">Fresh fish restaurant right on the Hanalei River with stunning mountain views.</p>
+            <div class="place-tip">💡 Watch for monk seals in the river while you eat</div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -671,102 +733,127 @@ footer a{color:var(--foam);text-decoration:none;}
     <div class="food-category">
       <div class="food-cat-title">☕ Best Kona Coffee</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Mountain Thunder Coffee Plantation</div>
-          <div class="place-area">📍 Kona <span class="place-price">$</span></div>
-          <p class="place-desc">One of the most beautiful coffee farms in Hawaii with free tours showing the complete bean-to-cup process. The coffee is extraordinary.</p>
-          <div class="place-tip">💡 Take the free tour and buy directly from the farm for best prices</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Greenwell Farms</div>
-          <div class="place-area">📍 Kealakekua · South Kona <span class="place-price">$</span></div>
-          <p class="place-desc">One of the oldest and most respected Kona coffee farms. Free tours daily and the world's best single-origin coffee.</p>
-          <div class="place-tip">💡 The extra fancy grade Kona is worth every penny</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Holuakoa Cafe</div>
-          <div class="place-area">📍 Holuakoa · Kona <span class="place-price">$</span></div>
-          <p class="place-desc">Charming cafe in the artists' village above Kona surrounded by coffee farms. Perfect place to experience authentic Kona coffee culture.</p>
-          <div class="place-tip">💡 Come on weekend mornings for the freshest roast</div>
-        </div>
+        <a href="https://www.mountainthunder.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Mountain Thunder Coffee Plantation <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kona <span class="place-price">$</span></div>
+            <p class="place-desc">One of the most beautiful coffee farms in Hawaii with free tours. The coffee is extraordinary.</p>
+            <div class="place-tip">💡 Take the free tour and buy directly from the farm</div>
+          </div>
+        </a>
+        <a href="https://www.greenwellfarms.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Greenwell Farms <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kealakekua · South Kona <span class="place-price">$</span></div>
+            <p class="place-desc">One of the oldest and most respected Kona coffee farms. Free tours daily.</p>
+            <div class="place-tip">💡 The extra fancy grade Kona is worth every penny</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Holuakoa+Cafe+Kona+Big+Island" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Holuakoa Cafe <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Holuakoa · Kona <span class="place-price">$</span></div>
+            <p class="place-desc">Charming cafe in the artists' village above Kona surrounded by coffee farms.</p>
+            <div class="place-tip">💡 Come on weekend mornings for the freshest roast</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍱 Best Plate Lunch</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Cafe 100</div>
-          <div class="place-area">📍 Hilo <span class="place-price">$</span></div>
-          <p class="place-desc">The birthplace of loco moco! Since 1946 this Hilo institution has served 30+ varieties of loco moco. A pilgrimage for food history lovers.</p>
-          <div class="place-tip">💡 Order the original loco moco — respect the birthplace</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Ken's House of Pancakes</div>
-          <div class="place-area">📍 Hilo <span class="place-price">$</span></div>
-          <p class="place-desc">Open 24 hours and beloved by Hilo locals for generations. Enormous pancakes, local plates and the best macadamia nut pancakes on the island.</p>
-          <div class="place-tip">💡 The mac nut pancakes at 2am after stargazing on Mauna Kea is a Big Island tradition</div>
-        </div>
+        <a href="https://maps.google.com/?q=Cafe+100+Hilo+Big+Island" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Cafe 100 <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Hilo <span class="place-price">$</span></div>
+            <p class="place-desc">The birthplace of loco moco! Since 1946 this Hilo institution has served 30+ varieties of loco moco.</p>
+            <div class="place-tip">💡 Order the original loco moco — respect the birthplace</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Kens+House+of+Pancakes+Hilo" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Ken's House of Pancakes <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Hilo <span class="place-price">$</span></div>
+            <p class="place-desc">Open 24 hours and beloved by Hilo locals for generations. Enormous pancakes and local plates.</p>
+            <div class="place-tip">💡 Mac nut pancakes at 2am after stargazing is a Big Island tradition</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🍩 Best Malasadas</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Tex Drive-In</div>
-          <div class="place-area">📍 Honokaa · Hamakua Coast <span class="place-price">$</span></div>
-          <p class="place-desc">The Big Island's most famous malasada shop. Hot, fresh malasadas made to order since 1969. Worth the drive to Honokaa.</p>
-          <div class="place-tip">💡 Call ahead and they'll have hot ones ready when you arrive</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Verna's Drive-In</div>
-          <div class="place-area">📍 Pahoa <span class="place-price">$</span></div>
-          <p class="place-desc">The best kept secret on the east side. Fresh malasadas and local plates in the funky town of Pahoa. Cash only.</p>
-          <div class="place-tip">💡 Visit during a trip to see the active lava flow area nearby</div>
-        </div>
+        <a href="https://maps.google.com/?q=Tex+Drive+In+Honokaa+Big+Island" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Tex Drive-In <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Honokaa · Hamakua Coast <span class="place-price">$</span></div>
+            <p class="place-desc">The Big Island's most famous malasada shop. Hot, fresh malasadas made to order since 1969.</p>
+            <div class="place-tip">💡 Call ahead and they'll have hot ones ready when you arrive</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Vernas+Drive+In+Pahoa+Big+Island" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Verna's Drive-In <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Pahoa <span class="place-price">$</span></div>
+            <p class="place-desc">The best kept secret on the east side. Fresh malasadas and local plates in funky Pahoa.</p>
+            <div class="place-tip">💡 Visit during a trip to see the active lava flow area nearby</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🚚 Best Food Trucks</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Bong Brothers</div>
-          <div class="place-area">📍 Captain Cook · South Kona <span class="place-price">$</span></div>
-          <p class="place-desc">Fresh tropical smoothies and local fruit stands along the highway in coffee country. The best smoothies on the Big Island.</p>
-          <div class="place-tip">💡 The black sapote (chocolate pudding fruit) smoothie is extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Da Poke Shack</div>
-          <div class="place-area">📍 Kailua-Kona <span class="place-price">$</span></div>
-          <p class="place-desc">One of the most acclaimed poke shops in Hawaii. Fresh daily poke with creative combinations beyond the standard menu.</p>
-          <div class="place-tip">💡 Arrive early — they sell out of the best varieties by noon</div>
-        </div>
+        <a href="https://maps.google.com/?q=Bong+Brothers+Captain+Cook+Big+Island" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Bong Brothers <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Captain Cook · South Kona <span class="place-price">$</span></div>
+            <p class="place-desc">Fresh tropical smoothies and local fruit stands along the highway in coffee country.</p>
+            <div class="place-tip">💡 The black sapote (chocolate pudding fruit) smoothie is extraordinary</div>
+          </div>
+        </a>
+        <a href="https://www.dapokeshack.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Da Poke Shack <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kailua-Kona <span class="place-price">$</span></div>
+            <p class="place-desc">One of the most acclaimed poke shops in Hawaii. Fresh daily poke with creative combinations.</p>
+            <div class="place-tip">💡 Arrive early — they sell out of the best varieties by noon</div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="food-category">
       <div class="food-cat-title">🌟 Hidden Gems</div>
       <div class="places-grid">
-        <div class="place-card">
-          <div class="place-name">Merriman's Waimea</div>
-          <div class="place-area">📍 Waimea · Kamuela <span class="place-price">$$$$</span></div>
-          <p class="place-desc">The godfather of Hawaii Regional Cuisine. Peter Merriman pioneered farm-to-table in Hawaii 30 years ago. Still the best.</p>
-          <div class="place-tip">💡 Reserve weeks in advance. The wok-charred ahi is the legendary dish</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Umekes Fish Market</div>
-          <div class="place-area">📍 Kailua-Kona <span class="place-price">$$</span></div>
-          <p class="place-desc">The best poke and fresh fish in Kona. Incredibly fresh fish straight from local boats with innovative preparations.</p>
-          <div class="place-tip">💡 The poke nachos with taro chips are extraordinary</div>
-        </div>
-        <div class="place-card">
-          <div class="place-name">Hilo Farmers Market</div>
-          <div class="place-area">📍 Hilo · Downtown <span class="place-price">$</span></div>
-          <p class="place-desc">The best farmers market in Hawaii every Wednesday and Saturday. Fresh tropical fruits, local food vendors and incredible variety.</p>
-          <div class="place-tip">💡 Go on Wednesday or Saturday morning — taste everything before you buy</div>
-        </div>
+        <a href="https://www.merrimanshawaii.com/waimea" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Merriman's Waimea <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Waimea · Kamuela <span class="place-price">$$$$</span></div>
+            <p class="place-desc">The godfather of Hawaii Regional Cuisine. Peter Merriman pioneered farm-to-table in Hawaii 30 years ago.</p>
+            <div class="place-tip">💡 Reserve weeks in advance. The wok-charred ahi is legendary</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Umekes+Fish+Market+Kona" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Umekes Fish Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Kailua-Kona <span class="place-price">$$</span></div>
+            <p class="place-desc">The best poke and fresh fish in Kona. Incredibly fresh fish straight from local boats.</p>
+            <div class="place-tip">💡 The poke nachos with taro chips are extraordinary</div>
+          </div>
+        </a>
+        <a href="https://www.hilofarmersmarket.com" target="_blank" rel="noopener" class="place-card-link">
+          <div class="place-card">
+            <div class="place-name">Hilo Farmers Market <span class="place-link-icon">↗</span></div>
+            <div class="place-area">📍 Hilo · Downtown <span class="place-price">$</span></div>
+            <p class="place-desc">The best farmers market in Hawaii every Wednesday and Saturday.</p>
+            <div class="place-tip">💡 Go on Wednesday or Saturday morning — taste everything before you buy</div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
   <hr class="section-divider">
+
 </div>
 
 <footer>
