@@ -569,15 +569,16 @@
   </style>
 
   <!-- GOOGLE-STYLE SEARCH -->
-  <div style="max-width:580px;margin:0 auto 32px;position:relative;z-index:10;">
-    <div id="searchBox" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.2);transition:all 0.2s;">
+  <div style="max-width:740px;margin:0 auto 32px;position:relative;z-index:10;">
+    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
       <span style="font-size:18px;flex-shrink:0;">🔍</span>
-      <input id="hq" type="text" placeholder="Ask about Hawaii weather, surf, beaches..."
+      <input id="hq" type="text" placeholder="Search Hawaii news, weather, surf, beaches..."
         style="flex:1;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:16px;font-family:DM Sans,sans-serif;min-width:0;">
-      <button id="hMic" title="Voice search"
-        style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🎤</button>
+      <button id="hMic" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">🎤</button>
     </div>
-    <div id="hAns" style="display:none;margin-top:10px;background:#ffffff;border-radius:20px;padding:8px;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:500px;overflow:hidden;"></div>
+    <div id="hAns" style="display:none;margin-top:10px;background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:500px;overflow:hidden;padding:8px;">
+      <div class="gcse-searchresults-only" id="cse-results" data-autoSearchOnLoad="false" gname="mysearch"></div>
+    </div>
   </div>
 
   <!-- HERO -->
@@ -2062,54 +2063,7 @@ function searchPackages() {
 
 
 
-<script>
-window.addEventListener('load', function() {
-  try {
-    function getSunTimes(lat,lon,date){
-      var R=Math.PI/180,D=180/Math.PI;
-      var doy=Math.floor((date-new Date(date.getFullYear(),0,0))/864e5);
-      var decl=23.45*Math.sin(R*(360/365)*(doy-81));
-      var cosH=(Math.cos(R*90.833)-Math.sin(R*lat)*Math.sin(R*decl))/(Math.cos(R*lat)*Math.cos(R*decl));
-      if(Math.abs(cosH)>1)return null;
-      var H=Math.acos(cosH)*D;
-      var eq=9.87*Math.sin(R*2*(360/365)*(doy-81))-7.53*Math.cos(R*(360/365)*(doy-81))-1.5*Math.sin(R*(360/365)*(doy-81));
-      var noon=720-4*lon-eq;
-      return{r:noon-4*H,s:noon+4*H};
-    }
-    function fmt(m){
-      var hm=((m-600)%1440+1440)%1440;
-      var h=Math.floor(hm/60),mn=Math.round(hm%60);
-      return (h%12||12)+':'+(mn<10?'0':'')+mn+(h<12?' AM':' PM');
-    }
-    function dlen(r,s){var m=s-r;return Math.floor(m/60)+'h '+Math.round(m%60)+'m';}
-    function fday(d,i){
-      if(i===0)return '<strong>Today</strong>';
-      var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var mths=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return days[d.getDay()]+' '+mths[d.getMonth()]+' '+d.getDate();
-    }
-    var islands=[
-      {n:'Maui',e:'🏄',la:20.80,lo:-156.33},
-      {n:'Oahu',e:'🌆',la:21.31,lo:-157.86},
-      {n:"Kauaʻi",e:'🌿',la:22.10,lo:-159.50},
-      {n:'Big Island',e:'🌋',la:19.59,lo:-155.43}
-    ];
-    var today=new Date();today.setHours(0,0,0,0);
-    var html='';
-    islands.forEach(function(isl){
-      var rows='';
-      for(var i=0;i<8;i++){
-        var d=new Date(today);d.setDate(today.getDate()+i);
-        var t=getSunTimes(isl.la,isl.lo,d);
-        if(!t)continue;
-        rows+='<tr'+(i===0?' class="sun-today"':'')+'><td>'+fday(d,i)+'</td><td class="sun-rise">'+fmt(t.r)+'</td><td class="sun-set">'+fmt(t.s)+'</td><td>'+dlen(t.r,t.s)+'</td></tr>';
-      }
-      html+='<div class="sun-card" data-island="'+isl.n+'"><div class="sun-island">'+isl.e+' '+isl.n+'</div><table class="sun-week-table"><thead><tr><th>Day</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>☀️</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
-    });
-    document.getElementById('sunGrid').innerHTML=html;
-  } catch(e){ console.error('Sun calc error:',e); }
-});
-</script>
+
 
 <script>
 // Search + Voice for todayinhawaii.com
@@ -2193,6 +2147,51 @@ window.addEventListener('load', function() {
     });
   });
 }());
+</script>
+<script>
+window.addEventListener('load', function() {
+  var inp = document.getElementById('hq');
+  var mic = document.getElementById('hMic');
+  var ans = document.getElementById('hAns');
+  if (!inp) return;
+
+  function doSearch(q) {
+    if (!q) return;
+    ans.style.display = 'block';
+    setTimeout(function(){ ans.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
+    function trySearch(n) {
+      if (window.google && google.search && google.search.cse && google.search.cse.element) {
+        var el = google.search.cse.element.getElement('mysearch');
+        if (el) { el.execute(q); return; }
+        google.search.cse.element.render({div:'cse-results', tag:'searchresults-only', gname:'mysearch'});
+        setTimeout(function(){
+          var e2 = google.search.cse.element.getElement('mysearch');
+          if (e2) e2.execute(q);
+        }, 800);
+        return;
+      }
+      if (n > 0) setTimeout(function(){ trySearch(n-1); }, 600);
+    }
+    trySearch(8);
+  }
+
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); doSearch(inp.value.trim()); }
+  });
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null, on = false;
+  if (mic) mic.addEventListener('click', function() {
+    if (!SR) { inp.focus(); inp.placeholder = 'Voice not supported — type here!'; return; }
+    if (on) { if (rec) rec.stop(); return; }
+    rec = new SR(); rec.lang = 'en-US'; rec.continuous = false; rec.interimResults = true;
+    rec.onstart = function(){ on=true; mic.textContent='⏹'; mic.style.background='linear-gradient(135deg,#dc2626,#f97316)'; inp.placeholder='Listening... speak now!'; };
+    rec.onresult = function(e){ var t=''; for(var i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript; inp.value=t; if(e.results[e.results.length-1].isFinal) doSearch(t); };
+    rec.onerror = function(){ on=false; mic.textContent='🎤'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii news, weather, surf...'; };
+    rec.onend = function(){ on=false; mic.textContent='🎤'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii news, weather, surf...'; };
+    rec.start();
+  });
+});
 </script>
 </body>
 </html>
