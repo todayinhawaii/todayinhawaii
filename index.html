@@ -571,13 +571,15 @@
   <!-- GOOGLE-STYLE SEARCH -->
   <div style="max-width:740px;margin:0 auto 32px;position:relative;z-index:10;">
     <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
-      <span style="font-size:18px;flex-shrink:0;">🔍</span>
+      <span style="font-size:18px;flex-shrink:0;">&#128269;</span>
       <input id="hq" type="text" placeholder="Search Hawaii news, weather, surf, beaches..."
         style="flex:1;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:16px;font-family:DM Sans,sans-serif;min-width:0;">
       <button id="hMic" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">&#127908;</button>
     </div>
-    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.97);border:1px solid rgba(34,211,238,0.25);border-radius:20px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:200px;">
-      <div id="hResults"></div>
+    <div id="hAns" style="display:none;margin-top:10px;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.4);overflow:hidden;background:rgba(6,29,44,0.97);border:1px solid rgba(34,211,238,0.2);">
+      <div id="hResults" style="padding:14px;">
+        <div style="font-size:13px;color:#7fb3c8;">Loading...</div>
+      </div>
     </div>
   </div>
 
@@ -2068,70 +2070,68 @@ function searchPackages() {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
   var inp = document.getElementById('hq');
   var mic = document.getElementById('hMic');
   var ans = document.getElementById('hAns');
   var res = document.getElementById('hResults');
-  if (!inp || !ans || !res) return;
+  if (!inp) return;
 
-  var CX = '17c1a8affa7e6470c';
-
-  function show(html) {
-    ans.style.display = 'block';
-    res.innerHTML = html;
-    setTimeout(function(){ ans.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
-  }
+  var SITES = [
+    ['Hawaii News Now', 'https://www.hawaiinewsnow.com/?q='],
+    ['KHON2', 'https://www.khon2.com/?s='],
+    ['Maui Now', 'https://mauinow.com/?s='],
+    ['Big Island Now', 'https://bigislandnow.com/?s='],
+    ['Weather.gov', 'https://forecast.weather.gov/MapClick.php?CityName=Honolulu&state=HI'],
+    ['Surfline', 'https://www.surfline.com/surf-report/oahu-north-shore/'],
+  ];
 
   function doSearch(q) {
     if (!q) return;
-    show('<div style="color:#7fb3c8;text-align:center;padding:20px;font-size:14px;">Searching for <b style="color:#22d3ee">' + q + '</b>...</div>');
+    ans.style.display = 'block';
+    setTimeout(function(){ ans.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
 
-    var base = 'https://www.googleapis.com/customsearch/v1';
-    var params = '?key=AIzaSyD-placeholder&cx=' + CX + '&q=' + encodeURIComponent(q) + '&num=8';
-    
-    fetch(base + params)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.error || !data.items) {
-        showLinks(q);
-        return;
-      }
-      var h = '<div style="font-size:12px;color:#7fb3c8;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:10px;">About ' + (data.searchInformation.formattedTotalResults || '') + ' results for <b style="color:#22d3ee">' + q + '</b></div>';
-      data.items.forEach(function(item) {
-        h += '<div style="margin-bottom:18px;">';
-        h += '<div style="font-size:11px;color:#10b981;">' + (item.displayLink || '') + '</div>';
-        h += '<a href="' + item.link + '" target="_blank" style="color:#22d3ee;font-size:15px;font-weight:500;text-decoration:none;display:block;margin:2px 0;">' + (item.title || '') + '</a>';
-        h += '<div style="font-size:13px;color:#7fb3c8;line-height:1.5;">' + (item.snippet || '') + '</div>';
-        h += '</div>';
-      });
-      h += '<div style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);"><a href="https://www.google.com/search?q=' + encodeURIComponent(q + ' Hawaii') + '" target="_blank" style="color:#22d3ee;font-size:13px;">See all results on Google</a></div>';
-      show(h);
-    })
-    .catch(function() { showLinks(q); });
-  }
+    // Build result HTML with iframe + source switcher buttons
+    res.innerHTML = '';
 
-  function showLinks(q) {
-    var h = '<div style="font-size:13px;color:#7fb3c8;margin-bottom:12px;">Results for <b style="color:#22d3ee">' + q + '</b></div>';
-    h += '<iframe id="srcFrame" src="https://www.hawaiinewsnow.com/?q=' + encodeURIComponent(q) + '" style="width:100%;height:400px;border:none;border-radius:10px;display:block;margin-bottom:10px;" title="Results"></iframe>';
-    h += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
-    var sites = [
-      ['Hawaii News Now', 'https://www.hawaiinewsnow.com/?q=' + encodeURIComponent(q)],
-      ['KHON2', 'https://www.khon2.com/?s=' + encodeURIComponent(q)],
-      ['Maui Now', 'https://mauinow.com/?s=' + encodeURIComponent(q)],
-      ['Weather.gov', 'https://www.weather.gov/hfo/'],
-      ['Surfline', 'https://www.surfline.com/travel/hawaii-surf-report/'],
-      ['Big Island Now', 'https://bigislandnow.com/?s=' + encodeURIComponent(q)],
-    ];
-    sites.forEach(function(site) {
+    // Source buttons
+    var btnBar = document.createElement('div');
+    btnBar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.08);';
+
+    var label = document.createElement('span');
+    label.style.cssText = 'font-size:12px;color:#7fb3c8;display:flex;align-items:center;margin-right:4px;';
+    label.textContent = 'Source:';
+    btnBar.appendChild(label);
+
+    var frame = document.createElement('iframe');
+    frame.style.cssText = 'width:100%;height:480px;border:none;display:block;';
+    frame.title = 'Search results';
+
+    SITES.forEach(function(s, i) {
       var btn = document.createElement('button');
-      btn.textContent = site[0];
-      btn.style.cssText = 'padding:6px 12px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:99px;color:#22d3ee;font-size:12px;cursor:pointer;font-family:inherit;margin:2px;';
-      btn.addEventListener('click', (function(url){ return function(){ document.getElementById('srcFrame').src = url; }; })(site[1]));
-      res.appendChild(btn);
+      btn.textContent = s[0];
+      btn.style.cssText = 'padding:5px 12px;border-radius:99px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;border:1px solid rgba(34,211,238,0.3);color:#22d3ee;background:rgba(34,211,238,0.08);';
+      btn.addEventListener('click', function() {
+        frame.src = s[1] + encodeURIComponent(q);
+        // Highlight active button
+        btnBar.querySelectorAll('button').forEach(function(b){ b.style.background='rgba(34,211,238,0.08)'; b.style.fontWeight='normal'; });
+        btn.style.background = 'rgba(34,211,238,0.2)';
+        btn.style.fontWeight = '600';
+      });
+      if (i === 0) {
+        btn.style.background = 'rgba(34,211,238,0.2)';
+        btn.style.fontWeight = '600';
+      }
+      btnBar.appendChild(btn);
     });
-    res.insertAdjacentHTML('afterbegin', h);
+
+    // Load first source by default
+    frame.src = SITES[0][1] + encodeURIComponent(q);
+
+    res.appendChild(btnBar);
+    res.appendChild(frame);
   }
 
   inp.addEventListener('keydown', function(e) {
@@ -2146,10 +2146,15 @@ window.addEventListener('load', function() {
       if (on) { if (rec) rec.stop(); return; }
       rec = new SR();
       rec.lang = 'en-US'; rec.continuous = false; rec.interimResults = true;
-      rec.onstart = function() { on = true; mic.textContent = 'X'; mic.style.background = 'linear-gradient(135deg,#dc2626,#f97316)'; inp.placeholder = 'Listening...'; };
-      rec.onresult = function(e) { var t = ''; var i = e.resultIndex; while (i !== e.results.length) { t += e.results[i][0].transcript; i++; } inp.value = t; if (e.results[e.results.length-1].isFinal) doSearch(t); };
-      rec.onerror = function() { on = false; mic.textContent = 'MIC'; mic.style.background = 'linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder = 'Search Hawaii...'; };
-      rec.onend = function() { on = false; mic.textContent = 'MIC'; mic.style.background = 'linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder = 'Search Hawaii news, weather, surf...'; };
+      rec.onstart = function() { on=true; mic.innerHTML='&#9209;'; mic.style.background='linear-gradient(135deg,#dc2626,#f97316)'; inp.placeholder='Listening...'; };
+      rec.onresult = function(e) {
+        var t='', i=e.resultIndex;
+        while (i !== e.results.length) { t += e.results[i][0].transcript; i++; }
+        inp.value = t;
+        if (e.results[e.results.length-1].isFinal) doSearch(t);
+      };
+      rec.onerror = function() { on=false; mic.innerHTML='&#127908;'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii...'; };
+      rec.onend = function() { on=false; mic.innerHTML='&#127908;'; mic.style.background='linear-gradient(135deg,#0e7490,#22d3ee)'; inp.placeholder='Search Hawaii news, weather, surf...'; };
       rec.start();
     });
   }
