@@ -513,6 +513,7 @@
     .hamburger{display:none !important;}
   }
 </style>
+<script async src="https://cse.google.com/cse.js?cx=17c1a8affa7e6470c"></script>
 </head>
 <body>
 
@@ -576,7 +577,7 @@
       <button id="hMic" title="Voice search"
         style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;cursor:pointer;font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🎤</button>
     </div>
-    <div id="hAns" style="display:none;margin-top:10px;background:rgba(6,29,44,0.97);border:1px solid rgba(34,211,238,0.3);border-radius:20px;padding:16px;color:#e8f4f8;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:500px;"></div>
+    <div id="hAns" style="display:none;margin-top:10px;background:#ffffff;border-radius:20px;padding:8px;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-height:500px;overflow:hidden;"></div>
   </div>
 
   <!-- HERO -->
@@ -2117,23 +2118,24 @@ window.addEventListener('load', function() {
   function doSearch(query) {
     if (!query) return;
     var ans = document.getElementById('hAns');
-    var results = document.getElementById('gcse-results');
+    var box = document.getElementById('gcse-results');
     ans.style.display = 'block';
-
-    // Use Google search in an iframe pointed at our site first, then general Hawaii
-    var q = encodeURIComponent(query + ' Hawaii site:todayinhawaii.com OR Hawaii');
-
-    // Show Google results via iframe
-    results.innerHTML = 
-      '<div style="font-size:12px;color:#7fb3c8;margin-bottom:12px;">🔍 Searching for: <b style="color:#22d3ee">' + query + '</b></div>' +
-      '<iframe src="https://www.google.com/search?q=' + encodeURIComponent(query + ' Hawaii todayinhawaii.com') + '&igu=1" ' +
-      'style="width:100%;height:520px;border:none;border-radius:12px;background:#fff;" ' +
-      'title="Search results" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>' +
-      '<div style="margin-top:10px;text-align:center;">' +
-      '<a href="https://www.google.com/search?q=' + encodeURIComponent(query + ' Hawaii') + '" target="_blank" ' +
-      'style="color:#22d3ee;font-size:13px;">Open full results in Google ↗</a></div>';
+    box.className = 'gcse-searchresults-only';
+    setTimeout(function(){ans.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+    if (window.google && google.search && google.search.cse && google.search.cse.element) {
+      var el = google.search.cse.element.getElement('res1');
+      if (el) { el.execute(query); return; }
+      google.search.cse.element.render({div:'gcse-results',tag:'searchresults-only',gname:'res1'});
+      setTimeout(function(){
+        var el2 = google.search.cse.element.getElement('res1');
+        if (el2) el2.execute(query);
+      }, 1000);
+    } else {
+      setTimeout(function(){ doSearch(query); }, 1200);
+    }
   }
 
+  
   window.addEventListener('load', function() {
     var inp = document.getElementById('hq');
     var mic = document.getElementById('hMic');
