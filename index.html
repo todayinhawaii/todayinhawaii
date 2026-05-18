@@ -931,7 +931,7 @@
         <div class="sun-date" id="sunDateMaui"></div>
         <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseMaui">—</span></div>
         <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetMaui">—</span></div>
-        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle id="sunPosMaui" cx="160" cy="22" r="6" fill="#fbbf24"/></svg></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle id="sunPosMaui" cx="100" cy="5" r="6" fill="#fbbf24"/></svg></div>
         <div class="sun-daylight">Daylight: <strong id="daylightMaui">—</strong></div>
         <table class="sun-week-table" id="sun7Maui"><thead><tr><th>Day</th><th class="sun-rise">Sunrise</th><th class="sun-set">Sunset</th><th>Hours</th></tr></thead><tbody></tbody></table>
         <a href="https://www.timeanddate.com/sun/@5850862" target="_blank" class="sun-cal-link">📅 Full calendar — any year ↗</a>
@@ -941,7 +941,7 @@
         <div class="sun-date" id="sunDateOahu"></div>
         <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseOahu">—</span></div>
         <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetOahu">—</span></div>
-        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(34,211,238,0.3)" stroke-width="2"/><circle id="sunPosOahu" cx="160" cy="22" r="6" fill="#22d3ee"/></svg></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(34,211,238,0.3)" stroke-width="2"/><circle id="sunPosOahu" cx="100" cy="5" r="6" fill="#22d3ee"/></svg></div>
         <div class="sun-daylight">Daylight: <strong id="daylightOahu">—</strong></div>
         <table class="sun-week-table" id="sun7Oahu"><thead><tr><th>Day</th><th class="sun-rise">Sunrise</th><th class="sun-set">Sunset</th><th>Hours</th></tr></thead><tbody></tbody></table>
         <a href="https://www.timeanddate.com/sun/@5856195" target="_blank" class="sun-cal-link">📅 Full calendar — any year ↗</a>
@@ -951,7 +951,7 @@
         <div class="sun-date" id="sunDateKauai"></div>
         <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseKauai">—</span></div>
         <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetKauai">—</span></div>
-        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="2"/><circle id="sunPosKauai" cx="160" cy="22" r="6" fill="#10b981"/></svg></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="2"/><circle id="sunPosKauai" cx="100" cy="5" r="6" fill="#10b981"/></svg></div>
         <div class="sun-daylight">Daylight: <strong id="daylightKauai">—</strong></div>
         <table class="sun-week-table" id="sun7Kauai"><thead><tr><th>Day</th><th class="sun-rise">Sunrise</th><th class="sun-set">Sunset</th><th>Hours</th></tr></thead><tbody></tbody></table>
         <a href="https://www.timeanddate.com/sun/@5850098" target="_blank" class="sun-cal-link">📅 Full calendar — any year ↗</a>
@@ -961,7 +961,7 @@
         <div class="sun-date" id="sunDateBig"></div>
         <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseBig">—</span></div>
         <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetBig">—</span></div>
-        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle id="sunPosBig" cx="160" cy="22" r="6" fill="#fbbf24"/></svg></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle id="sunPosBig" cx="100" cy="5" r="6" fill="#fbbf24"/></svg></div>
         <div class="sun-daylight">Daylight: <strong id="daylightBig">—</strong></div>
         <table class="sun-week-table" id="sun7Big"><thead><tr><th>Day</th><th class="sun-rise">Sunrise</th><th class="sun-set">Sunset</th><th>Hours</th></tr></thead><tbody></tbody></table>
         <a href="https://www.timeanddate.com/sun/@5854686" target="_blank" class="sun-cal-link">📅 Full calendar — any year ↗</a>
@@ -2078,12 +2078,85 @@ function zoomWindy(lat, lon, zoom, name) {
   }
 }
 
-// Simple sun section - just show today's date on cards
-(function() {
-  const dateStr = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  ['Maui','Oahu','Kauai','Big'].forEach(id => {
-    const el = document.getElementById('sunDate'+id);
-    if (el) el.textContent = dateStr;
+// ============================================================
+// SUNRISE / SUNSET — Jean Meeus accurate algorithm + 7-day
+// ============================================================
+(function(){
+  function calcSun(lat, lon, date) {
+    var y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+    if(m<=2){y--;m+=12;}
+    var A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+    var JD=Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5;
+    var n=JD-2451545.0;
+    var L=(280.460+0.9856474*n)%360;
+    var g=(357.528+0.9856003*n)%360*Math.PI/180;
+    var lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g))*Math.PI/180;
+    var ep=(23.439-0.0000004*n)*Math.PI/180;
+    var decl=Math.asin(Math.sin(ep)*Math.sin(lam));
+    var RA=Math.atan2(Math.cos(ep)*Math.sin(lam),Math.cos(lam));
+    var Lr=L*Math.PI/180;
+    var EqT=(Lr-RA)*4*180/Math.PI/60;
+    var latR=lat*Math.PI/180;
+    var cosHA=(Math.sin(-0.01454)-Math.sin(latR)*Math.sin(decl))/(Math.cos(latR)*Math.cos(decl));
+    if(Math.abs(cosHA)>1) return null;
+    var ha=Math.acos(cosHA)*180/Math.PI/15;
+    var noon=12-lon/15+10-EqT;
+    var rise=noon-ha, set=noon+ha;
+    function fmt(h){
+      h=((h%24)+24)%24;
+      var hr=Math.floor(h),mn=Math.round((h-hr)*60);
+      if(mn===60){hr++;mn=0;}
+      var ap=hr>=12?'PM':'AM';
+      hr=hr>12?hr-12:(hr===0?12:hr);
+      return hr+':'+(mn<10?'0':'')+mn+' '+ap;
+    }
+    var dl=set-rise,dh=Math.floor(dl),dm=Math.round((dl-dh)*60);
+    return {rise:fmt(rise),set:fmt(set),rh:rise,sh:set,daylight:dh+'h '+dm+'m'};
+  }
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var locs={
+    Maui: {lat:20.88,lon:-156.68,id:'Maui'},
+    Oahu: {lat:21.31,lon:-157.86,id:'Oahu'},
+    Kauai:{lat:22.10,lon:-159.50,id:'Kauai'},
+    Big:  {lat:19.64,lon:-155.99,id:'Big'},
+  };
+  Object.keys(locs).forEach(function(k){
+    var l=locs[k];
+    var today=new Date();
+    var s=calcSun(l.lat,l.lon,today);
+    if(!s) return;
+    var dateEl=document.getElementById('sunDate'+l.id);
+    if(dateEl) dateEl.textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    var rEl=document.getElementById('sunrise'+l.id);
+    var sEl=document.getElementById('sunset'+l.id);
+    var dEl=document.getElementById('daylight'+l.id);
+    if(rEl) rEl.textContent=s.rise;
+    if(sEl) sEl.textContent=s.set;
+    if(dEl) dEl.textContent=s.daylight;
+    // Sun arc position
+    var nowH=today.getHours()+today.getMinutes()/60;
+    var pct=Math.max(0,Math.min(1,(nowH-s.rh)/(s.sh-s.rh)));
+    var posEl=document.getElementById('sunPos'+l.id);
+    if(posEl){
+      var cx=10+pct*180;
+      var cy=55-25*Math.sin(pct*Math.PI);
+      posEl.setAttribute('cx',cx.toFixed(1));
+      posEl.setAttribute('cy',cy.toFixed(1));
+    }
+    // 7-day table
+    var tbody=document.querySelector('#sun7'+l.id+' tbody');
+    if(!tbody) return;
+    tbody.innerHTML='';
+    for(var i=0;i<7;i++){
+      var dd=new Date(today); dd.setDate(today.getDate()+i);
+      var ds=calcSun(l.lat,l.lon,dd);
+      if(!ds) continue;
+      var row=document.createElement('tr');
+      if(i===0) row.className='sun-today';
+      var dayLabel=i===0?'Today':DAYS[dd.getDay()];
+      row.innerHTML='<td>'+dayLabel+'</td><td class="sun-rise">'+ds.rise+'</td><td class="sun-set">'+ds.set+'</td><td>'+ds.daylight+'</td>';
+      tbody.appendChild(row);
+    }
   });
 })();
 
@@ -2336,99 +2409,6 @@ window.addEventListener('load', function() {
   }
 });
 </script>
-
-
-// ============================================================
-// SUNRISE / SUNSET — Jean Meeus accurate algorithm + 7-day forecast
-// ============================================================
-(function(){
-  function calcSun(lat, lon, date) {
-    var y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
-    if(m<=2){y--;m+=12;}
-    var A=Math.floor(y/100), B=2-A+Math.floor(A/4);
-    var JD=Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5;
-    var n=JD-2451545.0;
-    var L=(280.460+0.9856474*n)%360;
-    var g=(357.528+0.9856003*n)%360*Math.PI/180;
-    var lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g))*Math.PI/180;
-    var ep=(23.439-0.0000004*n)*Math.PI/180;
-    var decl=Math.asin(Math.sin(ep)*Math.sin(lam));
-    var RA=Math.atan2(Math.cos(ep)*Math.sin(lam),Math.cos(lam));
-    var Lr=L*Math.PI/180;
-    var EqT=(Lr-RA)*4*180/Math.PI/60;
-    var latR=lat*Math.PI/180;
-    var cosHA=(Math.sin(-0.01454)-Math.sin(latR)*Math.sin(decl))/(Math.cos(latR)*Math.cos(decl));
-    if(Math.abs(cosHA)>1) return null;
-    var ha=Math.acos(cosHA)*180/Math.PI/15;
-    var noon=12-lon/15-(-10)-EqT;
-    var rise=noon-ha, set=noon+ha;
-    function fmt(h){
-      h=((h%24)+24)%24;
-      var hr=Math.floor(h),mn=Math.round((h-hr)*60);
-      if(mn===60){hr++;mn=0;}
-      var ap=hr>=12?'PM':'AM';
-      hr=hr>12?hr-12:(hr===0?12:hr);
-      return hr+':'+(mn<10?'0':'')+mn+' '+ap;
-    }
-    var dl=set-rise, dh=Math.floor(dl), dm=Math.round((dl-dh)*60);
-    return {rise:fmt(rise),set:fmt(set),rh:rise,sh:set,daylight:dh+'h '+dm+'m'};
-  }
-
-  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var locs={
-    Maui: {lat:20.88,lon:-156.68,id:'Maui'},
-    Oahu: {lat:21.31,lon:-157.86,id:'Oahu'},
-    Kauai:{lat:22.10,lon:-159.50,id:'Kauai'},
-    Big:  {lat:19.64,lon:-155.99,id:'Big'},
-  };
-
-  Object.keys(locs).forEach(function(k){
-    var l=locs[k];
-    var today=new Date();
-    var s=calcSun(l.lat,l.lon,today);
-    if(!s) return;
-
-    // Today's date label
-    var dateEl=document.getElementById('sunDate'+l.id);
-    if(dateEl) dateEl.textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-
-    // Today's times
-    var rEl=document.getElementById('sunrise'+l.id);
-    var sEl=document.getElementById('sunset'+l.id);
-    var dEl=document.getElementById('daylight'+l.id);
-    if(rEl) rEl.textContent=s.rise;
-    if(sEl) sEl.textContent=s.set;
-    if(dEl) dEl.textContent=s.daylight;
-
-    // Sun arc position (approximate % through day)
-    var nowH=today.getHours()+today.getMinutes()/60;
-    var pct=Math.max(0,Math.min(1,(nowH-s.rh)/(s.sh-s.rh)));
-    var posEl=document.getElementById('sunPos'+l.id);
-    if(posEl){
-      var cx=10+pct*180;
-      var t=pct*Math.PI;
-      var cy=55-25*Math.sin(t);
-      posEl.setAttribute('cx',cx.toFixed(1));
-      posEl.setAttribute('cy',cy.toFixed(1));
-    }
-
-    // 7-day table
-    var tbody=document.querySelector('#sun7'+l.id+' tbody');
-    if(!tbody) return;
-    tbody.innerHTML='';
-    for(var i=0;i<7;i++){
-      var d=new Date(today); d.setDate(today.getDate()+i);
-      var ds=calcSun(l.lat,l.lon,d);
-      if(!ds) continue;
-      var isToday=i===0;
-      var row=document.createElement('tr');
-      if(isToday) row.className='sun-today';
-      var dayLabel=isToday?'Today':DAYS[d.getDay()];
-      row.innerHTML='<td>'+dayLabel+'</td><td class="sun-rise">'+ds.rise+'</td><td class="sun-set">'+ds.set+'</td><td>'+ds.daylight+'</td>';
-      tbody.appendChild(row);
-    }
-  });
-})();
 
 function doSignup(){
   var name = document.getElementById('sigFirstName').value.trim();
