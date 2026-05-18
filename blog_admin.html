@@ -248,33 +248,178 @@ async function savePost(status){
   const content = document.getElementById('postContent').value.trim();
   if(!title||!content){alert('Title and content are required!');return;}
 
+  const slug = document.getElementById('postSlug').value.trim()||slugify(title);
+  const tag = document.getElementById('postTag').value;
+  const emoji = document.getElementById('postEmoji').value||'🌺';
+  const author = document.getElementById('postAuthor').value||'Today in Hawaii';
+  const meta = document.getElementById('postMeta').value.trim();
+  const image = imageBase64 || document.getElementById('postImageUrl').value.trim() || null;
+  const excerpt = content.replace(/<[^>]+>/g,'').slice(0,160);
+  const date = editingId ? (posts.find(p=>p.id===editingId)||{}).date||new Date().toISOString() : new Date().toISOString();
+  const color = tagColor(tag);
+
   const post = {
     id: editingId || Date.now().toString(),
-    title,
-    slug: document.getElementById('postSlug').value.trim()||slugify(title),
-    tag: document.getElementById('postTag').value,
-    emoji: document.getElementById('postEmoji').value||'🌺',
-    author: document.getElementById('postAuthor').value||'Today in Hawaii',
-    meta: document.getElementById('postMeta').value.trim(),
-    image: imageBase64 || document.getElementById('postImageUrl').value.trim() || null,
-    content,
-    excerpt: content.replace(/<[^>]+>/g,'').slice(0,160),
-    status,
-    date: editingId ? (posts.find(p=>p.id===editingId)||{}).date||new Date().toISOString() : new Date().toISOString(),
-    updated: new Date().toISOString(),
-    color: tagColor(document.getElementById('postTag').value)
+    title, slug, tag, emoji, author, meta, image, content, excerpt, status, date,
+    updated: new Date().toISOString(), color
   };
 
-  try{
-    await fetch('/blog/posts', {
-      method: editingId ? 'PUT' : 'POST',
-      headers:{'Content-Type':'application/json','X-Admin-Key':'hawaii2026'},
-      body: JSON.stringify(post)
-    });
-    showSuccess('Post '+(status==='published'?'published':'saved as draft')+'!');
-    cancelEditor();
-    loadPosts();
-  } catch(e){ alert('Error saving post. Check server connection.'); }
+  // Generate the static HTML post file content
+  const postHtml = generatePostHtml(post);
+
+  // Show instructions for saving to GitHub
+  if(status === 'published') {
+    showGithubInstructions(post, postHtml);
+  } else {
+    // Save draft to server
+    try{
+      await fetch('/blog/posts', {
+        method: editingId ? 'PUT' : 'POST',
+        headers:{'Content-Type':'application/json','X-Admin-Key':'hawaii2026'},
+        body: JSON.stringify(post)
+      });
+      showSuccess('Draft saved!');
+      cancelEditor();
+      loadPosts();
+    } catch(e){ alert('Error saving draft.'); }
+  }
+}
+
+function generatePostHtml(post) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${post.title} | Today in Hawaii</title>
+<meta name="description" content="${post.meta||post.excerpt}">
+<meta property="og:title" content="${post.title}">
+<meta property="og:description" content="${post.meta||post.excerpt}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Today in Hawaii">
+${post.image&&!post.image.startsWith('data:')?`<meta property="og:image" content="${post.image}">`:'' }
+<link rel="canonical" href="https://www.todayinhawaii.com/blog/${post.slug}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7H0QG9BBG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-Q7H0QG9BBG");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#061d2c;--wave:#0e7490;--foam:#22d3ee;--coral:#f97316;--gold:#fbbf24;--green:#10b981;--text:#e8f4f8;--muted:#7fb3c8;--card-bg:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--deep);color:var(--text);min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(14,116,144,0.25),transparent 60%),linear-gradient(180deg,#061d2c,#0a2e44 50%,#061d2c);z-index:0;pointer-events:none;}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px;}
+.narrow{max-width:740px;margin:0 auto;}
+header{padding:32px 0 0;}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#0e7490,#22d3ee);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.logo-text{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--text);}
+.logo-text span{color:var(--foam);}
+.nav-wrapper{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.desktop-nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+.nav-link{display:flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
+.nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);}
+@media(max-width:900px){.desktop-nav{flex-wrap:wrap;gap:6px;padding:8px;}.nav-link{font-size:11px;padding:6px 10px;}}
+.post-hero{padding:48px 0 0;animation:fadeIn 0.7s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.post-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--foam);background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);border-radius:99px;padding:4px 14px;margin-bottom:18px;}
+.post-title{font-family:"Playfair Display",serif;font-size:clamp(32px,5vw,62px);font-weight:900;line-height:1.1;color:#fff;margin-bottom:20px;}
+.post-meta-bar{display:flex;align-items:center;gap:18px;font-size:13px;color:var(--muted);margin-bottom:36px;flex-wrap:wrap;}
+.post-hero-img{width:100%;border-radius:20px;max-height:500px;object-fit:cover;margin-bottom:48px;}
+.post-hero-placeholder{width:100%;height:320px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:80px;margin-bottom:48px;background:linear-gradient(135deg,${post.color||'#0e7490'},#061d2c);}
+.post-content{font-size:17px;line-height:1.85;color:#d4eaf5;}
+.post-content h2{font-family:"Playfair Display",serif;font-size:28px;font-weight:700;color:#fff;margin:44px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.post-content h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--foam);margin:32px 0 14px;}
+.post-content p{margin-bottom:22px;}
+.post-content strong{color:#fff;}
+.post-content em{color:var(--foam);font-style:italic;}
+.post-content a{color:var(--foam);text-decoration:underline;}
+.post-content ul,.post-content ol{margin:0 0 22px 24px;}
+.post-content li{margin-bottom:8px;}
+.post-content img{width:100%;border-radius:14px;margin:24px 0;}
+.post-content blockquote{border-left:3px solid var(--foam);padding:12px 20px;background:rgba(34,211,238,0.06);border-radius:0 10px 10px 0;margin:24px 0;font-style:italic;color:var(--muted);}
+.post-content .tip-box{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:16px 20px;margin:24px 0;}
+.post-footer{padding:48px 0 32px;border-top:1px solid var(--border);margin-top:56px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.back-link{color:var(--foam);text-decoration:none;font-size:14px;}
+footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.8;}
+footer a{color:var(--foam);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a href="/" class="logo"><div class="logo-icon">🌊</div><div class="logo-text">Today in <span>Hawaiʻi</span></div></a></header>
+  <nav><div class="nav-wrapper"><div class="desktop-nav">
+    <a href="/" class="nav-link">🌺 Home</a>
+    <a href="/oahu" class="nav-link">🌆 Oahu</a>
+    <a href="/maui" class="nav-link">🏄 Maui</a>
+    <a href="/kauai" class="nav-link">🌿 Kauaʻi</a>
+    <a href="/bigisland" class="nav-link">🌋 Big Island</a>
+    <a href="/hiking" class="nav-link">🥾 Hiking</a>
+    <a href="/beaches" class="nav-link">🏖️ Beaches</a>
+    <a href="/food" class="nav-link">🍽️ Food</a>
+    <a href="/blog" class="nav-link active">✍️ Blog</a>
+    <a href="/about" class="nav-link">☀️ About</a>
+  </div></div></nav>
+  <div class="post-hero narrow">
+    <span class="post-tag">${post.tag||'Hawaii'}</span>
+    <h1 class="post-title">${post.title}</h1>
+    <div class="post-meta-bar">
+      <span>✍️ ${post.author||'Today in Hawaii'}</span>
+      <span>📅 ${new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+    </div>
+  </div>
+  <div class="narrow">
+    ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-hero-img">` : `<div class="post-hero-placeholder">${post.emoji||'🌺'}</div>`}
+  </div>
+  <div class="post-content narrow">${post.content}</div>
+  <div class="post-footer narrow">
+    <a href="/blog" class="back-link">← Back to Blog</a>
+  </div>
+</div>
+<footer><div class="wrap">
+  <p><a href="/blog">← Back to Blog</a> · <a href="/">Today in Hawaiʻi</a></p>
+  <p style="margin-top:6px;">Today in Hawaiʻi — Not affiliated with the State of Hawaii</p>
+</div></footer>
+</body>
+</html>`;
+}
+
+function showGithubInstructions(post, html) {
+  // Create downloadable file
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = post.slug + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Update posts manifest
+  const existing = posts.findIndex(p=>p.id===post.id);
+  const entry = {id:post.id,title:post.title,slug:post.slug,tag:post.tag,emoji:post.emoji,author:post.author,meta:post.meta,excerpt:post.excerpt,date:post.date,color:post.color,status:'published',image:post.image&&!post.image.startsWith('data:')?post.image:null};
+  if(existing>=0) posts[existing]=entry; else posts.unshift(entry);
+
+  // Download updated posts.json
+  setTimeout(()=>{
+    const blob2 = new Blob([JSON.stringify(posts,null,2)], {type:'application/json'});
+    const url2 = URL.createObjectURL(blob2);
+    const a2 = document.createElement('a');
+    a2.href = url2;
+    a2.download = 'posts.json';
+    a2.click();
+    URL.revokeObjectURL(url2);
+  }, 500);
+
+  // Show instructions
+  document.getElementById('successMsg').innerHTML = `
+    ✅ Two files downloaded! Upload both to GitHub:<br>
+    1. <strong>${post.slug}.html</strong> → upload to your repo root<br>
+    2. <strong>posts.json</strong> → replace existing posts.json in repo<br>
+    Then wait 2 mins and your post is live! 🌺`;
+  document.getElementById('successMsg').style.display='block';
+  cancelEditor();
+  loadPosts();
 }
 
 async function deletePost(id){
