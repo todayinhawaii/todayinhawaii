@@ -84,7 +84,10 @@ textarea{min-height:320px;resize:vertical;line-height:1.7;}
     <div class="login-icon">🌺</div>
     <h1>Blog Admin</h1>
     <p>Today in Hawaiʻi</p>
-    <input type="password" id="pwInput" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div style="position:relative;">
+      <input type="password" id="pwInput" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:44px;">
+      <button onclick="var i=document.getElementById('pwInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🔒'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:var(--muted);">👁</button>
+    </div>
     <button class="login-btn" onclick="doLogin()">Sign In</button>
     <div class="login-error" id="loginError">Incorrect password. Try again.</div>
   </div>
