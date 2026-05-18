@@ -1504,12 +1504,14 @@ ISLANDS.forEach(({ id }) => {
 buildTrendChart();
 
 // SHARE DONUT — built after API data loads
+let shareDonutChart;
 function buildShareDonut(islandData) {
   const shareCtx = document.getElementById('shareChart').getContext('2d');
+  if(shareDonutChart) shareDonutChart.destroy();
   const shareData = ISLANDS.map(i=>(islandData[i.id]||{arrivals:0}).arrivals);
   const shareColors = ISLANDS.map(i=>CHART_COLORS[i.id]);
   const shareTotal  = shareData.reduce((a,b)=>a+b,0);
-  new Chart(shareCtx,{
+  shareDonutChart = new Chart(shareCtx,{
     type:'doughnut',
     data:{ labels:ISLANDS.map(i=>i.id), datasets:[{ data:shareData, backgroundColor:shareColors, borderColor:'#061d2c', borderWidth:3, hoverOffset:6 }] },
     options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:ctx=>` ${ctx.label}: ${ctx.parsed.toLocaleString()} (${((ctx.parsed/shareTotal)*100).toFixed(1)}%)` } } } }
@@ -2063,6 +2065,7 @@ const HR_DATA = {
 };
 
 Object.keys(HR_DATA).forEach(key => buildHRCards(key, HR_DATA[key]));
+var surfTimeEl = document.getElementById('surfTime');
 if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
