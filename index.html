@@ -1427,11 +1427,11 @@ function getStableFallback() {
     const v = ((seed * (id.length+7)) % 160) / 1000 - 0.08;
     const arr = Math.round(b.arr * (1+v));
     const dep = Math.round(b.dep * (1+v*0.9));
-    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*9.2) };
+    islands[id] = { arrivals:arr, departures:dep, net_flow:arr-dep, domestic:Math.round(b.dom*(1+v)), international:Math.round(b.intl*(1+v*0.7)), change_pct:+(v*10).toFixed(1), on_island_est:Math.round(arr*7.2) };
   });
   const totalArr = Object.values(islands).reduce((s,d)=>s+d.arrivals,0);
   const totalDep = Object.values(islands).reduce((s,d)=>s+d.departures,0);
-  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*9.2) } };
+  return { islands, statewide:{ arrivals:totalArr, departures:totalDep, net_flow:totalArr-totalDep, on_island_est:Math.round(totalArr*7.2) } };
 }
 
 // Load data — try API first, fall back to stable estimates
@@ -1456,7 +1456,7 @@ let trendChart;
 function getChartHistory() {
   const today = new Date();
   const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
-  const bases = { 'Maui':4200,'Oahu':9400,'Kauai':1350,'Big Island':2100 };
+  const bases = { 'Maui':8200,'Oahu':18500,'Kauai':2800,'Big Island':4200 };
   const history = {};
   ISLANDS.forEach(({ id }) => {
     history[id] = Array.from({length:30},(_,i)=>{
@@ -1526,10 +1526,10 @@ function buildShareDonut(islandData) {
 
 // Build with realistic fallback proportions initially
 const fallbackIslands = {
-  'Maui':       {arrivals:4200},
-  'Oahu':       {arrivals:9400},
-  'Kauai':      {arrivals:1350},
-  'Big Island': {arrivals:2100},
+  'Maui':       {arrivals:8200},
+  'Oahu':       {arrivals:18500},
+  'Kauai':      {arrivals:2800},
+  'Big Island': {arrivals:4200},
 };
 buildShareDonut(fallbackIslands);
 
