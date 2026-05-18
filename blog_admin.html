@@ -181,6 +181,7 @@ textarea{min-height:320px;resize:vertical;line-height:1.7;}
         <button onclick="fmt('tip')">💡 Tip Box</button>
         <button onclick="fmt('quote')">Quote</button>
         <button onclick="fmt('img')">Image</button>
+        <button onclick="addLink()">🔗 Link</button>
       </div>
       <textarea id="postContent" placeholder="Write your post here. Use the toolbar above for formatting, or write HTML directly.&#10;&#10;Tip: Each H2 heading becomes a section Google can index separately — great for SEO!"></textarea>
     </div>
@@ -366,6 +367,20 @@ function handleImageUpload(input){
 function handleImageUrl(url){
   if(url){document.getElementById('imgPreview').src=url;document.getElementById('imgPreview').style.display='block';document.getElementById('uploadPrompt').style.display='none';imageBase64=null;}
   else{document.getElementById('imgPreview').style.display='none';document.getElementById('uploadPrompt').style.display='block';}
+}
+
+// Link insertion - select text then click Link
+function addLink(){
+  const ta = document.getElementById('postContent');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  if(!sel){ alert('First select the text you want to link, then click the Link button!'); return; }
+  const url = prompt('Enter the website URL:', 'https://');
+  if(!url||url==='https://'||url==='') return;
+  const linked = '<a href="' + url + '">' + sel + '</a>';
+  ta.setRangeText(linked, start, end, 'end');
+  ta.focus();
 }
 
 // Toolbar formatting
