@@ -294,20 +294,34 @@ start_scheduler()
 
 # ── BLOG ROUTES ──
 import json as _json
+import urllib.request as _urllib
 
-POSTS_FILE = 'blog_posts.json'
+JSONBIN_KEY = '$2a$10$dJeG9/T5IEXmyX2dAPcUG.1DejdlHXl7oW9qOXUDpTRiE4jMSfucC'
+JSONBIN_BIN = '6a0aa4ac250b1311c367f439'
+JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN
 ADMIN_KEY = 'hawaii2026'
 
 def load_posts():
-    if not os.path.exists(POSTS_FILE):
-        return []
     try:
-        return _json.loads(open(POSTS_FILE).read())
-    except:
+        req = _urllib.Request(JSONBIN_URL + '/latest',
+            headers={'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false'})
+        r = _urllib.urlopen(req, timeout=5)
+        data = _json.loads(r.read().decode())
+        return data.get('posts', data) if isinstance(data, dict) else data
+    except Exception as e:
+        print('JSONbin load error:', e)
         return []
 
 def save_posts(posts):
-    open(POSTS_FILE, 'w').write(_json.dumps(posts, indent=2))
+    try:
+        data = _json.dumps({'posts': posts}).encode()
+        req = _urllib.Request(JSONBIN_URL,
+            data=data,
+            headers={'X-Master-Key': JSONBIN_KEY, 'Content-Type': 'application/json'},
+            method='PUT')
+        _urllib.urlopen(req, timeout=5)
+    except Exception as e:
+        print('JSONbin save error:', e)
 
 def check_admin(req):
     return req.headers.get('X-Admin-Key') == ADMIN_KEY
