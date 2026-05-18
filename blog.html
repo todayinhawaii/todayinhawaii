@@ -216,15 +216,12 @@ function renderPosts(posts) {
 
 async function loadPosts(){
   try{
-    const r = await fetch('/blog/posts');
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const text = await r.text();
-    const posts = JSON.parse(text);
-    if(!Array.isArray(posts)) throw new Error('Not array');
-    renderFeatured(posts[0]||null);
-    renderPosts(posts);
+    const r = await fetch('/posts.json?t='+Date.now());
+    if(!r.ok) throw new Error('Not found');
+    const posts = await r.json();
+    renderFeatured(Array.isArray(posts)&&posts.length?posts[0]:null);
+    renderPosts(Array.isArray(posts)?posts:[]);
   } catch(e){
-    console.error('Blog load error:',e);
     renderFeatured(null);
     renderPosts([]);
   }
