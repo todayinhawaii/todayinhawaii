@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -603,6 +600,24 @@
     <h1>Your Complete<br><em>Hawaii Travel Guide</em></h1>
     <p class="hero-sub">Live tourist counts, real-time weather & surf, sunrise & sunset times, live cameras, top hotels, restaurants, activities and flight booking — everything you need for Hawaii in one place.</p>
   </section>
+
+  <!-- EMAIL SIGNUP -->
+  <div style="margin:0 0 0;padding:40px 32px;background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(6,29,44,0.95));border:1px solid rgba(249,115,22,0.25);border-radius:24px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(249,115,22,0.08),transparent);pointer-events:none;"></div>
+    <div style="position:relative;z-index:1;">
+      <div style="font-size:40px;margin-bottom:12px;">🌺</div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px;">Get Hawaii Insider Tips</div>
+      <div style="font-size:14px;color:#7fb3c8;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;">Join thousands of Hawaii lovers — get weekly surf reports, hidden gems, travel deals and island secrets straight to your inbox!</div>
+      <div style="display:flex;gap:12px;max-width:480px;margin:0 auto 16px;flex-wrap:wrap;justify-content:center;" id="signupForm">
+        <input type="text" id="sigFirstName" placeholder="Your first name" style="flex:1;min-width:140px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;">
+        <input type="email" id="sigEmail" placeholder="Your email address" style="flex:2;min-width:200px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;">
+        <button id="signupBtn" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
+      </div>
+      <div id="signupMsg" style="display:none;margin-top:16px;font-size:15px;font-weight:500;"></div>
+      <div style="font-size:11px;color:#7fb3c8;margin-top:8px;">No spam ever · Unsubscribe anytime · Hawaii only 🤙</div>
+    </div>
+  </div>
+  <!-- END EMAIL SIGNUP -->
 
   <!-- BOOKING WIDGET -->
   <div class="booking-widget">
@@ -2325,5 +2340,36 @@ window.addEventListener('load', function() {
   }
 });
 </script>
+
+function doSignup(){
+  var name = document.getElementById('sigFirstName').value.trim();
+  var email = document.getElementById('sigEmail').value.trim();
+  var msg = document.getElementById('signupMsg');
+  var btn = document.getElementById('signupBtn');
+  if(!email){ msg.style.display='block'; msg.style.color='#f97316'; msg.textContent='Please enter your email!'; return; }
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  fetch('/subscribe', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: email, name: name})
+  }).then(function(r){ return r.json(); }).then(function(data){
+    document.getElementById('signupForm').style.display='none';
+    msg.style.display='block';
+    msg.style.color='#10b981';
+    msg.innerHTML='🎉 Mahalo! Welcome to the Hawaii Insiders family! 🌺';
+  }).catch(function(){
+    btn.textContent = 'Join Free 🌺';
+    btn.disabled = false;
+    msg.style.display='block';
+    msg.style.color='#f97316';
+    msg.textContent='Oops! Please try again.';
+  });
+}
+window.addEventListener('load', function(){
+  var btn = document.getElementById('signupBtn');
+  if(btn) btn.addEventListener('click', doSignup);
+});
+
 </body>
 </html>
