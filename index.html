@@ -612,7 +612,7 @@
       <div style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;" id="signupForm">
         <input type="text" id="sigFirstName" placeholder="Your first name" style="flex:1;min-width:140px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
         <input type="email" id="sigEmail" placeholder="Your email address" style="flex:2;min-width:200px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
-        <button onclick="doSignup()" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
+        <button id="signupBtn" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
       </div>
       <div id="signupMsg" style="display:none;margin-top:16px;font-size:15px;font-weight:500;"></div>
       <div style="font-size:11px;color:#7fb3c8;margin-top:14px;">No spam ever · Unsubscribe anytime · Hawaii only 🤙</div>
@@ -2181,6 +2181,8 @@ function searchPackages() {
 
 <script>
 window.addEventListener('load', function() {
+  var signupBtn = document.getElementById('signupBtn');
+  if(signupBtn) signupBtn.addEventListener('click', doSignup);
   var inp = document.getElementById('hq');
   var mic = document.getElementById('hMic');
   var ans = document.getElementById('hAns');
@@ -2343,12 +2345,12 @@ window.addEventListener('load', function() {
   }
 });
 
-async function doSignup(){
+function doSignup(){
   var name = document.getElementById('sigFirstName').value.trim();
   var email = document.getElementById('sigEmail').value.trim();
   var msg = document.getElementById('signupMsg');
+  var btn = document.getElementById('signupBtn');
   if(!email){ msg.style.display='block'; msg.style.color='#f97316'; msg.textContent='Please enter your email!'; return; }
-  var btn = document.querySelector('[onclick="doSignup()"]');
   btn.textContent = 'Joining...';
   btn.disabled = true;
   fetch('/subscribe', {
