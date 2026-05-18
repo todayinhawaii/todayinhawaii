@@ -2103,7 +2103,7 @@ function zoomWindy(lat, lon, zoom, name) {
     var cosHA=(Math.sin(-0.01454)-Math.sin(latR)*Math.sin(decl))/(Math.cos(latR)*Math.cos(decl));
     if(Math.abs(cosHA)>1) return null;
     var ha=Math.acos(cosHA)*180/Math.PI/15;
-    var noon=12-lon/15+10-EqT;
+    var noon=12-lon/15-10-EqT;
     var rise=noon-ha, set=noon+ha;
     function fmt(h){
       h=((h%24)+24)%24;
