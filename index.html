@@ -620,46 +620,7 @@
   </div>
   <!-- END EMAIL SIGNUP -->
 
-  <script>
-  async function doSignup(){
-    const name = document.getElementById('sigFirstName').value.trim();
-    const email = document.getElementById('sigEmail').value.trim();
-    const msg = document.getElementById('signupMsg');
-    if(!email){ msg.style.display='block'; msg.style.color='#f97316'; msg.textContent='Please enter your email address!'; return; }
-    const btn = document.querySelector('[onclick="doSignup()"]');
-    btn.textContent = 'Joining...';
-    btn.disabled = true;
-    try{
-      const r = await fetch('/subscribe', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email, name: name})
-      });
-      if(r.ok || r.status === 201 || r.status === 200){
-        document.getElementById('signupForm').style.display='none';
-        msg.style.display='block';
-        msg.style.color='#10b981';
-        msg.innerHTML='🎉 Mahalo! You're in! Welcome to the Hawaii Insiders family! 🌺';
-      } else {
-        const data = await r.json();
-        if(r.status === 422){
-          msg.style.display='block';
-          msg.style.color='#10b981';
-          msg.innerHTML='🌺 You're already on the list — Mahalo!';
-          document.getElementById('signupForm').style.display='none';
-        } else {
-          throw new Error('Failed');
-        }
-      }
-    } catch(e){
-      btn.textContent = 'Join Free 🌺';
-      btn.disabled = false;
-      msg.style.display='block';
-      msg.style.color='#f97316';
-      msg.textContent='Oops! Please try again.';
-    }
-  }
-  </script>
+
 
   <!-- BOOKING WIDGET -->
   <div class="booking-widget">
@@ -2381,6 +2342,32 @@ window.addEventListener('load', function() {
     });
   }
 });
+
+async function doSignup(){
+  var name = document.getElementById('sigFirstName').value.trim();
+  var email = document.getElementById('sigEmail').value.trim();
+  var msg = document.getElementById('signupMsg');
+  if(!email){ msg.style.display='block'; msg.style.color='#f97316'; msg.textContent='Please enter your email!'; return; }
+  var btn = document.querySelector('[onclick="doSignup()"]');
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  fetch('/subscribe', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: email, name: name})
+  }).then(function(r){ return r.json(); }).then(function(data){
+    document.getElementById('signupForm').style.display='none';
+    msg.style.display='block';
+    msg.style.color='#10b981';
+    msg.innerHTML='🎉 Mahalo! Welcome to the Hawaii Insiders family! 🌺';
+  }).catch(function(e){
+    btn.textContent = 'Join Free 🌺';
+    btn.disabled = false;
+    msg.style.display='block';
+    msg.style.color='#f97316';
+    msg.textContent='Oops! Please try again.';
+  });
+}
 </script>
 </body>
 </html>
