@@ -601,6 +601,75 @@
     <p class="hero-sub">Live tourist counts, real-time weather & surf, sunrise & sunset times, live cameras, top hotels, restaurants, activities and flight booking — everything you need for Hawaii in one place.</p>
   </section>
 
+
+  <!-- EMAIL SIGNUP -->
+  <div style="margin:0 0 0;padding:40px 32px;background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(6,29,44,0.95));border:1px solid rgba(249,115,22,0.25);border-radius:24px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(249,115,22,0.08),transparent);pointer-events:none;"></div>
+    <div style="position:relative;z-index:1;">
+      <div style="font-size:40px;margin-bottom:12px;">🌺</div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px;">Get Hawaii Insider Tips</div>
+      <div style="font-size:14px;color:#7fb3c8;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;">Join thousands of Hawaii lovers — get weekly surf reports, hidden gems, travel deals and island secrets straight to your inbox!</div>
+      <div style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;" id="signupForm">
+        <input type="text" id="sigFirstName" placeholder="Your first name" style="flex:1;min-width:140px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
+        <input type="email" id="sigEmail" placeholder="Your email address" style="flex:2;min-width:200px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
+        <button onclick="doSignup()" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
+      </div>
+      <div id="signupMsg" style="display:none;margin-top:16px;font-size:15px;font-weight:500;"></div>
+      <div style="font-size:11px;color:#7fb3c8;margin-top:14px;">No spam ever · Unsubscribe anytime · Hawaii only 🤙</div>
+    </div>
+  </div>
+  <!-- END EMAIL SIGNUP -->
+
+  <script>
+  async function doSignup(){
+    const name = document.getElementById('sigFirstName').value.trim();
+    const email = document.getElementById('sigEmail').value.trim();
+    const msg = document.getElementById('signupMsg');
+    if(!email){ msg.style.display='block'; msg.style.color='#f97316'; msg.textContent='Please enter your email address!'; return; }
+    const btn = document.querySelector('[onclick="doSignup()"]');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
+    try{
+      const r = await fetch('https://connect.mailerlite.com/api/subscribers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZWU4NzYwOWE5MTViZTMyZTE0NThiOWM5MDA3NTIxMzc2Zjk1OTFhZDdjY2ZjZTI0YjM5ZjA4OWJlZTQ4OGM2M2Q5MGI4YWU3MTAwN2Y2MDUiLCJpYXQiOjE3NzkxMjE2NzcuNjY5NjM2LCJuYmYiOjE3NzkxMjE2NzcuNjY5NjM5LCJleHAiOjQ5MzQ3OTUyNzcuNjYzMjU1LCJzdWIiOiIyMzc3NDc0Iiwic2NvcGVzIjpbXX0.PfkFmcHyhw9ERRgjh3r1UQA7nsBUI2Z2_qJvGehr15ioVFoOvfrdiGhcvbUPe5v-Lp1aooEa_aCeUzBzrFi3Nl3Iz6b-R9k7ULZuSX3boIAOwWGsHO4jrZkrW9tlZUL8zf5rtOBRdMfjfOaI5XGo0hew5QTqoyCzq-Jp-iVAOkzeHa2xAtxZos0psmgRnrz8EUmRm9WvAGMjGpJHUjb1zn3Do73QCI_2z81CMcouFJ7GREJTPC0PnSYvWjl5Z2xtCGfihGGsKG_rUbrpTKB4DsIp-MLErXS9KAeuggJVvLerrf5GLT3IzD0s-3Nh1WGEGGW2qFCZYWIZ43cMYwkghfx0RKC3yRMvdXVBs7YfyLcUzDMk3UNzMNgA_LIKIvuN3QRDIDLQrH7YdJti3CK1PG9JikMuRORpHpRIsKjeu55oUapVLCCUOy_M7Q1SWRBNwADep1QGYFDWMzhoyvMOpLcO6YT_NtDe4C4pnTCZnBv4iVGOaExSEPlFhcMjfqxvdJUhzA8ukvbQT9co47l_IXDqp1OwoBsv_7ynTa43N4sTz8N2BxS-lI4hcE80h-aSXWrB10tOcje3eGINlrGlIPWb0lPJ2FdA0S7Vi9vT5bmvIPgbwTuTrxLosk-GN-ZJiFHf95ru2EBHRsMNPxsdBYY00NK5otkHiAgzSbp-Uss'
+        },
+        body: JSON.stringify({
+          email: email,
+          fields: { name: name },
+          groups: ['187822269207151744'],
+          status: 'active'
+        })
+      });
+      if(r.ok || r.status === 201 || r.status === 200){
+        document.getElementById('signupForm').style.display='none';
+        msg.style.display='block';
+        msg.style.color='#10b981';
+        msg.innerHTML='🎉 Mahalo! You're in! Welcome to the Hawaii Insiders family! 🌺';
+      } else {
+        const data = await r.json();
+        if(r.status === 422){
+          msg.style.display='block';
+          msg.style.color='#10b981';
+          msg.innerHTML='🌺 You're already on the list — Mahalo!';
+          document.getElementById('signupForm').style.display='none';
+        } else {
+          throw new Error('Failed');
+        }
+      }
+    } catch(e){
+      btn.textContent = 'Join Free 🌺';
+      btn.disabled = false;
+      msg.style.display='block';
+      msg.style.color='#f97316';
+      msg.textContent='Oops! Please try again.';
+    }
+  }
+  </script>
+
   <!-- BOOKING WIDGET -->
   <div class="booking-widget">
     <div class="booking-title">✈️ Search Flights, Hotels & Car Rentals</div>
