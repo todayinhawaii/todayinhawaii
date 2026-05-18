@@ -291,6 +291,81 @@ def start_scheduler():
 
 start_scheduler()
 
+
+# ── BLOG ROUTES ──
+import json as _json
+
+POSTS_FILE = 'blog_posts.json'
+ADMIN_KEY = 'hawaii2026'
+
+def load_posts():
+    if not os.path.exists(POSTS_FILE):
+        return []
+    try:
+        return _json.loads(open(POSTS_FILE).read())
+    except:
+        return []
+
+def save_posts(posts):
+    open(POSTS_FILE, 'w').write(_json.dumps(posts, indent=2))
+
+def check_admin(req):
+    return req.headers.get('X-Admin-Key') == ADMIN_KEY
+
+@app.route('/blog')
+def blog_index():
+    return send_from_directory('.', 'blog.html')
+
+@app.route('/blog/admin')
+def blog_admin():
+    return send_from_directory('.', 'blog_admin.html')
+
+@app.route('/blog/posts', methods=['GET'])
+def get_posts():
+    posts = load_posts()
+    pub = sorted([p for p in posts if p.get('status') == 'published'],
+                 key=lambda x: x.get('date',''), reverse=True)
+    return app.response_class(_json.dumps(pub), mimetype='application/json')
+
+@app.route('/blog/post/<slug>', methods=['GET'])
+def get_post(slug):
+    posts = load_posts()
+    post = next((p for p in posts if p.get('slug') == slug and p.get('status') == 'published'), None)
+    if not post:
+        return app.response_class('{"error":"Not found"}', status=404, mimetype='application/json')
+    return app.response_class(_json.dumps(post), mimetype='application/json')
+
+@app.route('/blog/posts', methods=['POST'])
+def create_post():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    posts = load_posts()
+    posts.insert(0, request.get_json())
+    save_posts(posts)
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/posts', methods=['PUT'])
+def update_post():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    posts = load_posts()
+    post = request.get_json()
+    posts = [post if p.get('id') == post.get('id') else p for p in posts]
+    save_posts(posts)
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/posts/<post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    posts = [p for p in load_posts() if p.get('id') != post_id]
+    save_posts(posts)
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/<path:slug>')
+def blog_post_view(slug):
+    return send_from_directory('.', 'blog_post.html')
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
