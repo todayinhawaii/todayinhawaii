@@ -422,6 +422,35 @@ def delete_post(post_id):
 def blog_post_view(slug):
     return send_from_directory('.', 'blog_post.html')
 
+
+# ── EMAIL SIGNUP ──
+MAILERLITE_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZWU4NzYwOWE5MTViZTMyZTE0NThiOWM5MDA3NTIxMzc2Zjk1OTFhZDdjY2ZjZTI0YjM5ZjA4OWJlZTQ4OGM2M2Q5MGI4YWU3MTAwN2Y2MDUiLCJpYXQiOjE3NzkxMjE2NzcuNjY5NjM2LCJuYmYiOjE3NzkxMjE2NzcuNjY5NjM5LCJleHAiOjQ5MzQ3OTUyNzcuNjYzMjU1LCJzdWIiOiIyMzc3NDc0Iiwic2NvcGVzIjpbXX0.PfkFmcHyhw9ERRgjh3r1UQA7nsBUI2Z2_qJvGehr15ioVFoOvfrdiGhcvbUPe5v-Lp1aooEa_aCeUzBzrFi3Nl3Iz6b-R9k7ULZuSX3boIAOwWGsHO4jrZkrW9tlZUL8zf5rtOBRdMfjfOaI5XGo0hew5QTqoyCzq-Jp-iVAOkzeHa2xAtxZos0psmgRnrz8EUmRm9WvAGMjGpJHUjb1zn3Do73QCI_2z81CMcouFJ7GREJTPC0PnSYvWjl5Z2xtCGfihGGsKG_rUbrpTKB4DsIp-MLErXS9KAeuggJVvLerrf5GLT3IzD0s-3Nh1WGEGGW2qFCZYWIZ43cMYwkghfx0RKC3yRMvdXVBs7YfyLcUzDMk3UNzMNgA_LIKIvuN3QRDIDLQrH7YdJti3CK1PG9JikMuRORpHpRIsKjeu55oUapVLCCUOy_M7Q1SWRBNwADep1QGYFDWMzhoyvMOpLcO6YT_NtDe4C4pnTCZnBv4iVGOaExSEPlFhcMjfqxvdJUhzA8ukvbQT9co47l_IXDqp1OwoBsv_7ynTa43N4sTz8N2BxS-lI4hcE80h-aSXWrB10tOcje3eGINlrGlIPWb0lPJ2FdA0S7Vi9vT5bmvIPgbwTuTrxLosk-GN-ZJiFHf95ru2EBHRsMNPxsdBYY00NK5otkHiAgzSbp-Uss'
+MAILERLITE_GROUP = '187822269207151744'
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    import json as _j
+    import urllib.request as _u
+    try:
+        data = request.get_json()
+        email = data.get('email','').strip()
+        name = data.get('name','').strip()
+        if not email:
+            return app.response_class(_j.dumps({'error':'Email required'}), status=400, mimetype='application/json')
+        payload = _j.dumps({'email':email,'fields':{'name':name},'groups':[MAILERLITE_GROUP],'status':'active'}).encode()
+        req = _u.Request('https://connect.mailerlite.com/api/subscribers',
+            data=payload,
+            headers={'Authorization':'Bearer '+MAILERLITE_KEY,'Content-Type':'application/json','Accept':'application/json'},
+            method='POST')
+        r = _u.urlopen(req, timeout=5)
+        return app.response_class(_j.dumps({'ok':True}), mimetype='application/json')
+    except Exception as e:
+        err = str(e)
+        if '422' in err or 'already' in err.lower():
+            return app.response_class(_j.dumps({'ok':True,'existing':True}), mimetype='application/json')
+        print('Signup error:', e)
+        return app.response_class(_j.dumps({'error':str(e)}), status=500, mimetype='application/json')
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
