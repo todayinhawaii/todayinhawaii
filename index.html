@@ -1416,10 +1416,10 @@ function getStableFallback() {
   const today = new Date();
   const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
   const bases = {
-    'Maui':       { arr:7000,  dep:6500,  dom:6100, intl:900 },
-    'Oahu':       { arr:15800, dep:14800, dom:12000, intl:3800 },
-    'Kauai':      { arr:2200,  dep:2050,  dom:1950, intl:250 },
-    'Big Island': { arr:3500,  dep:3250,  dom:2950, intl:550 },
+    'Maui':       { arr:8200,  dep:7600,  dom:7100, intl:1100 },
+    'Oahu':       { arr:18500, dep:17200, dom:14000, intl:4500 },
+    'Kauai':      { arr:2800,  dep:2600,  dom:2450, intl:350 },
+    'Big Island': { arr:4200,  dep:3900,  dom:3500, intl:700 },
   };
   const islands = {};
   ISLANDS.forEach(({ id }) => {
