@@ -234,11 +234,14 @@ window.addEventListener('load',()=>{
   document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 });
 
-// POSTS CRUD via server
+// POSTS CRUD via Supabase
 async function loadPosts(){
   try{
-    const r = await fetch('/blog/posts');
-    posts = await r.json();
+    const r = await fetch('/blog/all-posts', {
+      headers:{'X-Admin-Key':'aloha2026'}
+    });
+    if(r.ok) posts = await r.json();
+    else posts = [];
   } catch(e){ posts=[]; }
   renderPostsList();
 }
@@ -264,25 +267,21 @@ async function savePost(status){
     updated: new Date().toISOString(), color
   };
 
-  // Generate the static HTML post file content
-  const postHtml = generatePostHtml(post);
-
-  // Show instructions for saving to GitHub
-  if(status === 'published') {
-    showGithubInstructions(post, postHtml);
-  } else {
-    // Save draft to server
-    try{
-      await fetch('/blog/posts', {
-        method: editingId ? 'PUT' : 'POST',
-        headers:{'Content-Type':'application/json','X-Admin-Key':'aloha2026'},
-        body: JSON.stringify(post)
-      });
-      showSuccess('Draft saved!');
+  // Save to Supabase via server
+  try{
+    const r = await fetch('/blog/posts', {
+      method: editingId ? 'PUT' : 'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':'aloha2026'},
+      body: JSON.stringify(post)
+    });
+    if(r.ok){
+      showSuccess(status==='published' ? 'Post published! 🌺' : 'Draft saved!');
       cancelEditor();
       loadPosts();
-    } catch(e){ alert('Error saving draft.'); }
-  }
+    } else {
+      alert('Error saving post. Please try again.');
+    }
+  } catch(e){ alert('Error saving post: ' + e.message); }
 }
 
 function generatePostHtml(post) {
