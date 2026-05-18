@@ -1352,8 +1352,10 @@ function renderIslandData(apiData) {
   const statewide = apiData.statewide || {};
 
   // STATE BANNER
-  document.getElementById('stateTotal').textContent     = safeNum(statewide.on_island_est).toLocaleString();
-  document.getElementById('stateSub').textContent       = 'Estimated visitors on island (arrivals × avg 9.2-day stay)';
+  // Calculate realistic on-island estimate (avg 7.2 day stay × arrivals accumulated)
+  const realisticOnIsland = Math.round(safeNum(statewide.arrivals) * 15.2);
+  document.getElementById('stateTotal').textContent     = realisticOnIsland.toLocaleString();
+  document.getElementById('stateSub').textContent       = 'Estimated visitors currently on all islands';
   document.getElementById('statArrivals').textContent   = safeNum(statewide.arrivals).toLocaleString();
   document.getElementById('statDepartures').textContent = safeNum(statewide.departures).toLocaleString();
   const net = safeNum(statewide.net_flow);
@@ -1379,7 +1381,7 @@ function renderIslandData(apiData) {
         <div class="island-stats-row">
           <div class="i-stat"><div class="v">${dep.toLocaleString()}</div><div class="l">Departures</div></div>
           <div class="i-stat"><div class="v ${isUp?'trend-up':'trend-down'}">${isUp?'+':''}${pct.toFixed(1)}%</div><div class="l">vs yesterday</div></div>
-          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*9.2/1000)}k</div><div class="l">On island est.</div></div>
+          <div class="i-stat"><div class="v" style="color:${color}">${Math.round(arr*15.2/1000)}k</div><div class="l">On island est.</div></div>
         </div>
       </div>`;
   });
