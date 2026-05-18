@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Admin — Today in Hawaii</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#061d2c;--wave:#0e7490;--foam:#22d3ee;--text:#e8f4f8;--muted:#7fb3c8;--card-bg:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--green:#10b981;--red:#ef4444;--gold:#fbbf24;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--deep);color:var(--text);min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(14,116,144,0.25),transparent 60%),linear-gradient(180deg,#061d2c,#0a2e44 50%,#061d2c);z-index:0;pointer-events:none;}
+
+/* LOGIN */
+.login-wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-box{background:rgba(6,29,44,0.95);border:1px solid rgba(34,211,238,0.2);border-radius:24px;padding:48px 40px;width:100%;max-width:400px;text-align:center;}
+.login-icon{font-size:48px;margin-bottom:16px;}
+.login-box h1{font-family:"Playfair Display",serif;font-size:28px;font-weight:700;margin-bottom:6px;}
+.login-box p{font-size:14px;color:var(--muted);margin-bottom:32px;}
+.login-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;font-family:inherit;margin-bottom:12px;outline:none;transition:border-color 0.15s;}
+.login-input:focus{border-color:var(--foam);}
+.login-btn{width:100%;padding:15px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;}
+.login-error{color:var(--red);font-size:13px;margin-top:10px;display:none;}
+
+/* ADMIN PANEL */
+.admin-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:32px 24px;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:12px;}
+.admin-header h1{font-family:"Playfair Display",serif;font-size:28px;font-weight:700;}
+.admin-header h1 span{color:var(--foam);}
+.btn{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;border:none;transition:all 0.15s;}
+.btn-primary{background:linear-gradient(135deg,#0e7490,#22d3ee);color:#fff;}
+.btn-danger{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+.btn-ghost{background:var(--card-bg);color:var(--muted);border:1px solid var(--border);}
+.btn:hover{opacity:0.85;transform:translateY(-1px);}
+
+/* EDITOR */
+.editor-section{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:28px;}
+.editor-section h2{font-family:"Playfair Display",serif;font-size:20px;margin-bottom:20px;color:var(--foam);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.form-full{grid-column:1/-1;}
+label{display:block;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.field{display:flex;flex-direction:column;margin-bottom:16px;}
+input[type=text],input[type=url],select,textarea{padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color 0.15s;width:100%;}
+input[type=text]:focus,input[type=url]:focus,select:focus,textarea:focus{border-color:var(--foam);}
+select option{background:#0a2e44;}
+textarea{min-height:320px;resize:vertical;line-height:1.7;}
+.img-upload-area{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:16px;}
+.img-upload-area:hover{border-color:var(--foam);}
+.img-upload-area input{display:none;}
+.img-preview{max-width:100%;max-height:200px;border-radius:10px;margin-top:12px;display:none;}
+.seo-preview{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:8px;font-size:13px;}
+.seo-preview .seo-title{color:#7ab4f5;font-size:16px;margin-bottom:4px;}
+.seo-preview .seo-url{color:#3cb371;font-size:12px;margin-bottom:4px;}
+.seo-preview .seo-desc{color:#9aa0a6;font-size:13px;line-height:1.5;}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.toolbar button{padding:5px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;}
+.toolbar button:hover{background:rgba(34,211,238,0.1);border-color:var(--foam);}
+
+/* POSTS LIST */
+.posts-list{display:flex;flex-direction:column;gap:12px;}
+.post-row{display:flex;align-items:center;gap:16px;background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px 20px;transition:border-color 0.15s;}
+.post-row:hover{border-color:rgba(34,211,238,0.2);}
+.post-row-emoji{font-size:28px;flex-shrink:0;}
+.post-row-info{flex:1;min-width:0;}
+.post-row-title{font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.post-row-meta{font-size:12px;color:var(--muted);margin-top:3px;}
+.post-row-actions{display:flex;gap:8px;flex-shrink:0;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-pub{background:var(--green);}
+.dot-draft{background:var(--gold);}
+.empty-posts{text-align:center;padding:48px;color:var(--muted);font-size:14px;}
+.success-msg{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px 18px;color:var(--green);font-size:14px;margin-bottom:16px;display:none;}
+.char-count{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <div class="login-icon">🌺</div>
+    <h1>Blog Admin</h1>
+    <p>Today in Hawaiʻi</p>
+    <input type="password" id="pwInput" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="adminPanel" style="display:none;">
+  <div class="admin-header">
+    <h1>Blog <span>Admin</span></h1>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="/blog" target="_blank" class="btn btn-ghost">View Blog</a>
+      <button class="btn btn-primary" onclick="showEditor()">+ New Post</button>
+      <button class="btn btn-ghost" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="success-msg" id="successMsg">✅ Post saved successfully!</div>
+
+  <!-- EDITOR (hidden by default) -->
+  <div class="editor-section" id="editorSection" style="display:none;">
+    <h2 id="editorTitle">✍️ New Post</h2>
+    <input type="hidden" id="editId">
+
+    <div class="form-row">
+      <div class="field">
+        <label>Post Title *</label>
+        <input type="text" id="postTitle" placeholder="e.g. Best Hidden Beaches on Maui" oninput="updateSeoPreview();updateSlug();">
+      </div>
+      <div class="field">
+        <label>Island / Category *</label>
+        <select id="postTag">
+          <option value="Maui">🏄 Maui</option>
+          <option value="Oahu">🌆 Oahu</option>
+          <option value="Kauai">🌿 Kauai</option>
+          <option value="Big Island">🌋 Big Island</option>
+          <option value="Tips">💡 Travel Tips</option>
+          <option value="Food">🍽️ Food</option>
+          <option value="Surf">🏄 Surf</option>
+          <option value="Hiking">🥾 Hiking</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Post Emoji (shown if no image)</label>
+        <input type="text" id="postEmoji" placeholder="🌺" maxlength="2">
+      </div>
+      <div class="field">
+        <label>Author</label>
+        <input type="text" id="postAuthor" placeholder="Today in Hawaii" value="Today in Hawaii">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Featured Image</label>
+      <div class="img-upload-area" onclick="document.getElementById('imgFile').click()">
+        <input type="file" id="imgFile" accept="image/*" onchange="handleImageUpload(this)">
+        <div id="uploadPrompt">📷 Click to upload image<br><small style="color:var(--muted)">JPG, PNG, WebP — recommended 1200×630px</small></div>
+        <img id="imgPreview" class="img-preview">
+      </div>
+      <input type="url" id="postImageUrl" placeholder="Or paste image URL here" oninput="handleImageUrl(this.value)">
+    </div>
+
+    <div class="field">
+      <label>SEO Meta Description * (150-160 chars ideal)</label>
+      <input type="text" id="postMeta" placeholder="Discover the best hidden beaches on Maui that most tourists never find..." oninput="updateSeoPreview();updateCharCount();">
+      <div class="char-count" id="metaCharCount">0 / 160</div>
+    </div>
+
+    <div class="field">
+      <label>URL Slug (auto-generated)</label>
+      <input type="text" id="postSlug" placeholder="best-hidden-beaches-maui">
+    </div>
+
+    <div style="margin-bottom:6px;">
+      <label>SEO Preview</label>
+      <div class="seo-preview">
+        <div class="seo-title" id="seoTitle">Your post title here</div>
+        <div class="seo-url" id="seoUrl">todayinhawaii.com/blog/your-post-slug</div>
+        <div class="seo-desc" id="seoDesc">Your meta description will appear here...</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px;">
+      <label>Post Content * (HTML supported)</label>
+      <div class="toolbar">
+        <button onclick="fmt('h2')">H2</button>
+        <button onclick="fmt('h3')">H3</button>
+        <button onclick="fmt('b')"><b>Bold</b></button>
+        <button onclick="fmt('i')"><i>Italic</i></button>
+        <button onclick="fmt('p')">Para</button>
+        <button onclick="fmt('ul')">List</button>
+        <button onclick="fmt('tip')">💡 Tip Box</button>
+        <button onclick="fmt('quote')">Quote</button>
+        <button onclick="fmt('img')">Image</button>
+      </div>
+      <textarea id="postContent" placeholder="Write your post here. Use the toolbar above for formatting, or write HTML directly.&#10;&#10;Tip: Each H2 heading becomes a section Google can index separately — great for SEO!"></textarea>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="savePost('published')">🌺 Publish Post</button>
+      <button class="btn btn-ghost" onclick="savePost('draft')">💾 Save Draft</button>
+      <button class="btn btn-ghost" onclick="cancelEditor()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- POSTS LIST -->
+  <div class="editor-section">
+    <h2>📋 All Posts</h2>
+    <div class="posts-list" id="postsList">
+      <div class="empty-posts">No posts yet. Click "+ New Post" to write your first! 🌺</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PW = 'hawaii2026';
+let posts = [];
+let editingId = null;
+let imageBase64 = null;
+
+// AUTH
+function doLogin(){
+  const pw = document.getElementById('pwInput').value;
+  if(pw === ADMIN_PW){
+    sessionStorage.setItem('blogAdmin','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    loadPosts();
+  } else {
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('pwInput').value='';
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('blogAdmin');
+  location.reload();
+}
+window.addEventListener('load',()=>{
+  if(sessionStorage.getItem('blogAdmin')==='1'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    loadPosts();
+  }
+  document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+});
+
+// POSTS CRUD via server
+async function loadPosts(){
+  try{
+    const r = await fetch('/blog/posts');
+    posts = await r.json();
+  } catch(e){ posts=[]; }
+  renderPostsList();
+}
+
+async function savePost(status){
+  const title = document.getElementById('postTitle').value.trim();
+  const content = document.getElementById('postContent').value.trim();
+  if(!title||!content){alert('Title and content are required!');return;}
+
+  const post = {
+    id: editingId || Date.now().toString(),
+    title,
+    slug: document.getElementById('postSlug').value.trim()||slugify(title),
+    tag: document.getElementById('postTag').value,
+    emoji: document.getElementById('postEmoji').value||'🌺',
+    author: document.getElementById('postAuthor').value||'Today in Hawaii',
+    meta: document.getElementById('postMeta').value.trim(),
+    image: imageBase64 || document.getElementById('postImageUrl').value.trim() || null,
+    content,
+    excerpt: content.replace(/<[^>]+>/g,'').slice(0,160),
+    status,
+    date: editingId ? (posts.find(p=>p.id===editingId)||{}).date||new Date().toISOString() : new Date().toISOString(),
+    updated: new Date().toISOString(),
+    color: tagColor(document.getElementById('postTag').value)
+  };
+
+  try{
+    await fetch('/blog/posts', {
+      method: editingId ? 'PUT' : 'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':'hawaii2026'},
+      body: JSON.stringify(post)
+    });
+    showSuccess('Post '+(status==='published'?'published':'saved as draft')+'!');
+    cancelEditor();
+    loadPosts();
+  } catch(e){ alert('Error saving post. Check server connection.'); }
+}
+
+async function deletePost(id){
+  if(!confirm('Delete this post? This cannot be undone.'))return;
+  try{
+    await fetch('/blog/posts/'+id,{method:'DELETE',headers:{'X-Admin-Key':'hawaii2026'}});
+    loadPosts();
+  }catch(e){alert('Error deleting post.');}
+}
+
+function editPost(id){
+  const p = posts.find(x=>x.id===id);
+  if(!p)return;
+  editingId = id;
+  document.getElementById('editorTitle').textContent = '✏️ Edit Post';
+  document.getElementById('postTitle').value = p.title;
+  document.getElementById('postSlug').value = p.slug;
+  document.getElementById('postTag').value = p.tag;
+  document.getElementById('postEmoji').value = p.emoji||'🌺';
+  document.getElementById('postAuthor').value = p.author||'Today in Hawaii';
+  document.getElementById('postMeta').value = p.meta||'';
+  document.getElementById('postContent').value = p.content;
+  document.getElementById('postImageUrl').value = (p.image&&!p.image.startsWith('data:'))?p.image:'';
+  imageBase64 = (p.image&&p.image.startsWith('data:'))?p.image:null;
+  if(p.image){
+    document.getElementById('imgPreview').src=p.image;
+    document.getElementById('imgPreview').style.display='block';
+    document.getElementById('uploadPrompt').style.display='none';
+  }
+  updateSeoPreview();
+  updateCharCount();
+  showEditor();
+}
+
+function renderPostsList(){
+  const el = document.getElementById('postsList');
+  const pub = posts.filter(p=>p.status==='published');
+  const drafts = posts.filter(p=>p.status==='draft');
+  const sorted = [...pub,...drafts];
+  if(sorted.length===0){
+    el.innerHTML='<div class="empty-posts">No posts yet. Click "+ New Post" to get started! 🌺</div>';
+    return;
+  }
+  el.innerHTML = sorted.map(p=>`
+    <div class="post-row">
+      <div class="post-row-emoji">${p.emoji||'🌺'}</div>
+      <div class="status-dot ${p.status==='published'?'dot-pub':'dot-draft'}" title="${p.status}"></div>
+      <div class="post-row-info">
+        <div class="post-row-title">${p.title}</div>
+        <div class="post-row-meta">${p.tag} · ${new Date(p.date).toLocaleDateString()} · ${p.status==='published'?'Published':'Draft'}</div>
+      </div>
+      <div class="post-row-actions">
+        <a href="/blog/${p.slug}" target="_blank" class="btn btn-ghost" style="padding:7px 14px;font-size:12px;">View</a>
+        <button class="btn btn-ghost" style="padding:7px 14px;font-size:12px;" onclick="editPost('${p.id}')">Edit</button>
+        <button class="btn btn-danger" style="padding:7px 14px;font-size:12px;" onclick="deletePost('${p.id}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+// UI helpers
+function showEditor(){document.getElementById('editorSection').style.display='block';document.getElementById('editorSection').scrollIntoView({behavior:'smooth'});}
+function cancelEditor(){editingId=null;imageBase64=null;document.getElementById('editorSection').style.display='none';document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postMeta').value='';document.getElementById('postSlug').value='';document.getElementById('postImageUrl').value='';document.getElementById('imgPreview').style.display='none';document.getElementById('uploadPrompt').style.display='block';document.getElementById('editorTitle').textContent='✍️ New Post';updateSeoPreview();}
+function showSuccess(msg){const el=document.getElementById('successMsg');el.textContent='✅ '+msg;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
+function slugify(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function tagColor(t){const m={Maui:'#f97316',Oahu:'#22d3ee',Kauai:'#10b981','Big Island':'#fbbf24',Tips:'#a78bfa',Food:'#fb7185',Surf:'#38bdf8',Hiking:'#86efac'};return m[t]||'#0e7490';}
+function updateSlug(){const t=document.getElementById('postTitle').value;if(!document.getElementById('postSlug').value||!editingId)document.getElementById('postSlug').value=slugify(t);}
+function updateCharCount(){const v=document.getElementById('postMeta').value.length;document.getElementById('metaCharCount').textContent=v+' / 160';document.getElementById('metaCharCount').style.color=v>160?'#ef4444':v>140?'#fbbf24':'var(--muted)';}
+function updateSeoPreview(){
+  const title=document.getElementById('postTitle').value||'Your post title here';
+  const slug=document.getElementById('postSlug').value||slugify(title)||'your-post-slug';
+  const desc=document.getElementById('postMeta').value||'Your meta description will appear here...';
+  document.getElementById('seoTitle').textContent=title+' | Today in Hawaii';
+  document.getElementById('seoUrl').textContent='todayinhawaii.com/blog/'+slug;
+  document.getElementById('seoDesc').textContent=desc;
+}
+
+// Image upload
+function handleImageUpload(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    imageBase64=e.target.result;
+    document.getElementById('imgPreview').src=imageBase64;
+    document.getElementById('imgPreview').style.display='block';
+    document.getElementById('uploadPrompt').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function handleImageUrl(url){
+  if(url){document.getElementById('imgPreview').src=url;document.getElementById('imgPreview').style.display='block';document.getElementById('uploadPrompt').style.display='none';imageBase64=null;}
+  else{document.getElementById('imgPreview').style.display='none';document.getElementById('uploadPrompt').style.display='block';}
+}
+
+// Toolbar formatting
+function fmt(type){
+  const ta=document.getElementById('postContent');
+  const start=ta.selectionStart, end=ta.selectionEnd;
+  const sel=ta.value.substring(start,end);
+  const map={
+    h2:`<h2>${sel||'Section Heading'}</h2>
+`,
+    h3:`<h3>${sel||'Sub Heading'}</h3>
+`,
+    b:`<strong>${sel||'bold text'}</strong>`,
+    i:`<em>${sel||'italic text'}</em>`,
+    p:`<p>${sel||'Your paragraph here.'}</p>
+`,
+    ul:`<ul>
+  <li>${sel||'Item one'}</li>
+  <li>Item two</li>
+  <li>Item three</li>
+</ul>
+`,
+    tip:`<div class="tip-box">💡 <strong>Pro Tip:</strong> ${sel||'Your insider tip here.'}</div>
+`,
+    quote:`<blockquote>${sel||'An inspiring quote or important note.'}</blockquote>
+`,
+    img:`<img src="${sel||'IMAGE_URL'}" alt="Description" style="width:100%;border-radius:12px;margin:16px 0;">
+`
+  };
+  const insert=map[type]||sel;
+  ta.setRangeText(insert,start,end,'end');
+  ta.focus();
+}
+</script>
+</body>
+</html>
