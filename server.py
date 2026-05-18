@@ -296,33 +296,69 @@ start_scheduler()
 import json as _json
 import urllib.request as _urllib
 
-JSONBIN_KEY = '$2a$10$dJeG9/T5IEXmyX2dAPcUG.1DejdlHXl7oW9qOXUDpTRiE4jMSfucC'
-JSONBIN_BIN = '6a0aa4ac250b1311c367f439'
-JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN
-ADMIN_KEY = 'hawaii2026'
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
+ADMIN_KEY = 'aloha2026'
+
+def sb_headers():
+    return {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+    }
 
 def load_posts():
     try:
-        req = _urllib.Request(JSONBIN_URL + '/latest',
-            headers={'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false'})
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?select=*&status=eq.published&order=date.desc',
+            headers=sb_headers()
+        )
         r = _urllib.urlopen(req, timeout=5)
-        data = _json.loads(r.read().decode())
-        return data.get('posts', data) if isinstance(data, dict) else data
+        return _json.loads(r.read().decode())
     except Exception as e:
-        print('JSONbin load error:', e)
+        print('Supabase load error:', e)
         return []
 
-def save_posts(posts):
+def load_all_posts():
     try:
-        data = _json.dumps({'posts': posts}).encode()
-        req = _urllib.Request(JSONBIN_URL,
-            data=data,
-            headers={'X-Master-Key': JSONBIN_KEY, 'Content-Type': 'application/json'},
-            method='PUT')
-        _urllib.urlopen(req, timeout=5)
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?select=*&order=date.desc',
+            headers=sb_headers()
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        return _json.loads(r.read().decode())
     except Exception as e:
-        print('JSONbin save error:', e)
+        print('Supabase load error:', e)
+        return []
 
+def save_post(post):
+    try:
+        data = _json.dumps(post).encode()
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts',
+            data=data,
+            headers={**sb_headers(), 'Prefer': 'resolution=merge-duplicates,return=representation'},
+            method='POST'
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        return _json.loads(r.read().decode())
+    except Exception as e:
+        print('Supabase save error:', e)
+        return None
+
+def delete_post_db(post_id):
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?id=eq.' + post_id,
+            headers=sb_headers(),
+            method='DELETE'
+        )
+        _urllib.urlopen(req, timeout=5)
+        return True
+    except Exception as e:
+        print('Supabase delete error:', e)
+        return False
 def check_admin(req):
     return req.headers.get('X-Admin-Key') == ADMIN_KEY
 
@@ -337,43 +373,49 @@ def blog_admin():
 @app.route('/blog/posts', methods=['GET'])
 def get_posts():
     posts = load_posts()
-    pub = sorted([p for p in posts if p.get('status') == 'published'],
-                 key=lambda x: x.get('date',''), reverse=True)
-    return app.response_class(_json.dumps(pub), mimetype='application/json')
+    return app.response_class(_json.dumps(posts), mimetype='application/json')
+
+@app.route('/blog/all-posts', methods=['GET'])
+def get_all_posts():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    posts = load_all_posts()
+    return app.response_class(_json.dumps(posts), mimetype='application/json')
 
 @app.route('/blog/post/<slug>', methods=['GET'])
 def get_post(slug):
-    posts = load_posts()
-    post = next((p for p in posts if p.get('slug') == slug and p.get('status') == 'published'), None)
-    if not post:
-        return app.response_class('{"error":"Not found"}', status=404, mimetype='application/json')
-    return app.response_class(_json.dumps(post), mimetype='application/json')
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?slug=eq.' + slug + '&status=eq.published&select=*',
+            headers=sb_headers()
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        posts = _json.loads(r.read().decode())
+        if not posts:
+            return app.response_class('{"error":"Not found"}', status=404, mimetype='application/json')
+        return app.response_class(_json.dumps(posts[0]), mimetype='application/json')
+    except Exception as e:
+        return app.response_class('{"error":"Server error"}', status=500, mimetype='application/json')
 
 @app.route('/blog/posts', methods=['POST'])
 def create_post():
     if not check_admin(request):
         return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
-    posts = load_posts()
-    posts.insert(0, request.get_json())
-    save_posts(posts)
+    result = save_post(request.get_json())
     return app.response_class('{"ok":true}', mimetype='application/json')
 
 @app.route('/blog/posts', methods=['PUT'])
 def update_post():
     if not check_admin(request):
         return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
-    posts = load_posts()
-    post = request.get_json()
-    posts = [post if p.get('id') == post.get('id') else p for p in posts]
-    save_posts(posts)
+    result = save_post(request.get_json())
     return app.response_class('{"ok":true}', mimetype='application/json')
 
 @app.route('/blog/posts/<post_id>', methods=['DELETE'])
 def delete_post(post_id):
     if not check_admin(request):
         return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
-    posts = [p for p in load_posts() if p.get('id') != post_id]
-    save_posts(posts)
+    delete_post_db(post_id)
     return app.response_class('{"ok":true}', mimetype='application/json')
 
 @app.route('/blog/<path:slug>')
