@@ -601,7 +601,6 @@
     <p class="hero-sub">Live tourist counts, real-time weather & surf, sunrise & sunset times, live cameras, top hotels, restaurants, activities and flight booking — everything you need for Hawaii in one place.</p>
   </section>
 
-
   <!-- EMAIL SIGNUP -->
   <div style="margin:0 0 0;padding:40px 32px;background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(6,29,44,0.95));border:1px solid rgba(249,115,22,0.25);border-radius:24px;text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(249,115,22,0.08),transparent);pointer-events:none;"></div>
@@ -609,18 +608,16 @@
       <div style="font-size:40px;margin-bottom:12px;">🌺</div>
       <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px;">Get Hawaii Insider Tips</div>
       <div style="font-size:14px;color:#7fb3c8;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;">Join thousands of Hawaii lovers — get weekly surf reports, hidden gems, travel deals and island secrets straight to your inbox!</div>
-      <div style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;" id="signupForm">
-        <input type="text" id="sigFirstName" placeholder="Your first name" style="flex:1;min-width:140px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
-        <input type="email" id="sigEmail" placeholder="Your email address" style="flex:2;min-width:200px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:DM Sans,sans-serif;outline:none;">
-        <button id="signupBtn" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
+      <div style="display:flex;gap:12px;max-width:480px;margin:0 auto 16px;flex-wrap:wrap;justify-content:center;" id="signupForm">
+        <input type="text" id="sigFirstName" placeholder="Your first name" style="flex:1;min-width:140px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;">
+        <input type="email" id="sigEmail" placeholder="Your email address" style="flex:2;min-width:200px;padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:#e8f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;">
+        <button id="signupBtn" style="padding:14px 28px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;">Join Free 🌺</button>
       </div>
       <div id="signupMsg" style="display:none;margin-top:16px;font-size:15px;font-weight:500;"></div>
-      <div style="font-size:11px;color:#7fb3c8;margin-top:14px;">No spam ever · Unsubscribe anytime · Hawaii only 🤙</div>
+      <div style="font-size:11px;color:#7fb3c8;margin-top:8px;">No spam ever · Unsubscribe anytime · Hawaii only 🤙</div>
     </div>
   </div>
   <!-- END EMAIL SIGNUP -->
-
-
 
   <!-- BOOKING WIDGET -->
   <div class="booking-widget">
@@ -917,49 +914,6 @@
       </div>
     </div>
 
-    <!-- MORE WEATHER OPTIONS -->
-    <div class="section-title" style="font-size:20px;margin:32px 0 8px;">🌡️ More Weather Maps</div>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Two more live weather tools — click to open in a new tab!</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:32px;">
-
-      <!-- OpenWeatherMap -->
-      <a href="https://openweathermap.org/weathermap?basemap=map&cities=true&layer=precipitation&lat=20.5&lon=-157.5&zoom=7" target="_blank" rel="noopener" style="text-decoration:none;">
-      html += '<a href="' + s.url + '" target="_blank" style="display:block;padding:12px 16px;margin-bottom:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#e8f4f8;text-decoration:none;font-size:14px;">' + s.label + ' -></a>';
-          <div style="background:linear-gradient(135deg,#0c4a6e,#0369a1);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
-            <div style="font-size:48px;">🌡️</div>
-            <div style="font-size:16px;font-weight:700;color:#fff;">OpenWeatherMap</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Precipitation · Temperature · Clouds</div>
-          </div>
-          <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-            <div>
-              <div style="font-size:14px;font-weight:500;color:var(--text);">Live Hawaii Weather Map</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:2px;">Real-time precipitation overlay</div>
-            </div>
-            <div style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.3);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:500;color:var(--foam);white-space:nowrap;">Open ↗</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- Ventusky -->
-      <a href="https://www.ventusky.com/?p=20.5;-157.5;7&l=rain-3h" target="_blank" rel="noopener" style="text-decoration:none;">
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform 0.2s,border-color 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(16,185,129,0.3)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,0.08)'">
-          <div style="background:linear-gradient(135deg,#064e3b,#0f766e);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
-            <div style="font-size:48px;">🌈</div>
-            <div style="font-size:16px;font-weight:700;color:#fff;">Ventusky</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Beautiful animated forecasts</div>
-          </div>
-          <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-            <div>
-              <div style="font-size:14px;font-weight:500;color:var(--text);">Animated Hawaii Weather</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:2px;">Temperature · Rain · Wind patterns</div>
-            </div>
-            <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:500;color:#10b981;white-space:nowrap;">Open ↗</div>
-          </div>
-        </div>
-      </a>
-
-    </div>
-
   </div>
 
   <hr class="section-divider">
@@ -972,8 +926,39 @@
     </p>
 
     <div class="sun-grid" id="sunGrid">
-  <!-- Loading sunrise/sunset times... -->
-</div>
+      <div class="sun-card" data-island="Maui">
+        <div class="sun-island">🏄 Maui</div>
+        <div class="sun-date" id="sunDateMaui"></div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseMaui">5:52 AM</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetMaui">7:08 PM</span></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle cx="160" cy="22" r="6" fill="#fbbf24"/></svg></div>
+        <div class="sun-daylight">Daylight: <strong id="daylightMaui">13h 16m</strong></div>
+      </div>
+      <div class="sun-card" data-island="Oahu">
+        <div class="sun-island">🌆 Oahu</div>
+        <div class="sun-date" id="sunDateOahu"></div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseOahu">5:55 AM</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetOahu">7:10 PM</span></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(34,211,238,0.3)" stroke-width="2"/><circle cx="160" cy="22" r="6" fill="#22d3ee"/></svg></div>
+        <div class="sun-daylight">Daylight: <strong id="daylightOahu">13h 15m</strong></div>
+      </div>
+      <div class="sun-card" data-island="Kauai">
+        <div class="sun-island">🌿 Kauaʻi</div>
+        <div class="sun-date" id="sunDateKauai"></div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseKauai">5:57 AM</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetKauai">7:11 PM</span></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="2"/><circle cx="160" cy="22" r="6" fill="#10b981"/></svg></div>
+        <div class="sun-daylight">Daylight: <strong id="daylightKauai">13h 14m</strong></div>
+      </div>
+      <div class="sun-card" data-island="Big Island">
+        <div class="sun-island">🌋 Big Island</div>
+        <div class="sun-date" id="sunDateBig"></div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-time" id="sunriseBig">5:53 AM</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-time" id="sunsetBig">7:06 PM</span></div>
+        <div class="sun-arc"><svg viewBox="0 0 200 60"><path d="M10,55 Q100,5 190,55" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="2"/><circle cx="160" cy="22" r="6" fill="#fbbf24"/></svg></div>
+        <div class="sun-daylight">Daylight: <strong id="daylightBig">13h 13m</strong></div>
+      </div>
+    </div>
 
     <div class="sun-calendar-card">
       <div class="sun-cal-header">
@@ -2181,8 +2166,6 @@ function searchPackages() {
 
 <script>
 window.addEventListener('load', function() {
-  var signupBtn = document.getElementById('signupBtn');
-  if(signupBtn) signupBtn.addEventListener('click', doSignup);
   var inp = document.getElementById('hq');
   var mic = document.getElementById('hMic');
   var ans = document.getElementById('hAns');
@@ -2344,6 +2327,54 @@ window.addEventListener('load', function() {
     });
   }
 });
+</script>
+
+
+// ============================================================
+// SUNRISE / SUNSET — calculated for Hawaii
+// ============================================================
+(function(){
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  ['Maui','Oahu','Kauai','Big'].forEach(function(id){
+    var el = document.getElementById('sunDate'+id);
+    if(el) el.textContent = dateStr;
+  });
+  function calcSun(lat, lon) {
+    var now = new Date();
+    var start = new Date(now.getFullYear(), 0, 0);
+    var dayOfYear = Math.floor((now - start) / 86400000);
+    var B = (360/365) * (dayOfYear - 81) * Math.PI / 180;
+    var eqTime = 9.87*Math.sin(2*B) - 7.53*Math.cos(B) - 1.5*Math.sin(B);
+    var latR = lat * Math.PI / 180;
+    var decl = 23.45 * Math.sin((360/365*(dayOfYear-81))*Math.PI/180) * Math.PI/180;
+    var ha = Math.acos(-Math.tan(latR)*Math.tan(decl)) * 180/Math.PI;
+    var tz = -10;
+    var noon = 12 - (lon/15 + tz) - eqTime/60;
+    var rise = noon - ha/15;
+    var set = noon + ha/15;
+    function fmt(h) {
+      var hr = Math.floor(h), mn = Math.round((h-hr)*60);
+      if(mn===60){hr++;mn=0;}
+      var ap = hr>=12?'PM':'AM';
+      hr = hr>12?hr-12:(hr===0?12:hr);
+      return hr+':'+(mn<10?'0':'')+mn+' '+ap;
+    }
+    var dl = set-rise, dh=Math.floor(dl), dm=Math.round((dl-dh)*60);
+    return {rise:fmt(rise),set:fmt(set),daylight:dh+'h '+dm+'m'};
+  }
+  var locs = {
+    Maui: {lat:20.88,lon:-156.68,r:'sunriseMaui',s:'sunsetMaui',d:'daylightMaui'},
+    Oahu: {lat:21.31,lon:-157.86,r:'sunriseOahu',s:'sunsetOahu',d:'daylightOahu'},
+    Kauai:{lat:22.10,lon:-159.50,r:'sunriseKauai',s:'sunsetKauai',d:'daylightKauai'},
+    Big:  {lat:19.64,lon:-155.99,r:'sunriseBig',s:'sunsetBig',d:'daylightBig'},
+  };
+  Object.keys(locs).forEach(function(k){
+    var l=locs[k], s=calcSun(l.lat,l.lon);
+    var r=document.getElementById(l.r), se=document.getElementById(l.s), d=document.getElementById(l.d);
+    if(r)r.textContent=s.rise; if(se)se.textContent=s.set; if(d)d.textContent=s.daylight;
+  });
+})();
 
 function doSignup(){
   var name = document.getElementById('sigFirstName').value.trim();
@@ -2362,7 +2393,7 @@ function doSignup(){
     msg.style.display='block';
     msg.style.color='#10b981';
     msg.innerHTML='🎉 Mahalo! Welcome to the Hawaii Insiders family! 🌺';
-  }).catch(function(e){
+  }).catch(function(){
     btn.textContent = 'Join Free 🌺';
     btn.disabled = false;
     msg.style.display='block';
@@ -2370,6 +2401,10 @@ function doSignup(){
     msg.textContent='Oops! Please try again.';
   });
 }
-</script>
+window.addEventListener('load', function(){
+  var btn = document.getElementById('signupBtn');
+  if(btn) btn.addEventListener('click', doSignup);
+});
+
 </body>
 </html>
