@@ -203,7 +203,7 @@ textarea{min-height:320px;resize:vertical;line-height:1.7;}
 </div>
 
 <script>
-const ADMIN_PW = 'hawaii2026';
+const ADMIN_PW = 'aloha2026';
 let posts = [];
 let editingId = null;
 let imageBase64 = null;
@@ -275,7 +275,7 @@ async function savePost(status){
     try{
       await fetch('/blog/posts', {
         method: editingId ? 'PUT' : 'POST',
-        headers:{'Content-Type':'application/json','X-Admin-Key':'hawaii2026'},
+        headers:{'Content-Type':'application/json','X-Admin-Key':'aloha2026'},
         body: JSON.stringify(post)
       });
       showSuccess('Draft saved!');
@@ -425,7 +425,7 @@ function showGithubInstructions(post, html) {
 async function deletePost(id){
   if(!confirm('Delete this post? This cannot be undone.'))return;
   try{
-    await fetch('/blog/posts/'+id,{method:'DELETE',headers:{'X-Admin-Key':'hawaii2026'}});
+    await fetch('/blog/posts/'+id,{method:'DELETE',headers:{'X-Admin-Key':'aloha2026'}});
     loadPosts();
   }catch(e){alert('Error deleting post.');}
 }
