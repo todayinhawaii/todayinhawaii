@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hawaii Travel Blog — Tips, Stories & Island Life | Today in Hawaii</title>
+<meta name="description" content="Hawaii travel tips, island stories, surf reports and local secrets. Your insider guide to Maui, Oahu, Kauai and Big Island from the team at Today in Hawaii.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.todayinhawaii.com/blog">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7H0QG9BBG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-Q7H0QG9BBG");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#061d2c;--wave:#0e7490;--foam:#22d3ee;--coral:#f97316;--gold:#fbbf24;--green:#10b981;--text:#e8f4f8;--muted:#7fb3c8;--card-bg:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(14,116,144,0.25) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(249,115,22,0.12) 0%,transparent 50%),linear-gradient(180deg,#061d2c 0%,#0a2e44 50%,#061d2c 100%);z-index:0;pointer-events:none;}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px;}
+header{padding:32px 0 0;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#0e7490,#22d3ee);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.logo-text{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--text);}
+.logo-text span{color:var(--foam);}
+
+/* NAV */
+/* ── NAVIGATION ── */
+  .nav-wrapper{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;}
+  .desktop-nav{display:flex;gap:6px;flex-wrap:nowrap;justify-content:center;align-items:center;}
+  .nav-link{display:flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--muted);background:var(--card-bg);transition:all 0.15s;white-space:nowrap;}
+  .nav-link:hover,.nav-link.active{border-color:rgba(255,255,255,0.6);color:#fff;background:rgba(255,255,255,0.15);}
+  .hamburger{display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 20px;cursor:pointer;color:#fff;font-size:26px;line-height:1;z-index:5;}
+  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,29,44,0.98);backdrop-filter:blur(20px);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu .mob-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;width:260px;border-radius:16px;font-size:17px;font-weight:500;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card-bg);transition:all 0.15s;}
+  .mobile-menu .mob-link:hover,.mobile-menu .mob-link.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
+  .mobile-close{position:absolute;top:20px;right:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--text);font-size:18px;}
+  .mob-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--foam);margin-bottom:12px;}
+  @media(max-width:900px){.hamburger{display:block;}.desktop-nav{display:none;}.nav-wrapper{justify-content:center;}}
+  @media(min-width:901px){.hamburger{display:none;}.desktop-nav{display:flex;}}
+
+  @media(max-width:900px){
+    .desktop-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:12px 8px;}
+    .nav-link{font-size:11px;padding:6px 10px;}
+    .hamburger{display:none !important;}
+  }
+
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.4);} 50%{box-shadow:0 0 0 10px rgba(249,115,22,0);} }
+
+/* HERO */
+.blog-hero{padding:60px 0 48px;text-align:center;}
+.blog-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.25em;text-transform:uppercase;color:var(--foam);margin-bottom:16px;}
+.blog-hero h1{font-family:"Playfair Display",serif;font-size:clamp(40px,6vw,76px);font-weight:900;line-height:1.05;color:var(--text);margin-bottom:16px;}
+.blog-hero h1 em{font-style:italic;color:var(--foam);}
+.blog-hero p{font-size:16px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7;}
+
+/* FEATURED POST */
+.featured-post{position:relative;border-radius:28px;overflow:hidden;margin-bottom:48px;cursor:pointer;text-decoration:none;display:block;background:var(--card-bg);border:1px solid var(--border);transition:transform 0.3s,box-shadow 0.3s;}
+.featured-post:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.featured-img{width:100%;height:420px;object-fit:cover;display:block;}
+.featured-img-placeholder{width:100%;height:420px;background:linear-gradient(135deg,#0e7490,#061d2c);display:flex;align-items:center;justify-content:center;font-size:80px;}
+.featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,29,44,0.98) 0%,rgba(6,29,44,0.6) 50%,transparent 100%);}
+.featured-content{position:absolute;bottom:0;left:0;right:0;padding:36px;}
+.featured-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--foam);background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.3);border-radius:99px;padding:4px 14px;margin-bottom:14px;}
+.featured-content h2{font-family:"Playfair Display",serif;font-size:clamp(24px,4vw,42px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:12px;}
+.featured-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);}
+.featured-meta span{display:flex;align-items:center;gap:5px;}
+
+/* POST GRID */
+.posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px;margin-bottom:60px;}
+.post-card{background:var(--card-bg);border:1px solid var(--border);border-radius:22px;overflow:hidden;text-decoration:none;display:block;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;animation:fadeUp 0.6s ease both;}
+.post-card:hover{transform:translateY(-5px);border-color:rgba(34,211,238,0.3);box-shadow:0 16px 48px rgba(0,0,0,0.35);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.post-card:nth-child(1){animation-delay:0.05s;}
+.post-card:nth-child(2){animation-delay:0.1s;}
+.post-card:nth-child(3){animation-delay:0.15s;}
+.post-card:nth-child(4){animation-delay:0.2s;}
+.post-card:nth-child(5){animation-delay:0.25s;}
+.post-card:nth-child(6){animation-delay:0.3s;}
+.post-img{width:100%;height:200px;object-fit:cover;display:block;}
+.post-img-placeholder{width:100%;height:200px;display:flex;align-items:center;justify-content:center;font-size:48px;}
+.post-body{padding:22px;}
+.post-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border-radius:99px;padding:3px 10px;margin-bottom:10px;}
+.tag-maui{color:#f97316;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.25);}
+.tag-oahu{color:#22d3ee;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);}
+.tag-kauai{color:#10b981;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);}
+.tag-bigisland{color:#fbbf24;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.25);}
+.tag-tips{color:#a78bfa;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);}
+.tag-food{color:#fb7185;background:rgba(251,113,133,0.12);border:1px solid rgba(251,113,133,0.25);}
+.post-body h3{font-family:"Playfair Display",serif;font-size:20px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:10px;}
+.post-excerpt{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+.post-meta{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;}
+.post-read-more{color:var(--foam);font-weight:500;display:flex;align-items:center;gap:4px;}
+.post-read-more::after{content:"→";transition:transform 0.2s;}
+.post-card:hover .post-read-more::after{transform:translateX(4px);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:80px 24px;color:var(--muted);}
+.empty-state .emoji{font-size:64px;margin-bottom:20px;display:block;}
+.empty-state h3{font-family:"Playfair Display",serif;font-size:28px;color:var(--text);margin-bottom:12px;}
+
+/* SECTION TITLE */
+.section-title{font-family:"Playfair Display",serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:28px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:"";flex:1;height:1px;background:var(--border);}
+
+footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.8;}
+footer a{color:var(--foam);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">🌊</div>
+        <div class="logo-text">Today in <span>Hawaiʻi</span></div>
+      </a>
+    </div>
+  </header>
+  <nav>
+    <div class="nav-wrapper">
+      <div class="desktop-nav">
+        <a href="/" class="nav-link">🌺 Home</a>
+        <a href="/oahu" class="nav-link">🌆 Oahu</a>
+        <a href="/maui" class="nav-link">🏄 Maui</a>
+        <a href="/kauai" class="nav-link">🌿 Kauaʻi</a>
+        <a href="/bigisland" class="nav-link">🌋 Big Island</a>
+        <a href="/hiking" class="nav-link">🥾 Hiking</a>
+        <a href="/beaches" class="nav-link">🏖️ Beaches</a>
+        <a href="/food" class="nav-link">🍽️ Food</a>
+        <a href="/blog" class="nav-link active">✍️ Blog</a>
+        <a href="/about" class="nav-link">☀️ About</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="blog-hero">
+    <div class="blog-eyebrow">Stories from the Islands</div>
+    <h1>The <em>Hawaii</em> Blog</h1>
+    <p>Insider tips, hidden gems, surf stories and island life — straight from the heart of Hawaiʻi.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- FEATURED POST - shows latest post -->
+  <div id="featuredPost"></div>
+
+  <!-- ALL POSTS -->
+  <div class="section-title">✍️ All Posts</div>
+  <div class="posts-grid" id="postsGrid">
+    <div class="empty-state" style="grid-column:1/-1;">
+      <span class="emoji">🌺</span>
+      <h3>First post coming soon!</h3>
+      <p>Check back soon for Hawaii travel tips, surf stories and island adventures.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><a href="/">← Today in Hawaiʻi</a> · <a href="/blog/admin">Admin</a></p>
+    <p style="margin-top:6px;">Today in Hawaiʻi — Not affiliated with the State of Hawaii</p>
+  </div>
+</footer>
+
+<script>
+const TAG_CLASSES = {maui:'tag-maui',oahu:'tag-oahu',kauai:'tag-kauai','big island':'tag-bigisland',tips:'tag-tips',food:'tag-food'};
+function tagClass(t){return TAG_CLASSES[t.toLowerCase()]||'tag-tips';}
+function timeAgo(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' hrs ago';if(s<604800)return Math.floor(s/86400)+' days ago';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function readTime(c){return Math.max(1,Math.ceil(c.replace(/<[^>]+>/g,'').split(/\s+/).length/200))+' min read';}
+
+function renderFeatured(post) {
+  const fp = document.getElementById('featuredPost');
+  if(!post){fp.innerHTML='';return;}
+  fp.innerHTML = \`
+    <a href="/blog/\${post.slug}" class="featured-post" style="margin-bottom:48px;">
+      \${post.image ? \`<img src="\${post.image}" alt="\${post.title}" class="featured-img">\` : \`<div class="featured-img-placeholder">\${post.emoji||'🌺'}</div>\`}
+      <div class="featured-overlay"></div>
+      <div class="featured-content">
+        <span class="featured-tag">\${post.tag||'Hawaii'}</span>
+        <h2>\${post.title}</h2>
+        <div class="featured-meta">
+          <span>📅 \${timeAgo(post.date)}</span>
+          <span>⏱ \${readTime(post.content)}</span>
+          <span>✍️ \${post.author||'Today in Hawaii'}</span>
+        </div>
+      </div>
+    </a>\`;
+}
+
+function renderPosts(posts) {
+  const grid = document.getElementById('postsGrid');
+  if(!posts||posts.length===0){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><span class="emoji">🌺</span><h3>First post coming soon!</h3><p>Check back soon for Hawaii travel tips, surf stories and island adventures.</p></div>';
+    return;
+  }
+  // Skip first (featured)
+  const rest = posts.slice(1);
+  if(rest.length===0){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><span class="emoji">🌊</span><h3>More posts coming soon!</h3></div>';return;}
+  grid.innerHTML = rest.map((p,i) => \`
+    <a href="/blog/\${p.slug}" class="post-card" style="animation-delay:\${i*0.07}s">
+      \${p.image ? \`<img src="\${p.image}" alt="\${p.title}" class="post-img">\` : \`<div class="post-img-placeholder" style="background:linear-gradient(135deg,\${p.color||'#0e7490'},#061d2c)">\${p.emoji||'🌺'}</div>\`}
+      <div class="post-body">
+        <span class="post-tag \${tagClass(p.tag||'')}">\${p.tag||'Hawaii'}</span>
+        <h3>\${p.title}</h3>
+        <p class="post-excerpt">\${p.excerpt||p.content.replace(/<[^>]+>/g,'').slice(0,120)}...</p>
+        <div class="post-meta">
+          <span>\${timeAgo(p.date)} · \${readTime(p.content)}</span>
+          <span class="post-read-more">Read</span>
+        </div>
+      </div>
+    </a>\`).join('');
+}
+
+async function loadPosts(){
+  try{
+    const r = await fetch('/blog/posts');
+    const posts = await r.json();
+    renderFeatured(posts[0]||null);
+    renderPosts(posts);
+  } catch(e){
+    renderFeatured(null);
+    renderPosts([]);
+  }
+}
+loadPosts();
+</script>
+</body>
+</html>
