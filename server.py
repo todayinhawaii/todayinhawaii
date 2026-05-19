@@ -127,6 +127,10 @@ def food():
 def admin():
     return send_from_directory(".", "admin.html")
 
+@app.route("/banner.jpg")
+def banner():
+    return send_from_directory(".", "banner.jpg")
+
 @app.route("/sitemap.xml")
 def sitemap():
     content = '''<?xml version="1.0" encoding="UTF-8"?>
