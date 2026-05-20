@@ -825,7 +825,93 @@
     <div class="section-title">🌤️ Island Weather <span class="section-note">Live</span></div>
     <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Live animated weather radar for all Hawaiian islands — watch clouds and rain move in real time. Click any island tab for detailed forecasts.</p>
 
-    <!-- WINDY LIVE RADAR -->
+    <!-- WEATHERWIDGET -->
+    <div style="margin-bottom:28px;background:var(--card-bg);border:1px solid var(--border);border-radius:24px;overflow:hidden;padding:24px;">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;">🌤️ Hawaii Weather — Live Conditions & 7-Day Forecast</div>
+      <a class="weatherwidget-io" href="https://forecast7.com/en/19d90n155d58/hawaii/?unit=us" data-label_1="HAWAII" data-label_2="WEATHER" data-theme="marine">HAWAII WEATHER</a>
+      <script>
+      !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+      </script>
+    </div>
+
+  
+  <!-- LIVE TOWN WEATHER CARDS -->
+  <div style="margin-bottom:36px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;" id="townWeatherGrid">
+      <div class="island-card" data-island="Maui" style="cursor:default;">
+        <span class="island-flag">🏄</span>
+        <div class="island-name">Maui</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="maui-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Oahu" style="cursor:default;">
+        <span class="island-flag">🌆</span>
+        <div class="island-name">Oahu</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="oahu-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Kauai" style="cursor:default;">
+        <span class="island-flag">🌿</span>
+        <div class="island-name">Kauaʻi</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="kauai-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Big Island" style="cursor:default;">
+        <span class="island-flag">🌋</span>
+        <div class="island-name">Big Island</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="big-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var TOWNS = {
+      maui:  [{name:'Lahaina',lat:20.8783,lon:-156.6825},{name:'Wailea',lat:20.7544,lon:-156.4450},{name:'Kaanapali',lat:20.9228,lon:-156.6906},{name:'Kahului',lat:20.8894,lon:-156.4729},{name:'Hana',lat:20.7597,lon:-156.0131}],
+      oahu:  [{name:'Waikiki',lat:21.2793,lon:-157.8294},{name:'North Shore',lat:21.6417,lon:-158.0611},{name:'Kailua',lat:21.4022,lon:-157.7394},{name:'Ko Olina',lat:21.3439,lon:-158.1239},{name:'Honolulu',lat:21.3069,lon:-157.8583}],
+      kauai: [{name:'Hanalei',lat:22.2028,lon:-159.5083},{name:'Poipu',lat:21.8783,lon:-159.4717},{name:'Lihue',lat:21.9811,lon:-159.3711},{name:'Kapaa',lat:22.0750,lon:-159.3194},{name:'Waimea',lat:21.9578,lon:-159.6739}],
+      big:   [{name:'Kona',lat:19.6400,lon:-155.9969},{name:'Hilo',lat:19.7297,lon:-155.0900},{name:'Waikoloa',lat:19.9333,lon:-155.8833},{name:'Waimea',lat:20.0194,lon:-155.6667},{name:'Volcano',lat:19.4194,lon:-155.2886}],
+    };
+    function icon(c){if(c===0)return'☀️';if(c<=2)return'🌤️';if(c<=3)return'☁️';if(c<=48)return'🌫️';if(c<=67)return'🌧️';if(c<=77)return'🌨️';if(c<=82)return'🌧️';if(c<=99)return'⛈️';return'🌤️';}
+    function dir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
+    function load(towns, id){
+      Promise.all(towns.map(function(t){
+        return fetch('https://api.open-meteo.com/v1/forecast?latitude='+t.lat+'&longitude='+t.lon+'&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=Pacific%2FHonolulu')
+          .then(function(r){return r.json();})
+          .then(function(d){return{name:t.name,temp:Math.round(d.current.temperature_2m),code:d.current.weathercode,wind:Math.round(d.current.windspeed_10m),dir:dir(d.current.winddirection_10m)};})
+          .catch(function(){return{name:t.name,temp:'--',code:0,wind:'--',dir:''};});
+      })).then(function(res){
+        var el=document.getElementById(id);
+        if(!el)return;
+        el.innerHTML=res.map(function(t){
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
+            '<span style="font-size:13px;color:var(--muted);">'+t.name+'</span>'+
+            '<span style="display:flex;align-items:center;gap:8px;">'+
+              '<span style="font-size:15px;">'+icon(t.code)+'</span>'+
+              '<span style="font-size:14px;font-weight:700;color:#fff;">'+t.temp+'°F</span>'+
+              '<span style="font-size:11px;color:var(--foam);">💨 '+t.wind+' mph '+t.dir+'</span>'+
+            '</span>'+
+          '</div>';
+        }).join('')+'<div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">🔄 Live · Open-Meteo</div>';
+      });
+    }
+    load(TOWNS.maui,'maui-towns');
+    load(TOWNS.oahu,'oahu-towns');
+    load(TOWNS.kauai,'kauai-towns');
+    load(TOWNS.big,'big-towns');
+  })();
+  </script>
+
+  <!-- WINDY LIVE RADAR -->
     <div class="windy-card">
       <div class="windy-label">
         <div>
