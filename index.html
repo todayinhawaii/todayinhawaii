@@ -1089,6 +1089,146 @@
     </div>
   </div>
 
+
+  <!-- RETRO RADIO WIDGET -->
+  <div style="margin-bottom:56px;">
+    <div class="section-title">📻 Hawaii Live Radio <span class="section-note">Live</span></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Tune in to live Hawaii radio — click any station to listen! Hawaiian music, island hits, news and more.</p>
+
+    <div style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border:3px solid #8a8a8a;border-radius:24px;padding:28px 32px;box-shadow:0 8px 40px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1);position:relative;overflow:hidden;">
+
+      <!-- Chrome shine effect -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);"></div>
+
+      <!-- Radio display -->
+      <div style="background:#0a0a0a;border:2px solid #444;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;box-shadow:inset 0 2px 8px rgba(0,0,0,0.8);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="radioIndicator" style="width:12px;height:12px;border-radius:50%;background:#333;box-shadow:0 0 0 2px #555;transition:all 0.3s;"></div>
+          <div>
+            <div id="radioStation" style="font-family:'Playfair Display',serif;font-size:16px;color:#00ff88;text-shadow:0 0 10px #00ff88;letter-spacing:0.05em;">SELECT A STATION</div>
+            <div id="radioFormat" style="font-size:11px;color:#666;margin-top:2px;letter-spacing:0.1em;">HAWAII LIVE RADIO</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div id="radioFreq" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#00ff88;text-shadow:0 0 10px #00ff88;">-- FM</div>
+          <div id="radioIsland" style="font-size:10px;color:#555;margin-top:2px;letter-spacing:0.15em;">HAWAII</div>
+        </div>
+      </div>
+
+      <!-- Island tabs -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+        <button onclick="showIsland('maui')" id="tab-maui" style="padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;border:2px solid #8a8a8a;background:linear-gradient(135deg,#2a2a3e,#1a1a2e);color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">🏄 Maui</button>
+        <button onclick="showIsland('oahu')" id="tab-oahu" style="padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;border:2px solid #8a8a8a;background:linear-gradient(135deg,#2a2a3e,#1a1a2e);color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">🌆 Oahu</button>
+        <button onclick="showIsland('kauai')" id="tab-kauai" style="padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;border:2px solid #8a8a8a;background:linear-gradient(135deg,#2a2a3e,#1a1a2e);color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">🌿 Kauaʻi</button>
+        <button onclick="showIsland('big')" id="tab-big" style="padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;border:2px solid #8a8a8a;background:linear-gradient(135deg,#2a2a3e,#1a1a2e);color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">🌋 Big Island</button>
+      </div>
+
+      <!-- Station buttons -->
+      <div id="stations-maui" class="station-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+        <button onclick="playStation('https://ice9.securenetsystems.net/KPOA','KPOA 93.5 FM','Hawaiian Music','Maui')" class="stn-btn">🌺 KPOA 93.5 — Hawaiian</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc5225','HPR2 88.3 FM','Public Radio','Maui')" class="stn-btn">📻 HPR2 88.3 — Public Radio</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KLHI','HI92 92.5 FM','Island Hits','Maui')" class="stn-btn">🌊 HI92 92.5 — Island Hits</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KJMD','Da Jam 98.3','Hip Hop & R&B','Maui')" class="stn-btn">🎵 Da Jam 98.3 — Hip Hop</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KHEI','Buzz 107.5 FM','Classic Hits','Maui')" class="stn-btn">🔥 Buzz 107.5 — Classic Hits</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KIXK','Kix 95.1 FM','Country','Maui')" class="stn-btn">🤠 Kix 95.1 — Country</button>
+      </div>
+
+      <div id="stations-oahu" class="station-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc3233','Hawaiian 105.1','Hawaiian Contemporary','Oahu')" class="stn-btn">🌺 KINE 105.1 — Hawaiian</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc4417','Krater 96.3 FM','Top 40','Oahu')" class="stn-btn">🎵 Krater 96.3 — Top 40</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc4225','Power 104.3 FM','Hip Hop','Oahu')" class="stn-btn">💥 Power 104.3 — Hip Hop</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc1793','KSSK 92.3 FM','Pop Hits','Oahu')" class="stn-btn">🎶 KSSK 92.3 — Pop Hits</button>
+        <button onclick="playStation('https://hpr1.streamguys1.com/hpr1','HPR1 88.1 FM','News & Talk','Oahu')" class="stn-btn">📰 HPR 88.1 — News & Talk</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc5761','ESPN Hawaii 1420','Sports','Oahu')" class="stn-btn">🏈 ESPN Hawaii — Sports</button>
+      </div>
+
+      <div id="stations-kauai" class="station-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+        <button onclick="playStation('https://kkcr.out.airtime.pro/kkcr_a','KKCR 90.9 FM','Community Radio','Kauai')" class="stn-btn">🌿 KKCR 90.9 — Community</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KQNG','KQNG 93.5 FM','Island Music','Kauai')" class="stn-btn">🌺 KQNG 93.5 — Island Music</button>
+        <button onclick="playStation('https://hpr2.streamguys1.com/hpr2','HPR2 89.9 FM','Classical & Talk','Kauai')" class="stn-btn">🎼 HPR2 89.9 — Classical</button>
+      </div>
+
+      <div id="stations-big" class="station-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+        <button onclick="playStation('https://ice9.securenetsystems.net/KWXX','KWXX 94.7 FM','Island Contemporary','Big Island')" class="stn-btn">🌋 KWXX 94.7 — Island</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KAOY','KAOY 101.5 FM','Island Contemporary','Big Island')" class="stn-btn">🌺 KAOY 101.5 — Kona Island</button>
+        <button onclick="playStation('https://stream.revma.ihrhls.com/zc7369','KAPA Hawaiian FM','Hawaiian Music','Big Island')" class="stn-btn">🎵 KAPA — Hawaiian Music</button>
+        <button onclick="playStation('https://ice9.securenetsystems.net/KHBC','KHBC 92.7 FM','Hawaiian Rock & Blues','Big Island')" class="stn-btn">🎸 KHBC 92.7 — Rock & Blues</button>
+        <button onclick="playStation('https://hpr1.streamguys1.com/hpr1','HPR1 91.1 FM','News & Talk','Big Island')" class="stn-btn">📰 HPR 91.1 — News & Talk</button>
+      </div>
+
+      <!-- Now playing / stop -->
+      <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="font-size:12px;color:#555;letter-spacing:0.05em;">🔊 Click any station button to tune in · Streams open in browser audio</div>
+        <button onclick="stopRadio()" style="padding:8px 20px;border-radius:99px;font-size:12px;font-weight:600;border:2px solid #666;background:linear-gradient(135deg,#2a0a0a,#1a0000);color:#ff6666;cursor:pointer;font-family:'DM Sans',sans-serif;">⏹ Stop</button>
+      </div>
+
+      <!-- Bottom chrome bar -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);"></div>
+    </div>
+  </div>
+
+  <style>
+  .stn-btn{padding:10px 14px;border-radius:12px;font-size:12px;font-weight:500;border:1px solid #444;background:linear-gradient(135deg,#2a2a3e,#1a1a2e);color:#aaa;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;text-align:left;width:100%;}
+  .stn-btn:hover{border-color:#00ff88;color:#00ff88;background:linear-gradient(135deg,#0a2a1a,#051510);box-shadow:0 0 12px rgba(0,255,136,0.15);}
+  .stn-btn.playing{border-color:#00ff88;color:#00ff88;background:linear-gradient(135deg,#0a2a1a,#051510);box-shadow:0 0 16px rgba(0,255,136,0.25);}
+  </style>
+
+  <script>
+  var radioAudio = null;
+  var playingBtn = null;
+
+  function showIsland(island) {
+    ['maui','oahu','kauai','big'].forEach(function(i){
+      document.getElementById('stations-'+i).style.display = 'none';
+      var tab = document.getElementById('tab-'+i);
+      tab.style.borderColor = '#8a8a8a';
+      tab.style.color = '#ccc';
+      tab.style.background = 'linear-gradient(135deg,#2a2a3e,#1a1a2e)';
+    });
+    document.getElementById('stations-'+island).style.display = 'grid';
+    var activeTab = document.getElementById('tab-'+island);
+    activeTab.style.borderColor = '#00ff88';
+    activeTab.style.color = '#00ff88';
+    activeTab.style.background = 'linear-gradient(135deg,#0a2a1a,#051510)';
+  }
+
+  function playStation(url, name, format, island) {
+    if (radioAudio) { radioAudio.pause(); radioAudio = null; }
+    if (playingBtn) { playingBtn.classList.remove('playing'); playingBtn = null; }
+
+    radioAudio = new Audio(url);
+    radioAudio.play().catch(function(e){
+      // If direct stream fails, open in new tab
+      window.open('https://www.fmradiofree.com/radio/hawaii', '_blank');
+    });
+
+    document.getElementById('radioStation').textContent = name;
+    document.getElementById('radioFormat').textContent = format.toUpperCase();
+    document.getElementById('radioFreq').textContent = name.match(/[\d.]+\s*FM|[\d.]+\s*AM/) ? name.match(/[\d.]+\s*FM|[\d.]+\s*AM/)[0] : 'LIVE';
+    document.getElementById('radioIsland').textContent = island.toUpperCase();
+    document.getElementById('radioIndicator').style.background = '#00ff88';
+    document.getElementById('radioIndicator').style.boxShadow = '0 0 8px #00ff88';
+
+    // Highlight playing button
+    event.target.classList.add('playing');
+    playingBtn = event.target;
+  }
+
+  function stopRadio() {
+    if (radioAudio) { radioAudio.pause(); radioAudio = null; }
+    if (playingBtn) { playingBtn.classList.remove('playing'); playingBtn = null; }
+    document.getElementById('radioStation').textContent = 'SELECT A STATION';
+    document.getElementById('radioFormat').textContent = 'HAWAII LIVE RADIO';
+    document.getElementById('radioFreq').textContent = '-- FM';
+    document.getElementById('radioIsland').textContent = 'HAWAII';
+    document.getElementById('radioIndicator').style.background = '#333';
+    document.getElementById('radioIndicator').style.boxShadow = '0 0 0 2px #555';
+  }
+
+  // Show Maui by default
+  showIsland('maui');
+  </script>
+
   <hr class="section-divider">
 
   <!-- SURF SECTION -->
