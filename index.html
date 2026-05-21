@@ -1114,7 +1114,7 @@
             </div>
           </div>
           <!-- Tonearm -->
-          <div id="tonearm" style="position:absolute;top:-10px;right:-20px;width:80px;height:4px;background:linear-gradient(90deg,#c8a84b,#8a6a2a);border-radius:2px;transform-origin:right center;transform:rotate(-25deg);transition:transform 0.5s ease;">
+          <div id="tonearm" style="position:absolute;top:-10px;right:-20px;width:80px;height:4px;background:linear-gradient(90deg,#c8a84b,#8a6a2a);border-radius:2px;transform-origin:right center;transform:rotate(-35deg);transition:transform 0.5s ease;">
             <div style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#c8a84b;box-shadow:0 0 4px rgba(200,168,75,0.5);"></div>
           </div>
         </div>
@@ -1204,7 +1204,7 @@
     // Stop current then auto-play new playlist
     isPlaying = false;
     document.getElementById('recordDisc').style.animation = 'none';
-    document.getElementById('tonearm').style.transform = 'rotate(-25deg)';
+    document.getElementById('tonearm').style.transform = 'rotate(-35deg)';
     clearInterval(progressTimer);
     var frame = document.getElementById('ytPlayer');
     frame.src = '';
@@ -1230,7 +1230,7 @@
     disc.style.animation = 'spin 2s linear infinite';
 
     // Move tonearm
-    document.getElementById('tonearm').style.transform = 'rotate(-5deg)';
+    document.getElementById('tonearm').style.transform = 'rotate(-8deg)';
 
     // Show YouTube player
     var container = document.getElementById('ytPlayerContainer');
@@ -1257,7 +1257,7 @@
     disc.style.animation = 'none';
 
     // Move tonearm back
-    document.getElementById('tonearm').style.transform = 'rotate(-25deg)';
+    document.getElementById('tonearm').style.transform = 'rotate(-35deg)';
 
     // Hide YouTube player
     var container = document.getElementById('ytPlayerContainer');
