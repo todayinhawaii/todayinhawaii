@@ -607,6 +607,114 @@
     </div>
   </div>
 
+  <!-- QUICK ACTION BUTTONS -->
+  <div style="margin-bottom:32px;">
+    <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;">⚡ Quick Actions for Travelers</div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;">
+      <button onclick="showQTab('around',this)" id="qtab-around" class="qtab active">🚗 Getting Around</button>
+      <button onclick="showQTab('food',this)" id="qtab-food" class="qtab">🍔 Food & Delivery</button>
+      <button onclick="showQTab('hotel',this)" id="qtab-hotel" class="qtab">🏨 Hotel Help</button>
+      <button onclick="showQTab('activities',this)" id="qtab-activities" class="qtab">🌺 Activities</button>
+      <button onclick="showQTab('emergency',this)" id="qtab-emergency" class="qtab">🚨 Emergency</button>
+    </div>
+
+    <!-- Getting Around -->
+    <div id="qpanel-around" class="qpanel">
+      <div class="qgrid">
+        <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+        <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+        <a href="https://www.thebus.org" target="_blank" class="qbtn">🚌 TheBus Oahu</a>
+        <a href="https://www.speedishuttle.com" target="_blank" class="qbtn">🚐 Speedi Shuttle</a>
+        <a href="https://www.google.com/maps/search/car+rental+return+near+me" target="_blank" class="qbtn">🔑 Car Return</a>
+        <a href="https://www.google.com/maps/search/parking+near+me+hawaii" target="_blank" class="qbtn">🅿️ Find Parking</a>
+        <a href="https://www.hawaiianairlines.com/check-in" target="_blank" class="qbtn">✈️ Check In Online</a>
+        <a href="https://www.flightradar24.com/HNL" target="_blank" class="qbtn">🛫 Flight Status</a>
+      </div>
+    </div>
+
+    <!-- Food & Delivery -->
+    <div id="qpanel-food" class="qpanel" style="display:none;">
+      <div class="qgrid">
+        <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+        <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+        <a href="https://www.grubhub.com" target="_blank" class="qbtn">🥡 Grubhub</a>
+        <a href="https://www.instacart.com" target="_blank" class="qbtn">🛒 Instacart</a>
+        <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Hawaii" target="_blank" class="qbtn">⭐ Yelp Hawaii</a>
+        <a href="https://www.opentable.com/s?covers=2&metroId=4894" target="_blank" class="qbtn">🍽️ Reserve Table</a>
+        <a href="https://www.google.com/maps/search/grocery+store+near+me+hawaii" target="_blank" class="qbtn">🏪 Grocery Store</a>
+        <a href="https://www.google.com/maps/search/pharmacy+near+me+hawaii" target="_blank" class="qbtn">💊 Pharmacy</a>
+      </div>
+    </div>
+
+    <!-- Hotel Help -->
+    <div id="qpanel-hotel" class="qpanel" style="display:none;">
+      <div class="qgrid">
+        <a href="https://www.hotels.com" target="_blank" class="qbtn">🏨 Early Check-In</a>
+        <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">🧳 Luggage Storage</a>
+        <a href="https://www.booking.com/index.html?label=hawaii-today" target="_blank" class="qbtn">🔍 Find a Hotel</a>
+        <a href="https://www.airbnb.com/s/Hawaii" target="_blank" class="qbtn">🏠 Find Airbnb</a>
+        <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">🌴 Find VRBO</a>
+        <a href="https://www.google.com/maps/search/laundromat+near+me+hawaii" target="_blank" class="qbtn">👕 Laundromat</a>
+        <a href="https://www.google.com/maps/search/atm+near+me+hawaii" target="_blank" class="qbtn">💰 Find ATM</a>
+        <a href="https://www.google.com/maps/search/post+office+near+me+hawaii" target="_blank" class="qbtn">📮 Post Office</a>
+      </div>
+    </div>
+
+    <!-- Activities -->
+    <div id="qpanel-activities" class="qpanel" style="display:none;">
+      <div class="qgrid">
+        <a href="https://klook.tp.st/qCs2Z39t" target="_blank" class="qbtn">🎯 Book Activities</a>
+        <a href="https://www.google.com/maps/search/luau+near+me+hawaii" target="_blank" class="qbtn">🌺 Book a Luau</a>
+        <a href="https://www.google.com/maps/search/snorkel+rental+hawaii" target="_blank" class="qbtn">🤿 Snorkel Rental</a>
+        <a href="https://www.google.com/maps/search/surf+lessons+hawaii" target="_blank" class="qbtn">🏄 Surf Lessons</a>
+        <a href="https://www.google.com/maps/search/whale+watching+hawaii" target="_blank" class="qbtn">🐋 Whale Watching</a>
+        <a href="https://www.google.com/maps/search/helicopter+tour+hawaii" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+        <a href="https://www.google.com/maps/search/sunset+cruise+hawaii" target="_blank" class="qbtn">🌅 Sunset Cruise</a>
+        <a href="https://www.google.com/maps/search/golf+course+hawaii" target="_blank" class="qbtn">⛳ Golf Course</a>
+      </div>
+    </div>
+
+    <!-- Emergency -->
+    <div id="qpanel-emergency" class="qpanel" style="display:none;">
+      <div class="qgrid">
+        <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+        <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+        <a href="tel:18002746342" class="qbtn qbtn-red">🌊 Coast Guard</a>
+        <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+        <a href="https://hawaiiemergencymanagement.com" target="_blank" class="qbtn qbtn-orange">🌋 Emergency Mgmt</a>
+        <a href="https://www.google.com/maps/search/urgent+care+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care</a>
+        <a href="https://www.google.com/maps/search/hospital+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">🚑 Hospital</a>
+        <a href="https://www.travel.state.gov/content/travel/en/passports/have-passport/lost-stolen.html" target="_blank" class="qbtn qbtn-orange">📘 Lost Passport</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  .qtab{padding:8px 16px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
+  .qtab.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
+  .qtab:hover{border-color:var(--foam);color:var(--foam);}
+  .qpanel{}
+  .qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .qbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 10px;border-radius:14px;font-size:13px;font-weight:500;text-decoration:none;border:1px solid rgba(34,211,238,0.2);background:rgba(34,211,238,0.06);color:var(--text);transition:all 0.2s;text-align:center;font-family:'DM Sans',sans-serif;}
+  .qbtn:hover{transform:translateY(-3px);border-color:rgba(34,211,238,0.5);background:rgba(34,211,238,0.12);box-shadow:0 6px 20px rgba(34,211,238,0.15);}
+  .qbtn-red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#fca5a5;}
+  .qbtn-red:hover{border-color:rgba(239,68,68,0.6);background:rgba(239,68,68,0.15);box-shadow:0 6px 20px rgba(239,68,68,0.2);}
+  .qbtn-orange{border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.08);color:#fdba74;}
+  .qbtn-orange:hover{border-color:rgba(249,115,22,0.6);background:rgba(249,115,22,0.15);box-shadow:0 6px 20px rgba(249,115,22,0.2);}
+  </style>
+
+  <script>
+  function showQTab(tab, btn) {
+    document.querySelectorAll('.qpanel').forEach(function(p){ p.style.display='none'; });
+    document.querySelectorAll('.qtab').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('qpanel-'+tab).style.display='block';
+    btn.classList.add('active');
+  }
+  </script>
+  <!-- END QUICK ACTION BUTTONS -->
+
   <!-- HERO -->
   <section class="hero fade-up">
     <div class="hero-eyebrow">Hawaii's Complete Travel Resource — Updated Daily</div>
