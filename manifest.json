@@ -1,0 +1,57 @@
+{
+  "name": "Today in HawaiÊ»i",
+  "short_name": "Hawaii Today",
+  "description": "Live weather, surf, daily facts, affirmations and complete Hawaii travel guide for Maui, Oahu, Kauai and Big Island.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#061d2c",
+  "theme_color": "#0e7490",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["travel", "weather", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/banner.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daily Facts",
+      "short_name": "Facts",
+      "description": "5 fascinating facts to impress at dinner",
+      "url": "/#daily-facts",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Affirmations",
+      "short_name": "Affirmations",
+      "description": "5 daily positive affirmations",
+      "url": "/#daily-affirmations",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Surf Report",
+      "short_name": "Surf",
+      "description": "Live Hawaii surf conditions",
+      "url": "/#surf",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    }
+  ]
+}
