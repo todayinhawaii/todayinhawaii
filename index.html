@@ -12,6 +12,13 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.todayinhawaii.com">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0e7490">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Today in Hawaiʻi">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 
 <!-- Open Graph for Social Sharing -->
 <meta property="og:type" content="website">
@@ -2763,5 +2770,14 @@ window.addEventListener('load', function(){
 });
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.log('[SW] Failed:', err); });
+  });
+}
+</script>
 </body>
 </html>
