@@ -728,33 +728,104 @@
     <h1>Your Complete<br><em>Hawaii Travel Guide</em></h1>
     <p class="hero-sub">Live weather & surf, daily facts to impress your friends, positive affirmations, sunrise times, live webcams, hotels, restaurants and flight booking — everything Hawaii in one beautiful place.</p>
     <!-- PWA INSTALL BUTTONS -->
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;">
-      <!-- iOS / Safari -->
-      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;">
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;" id="pwaInstallSection">
+
+      <!-- iOS install card - always show with instructions -->
+      <div id="iosInstallCard" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;cursor:pointer;transition:all 0.2s;" onclick="showIOSInstructions()" onmouseover="this.style.borderColor='rgba(34,211,238,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
         <span style="font-size:32px;">🍎</span>
         <div>
           <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">Add to iPhone / iPad</div>
-          <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Open in <strong style="color:#22d3ee;">Safari</strong> → tap Share ↑ → "Add to Home Screen"</div>
+          <div style="font-size:11px;color:#22d3ee;font-weight:600;">Tap here for instructions →</div>
         </div>
       </div>
-      <!-- Android / Chrome -->
-      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;">
+
+      <!-- Android / Chrome install button -->
+      <div id="androidInstallCard" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;cursor:pointer;transition:all 0.2s;" onclick="triggerInstall()" onmouseover="this.style.borderColor='rgba(34,211,238,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
         <span style="font-size:32px;">🤖</span>
         <div>
           <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">Add to Android</div>
-          <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Open in <strong style="color:#22d3ee;">Chrome</strong> → tap Menu ⋮ → "Add to Home Screen"</div>
+          <div style="font-size:11px;color:#22d3ee;font-weight:600;" id="androidBtnText">Tap to Install →</div>
         </div>
       </div>
-      <!-- Desktop -->
-      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;">
+
+      <!-- Desktop install button -->
+      <div id="desktopInstallCard" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:260px;cursor:pointer;transition:all 0.2s;" onclick="triggerInstall()" onmouseover="this.style.borderColor='rgba(34,211,238,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
         <span style="font-size:32px;">💻</span>
         <div>
           <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">Install on Mac / PC</div>
-          <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Open in <strong style="color:#22d3ee;">Chrome</strong> → click Install ⊕ in address bar</div>
+          <div style="font-size:11px;color:#22d3ee;font-weight:600;" id="desktopBtnText">Click to Install →</div>
         </div>
       </div>
     </div>
+
+    <!-- iOS Instructions Popup -->
+    <div id="iosPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.95);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">🍎</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Add to iPhone / iPad</div>
+        <div style="font-size:13px;color:#7fb3c8;margin-bottom:24px;">Follow these 3 easy steps in Safari:</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;text-align:left;">
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">1</div>
+            <div style="font-size:13px;color:#e8f4f8;">Tap the <strong style="color:#22d3ee;">Share button</strong> ↑ at the bottom of Safari</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">2</div>
+            <div style="font-size:13px;color:#e8f4f8;">Scroll down and tap <strong style="color:#22d3ee;">"Add to Home Screen"</strong></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">3</div>
+            <div style="font-size:13px;color:#e8f4f8;">Tap <strong style="color:#22d3ee;">"Add"</strong> — done! 🌺</div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('iosPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Got it! 🤙</button>
+      </div>
+    </div>
     <!-- END PWA INSTALL BUTTONS -->
+
+    <script>
+    var deferredPrompt = null;
+
+    // Capture install prompt for Android/Desktop Chrome
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Update button text to show it's ready
+      var aText = document.getElementById('androidBtnText');
+      var dText = document.getElementById('desktopBtnText');
+      if(aText) aText.textContent = '✅ Tap to Install →';
+      if(dText) dText.textContent = '✅ Click to Install →';
+    });
+
+    function triggerInstall() {
+      if(deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          if(result.outcome === 'accepted') {
+            var aText = document.getElementById('androidBtnText');
+            var dText = document.getElementById('desktopBtnText');
+            if(aText) aText.textContent = '✅ Installed!';
+            if(dText) dText.textContent = '✅ Installed!';
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        // Not available - show instructions
+        alert('To install: Open this site in Chrome, then click the install icon ⊕ in your address bar!');
+      }
+    }
+
+    function showIOSInstructions() {
+      var popup = document.getElementById('iosPopup');
+      popup.style.display = 'flex';
+    }
+
+    // Hide install section if already installed
+    window.addEventListener('appinstalled', function() {
+      var section = document.getElementById('pwaInstallSection');
+      if(section) section.style.display = 'none';
+    });
+    </script>
 
   </section>
 
