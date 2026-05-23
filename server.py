@@ -138,6 +138,26 @@ def photo_card(num):
         return send_from_directory(".", f"{num}.jpg")
     return "Not found", 404
 
+# PWA files
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory(".", "manifest.json")
+
+@app.route("/sw.js")
+def service_worker():
+    response = send_from_directory(".", "sw.js")
+    response.headers['Cache-Control'] = 'no-cache'
+    response.headers['Service-Worker-Allowed'] = '/'
+    return response
+
+@app.route("/icon-192.png")
+def icon192():
+    return send_from_directory(".", "icon-192.png")
+
+@app.route("/icon-512.png")
+def icon512():
+    return send_from_directory(".", "icon-512.png")
+
 @app.route("/sitemap.xml")
 def sitemap():
     content = '''<?xml version="1.0" encoding="UTF-8"?>
