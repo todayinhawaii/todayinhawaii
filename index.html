@@ -943,8 +943,8 @@
 
     <!-- Draggable Banner Window -->
     <div id="drag808Container" style="position:relative;width:100%;height:320px;background:linear-gradient(135deg,#061d2c,#0a2e44);border:2px solid rgba(34,211,238,0.2);border-radius:20px;overflow:hidden;margin-bottom:20px;cursor:grab;user-select:none;">
-      <img id="drag808Banner" src="/808-banner.jpg" alt="808 Pictures Hawaii Photography"
-        style="position:absolute;top:0;left:0;width:auto;height:auto;min-width:100%;min-height:100%;cursor:grab;object-fit:cover;"
+      <img id="drag808Banner" src="/808-banner.png" alt="808 Pictures Hawaii Photography"
+        style="position:absolute;top:0;left:0;width:150%;height:auto;cursor:grab;"
         draggable="false">
       <!-- Overlay gradient -->
       <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,29,44,0.7) 0%,transparent 50%);pointer-events:none;"></div>
@@ -1285,80 +1285,115 @@
   </div>
 
   <script>
-  // Draggable banner
+  // Bouncy draggable banner
   (function(){
     var container = document.getElementById('drag808Container');
     var banner = document.getElementById('drag808Banner');
     var hint = document.getElementById('drag808Hint');
     if(!container || !banner) return;
 
-    var isDragging = false;
-    var startX, startY, scrollLeft, scrollTop;
-    var imgX = 0, imgY = 0;
+    // Wait for image to load first
+    function init(){
+      var cW = container.offsetWidth;
+      var cH = container.offsetHeight;
+      var bW = banner.offsetWidth;
+      var bH = banner.offsetHeight;
 
-    container.addEventListener('mousedown', function(e){
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      scrollLeft = imgX;
-      scrollTop = imgY;
-      container.style.cursor = 'grabbing';
-      if(hint) hint.style.display = 'none';
-    });
+      // If image smaller than container, make it bigger
+      if(bW < cW){ banner.style.width = (cW * 1.5) + 'px'; bW = cW * 1.5; }
+      if(bH < cH){ banner.style.height = (cH * 1.5) + 'px'; bH = cH * 1.5; }
 
-    document.addEventListener('mousemove', function(e){
-      if(!isDragging) return;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
-      imgX = scrollLeft + dx;
-      imgY = scrollTop + dy;
-      // Constrain movement
-      var maxX = 0;
-      var minX = container.offsetWidth - banner.offsetWidth;
-      var maxY = 0;
-      var minY = container.offsetHeight - banner.offsetHeight;
-      imgX = Math.min(maxX, Math.max(minX, imgX));
-      imgY = Math.min(maxY, Math.max(minY, imgY));
-      banner.style.left = imgX + 'px';
-      banner.style.top = imgY + 'px';
-    });
+      var imgX = 0, imgY = 0;
+      var velX = 0.4, velY = 0.3;
+      var isDragging = false;
+      var startX, startY, dragStartX, dragStartY;
+      var bouncing = true;
 
-    document.addEventListener('mouseup', function(){
-      isDragging = false;
-      container.style.cursor = 'grab';
-    });
+      // Bounce animation
+      function bounce(){
+        if(!bouncing || isDragging) { requestAnimationFrame(bounce); return; }
+        imgX += velX;
+        imgY += velY;
+        var maxX = 0;
+        var minX = cW - banner.offsetWidth;
+        var maxY = 0;
+        var minY = cH - banner.offsetHeight;
+        if(imgX >= maxX){ imgX = maxX; velX = -Math.abs(velX); }
+        if(imgX <= minX){ imgX = minX; velX = Math.abs(velX); }
+        if(imgY >= maxY){ imgY = maxY; velY = -Math.abs(velY); }
+        if(imgY <= minY){ imgY = minY; velY = Math.abs(velY); }
+        banner.style.left = imgX + 'px';
+        banner.style.top = imgY + 'px';
+        requestAnimationFrame(bounce);
+      }
+      bounce();
 
-    // Touch support
-    container.addEventListener('touchstart', function(e){
-      var t = e.touches[0];
-      isDragging = true;
-      startX = t.clientX;
-      startY = t.clientY;
-      scrollLeft = imgX;
-      scrollTop = imgY;
-      if(hint) hint.style.display = 'none';
-    }, {passive:true});
+      // Drag to override bounce
+      container.addEventListener('mousedown', function(e){
+        isDragging = true;
+        startX = e.clientX - imgX;
+        startY = e.clientY - imgY;
+        container.style.cursor = 'grabbing';
+        if(hint) hint.style.display = 'none';
+      });
 
-    container.addEventListener('touchmove', function(e){
-      if(!isDragging) return;
-      var t = e.touches[0];
-      var dx = t.clientX - startX;
-      var dy = t.clientY - startY;
-      imgX = scrollLeft + dx;
-      imgY = scrollTop + dy;
-      var maxX = 0;
-      var minX = container.offsetWidth - banner.offsetWidth;
-      var maxY = 0;
-      var minY = container.offsetHeight - banner.offsetHeight;
-      imgX = Math.min(maxX, Math.max(minX, imgX));
-      imgY = Math.min(maxY, Math.max(minY, imgY));
-      banner.style.left = imgX + 'px';
-      banner.style.top = imgY + 'px';
-    }, {passive:true});
+      document.addEventListener('mousemove', function(e){
+        if(!isDragging) return;
+        imgX = e.clientX - startX;
+        imgY = e.clientY - startY;
+        var maxX = 0;
+        var minX = cW - banner.offsetWidth;
+        var maxY = 0;
+        var minY = cH - banner.offsetHeight;
+        imgX = Math.min(maxX, Math.max(minX, imgX));
+        imgY = Math.min(maxY, Math.max(minY, imgY));
+        banner.style.left = imgX + 'px';
+        banner.style.top = imgY + 'px';
+      });
 
-    container.addEventListener('touchend', function(){
-      isDragging = false;
-    });
+      document.addEventListener('mouseup', function(){
+        if(isDragging){
+          isDragging = false;
+          container.style.cursor = 'grab';
+          // Give it a gentle random velocity after release
+          velX = (Math.random() * 0.6 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+          velY = (Math.random() * 0.5 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+        }
+      });
+
+      // Touch
+      container.addEventListener('touchstart', function(e){
+        var t = e.touches[0];
+        isDragging = true;
+        startX = t.clientX - imgX;
+        startY = t.clientY - imgY;
+        if(hint) hint.style.display = 'none';
+      }, {passive:true});
+
+      container.addEventListener('touchmove', function(e){
+        if(!isDragging) return;
+        var t = e.touches[0];
+        imgX = t.clientX - startX;
+        imgY = t.clientY - startY;
+        var maxX = 0;
+        var minX = cW - banner.offsetWidth;
+        var maxY = 0;
+        var minY = cH - banner.offsetHeight;
+        imgX = Math.min(maxX, Math.max(minX, imgX));
+        imgY = Math.min(maxY, Math.max(minY, imgY));
+        banner.style.left = imgX + 'px';
+        banner.style.top = imgY + 'px';
+      }, {passive:true});
+
+      container.addEventListener('touchend', function(){
+        isDragging = false;
+        velX = (Math.random() * 0.6 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+        velY = (Math.random() * 0.5 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+      });
+    }
+
+    if(banner.complete){ init(); }
+    else { banner.addEventListener('load', init); }
   })();
 
   // Auto scroll photo carousel
