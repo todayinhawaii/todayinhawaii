@@ -1121,7 +1121,7 @@
 
       <!-- Scrollable Cards -->
       <div style="padding:24px 28px;">
-        <div id="activityCarousel" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(251,191,36,0.3) transparent;">
+        <div id="activityCarousel" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(251,191,36,0.3) transparent;scroll-behavior:auto;">
 
           <!-- Card 1 -->
           <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
@@ -1265,31 +1265,26 @@
       (function(){
         var carousel = document.getElementById('activityCarousel');
         if(!carousel) return;
-        var speed = 1.2;
         var paused = false;
-        var animFrame;
 
-        function autoScroll(){
-          if(!paused){
-            carousel.scrollLeft += speed;
-            // Loop back to start smoothly
-            if(carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 5){
-              carousel.scrollLeft = 0;
-            }
+        // Scroll 1px every 20ms = smooth slow scroll
+        var timer = setInterval(function(){
+          if(paused) return;
+          carousel.scrollLeft += 1;
+          if(carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 2){
+            carousel.scrollLeft = 0;
           }
-          animFrame = requestAnimationFrame(autoScroll);
-        }
+        }, 20);
 
-        // Pause on hover or touch
+        // Pause on hover
         carousel.addEventListener('mouseenter', function(){ paused = true; });
         carousel.addEventListener('mouseleave', function(){ paused = false; });
+
+        // Pause on touch
         carousel.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
         carousel.addEventListener('touchend', function(){
-          setTimeout(function(){ paused = false; }, 2000);
+          setTimeout(function(){ paused = false; }, 2500);
         }, {passive:true});
-
-        // Start after short delay
-        setTimeout(function(){ autoScroll(); }, 1500);
       })();
       </script>
 
