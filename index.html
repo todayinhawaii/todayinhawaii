@@ -1100,8 +1100,8 @@
   </div>
   <!-- HAWAII ACTIVITIES CAROUSEL -->
   <div style="margin-bottom:56px;">
-    <div class="section-title">🎯 Top Hawaii Activities & Experiences <span class="section-note">Book Now</span></div>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Handpicked tours and experiences across all Hawaiian islands — click any card to book! 🌺</p>
+    <div class="section-title">🎯 Hawaii Activities & Experiences <span class="section-note">Book Now</span></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Handpicked tours and experiences across all Hawaiian islands — select your island and book today! 🌺</p>
 
     <div style="background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(6,29,44,0.95));border:2px solid rgba(251,191,36,0.25);border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
 
@@ -1111,7 +1111,7 @@
           <span style="font-size:28px;">🎯</span>
           <div>
             <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;">Hawaii Activities & Tours</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">Swipe to explore · Click to book</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">Select your island · Swipe to explore · Click to book</div>
           </div>
         </div>
         <span style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:99px;padding:4px 14px;font-size:11px;color:#fbbf24;display:flex;align-items:center;gap:6px;">
@@ -1119,12 +1119,18 @@
         </span>
       </div>
 
-      <!-- Scrollable Cards -->
-      <div style="padding:24px 28px;">
-        <div id="activityCarousel" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(251,191,36,0.3) transparent;scroll-behavior:auto;">
+      <!-- Island Tabs -->
+      <div style="padding:20px 28px 0;display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="showIslandActivities('maui',this)" id="atab-maui" class="atab active">🌺 Maui</button>
+        <button onclick="showIslandActivities('oahu',this)" id="atab-oahu" class="atab">🏙️ Oahu</button>
+        <button onclick="showIslandActivities('kauai',this)" id="atab-kauai" class="atab">🌿 Kauai</button>
+        <button onclick="showIslandActivities('big',this)" id="atab-big" class="atab">🌋 Big Island</button>
+      </div>
 
-          <!-- Card 1 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+      <!-- Maui Cards -->
+      <div id="acarousel-maui" class="acarousel-wrap">
+        <div class="acarousel" id="acarousel-maui-inner">
+          <a href="https://www.klook.com/en-US/search/?query=molokini+snorkel+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
             <div class="activity-img">🤿</div>
             <div class="activity-body">
               <div class="activity-tag">Maui · Water</div>
@@ -1133,53 +1139,16 @@
               <div class="activity-footer"><span class="activity-price">From $89</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 2 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+tour+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
             <div class="activity-img">🚁</div>
             <div class="activity-body">
-              <div class="activity-tag">All Islands · Air</div>
-              <div class="activity-title">Helicopter Tour of Hawaii</div>
-              <div class="activity-desc">See volcanoes, waterfalls and hidden valleys from above in a breathtaking aerial adventure.</div>
+              <div class="activity-tag">Maui · Air</div>
+              <div class="activity-title">Maui Helicopter Tour</div>
+              <div class="activity-desc">Soar over Haleakala, waterfalls and the lush West Maui Mountains in a breathtaking aerial adventure.</div>
               <div class="activity-footer"><span class="activity-price">From $199</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 3 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🌺</div>
-            <div class="activity-body">
-              <div class="activity-tag">Oahu · Culture</div>
-              <div class="activity-title">Traditional Hawaiian Luau</div>
-              <div class="activity-desc">Feast on kalua pig, enjoy hula dancing and experience the true spirit of aloha under the stars.</div>
-              <div class="activity-footer"><span class="activity-price">From $99</span><span class="activity-btn">Book Now →</span></div>
-            </div>
-          </a>
-
-          <!-- Card 4 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🏄</div>
-            <div class="activity-body">
-              <div class="activity-tag">All Islands · Water</div>
-              <div class="activity-title">Learn to Surf — Guaranteed!</div>
-              <div class="activity-desc">Professional instructors guarantee you'll stand up and ride a wave on your very first lesson!</div>
-              <div class="activity-footer"><span class="activity-price">From $75</span><span class="activity-btn">Book Now →</span></div>
-            </div>
-          </a>
-
-          <!-- Card 5 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🐋</div>
-            <div class="activity-body">
-              <div class="activity-tag">Maui · Wildlife</div>
-              <div class="activity-title">Whale Watching Cruise</div>
-              <div class="activity-desc">Witness magnificent humpback whales breaching in their natural Hawaii habitat. Unforgettable!</div>
-              <div class="activity-footer"><span class="activity-price">From $55</span><span class="activity-btn">Book Now →</span></div>
-            </div>
-          </a>
-
-          <!-- Card 6 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+          <a href="https://www.klook.com/en-US/search/?query=haleakala+sunrise+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
             <div class="activity-img">🌅</div>
             <div class="activity-body">
               <div class="activity-tag">Maui · Scenic</div>
@@ -1188,31 +1157,95 @@
               <div class="activity-footer"><span class="activity-price">From $120</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 7 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🛶</div>
+          <a href="https://www.klook.com/en-US/search/?query=haleakala+downhill+bike+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚵</div>
             <div class="activity-body">
-              <div class="activity-tag">Kauai · Adventure</div>
-              <div class="activity-title">Na Pali Coast Boat Tour</div>
-              <div class="activity-desc">Sail along Kauai's dramatic Na Pali coastline — sea caves, waterfalls and spinner dolphins!</div>
-              <div class="activity-footer"><span class="activity-price">From $149</span><span class="activity-btn">Book Now →</span></div>
+              <div class="activity-tag">Maui · Adventure</div>
+              <div class="activity-title">Haleakala Downhill Bike</div>
+              <div class="activity-desc">Coast 23 miles downhill from volcano summit to the ocean on a thrilling guided bike adventure!</div>
+              <div class="activity-footer"><span class="activity-price">From $130</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 8 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🌋</div>
+          <a href="https://www.klook.com/en-US/search/?query=whale+watching+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐋</div>
             <div class="activity-body">
-              <div class="activity-tag">Big Island · Nature</div>
-              <div class="activity-title">Volcanoes National Park Tour</div>
-              <div class="activity-desc">Walk on hardened lava fields and witness the raw power of Kilauea — Earth's most active volcano!</div>
+              <div class="activity-tag">Maui · Wildlife</div>
+              <div class="activity-title">Whale Watching Cruise</div>
+              <div class="activity-desc">Witness magnificent humpback whales breaching in their natural Hawaii habitat. Unforgettable!</div>
+              <div class="activity-footer"><span class="activity-price">From $55</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=road+to+hana+maui+tour?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🛶</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Water</div>
+              <div class="activity-title">Road to Hana Tour</div>
+              <div class="activity-desc">Discover stunning waterfalls, lush rainforests and hidden beaches on Maui's most scenic drive.</div>
               <div class="activity-footer"><span class="activity-price">From $95</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
+          <a href="https://www.klook.com/en-US/search/?query=old+lahaina+luau+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌺</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Culture</div>
+              <div class="activity-title">Old Lahaina Luau</div>
+              <div class="activity-desc">Experience the most authentic luau in Hawaii — feast, hula dancing and the spirit of aloha.</div>
+              <div class="activity-footer"><span class="activity-price">From $115</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+lessons+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏄</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Water</div>
+              <div class="activity-title">Surf Lessons Maui</div>
+              <div class="activity-desc">Professional instructors guarantee you'll stand up and ride a wave on your very first lesson!</div>
+              <div class="activity-footer"><span class="activity-price">From $75</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=turtle+town+snorkel+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐢</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Nature</div>
+              <div class="activity-title">Turtle Town Snorkel</div>
+              <div class="activity-desc">Swim alongside Hawaii's beloved green sea turtles in their natural ocean habitat near Maui.</div>
+              <div class="activity-footer"><span class="activity-price">From $65</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=sunset+sailing+cruise+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">⛵</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Romance</div>
+              <div class="activity-title">Sunset Sailing Cruise</div>
+              <div class="activity-desc">Champagne, spectacular sunsets and the warm Maui breeze — pure romance on the water!</div>
+              <div class="activity-footer"><span class="activity-price">From $85</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=parasailing+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🪂</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Thrill</div>
+              <div class="activity-title">Parasailing Maui</div>
+              <div class="activity-desc">Soar 800 feet above the sparkling Pacific Ocean for breathtaking views of Maui's coastline!</div>
+              <div class="activity-footer"><span class="activity-price">From $79</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=deep+sea+fishing+maui?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🎣</div>
+            <div class="activity-body">
+              <div class="activity-tag">Maui · Water</div>
+              <div class="activity-title">Deep Sea Fishing Maui</div>
+              <div class="activity-desc">Chase marlin, mahi-mahi and tuna on an exciting deep sea fishing charter off the Maui coast!</div>
+              <div class="activity-footer"><span class="activity-price">From $149</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(251,191,36,0.5);">← Swipe to explore more Maui activities →</div>
+      </div>
 
-          <!-- Card 9 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+      <!-- Oahu Cards -->
+      <div id="acarousel-oahu" class="acarousel-wrap" style="display:none;">
+        <div class="acarousel" id="acarousel-oahu-inner">
+          <a href="https://www.klook.com/en-US/search/?query=swim+with+dolphins+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
             <div class="activity-img">🐬</div>
             <div class="activity-body">
               <div class="activity-tag">Oahu · Water</div>
@@ -1221,83 +1254,354 @@
               <div class="activity-footer"><span class="activity-price">From $110</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 10 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🚵</div>
+          <a href="https://www.klook.com/en-US/search/?query=polynesian+cultural+center+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌺</div>
             <div class="activity-body">
-              <div class="activity-tag">Maui · Adventure</div>
-              <div class="activity-title">Haleakala Downhill Bike Tour</div>
-              <div class="activity-desc">Coast 23 miles downhill from volcano summit to the ocean on a thrilling guided bike adventure!</div>
-              <div class="activity-footer"><span class="activity-price">From $130</span><span class="activity-btn">Book Now →</span></div>
+              <div class="activity-tag">Oahu · Culture</div>
+              <div class="activity-title">Polynesian Cultural Center</div>
+              <div class="activity-desc">Explore six Pacific Island villages and experience authentic culture, music and dance.</div>
+              <div class="activity-footer"><span class="activity-price">From $80</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 11 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">🍹</div>
+          <a href="https://www.klook.com/en-US/search/?query=pearl+harbor+tour+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">⚓</div>
             <div class="activity-body">
-              <div class="activity-tag">All Islands · Food</div>
-              <div class="activity-title">Hawaii Food & Culture Tour</div>
-              <div class="activity-desc">Taste your way through Hawaii — poke, shave ice, malasadas and more on this delicious walking tour!</div>
-              <div class="activity-footer"><span class="activity-price">From $65</span><span class="activity-btn">Book Now →</span></div>
+              <div class="activity-tag">Oahu · History</div>
+              <div class="activity-title">Pearl Harbor Tour</div>
+              <div class="activity-desc">Visit the USS Arizona Memorial and learn about the historic events of December 7th 1941.</div>
+              <div class="activity-footer"><span class="activity-price">From $35</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
-          <!-- Card 12 -->
-          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
-            <div class="activity-img">💍</div>
+          <a href="https://www.klook.com/en-US/search/?query=north+shore+surf+lesson+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏄</div>
             <div class="activity-body">
-              <div class="activity-tag">All Islands · Romance</div>
-              <div class="activity-title">Sunset Sailing Cruise</div>
-              <div class="activity-desc">Romance on the water — champagne, spectacular sunsets and the warm Hawaii breeze. Unforgettable!</div>
+              <div class="activity-tag">Oahu · Water</div>
+              <div class="activity-title">North Shore Surf Lesson</div>
+              <div class="activity-desc">Learn to surf on the legendary North Shore of Oahu — home of the world's best waves!</div>
               <div class="activity-footer"><span class="activity-price">From $85</span><span class="activity-btn">Book Now →</span></div>
             </div>
           </a>
-
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+tour+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚁</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Air</div>
+              <div class="activity-title">Oahu Helicopter Tour</div>
+              <div class="activity-desc">See Diamond Head, Waikiki and the stunning Oahu coastline from a breathtaking aerial view.</div>
+              <div class="activity-footer"><span class="activity-price">From $175</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=hanauma+bay+snorkel+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🤿</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Water</div>
+              <div class="activity-title">Hanauma Bay Snorkel</div>
+              <div class="activity-desc">Snorkel in one of Hawaii's most beautiful marine sanctuaries teeming with tropical fish.</div>
+              <div class="activity-footer"><span class="activity-price">From $45</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=diamond+head+hike+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌊</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Adventure</div>
+              <div class="activity-title">Diamond Head Hike</div>
+              <div class="activity-desc">Hike to the iconic summit of Diamond Head crater for panoramic views of Waikiki and Oahu.</div>
+              <div class="activity-footer"><span class="activity-price">From $25</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=waikiki+luau+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🎭</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Culture</div>
+              <div class="activity-title">Waikiki Luau</div>
+              <div class="activity-desc">Dance, feast and celebrate under the stars at a spectacular Waikiki beachfront luau!</div>
+              <div class="activity-footer"><span class="activity-price">From $99</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=waikiki+catamaran+cruise+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏊</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Water</div>
+              <div class="activity-title">Waikiki Catamaran Cruise</div>
+              <div class="activity-desc">Sail along Waikiki Beach on a colorful catamaran with drinks, snorkeling and amazing views!</div>
+              <div class="activity-footer"><span class="activity-price">From $55</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=sea+life+park+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐠</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Nature</div>
+              <div class="activity-title">Sea Life Park Hawaii</div>
+              <div class="activity-desc">Meet dolphins, penguins, sea turtles and tropical fish at Hawaii's premier marine attraction.</div>
+              <div class="activity-footer"><span class="activity-price">From $40</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=jet+ski+waikiki+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚤</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Adventure</div>
+              <div class="activity-title">Jet Ski Waikiki</div>
+              <div class="activity-desc">Race across the crystal waters of Waikiki on a thrilling jet ski adventure with stunning views!</div>
+              <div class="activity-footer"><span class="activity-price">From $89</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=honolulu+city+lights+tour+oahu?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌃</div>
+            <div class="activity-body">
+              <div class="activity-tag">Oahu · Scenic</div>
+              <div class="activity-title">Honolulu City Lights Tour</div>
+              <div class="activity-desc">Discover Honolulu's dazzling city lights, historic landmarks and hidden gems after dark!</div>
+              <div class="activity-footer"><span class="activity-price">From $45</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
         </div>
-
-        <!-- Scroll hint -->
-        <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(251,191,36,0.5);">← Swipe to explore more activities →</div>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(251,191,36,0.5);">← Swipe to explore more Oahu activities →</div>
       </div>
 
-      <script>
-      (function(){
-        var carousel = document.getElementById('activityCarousel');
-        if(!carousel) return;
-        var paused = false;
+      <!-- Kauai Cards -->
+      <div id="acarousel-kauai" class="acarousel-wrap" style="display:none;">
+        <div class="acarousel" id="acarousel-kauai-inner">
+          <a href="https://www.klook.com/en-US/search/?query=na+pali+coast+boat+tour+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🛶</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Adventure</div>
+              <div class="activity-title">Na Pali Coast Boat Tour</div>
+              <div class="activity-desc">Sail along Kauai's dramatic coastline — sea caves, waterfalls and spinner dolphins!</div>
+              <div class="activity-footer"><span class="activity-price">From $149</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+tour+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚁</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Air</div>
+              <div class="activity-title">Kauai Helicopter Tour</div>
+              <div class="activity-desc">Discover hidden waterfalls, the Grand Canyon of the Pacific and lush valleys from above!</div>
+              <div class="activity-footer"><span class="activity-price">From $219</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=waimea+canyon+tour+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏞️</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Nature</div>
+              <div class="activity-title">Waimea Canyon Tour</div>
+              <div class="activity-desc">Explore the breathtaking Grand Canyon of the Pacific — layers of red rock and stunning vistas!</div>
+              <div class="activity-footer"><span class="activity-price">From $75</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=wailua+river+kayak+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚣</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Water</div>
+              <div class="activity-title">Wailua River Kayak Tour</div>
+              <div class="activity-desc">Kayak up the only navigable river in Hawaii to a stunning hidden waterfall in the jungle!</div>
+              <div class="activity-footer"><span class="activity-price">From $85</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=poipu+beach+snorkel+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🤿</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Water</div>
+              <div class="activity-title">Poipu Beach Snorkel</div>
+              <div class="activity-desc">Explore the vibrant coral reefs and tropical fish of Kauai's sunniest and most beautiful beach.</div>
+              <div class="activity-footer"><span class="activity-price">From $55</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=luau+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌺</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Culture</div>
+              <div class="activity-title">Kauai Luau</div>
+              <div class="activity-desc">Celebrate Hawaiian culture with a spectacular oceanfront luau featuring food, fire and hula!</div>
+              <div class="activity-footer"><span class="activity-price">From $105</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+lessons+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏄</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Water</div>
+              <div class="activity-title">Surf Lessons Kauai</div>
+              <div class="activity-desc">Learn to surf on Kauai's beautiful beaches with expert local instructors in gentle waves!</div>
+              <div class="activity-footer"><span class="activity-price">From $75</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=kalalau+trail+hike+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🧗</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Adventure</div>
+              <div class="activity-title">Kalalau Trail Hike</div>
+              <div class="activity-desc">Trek the famous Kalalau Trail along the breathtaking Na Pali Coast — Hawaii's best hike!</div>
+              <div class="activity-footer"><span class="activity-price">From $65</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=napali+sunset+cruise+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌊</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Water</div>
+              <div class="activity-title">Napali Sunset Cruise</div>
+              <div class="activity-desc">Watch the sun set over the magnificent Na Pali Coast from a beautiful sailing catamaran!</div>
+              <div class="activity-footer"><span class="activity-price">From $125</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=tunnels+beach+snorkel+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐠</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Nature</div>
+              <div class="activity-title">Tunnels Beach Snorkel</div>
+              <div class="activity-desc">Dive into one of Hawaii's best snorkeling spots — home to turtles, rays and tropical fish!</div>
+              <div class="activity-footer"><span class="activity-price">From $60</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=deep+sea+fishing+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🎣</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Water</div>
+              <div class="activity-title">Deep Sea Fishing Kauai</div>
+              <div class="activity-desc">Cast your line for mahi-mahi, wahoo and tuna on an exciting deep sea charter off Kauai!</div>
+              <div class="activity-footer"><span class="activity-price">From $139</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=hanalei+valley+tour+kauai?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌅</div>
+            <div class="activity-body">
+              <div class="activity-tag">Kauai · Scenic</div>
+              <div class="activity-title">Hanalei Valley Lookout Tour</div>
+              <div class="activity-desc">Discover Kauai's most stunning scenery — taro fields, waterfalls and the famous Hanalei Bay!</div>
+              <div class="activity-footer"><span class="activity-price">From $79</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(251,191,36,0.5);">← Swipe to explore more Kauai activities →</div>
+      </div>
 
-        // Scroll 1px every 20ms = smooth slow scroll
-        var timer = setInterval(function(){
-          if(paused) return;
-          carousel.scrollLeft += 1;
-          if(carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 2){
-            carousel.scrollLeft = 0;
-          }
-        }, 20);
-
-        // Pause on hover
-        carousel.addEventListener('mouseenter', function(){ paused = true; });
-        carousel.addEventListener('mouseleave', function(){ paused = false; });
-
-        // Pause on touch
-        carousel.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
-        carousel.addEventListener('touchend', function(){
-          setTimeout(function(){ paused = false; }, 2500);
-        }, {passive:true});
-      })();
-      </script>
+      <!-- Big Island Cards -->
+      <div id="acarousel-big" class="acarousel-wrap" style="display:none;">
+        <div class="acarousel" id="acarousel-big-inner">
+          <a href="https://www.klook.com/en-US/search/?query=volcanoes+national+park+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌋</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Nature</div>
+              <div class="activity-title">Volcanoes National Park</div>
+              <div class="activity-desc">Walk on hardened lava fields and witness the raw power of Kilauea — Earth's most active volcano!</div>
+              <div class="activity-footer"><span class="activity-price">From $95</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+tour+big+island+hawaii?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🚁</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Air</div>
+              <div class="activity-title">Big Island Helicopter Tour</div>
+              <div class="activity-desc">Fly over erupting lava flows, Mauna Kea and stunning coastlines on a spectacular aerial tour!</div>
+              <div class="activity-footer"><span class="activity-price">From $225</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=manta+ray+night+dive+kona+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🤿</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Water</div>
+              <div class="activity-title">Kona Manta Ray Night Dive</div>
+              <div class="activity-desc">Snorkel or dive with magnificent manta rays under the stars — one of Hawaii's most magical experiences!</div>
+              <div class="activity-footer"><span class="activity-price">From $89</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=dolphin+swim+kona+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐬</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Water</div>
+              <div class="activity-title">Dolphin Swim Kona</div>
+              <div class="activity-desc">Snorkel alongside pods of wild spinner dolphins in the crystal clear waters off Kona!</div>
+              <div class="activity-footer"><span class="activity-price">From $99</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=mauna+kea+stargazing+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🔭</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Science</div>
+              <div class="activity-title">Mauna Kea Stargazing</div>
+              <div class="activity-desc">Stargaze from the summit of the world's tallest mountain — the clearest skies on Earth!</div>
+              <div class="activity-footer"><span class="activity-price">From $159</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=green+sand+beach+big+island+hawaii?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐢</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Nature</div>
+              <div class="activity-title">Green Sand Beach Tour</div>
+              <div class="activity-desc">Visit Papakolea — one of only four green sand beaches in the world — on the Big Island!</div>
+              <div class="activity-footer"><span class="activity-price">From $65</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=luau+big+island+hawaii?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌺</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Culture</div>
+              <div class="activity-title">Big Island Luau</div>
+              <div class="activity-desc">Feast on traditional Hawaiian food and enjoy spectacular cultural performances under the stars!</div>
+              <div class="activity-footer"><span class="activity-price">From $99</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+lessons+kona+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🏄</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Water</div>
+              <div class="activity-title">Surf Lessons Kona</div>
+              <div class="activity-desc">Learn to surf on the gentle waves of the Big Island's beautiful Kona coast!</div>
+              <div class="activity-footer"><span class="activity-price">From $75</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=whale+watching+kona+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🐋</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Wildlife</div>
+              <div class="activity-title">Whale Watching Kona</div>
+              <div class="activity-desc">Watch majestic humpback whales breaching and playing in the warm waters off Kona!</div>
+              <div class="activity-footer"><span class="activity-price">From $65</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=snorkel+with+turtles+kona+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🌊</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Adventure</div>
+              <div class="activity-title">Snorkel with Turtles Kona</div>
+              <div class="activity-desc">Swim alongside Hawaii's beloved green sea turtles at the famous Two Step snorkel spot!</div>
+              <div class="activity-footer"><span class="activity-price">From $55</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=ski+mauna+kea+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">⛷️</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Unique</div>
+              <div class="activity-title">Ski Mauna Kea</div>
+              <div class="activity-desc">Ski or snowboard on the summit of Mauna Kea — the only place you can ski in Hawaii!</div>
+              <div class="activity-footer"><span class="activity-price">From $125</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+          <a href="https://www.klook.com/en-US/search/?query=south+point+waterfalls+tour+big+island?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="activity-card">
+            <div class="activity-img">🗺️</div>
+            <div class="activity-body">
+              <div class="activity-tag">Big Island · Scenic</div>
+              <div class="activity-title">South Point & Waterfalls Tour</div>
+              <div class="activity-desc">Discover the southernmost point in the USA and stunning Big Island waterfalls on this epic tour!</div>
+              <div class="activity-footer"><span class="activity-price">From $85</span><span class="activity-btn">Book Now →</span></div>
+            </div>
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(251,191,36,0.5);">← Swipe to explore more Big Island activities →</div>
+      </div>
 
       <!-- Footer -->
       <div style="padding:16px 28px;border-top:1px solid rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div style="font-size:12px;color:var(--muted);">🌺 Hundreds more Hawaii activities available</div>
-        <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35);border-radius:99px;text-decoration:none;color:#fbbf24;font-size:12px;font-weight:600;">Browse All Activities →</a>
+        <a href="https://www.klook.com/en-US/search/?query=hawaii?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35);border-radius:99px;text-decoration:none;color:#fbbf24;font-size:12px;font-weight:600;">Browse All Activities →</a>
       </div>
     </div>
   </div>
 
   <style>
-  .activity-card{display:flex;flex-direction:column;min-width:240px;max-width:240px;background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(251,191,36,0.2);border-radius:18px;overflow:hidden;text-decoration:none;transition:all 0.25s;scroll-snap-align:start;flex-shrink:0;}
+  .atab{padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid rgba(251,191,36,0.3);background:rgba(251,191,36,0.06);color:#a0856a;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .atab.active{border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.15);}
+  .atab:hover{border-color:#fbbf24;color:#fbbf24;}
+  .acarousel-wrap{padding:20px 28px;}
+  .acarousel{display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(251,191,36,0.3) transparent;scroll-behavior:auto;}
+  .activity-card{display:flex;flex-direction:column;min-width:240px;max-width:240px;background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(251,191,36,0.2);border-radius:18px;overflow:hidden;text-decoration:none;transition:all 0.25s;flex-shrink:0;}
   .activity-card:hover{transform:translateY(-6px);border-color:rgba(251,191,36,0.6);box-shadow:0 12px 32px rgba(251,191,36,0.15);}
   .activity-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(6,29,44,0.8));}
   .activity-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px;}
@@ -1307,12 +1611,54 @@
   .activity-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);}
   .activity-price{font-size:13px;font-weight:700;color:#fbbf24;}
   .activity-btn{font-size:11px;color:#22d3ee;font-weight:600;}
-  @media(max-width:768px){
-    .activity-card{min-width:200px;max-width:200px;}
-    .activity-img{height:80px;font-size:40px;}
-  }
+  @media(max-width:768px){.activity-card{min-width:200px;max-width:200px;}.activity-img{height:80px;font-size:40px;}}
   </style>
+
+  <script>
+  var activeIsland = 'maui';
+  var scrollTimers = {};
+
+  function startCarouselScroll(island){
+    var inner = document.getElementById('acarousel-'+island+'-inner');
+    if(!inner) return;
+    if(scrollTimers[island]) clearInterval(scrollTimers[island]);
+    var paused = false;
+    inner.addEventListener('mouseenter', function(){ paused = true; });
+    inner.addEventListener('mouseleave', function(){ paused = false; });
+    inner.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
+    inner.addEventListener('touchend', function(){ setTimeout(function(){ paused = false; }, 2500); }, {passive:true});
+    scrollTimers[island] = setInterval(function(){
+      if(paused) return;
+      inner.scrollLeft += 1;
+      if(inner.scrollLeft >= inner.scrollWidth - inner.clientWidth - 2){
+        inner.scrollLeft = 0;
+      }
+    }, 20);
+  }
+
+  function showIslandActivities(island, btn){
+    ['maui','oahu','kauai','big'].forEach(function(i){
+      var w = document.getElementById('acarousel-'+i);
+      var t = document.getElementById('atab-'+i);
+      if(w) w.style.display = 'none';
+      if(t) t.classList.remove('active');
+      if(scrollTimers[i]){ clearInterval(scrollTimers[i]); scrollTimers[i]=null; }
+    });
+    var wrap = document.getElementById('acarousel-'+island);
+    if(wrap) wrap.style.display = 'block';
+    if(btn) btn.classList.add('active');
+    activeIsland = island;
+    setTimeout(function(){ startCarouselScroll(island); }, 300);
+  }
+
+  // Start Maui on load
+  window.addEventListener('load', function(){
+    setTimeout(function(){ startCarouselScroll('maui'); }, 1500);
+  });
+  </script>
   <!-- END HAWAII ACTIVITIES CAROUSEL -->
+
+
 
 
 
