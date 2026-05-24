@@ -138,6 +138,18 @@ def photo_card(num):
         return send_from_directory(".", f"{num}.jpg")
     return "Not found", 404
 
+# 808 Pictures photos 1-101
+@app.route("/808-photo-<int:num>.jpg")
+def photos_808(num):
+    if 1 <= num <= 101:
+        return send_from_directory(".", f"808-photo-{num}.jpg")
+    return "Not found", 404
+
+# 808 Pictures banner
+@app.route("/808-banner.png")
+def banner_808():
+    return send_from_directory(".", "808-banner.png")
+
 # PWA files
 @app.route("/manifest.json")
 def manifest():
