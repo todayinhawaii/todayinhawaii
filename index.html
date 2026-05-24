@@ -782,6 +782,43 @@
         <button onclick="document.getElementById('iosPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Got it! 🤙</button>
       </div>
     </div>
+    <!-- Desktop Instructions Popup -->
+    <div id="desktopPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.95);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">💻</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Install on Mac / Windows</div>
+        <div style="font-size:13px;color:#7fb3c8;margin-bottom:24px;">Quick and easy — follow these steps in Chrome:</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;text-align:left;">
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">1</div>
+            <div style="font-size:13px;color:#e8f4f8;">Look for the <strong style="color:#22d3ee;">Install icon ⊕</strong> in the right side of your Chrome address bar and click it</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">2</div>
+            <div style="font-size:13px;color:#e8f4f8;">Click <strong style="color:#22d3ee;">"Install"</strong> when prompted</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(34,211,238,0.06);border-radius:12px;padding:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#061d2c;flex-shrink:0;">3</div>
+            <div style="font-size:13px;color:#e8f4f8;"><strong style="color:#22d3ee;">🍎 Mac:</strong> Find it in <strong style="color:#22d3ee;">Launchpad</strong> — press F4 or click the rocket 🚀 in your dock<br><br><strong style="color:#22d3ee;">🪟 Windows:</strong> Find it in your <strong style="color:#22d3ee;">Start Menu</strong> or on your <strong style="color:#22d3ee;">Desktop</strong></div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('desktopPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Got it! 🤙</button>
+      </div>
+    </div>
+
+    <!-- Installed Success Popup -->
+    <div id="installedPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.95);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(16,185,129,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;">
+        <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:12px;">You're all set! 🌺</div>
+        <div style="font-size:13px;color:#7fb3c8;margin-bottom:16px;line-height:1.7;">
+          <strong style="color:#10b981;">Today in Hawaiʻi</strong> has been installed!<br><br>
+          🍎 <strong style="color:#22d3ee;">Mac:</strong> Find it in <strong style="color:#22d3ee;">Launchpad</strong> — press F4 or click the rocket 🚀 in your dock<br><br>
+          🪟 <strong style="color:#22d3ee;">Windows:</strong> Find it in your <strong style="color:#22d3ee;">Start Menu</strong> or on your <strong style="color:#22d3ee;">Desktop</strong>
+        </div>
+        <button onclick="document.getElementById('installedPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Awesome! 🤙</button>
+      </div>
+    </div>
     <!-- END PWA INSTALL BUTTONS -->
 
     <script>
@@ -807,13 +844,21 @@
             var dText = document.getElementById('desktopBtnText');
             if(aText) aText.textContent = '✅ Installed!';
             if(dText) dText.textContent = '✅ Installed!';
+            showInstalledPopup();
           }
           deferredPrompt = null;
         });
       } else {
-        // Not available - show instructions
-        alert('To install: Open this site in Chrome, then click the install icon ⊕ in your address bar!');
+        showDesktopInstructions();
       }
+    }
+
+    function showDesktopInstructions() {
+      document.getElementById('desktopPopup').style.display = 'flex';
+    }
+
+    function showInstalledPopup() {
+      document.getElementById('installedPopup').style.display = 'flex';
     }
 
     function showIOSInstructions() {
