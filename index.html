@@ -820,11 +820,37 @@
       </div>
     </div>
     <!-- WHY INSTALL -->
-    <div style="text-align:center;margin-top:16px;margin-bottom:8px;padding:20px 24px;background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.1);border-radius:16px;">
-      <div style="font-size:14px;color:#e8f4f8;line-height:1.8;max-width:600px;margin:0 auto;">
-        🌺 <strong style="color:#22d3ee;">Why install the app?</strong> Wake up every morning, tap one icon and instantly get your daily facts, affirmations, live Hawaii weather, surf conditions and sunrise times — <strong style="color:#fff;">no typing, no searching, no waiting.</strong> Just pure Hawaii at your fingertips, every single day! It's free, takes 10 seconds to install and you'll wonder how you ever started your day without it! 🤙
+    <div style="position:relative;">
+      <!-- 3 pulsating arrows pointing down into the box -->
+      <div style="display:flex;justify-content:center;gap:0;margin-bottom:0;position:relative;z-index:2;">
+        <div style="display:flex;gap:120px;"> 
+          <div class="pulse-arrow">&#8595;</div>
+          <div class="pulse-arrow" style="animation-delay:0.2s;">&#8595;</div>
+          <div class="pulse-arrow" style="animation-delay:0.4s;">&#8595;</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:-18px;padding:28px 24px 20px;background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.1);border-radius:16px;position:relative;z-index:1;">
+        <div style="font-size:14px;color:#e8f4f8;line-height:1.8;max-width:600px;margin:0 auto;">
+          🌺 <strong style="color:#22d3ee;">Why install the app?</strong> Wake up every morning, tap one icon and instantly get your daily facts, affirmations, live Hawaii weather, surf conditions and sunrise times — <strong style="color:#fff;">no typing, no searching, no waiting.</strong> Just pure Hawaii at your fingertips, every single day! It's free, takes 10 seconds to install and you'll wonder how you ever started your day without it! 🤙
+        </div>
       </div>
     </div>
+
+    <style>
+    .pulse-arrow{
+      font-size:36px;
+      color:#fff;
+      animation:arrowPulse 1s ease-in-out infinite;
+      display:inline-block;
+      line-height:1;
+      text-shadow:0 0 12px rgba(255,255,255,0.6),0 0 24px rgba(34,211,238,0.4);
+    }
+    @keyframes arrowPulse{
+      0%{opacity:0.2;transform:translateY(-6px);}
+      50%{opacity:1;transform:translateY(4px);}
+      100%{opacity:0.2;transform:translateY(-6px);}
+    }
+    </style>
     <!-- END PWA INSTALL BUTTONS -->
 
     <script>
