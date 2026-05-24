@@ -139,10 +139,10 @@ def photo_card(num):
     return "Not found", 404
 
 # 808 Pictures photos 1-101
-@app.route("/808-photo-<int:num>.jpg")
+@app.route("/808-<int:num>.jpg")
 def photos_808(num):
     if 1 <= num <= 101:
-        return send_from_directory(".", f"808-photo-{num}.jpg")
+        return send_from_directory(".", f"808-{num}.jpg")
     return "Not found", 404
 
 # 808 Pictures banner
