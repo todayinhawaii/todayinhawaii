@@ -3365,5 +3365,59 @@ window.addEventListener('load', function(){
   if(btn) btn.addEventListener('click', doSignup);
 });
 
+<script>
+function doSignup() {
+  var name = (document.getElementById('sigFirstName').value || '').trim();
+  var email = (document.getElementById('sigEmail').value || '').trim();
+  var msg = document.getElementById('signupMsg');
+  var btn = document.getElementById('signupBtn');
+
+  if (!email) {
+    msg.style.display = 'block';
+    msg.style.color = '#f97316';
+    msg.textContent = '🌺 Please enter your email address!';
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    msg.style.display = 'block';
+    msg.style.color = '#f97316';
+    msg.textContent = '🌺 Please enter a valid email address!';
+    return;
+  }
+
+  btn.textContent = 'Joining... 🌺';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+
+  fetch('/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, name: name })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    document.getElementById('signupForm').style.display = 'none';
+    msg.style.display = 'block';
+    msg.style.color = '#22d3ee';
+    msg.innerHTML = '🎉 Mahalo <strong style="color:#fff;">' + (name || 'friend') + '</strong>! Welcome to the Hawaii Insiders family! Check your inbox for a welcome email. 🌺🤙';
+  })
+  .catch(function(err) {
+    btn.textContent = 'Join Free 🌺';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    msg.style.display = 'block';
+    msg.style.color = '#f97316';
+    msg.textContent = 'Oops! Something went wrong — please try again 🌺';
+  });
+}
+
+// Allow pressing Enter in email field
+document.addEventListener('DOMContentLoaded', function() {
+  var emailInput = document.getElementById('sigEmail');
+  var nameInput = document.getElementById('sigFirstName');
+  if (emailInput) emailInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignup(); });
+  if (nameInput) nameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignup(); });
+});
+</script>
 </body>
 </html>
