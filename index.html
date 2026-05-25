@@ -1392,11 +1392,27 @@
       </div>
 
       <!-- Island tabs -->
-      <div style="padding:16px 20px 0;display:flex;gap:8px;flex-wrap:wrap;">
-        <button onclick="selectWxIsland('maui',this)" id="wxtab-maui" class="qtab active">🏄 Maui</button>
-        <button onclick="selectWxIsland('oahu',this)" id="wxtab-oahu" class="qtab">🌆 Oahu</button>
-        <button onclick="selectWxIsland('kauai',this)" id="wxtab-kauai" class="qtab">🌿 Kauaʻi</button>
-        <button onclick="selectWxIsland('big',this)" id="wxtab-big" class="qtab">🌋 Big Island</button>
+      <div style="padding:24px 24px 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+        <button onclick="selectWxIsland('maui',this)" id="wxtab-maui" class="wx-island-btn active" style="--island-color:#f97316;--island-glow:rgba(249,115,22,0.25);">
+          <span class="wx-island-emoji">🏄</span>
+          <span class="wx-island-name">Maui</span>
+          <span class="wx-island-sub">Valley Isle</span>
+        </button>
+        <button onclick="selectWxIsland('oahu',this)" id="wxtab-oahu" class="wx-island-btn" style="--island-color:#22d3ee;--island-glow:rgba(34,211,238,0.25);">
+          <span class="wx-island-emoji">🌆</span>
+          <span class="wx-island-name">Oahu</span>
+          <span class="wx-island-sub">Gathering Place</span>
+        </button>
+        <button onclick="selectWxIsland('kauai',this)" id="wxtab-kauai" class="wx-island-btn" style="--island-color:#10b981;--island-glow:rgba(16,185,129,0.25);">
+          <span class="wx-island-emoji">🌿</span>
+          <span class="wx-island-name">Kauaʻi</span>
+          <span class="wx-island-sub">Garden Isle</span>
+        </button>
+        <button onclick="selectWxIsland('big',this)" id="wxtab-big" class="wx-island-btn" style="--island-color:#fbbf24;--island-glow:rgba(251,191,36,0.25);">
+          <span class="wx-island-emoji">🌋</span>
+          <span class="wx-island-name">Big Island</span>
+          <span class="wx-island-sub">The Big Island</span>
+        </button>
       </div>
 
       <!-- Town buttons area -->
