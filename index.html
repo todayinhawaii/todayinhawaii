@@ -2289,6 +2289,83 @@
 
   <hr class="section-divider">
 
+  <!-- LIVE TOWN WEATHER CARDS -->
+  <div style="margin-bottom:36px;">
+    <div class="section-title">🌤️ Live Town Weather <span class="section-note">Live</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;" id="townWeatherGrid">
+      <div class="island-card" data-island="Maui" style="cursor:default;">
+        <span class="island-flag">🏄</span>
+        <div class="island-name">Maui</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="maui-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Oahu" style="cursor:default;">
+        <span class="island-flag">🌆</span>
+        <div class="island-name">Oahu</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="oahu-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Kauai" style="cursor:default;">
+        <span class="island-flag">🌿</span>
+        <div class="island-name">Kauaʻi</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="kauai-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+      <div class="island-card" data-island="Big Island" style="cursor:default;">
+        <span class="island-flag">🌋</span>
+        <div class="island-name">Big Island</div>
+        <div class="island-nickname">Live Town Weather</div>
+        <div id="big-towns" style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var TOWNS = {
+      maui:  [{name:'Lahaina',lat:20.8783,lon:-156.6825},{name:'Wailea',lat:20.7544,lon:-156.4450},{name:'Kaanapali',lat:20.9228,lon:-156.6906},{name:'Kahului',lat:20.8894,lon:-156.4729},{name:'Hana',lat:20.7597,lon:-156.0131}],
+      oahu:  [{name:'Waikiki',lat:21.2793,lon:-157.8294},{name:'North Shore',lat:21.6417,lon:-158.0611},{name:'Kailua',lat:21.4022,lon:-157.7394},{name:'Ko Olina',lat:21.3439,lon:-158.1239},{name:'Honolulu',lat:21.3069,lon:-157.8583}],
+      kauai: [{name:'Hanalei',lat:22.2028,lon:-159.5083},{name:'Poipu',lat:21.8783,lon:-159.4717},{name:'Lihue',lat:21.9811,lon:-159.3711},{name:'Kapaa',lat:22.0750,lon:-159.3194},{name:'Waimea',lat:21.9578,lon:-159.6739}],
+      big:   [{name:'Kona',lat:19.6400,lon:-155.9969},{name:'Hilo',lat:19.7297,lon:-155.0900},{name:'Waikoloa',lat:19.9333,lon:-155.8833},{name:'Waimea',lat:20.0194,lon:-155.6667},{name:'Volcano',lat:19.4194,lon:-155.2886}],
+    };
+    function icon(c){if(c===0)return'☀️';if(c<=2)return'🌤️';if(c<=3)return'☁️';if(c<=48)return'🌫️';if(c<=67)return'🌧️';if(c<=77)return'🌨️';if(c<=82)return'🌧️';if(c<=99)return'⛈️';return'🌤️';}
+    function dir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
+    function load(towns,id){
+      Promise.all(towns.map(function(t){
+        return fetch('https://api.open-meteo.com/v1/forecast?latitude='+t.lat+'&longitude='+t.lon+'&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=Pacific%2FHonolulu')
+          .then(function(r){return r.json();})
+          .then(function(d){return{name:t.name,temp:Math.round(d.current.temperature_2m),code:d.current.weathercode,wind:Math.round(d.current.windspeed_10m),dir:dir(d.current.winddirection_10m)};})
+          .catch(function(){return{name:t.name,temp:'--',code:0,wind:'--',dir:''};});
+      })).then(function(res){
+        var el=document.getElementById(id);
+        if(!el)return;
+        el.innerHTML=res.map(function(t){
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
+            '<span style="font-size:13px;color:var(--muted);">'+t.name+'</span>'+
+            '<span style="display:flex;align-items:center;gap:8px;">'+
+              '<span style="font-size:15px;">'+icon(t.code)+'</span>'+
+              '<span style="font-size:14px;font-weight:700;color:#fff;">'+t.temp+'°F</span>'+
+              '<span style="font-size:11px;color:var(--foam);">💨 '+t.wind+' mph '+t.dir+'</span>'+
+            '</span>'+
+          '</div>';
+        }).join('')+'<div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">🔄 Live · Open-Meteo</div>';
+      });
+    }
+    load(TOWNS.maui,'maui-towns');
+    load(TOWNS.oahu,'oahu-towns');
+    load(TOWNS.kauai,'kauai-towns');
+    load(TOWNS.big,'big-towns');
+  })();
+  </script>
+
   <div class="photo-grid">
       <div class="photo-card">
         <img src="/10.jpg" alt="Hawaii" loading="lazy">
@@ -2300,6 +2377,146 @@
         <img src="/12.jpg" alt="Hawaii" loading="lazy">
       </div>
   </div>
+  <!-- WEATHER SECTION -->
+  <div class="weather-section">
+    <div class="section-title">🌤️ Hawaii Weather & Forecast</div>
+
+    <!-- Weather Widget -->
+    <div style="margin-bottom:28px;background:var(--card-bg);border:1px solid var(--border);border-radius:24px;overflow:hidden;padding:24px;">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;">🌤️ Hawaii Weather — Live Conditions & 7-Day Forecast</div>
+      <a class="weatherwidget-io" href="https://forecast7.com/en/19d90n155d58/hawaii/?unit=us" data-label_1="HAWAII" data-label_2="WEATHER" data-theme="marine">HAWAII WEATHER</a>
+      <script>
+      !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+      </script>
+    </div>
+
+    <!-- Windy Live Radar -->
+    <div class="windy-card">
+      <div class="section-title" style="font-size:17px;margin-bottom:12px;">🌊 Live Wind & Wave Radar</div>
+      <div style="border-radius:16px;overflow:hidden;border:1px solid var(--border);">
+        <iframe width="100%" height="450" src="https://embed.windy.com/embed2.html?lat=20.5&lon=-156.5&detailLat=20.8&detailLon=-156.5&width=650&height=450&zoom=7&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0"></iframe>
+      </div>
+      <!-- Island weather buttons -->
+      <div class="wx-widget-tabs" style="margin-top:16px;">
+        <button class="wx-wtab active" onclick="setWindy(20.8,'-156.5','Maui')">🏄 Maui</button>
+        <button class="wx-wtab" onclick="setWindy(21.3,'-157.8','Oahu')">🌆 Oahu</button>
+        <button class="wx-wtab" onclick="setWindy(22.1,'-159.5','Kauai')">🌿 Kauaʻi</button>
+        <button class="wx-wtab" onclick="setWindy(19.6,'-155.9','Big Island')">🌋 Big Island</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function setWindy(lat, lon, name) {
+    var iframe = document.querySelector('.windy-card iframe');
+    if(iframe) {
+      iframe.src = 'https://embed.windy.com/embed2.html?lat='+lat+'&lon='+lon+'&detailLat='+lat+'&detailLon='+lon+'&width=650&height=450&zoom=8&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1';
+    }
+    document.querySelectorAll('.wx-wtab').forEach(function(b){ b.classList.remove('active'); });
+    event.target.classList.add('active');
+  }
+  </script>
+
+  <!-- SUNRISE / SUNSET -->
+  <div class="sun-section">
+    <div class="section-title">🌅 Sunrise & Sunset Times</div>
+    <div class="sun-grid" id="sunGrid">
+      <div class="sun-card">
+        <div class="sun-island">🏄 Maui</div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-val" id="sunrise-maui">--:--</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-val" id="sunset-maui">--:--</span></div>
+        <div class="sun-bar-wrap"><div class="sun-bar" id="sunbar-maui"></div></div>
+        <div class="sun-day" id="sunday-maui">Calculating...</div>
+      </div>
+      <div class="sun-card">
+        <div class="sun-island">🌆 Oahu</div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-val" id="sunrise-oahu">--:--</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-val" id="sunset-oahu">--:--</span></div>
+        <div class="sun-bar-wrap"><div class="sun-bar" id="sunbar-oahu"></div></div>
+        <div class="sun-day" id="sunday-oahu">Calculating...</div>
+      </div>
+      <div class="sun-card">
+        <div class="sun-island">🌿 Kauaʻi</div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-val" id="sunrise-kauai">--:--</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-val" id="sunset-kauai">--:--</span></div>
+        <div class="sun-bar-wrap"><div class="sun-bar" id="sunbar-kauai"></div></div>
+        <div class="sun-day" id="sunday-kauai">Calculating...</div>
+      </div>
+      <div class="sun-card">
+        <div class="sun-island">🌋 Big Island</div>
+        <div class="sun-row"><span class="sun-label">🌅 Sunrise</span><span class="sun-val" id="sunrise-big">--:--</span></div>
+        <div class="sun-row"><span class="sun-label">🌇 Sunset</span><span class="sun-val" id="sunset-big">--:--</span></div>
+        <div class="sun-bar-wrap"><div class="sun-bar" id="sunbar-big"></div></div>
+        <div class="sun-day" id="sunday-big">Calculating...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var ISLANDS = [
+      {id:'maui',   lat:20.8783, lon:-156.6825},
+      {id:'oahu',   lat:21.3069, lon:-157.8583},
+      {id:'kauai',  lat:21.9811, lon:-159.3711},
+      {id:'big',    lat:19.6400, lon:-155.9969},
+    ];
+
+    function toRad(d){ return d * Math.PI / 180; }
+    function toDeg(r){ return r * 180 / Math.PI; }
+
+    function getSunTimes(lat, lon, date) {
+      var JD = Math.floor(date.getTime()/86400000) + 2440587.5;
+      var n = JD - 2451545.0;
+      var L = (280.46 + 0.9856474 * n) % 360;
+      var g = toRad((357.528 + 0.9856003 * n) % 360);
+      var lambda = toRad(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2*g));
+      var eps = toRad(23.439 - 0.0000004 * n);
+      var sinDec = Math.sin(eps) * Math.sin(lambda);
+      var dec = Math.asin(sinDec);
+      var cosH = (Math.cos(toRad(90.833)) - sinDec * Math.sin(toRad(lat))) / (Math.cos(dec) * Math.cos(toRad(lat)));
+      if(cosH > 1 || cosH < -1) return null;
+      var H = toDeg(Math.acos(cosH));
+      var LMST = (L + 180) % 360;
+      var noon = (LMST - lon) / 15;
+      while(noon < 0) noon += 24;
+      while(noon > 24) noon -= 24;
+      var tzOffset = -10; // Hawaii
+      noon += tzOffset;
+      var sunrise = noon - H/15;
+      var sunset  = noon + H/15;
+      return {sunrise: sunrise, sunset: sunset, noon: noon};
+    }
+
+    function fmtTime(h) {
+      var hrs = Math.floor(h) % 24;
+      var mins = Math.round((h % 1) * 60);
+      if(mins === 60){ hrs++; mins = 0; }
+      var ampm = hrs >= 12 ? 'PM' : 'AM';
+      var h12 = hrs % 12 || 12;
+      return h12 + ':' + (mins < 10 ? '0' : '') + mins + ' ' + ampm;
+    }
+
+    var now = new Date();
+    var nowH = now.getHours() + now.getMinutes()/60;
+
+    ISLANDS.forEach(function(isl){
+      var times = getSunTimes(isl.lat, isl.lon, now);
+      if(!times) return;
+      document.getElementById('sunrise-'+isl.id).textContent = fmtTime(times.sunrise);
+      document.getElementById('sunset-'+isl.id).textContent  = fmtTime(times.sunset);
+      var dayLen = times.sunset - times.sunrise;
+      var elapsed = Math.max(0, Math.min(nowH - times.sunrise, dayLen));
+      var pct = dayLen > 0 ? (elapsed / dayLen * 100).toFixed(1) : 0;
+      document.getElementById('sunbar-'+isl.id).style.width = pct + '%';
+      var hrs = Math.floor(dayLen);
+      var mins = Math.round((dayLen % 1) * 60);
+      document.getElementById('sunday-'+isl.id).textContent = 'Daylight: ' + hrs + 'h ' + mins + 'm';
+    });
+  })();
+  </script>
+
+  <hr class="section-divider">
+
   <!-- RETRO RECORD PLAYER -->
   <div style="margin-bottom:56px;">
     <div class="section-title">&#127908; 222 Sounds — Jazz & Chill <span class="section-note">Live</span></div>
