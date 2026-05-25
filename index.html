@@ -878,7 +878,7 @@
       </div>
       <div id="qisland-hotel-all" class="qisland-panel">
         <div class="qgrid">
-          <a href="https://www.booking.com/searchresults.html?ss=Hawaii" target="_blank" class="qbtn">🔍 Find a Hotel</a>
+          <a href="https://www.booking.com/searchresults.html?ss=Hawaii&aid=304142&label=hawaii-today&lang=en-us" target="_blank" class="qbtn">🔍 Find a Hotel</a>
           <a href="https://www.airbnb.com/s/Hawaii--United-States" target="_blank" class="qbtn">🏠 Find Airbnb</a>
           <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">🌴 Find VRBO</a>
           <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">🧳 Luggage Storage</a>
@@ -890,7 +890,7 @@
       </div>
       <div id="qisland-hotel-oahu" class="qisland-panel" style="display:none;">
         <div class="qgrid">
-          <a href="https://www.booking.com/searchresults.html?ss=Waikiki+Honolulu+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Waikiki</a>
+          <a href="https://www.booking.com/searchresults.html?ss=Waikiki+Honolulu+Hawaii&aid=304142&label=hawaii-today&lang=en-us" target="_blank" class="qbtn">🔍 Hotels in Waikiki</a>
           <a href="https://www.airbnb.com/s/Honolulu--Hawaii--United-States" target="_blank" class="qbtn">🏠 Airbnb Oahu</a>
           <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/oahu" target="_blank" class="qbtn">🌴 VRBO Oahu</a>
           <a href="https://www.google.com/maps/search/luggage+storage+waikiki+honolulu" target="_blank" class="qbtn">🧳 Waikiki Storage</a>
@@ -902,7 +902,7 @@
       </div>
       <div id="qisland-hotel-maui" class="qisland-panel" style="display:none;">
         <div class="qgrid">
-          <a href="https://www.booking.com/searchresults.html?ss=Maui+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Maui</a>
+          <a href="https://www.booking.com/searchresults.html?ss=Maui+Hawaii&aid=304142&label=hawaii-today&lang=en-us" target="_blank" class="qbtn">🔍 Hotels in Maui</a>
           <a href="https://www.airbnb.com/s/Maui--Hawaii--United-States" target="_blank" class="qbtn">🏠 Airbnb Maui</a>
           <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/maui" target="_blank" class="qbtn">🌴 VRBO Maui</a>
           <a href="https://www.google.com/maps/search/luggage+storage+maui+hawaii" target="_blank" class="qbtn">🧳 Maui Storage</a>
@@ -914,7 +914,7 @@
       </div>
       <div id="qisland-hotel-kauai" class="qisland-panel" style="display:none;">
         <div class="qgrid">
-          <a href="https://www.booking.com/searchresults.html?ss=Kauai+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Kauai</a>
+          <a href="https://www.booking.com/searchresults.html?ss=Kauai+Hawaii&aid=304142&label=hawaii-today&lang=en-us" target="_blank" class="qbtn">🔍 Hotels in Kauai</a>
           <a href="https://www.airbnb.com/s/Kauai--Hawaii--United-States" target="_blank" class="qbtn">🏠 Airbnb Kauai</a>
           <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/kauai" target="_blank" class="qbtn">🌴 VRBO Kauai</a>
           <a href="https://www.google.com/maps/search/luggage+storage+lihue+kauai" target="_blank" class="qbtn">🧳 Kauai Storage</a>
@@ -926,7 +926,7 @@
       </div>
       <div id="qisland-hotel-big" class="qisland-panel" style="display:none;">
         <div class="qgrid">
-          <a href="https://www.booking.com/searchresults.html?ss=Kona+Big+Island+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Kona</a>
+          <a href="https://www.booking.com/searchresults.html?ss=Kona+Big+Island+Hawaii&aid=304142&label=hawaii-today&lang=en-us" target="_blank" class="qbtn">🔍 Hotels in Kona</a>
           <a href="https://www.airbnb.com/s/Big-Island--Hawaii--United-States" target="_blank" class="qbtn">🏠 Airbnb Big Island</a>
           <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/island-of-hawaii" target="_blank" class="qbtn">🌴 VRBO Big Island</a>
           <a href="https://www.google.com/maps/search/luggage+storage+kona+hawaii" target="_blank" class="qbtn">🧳 Kona Storage</a>
@@ -3251,7 +3251,7 @@ function searchHotels() {
   var checkin = document.getElementById('hotel-in').value;
   var checkout = document.getElementById('hotel-out').value;
   var guests = (document.getElementById('hotel-guests').value||'2 guests').split(' ')[0];
-  var url = 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(dest) + '&checkin=' + checkin + '&checkout=' + checkout + '&group_adults=' + guests + '&no_rooms=1';
+  var url = 'https://www.booking.com/searchresults.html?aid=304142&label=hawaii-today&ss=' + encodeURIComponent(dest) + '&checkin=' + checkin + '&checkout=' + checkout + '&group_adults=' + guests + '&no_rooms=1';
   window.open(url, '_blank');
 }
 
