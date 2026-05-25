@@ -762,19 +762,72 @@
 
     <!-- HOTEL HELP -->
     <div id="qpanel-hotel" class="qpanel" style="display:none;">
-      <div class="qgrid">
-        <a href="https://www.booking.com/index.html?label=hawaii-today" target="_blank" class="qbtn">🔍 Find a Hotel</a>
-        <a href="https://www.airbnb.com/s/Hawaii" target="_blank" class="qbtn">🏠 Find Airbnb</a>
-        <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">🌴 Find VRBO</a>
-        <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">🧳 Luggage Storage</a>
-        <a href="https://www.google.com/maps/search/laundromat+near+me+hawaii" target="_blank" class="qbtn">👕 Laundromat</a>
-        <a href="https://www.google.com/maps/search/atm+near+me+hawaii" target="_blank" class="qbtn">💰 Find ATM</a>
-        <a href="https://www.google.com/maps/search/post+office+near+me+hawaii" target="_blank" class="qbtn">📮 Post Office</a>
-        <a href="https://www.google.com/maps/search/24+hour+convenience+store+hawaii" target="_blank" class="qbtn">🏪 24hr Store</a>
-        <a href="https://www.google.com/maps/search/wifi+cafe+hawaii" target="_blank" class="qbtn">📶 Free WiFi Café</a>
-        <a href="https://www.google.com/maps/search/print+shop+hawaii" target="_blank" class="qbtn">🖨️ Print Shop</a>
-        <a href="https://www.google.com/maps/search/phone+repair+hawaii" target="_blank" class="qbtn">📱 Phone Repair</a>
-        <a href="https://www.google.com/maps/search/travel+adapter+hawaii" target="_blank" class="qbtn">🔌 Travel Adapter</a>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center;">
+        <button onclick="showQIsland('hotel','all',this)" class="qisland-tab active" id="qi-hotel-all">🌺 All Islands</button>
+        <button onclick="showQIsland('hotel','oahu',this)" class="qisland-tab" id="qi-hotel-oahu">🌆 Oahu</button>
+        <button onclick="showQIsland('hotel','maui',this)" class="qisland-tab" id="qi-hotel-maui">🏄 Maui</button>
+        <button onclick="showQIsland('hotel','kauai',this)" class="qisland-tab" id="qi-hotel-kauai">🌿 Kauaʻi</button>
+        <button onclick="showQIsland('hotel','big',this)" class="qisland-tab" id="qi-hotel-big">🌋 Big Island</button>
+      </div>
+      <div id="qisland-hotel-all" class="qisland-panel">
+        <div class="qgrid">
+          <a href="https://www.booking.com/index.html?label=hawaii-today" target="_blank" class="qbtn">🔍 Find a Hotel</a>
+          <a href="https://www.airbnb.com/s/Hawaii" target="_blank" class="qbtn">🏠 Find Airbnb</a>
+          <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">🌴 Find VRBO</a>
+          <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">🧳 Luggage Storage</a>
+          <a href="https://www.google.com/maps/search/laundromat+near+me+hawaii" target="_blank" class="qbtn">👕 Laundromat</a>
+          <a href="https://www.google.com/maps/search/atm+near+me+hawaii" target="_blank" class="qbtn">💰 Find ATM</a>
+          <a href="https://www.google.com/maps/search/post+office+near+me+hawaii" target="_blank" class="qbtn">📮 Post Office</a>
+          <a href="https://www.google.com/maps/search/24+hour+convenience+store+hawaii" target="_blank" class="qbtn">🏪 24hr Store</a>
+        </div>
+      </div>
+      <div id="qisland-hotel-oahu" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.booking.com/searchresults.html?ss=Waikiki+Honolulu" target="_blank" class="qbtn">🔍 Hotels in Waikiki</a>
+          <a href="https://www.airbnb.com/s/Honolulu--Hawaii" target="_blank" class="qbtn">🏠 Airbnb Oahu</a>
+          <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/oahu" target="_blank" class="qbtn">🌴 VRBO Oahu</a>
+          <a href="https://www.google.com/maps/search/luggage+storage+waikiki" target="_blank" class="qbtn">🧳 Waikiki Luggage Storage</a>
+          <a href="https://www.google.com/maps/search/laundromat+waikiki+honolulu" target="_blank" class="qbtn">👕 Waikiki Laundromat</a>
+          <a href="https://www.google.com/maps/search/atm+waikiki+honolulu" target="_blank" class="qbtn">💰 Waikiki ATM</a>
+          <a href="https://www.google.com/maps/search/post+office+honolulu" target="_blank" class="qbtn">📮 Honolulu Post Office</a>
+          <a href="https://www.google.com/maps/search/24+hour+store+waikiki" target="_blank" class="qbtn">🏪 24hr Store Waikiki</a>
+        </div>
+      </div>
+      <div id="qisland-hotel-maui" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.booking.com/searchresults.html?ss=Maui+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Maui</a>
+          <a href="https://www.airbnb.com/s/Maui--Hawaii" target="_blank" class="qbtn">🏠 Airbnb Maui</a>
+          <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/maui" target="_blank" class="qbtn">🌴 VRBO Maui</a>
+          <a href="https://www.google.com/maps/search/luggage+storage+maui" target="_blank" class="qbtn">🧳 Maui Luggage Storage</a>
+          <a href="https://www.google.com/maps/search/laundromat+kihei+maui" target="_blank" class="qbtn">👕 Maui Laundromat</a>
+          <a href="https://www.google.com/maps/search/atm+kahului+maui" target="_blank" class="qbtn">💰 Maui ATM</a>
+          <a href="https://www.google.com/maps/search/post+office+maui" target="_blank" class="qbtn">📮 Maui Post Office</a>
+          <a href="https://www.google.com/maps/search/24+hour+store+maui" target="_blank" class="qbtn">🏪 24hr Store Maui</a>
+        </div>
+      </div>
+      <div id="qisland-hotel-kauai" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.booking.com/searchresults.html?ss=Kauai+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Kauai</a>
+          <a href="https://www.airbnb.com/s/Kauai--Hawaii" target="_blank" class="qbtn">🏠 Airbnb Kauai</a>
+          <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/kauai" target="_blank" class="qbtn">🌴 VRBO Kauai</a>
+          <a href="https://www.google.com/maps/search/luggage+storage+lihue+kauai" target="_blank" class="qbtn">🧳 Kauai Luggage Storage</a>
+          <a href="https://www.google.com/maps/search/laundromat+lihue+kauai" target="_blank" class="qbtn">👕 Kauai Laundromat</a>
+          <a href="https://www.google.com/maps/search/atm+lihue+kauai" target="_blank" class="qbtn">💰 Kauai ATM</a>
+          <a href="https://www.google.com/maps/search/post+office+kauai" target="_blank" class="qbtn">📮 Kauai Post Office</a>
+          <a href="https://www.google.com/maps/search/24+hour+store+kauai" target="_blank" class="qbtn">🏪 24hr Store Kauai</a>
+        </div>
+      </div>
+      <div id="qisland-hotel-big" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.booking.com/searchresults.html?ss=Kona+Big+Island+Hawaii" target="_blank" class="qbtn">🔍 Hotels in Kona</a>
+          <a href="https://www.airbnb.com/s/Big-Island--Hawaii" target="_blank" class="qbtn">🏠 Airbnb Big Island</a>
+          <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/big-island" target="_blank" class="qbtn">🌴 VRBO Big Island</a>
+          <a href="https://www.google.com/maps/search/luggage+storage+kona+hawaii" target="_blank" class="qbtn">🧳 Kona Luggage Storage</a>
+          <a href="https://www.google.com/maps/search/laundromat+kona+hawaii" target="_blank" class="qbtn">👕 Kona Laundromat</a>
+          <a href="https://www.google.com/maps/search/atm+kona+hawaii" target="_blank" class="qbtn">💰 Kona ATM</a>
+          <a href="https://www.google.com/maps/search/post+office+kona+hawaii" target="_blank" class="qbtn">📮 Kona Post Office</a>
+          <a href="https://www.google.com/maps/search/24+hour+store+kona+hawaii" target="_blank" class="qbtn">🏪 24hr Store Kona</a>
+        </div>
       </div>
     </div>
 
