@@ -613,6 +613,31 @@
     background: rgba(34,211,238,0.12);
     box-shadow: 0 0 12px rgba(34,211,238,0.15);
   }
+
+  /* Radar island tabs — subtle, not white */
+  .radar-tab {
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .radar-tab:hover {
+    border-color: rgba(34,211,238,0.35);
+    color: rgba(34,211,238,0.8);
+    background: rgba(34,211,238,0.05);
+  }
+  .radar-tab.active {
+    border-color: rgba(34,211,238,0.5);
+    color: rgba(34,211,238,0.9);
+    background: rgba(34,211,238,0.08);
+  }
 </style>
 
 <!-- Travelpayouts tracking -->
@@ -1238,9 +1263,9 @@
     <!-- WHY INSTALL -->
     <div style="position:relative;margin-bottom:40px;">
       <div style="display:flex;justify-content:center;gap:120px;margin-bottom:0;position:relative;z-index:2;">
-        <div class="pulse-arrow">&#8595;</div>
-        <div class="pulse-arrow" style="animation-delay:0.2s;">&#8595;</div>
-        <div class="pulse-arrow" style="animation-delay:0.4s;">&#8595;</div>
+        <div class="pulse-arrow">&#8593;</div>
+        <div class="pulse-arrow" style="animation-delay:0.2s;">&#8593;</div>
+        <div class="pulse-arrow" style="animation-delay:0.4s;">&#8593;</div>
       </div>
       <div style="text-align:center;margin-top:-18px;padding:28px 24px 20px;background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.12);border-radius:16px;position:relative;z-index:1;">
         <div style="font-size:14px;color:#e8f4f8;line-height:1.8;max-width:600px;margin:0 auto;">
@@ -1259,15 +1284,15 @@
       text-shadow: 0 0 12px rgba(34,211,238,0.6), 0 0 24px rgba(34,211,238,0.3);
     }
     @keyframes arrowPulse {
-      0%   { opacity:0.2; transform:translateY(-6px); }
-      50%  { opacity:1;   transform:translateY(4px); }
-      100% { opacity:0.2; transform:translateY(-6px); }
+      0%   { opacity:0.2; transform:translateY(6px); }
+      50%  { opacity:1;   transform:translateY(-4px); }
+      100% { opacity:0.2; transform:translateY(6px); }
     }
     </style>
 
     <!-- iOS Instructions Popup -->
     <div id="iosPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.96);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
-      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;position:relative;">
         <div style="font-size:48px;margin-bottom:16px;">🍎</div>
         <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Add to iPhone / iPad</div>
         <div style="font-size:13px;color:#7fb3c8;margin-bottom:24px;">3 easy steps in Safari:</div>
@@ -1287,11 +1312,13 @@
         </div>
         <button onclick="document.getElementById('iosPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Got it! 🤙</button>
       </div>
+      <button onclick="document.getElementById('iosPopup').style.display='none'" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+    </div>
     </div>
 
     <!-- Desktop Instructions Popup -->
     <div id="desktopPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.96);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
-      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:400px;width:90%;text-align:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(34,211,238,0.3);border-radius:24px;padding:32px;max-width:400px;width:90%;text-align:center;position:relative;">
         <div style="font-size:48px;margin-bottom:16px;">💻</div>
         <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">Install on Mac / Windows</div>
         <div style="font-size:13px;color:#7fb3c8;margin-bottom:24px;">Quick and easy in Chrome:</div>
@@ -1314,11 +1341,13 @@
         </div>
         <button onclick="document.getElementById('desktopPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Got it! 🤙</button>
       </div>
+      <button onclick="document.getElementById('desktopPopup').style.display='none'" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+    </div>
     </div>
 
     <!-- Installed Success Popup -->
     <div id="installedPopup" style="display:none;position:fixed;inset:0;background:rgba(6,29,44,0.96);backdrop-filter:blur(20px);z-index:99999;align-items:center;justify-content:center;">
-      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(16,185,129,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;">
+      <div style="background:linear-gradient(135deg,#0a2e44,#061d2c);border:1px solid rgba(16,185,129,0.3);border-radius:24px;padding:32px;max-width:340px;width:90%;text-align:center;position:relative;">
         <div style="font-size:64px;margin-bottom:16px;">🎉</div>
         <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:12px;">You're all set! 🌺</div>
         <div style="font-size:13px;color:#7fb3c8;margin-bottom:16px;line-height:1.8;">
@@ -1328,6 +1357,8 @@
         </div>
         <button onclick="document.getElementById('installedPopup').style.display='none'" style="padding:12px 32px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:99px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Awesome! 🤙</button>
       </div>
+      <button onclick="document.getElementById('installedPopup').style.display='none'" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+    </div>
     </div>
 
     <script>
@@ -1705,11 +1736,11 @@
 
       <!-- Island radar tabs -->
       <div style="padding:16px 20px 0;display:flex;gap:8px;flex-wrap:wrap;">
-        <button onclick="setRadar(20.8,-156.5,8,this)" id="rtab-maui" class="qtab active">🏄 Maui</button>
-        <button onclick="setRadar(21.3,-157.8,8,this)" id="rtab-oahu" class="qtab">🌆 Oahu</button>
-        <button onclick="setRadar(22.0,-159.5,8,this)" id="rtab-kauai" class="qtab">🌿 Kauaʻi</button>
-        <button onclick="setRadar(19.6,-155.9,8,this)" id="rtab-big" class="qtab">🌋 Big Island</button>
-        <button onclick="setRadar(20.5,-157.5,7,this)" id="rtab-all" class="qtab">🌺 All Islands</button>
+        <button onclick="setRadar(20.8,-156.5,8,this)" id="rtab-maui" class="radar-tab active">🏄 Maui</button>
+        <button onclick="setRadar(21.3,-157.8,8,this)" id="rtab-oahu" class="radar-tab">🌆 Oahu</button>
+        <button onclick="setRadar(22.0,-159.5,8,this)" id="rtab-kauai" class="radar-tab">🌿 Kauaʻi</button>
+        <button onclick="setRadar(19.6,-155.9,8,this)" id="rtab-big" class="radar-tab">🌋 Big Island</button>
+        <button onclick="setRadar(20.5,-157.5,7,this)" id="rtab-all" class="radar-tab">🌺 All Islands</button>
       </div>
       <div style="padding:16px 20px;">
         <div style="border-radius:16px;overflow:hidden;border:1px solid var(--border);">
@@ -1728,7 +1759,7 @@
     function setRadar(lat,lon,zoom,btn){
       var frame=document.getElementById('rainviewerFrame');
       if(frame)frame.src='https://www.rainviewer.com/map.html?loc='+lat+','+lon+','+zoom+'&oFa=0&oC=0&oU=0&oCS=1&oF=0&oAP=1&rmt=4&c=1&o=83&lm=0&layer=radar&sm=1&sn=1&hu=1';
-      document.querySelectorAll('[id^="rtab-"]').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('.radar-tab').forEach(function(b){b.classList.remove('active');});
       if(btn)btn.classList.add('active');
     }
     </script>
@@ -1738,10 +1769,10 @@
   <div class="sun-section" style="margin-bottom:56px;">
     <div class="section-title">🌅 Sunrise &amp; Sunset Times <span class="section-note">7-Day Forecast</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-      <button onclick="showSunIsland('maui',this)" id="suntab-maui" class="qtab active">🏄 Maui</button>
-      <button onclick="showSunIsland('oahu',this)" id="suntab-oahu" class="qtab">🌆 Oahu</button>
-      <button onclick="showSunIsland('kauai',this)" id="suntab-kauai" class="qtab">🌿 Kauaʻi</button>
-      <button onclick="showSunIsland('big',this)" id="suntab-big" class="qtab">🌋 Big Island</button>
+      <button onclick="showSunIsland('maui',this)" id="suntab-maui" class="radar-tab active">🏄 Maui</button>
+      <button onclick="showSunIsland('oahu',this)" id="suntab-oahu" class="radar-tab">🌆 Oahu</button>
+      <button onclick="showSunIsland('kauai',this)" id="suntab-kauai" class="radar-tab">🌿 Kauaʻi</button>
+      <button onclick="showSunIsland('big',this)" id="suntab-big" class="radar-tab">🌋 Big Island</button>
     </div>
     <div id="sunpanel-maui" class="sunpanel"></div>
     <div id="sunpanel-oahu" class="sunpanel" style="display:none;"></div>
