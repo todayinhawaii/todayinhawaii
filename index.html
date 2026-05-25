@@ -604,95 +604,332 @@
 
 
   <!-- QUICK ACTION BUTTONS -->
-  <div style="margin-bottom:32px;">
-    <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;">⚡ Quick Actions for Travelers</div>
+  <div style="margin-bottom:40px;">
+    <div class="section-title" style="text-align:center;margin-bottom:8px;">⚡ Quick Actions for Travelers</div>
+    <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:20px;">Everything you need at your fingertips — tap and go! 🌺</p>
 
-    <!-- Tabs -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;">
-      <button onclick="showQTab('around',this)" id="qtab-around" class="qtab active">?? Getting Around</button>
-      <button onclick="showQTab('food',this)" id="qtab-food" class="qtab">?? Food & Delivery</button>
-      <button onclick="showQTab('hotel',this)" id="qtab-hotel" class="qtab">?? Hotel Help</button>
-      <button onclick="showQTab('activities',this)" id="qtab-activities" class="qtab">?? Activities</button>
-      <button onclick="showQTab('emergency',this)" id="qtab-emergency" class="qtab">?? Emergency</button>
+    <!-- Main Category Tabs -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;">
+      <button onclick="showQTab('around',this)" id="qtab-around" class="qtab active">🚗 Getting Around</button>
+      <button onclick="showQTab('food',this)" id="qtab-food" class="qtab">🍔 Food & Delivery</button>
+      <button onclick="showQTab('hotel',this)" id="qtab-hotel" class="qtab">🏨 Hotel Help</button>
+      <button onclick="showQTab('activities',this)" id="qtab-activities" class="qtab">🌺 Activities</button>
+      <button onclick="showQTab('emergency',this)" id="qtab-emergency" class="qtab">🚨 Emergency</button>
     </div>
 
-    <!-- Getting Around -->
+    <!-- GETTING AROUND -->
     <div id="qpanel-around" class="qpanel">
-      <div class="qgrid">
-        <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">?? Call Uber</a>
-        <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">?? Call Lyft</a>
-        <a href="https://www.thebus.org" target="_blank" class="qbtn">?? TheBus Oahu</a>
-        <a href="https://www.speedishuttle.com" target="_blank" class="qbtn">?? Speedi Shuttle</a>
-        <a href="https://www.google.com/maps/search/car+rental+return+near+me" target="_blank" class="qbtn">?? Car Return</a>
-        <a href="https://www.google.com/maps/search/parking+near+me+hawaii" target="_blank" class="qbtn">??️ Find Parking</a>
-        <a href="https://www.hawaiianairlines.com/check-in" target="_blank" class="qbtn">✈️ Check In Online</a>
-        <a href="https://www.flightradar24.com/HNL" target="_blank" class="qbtn">?? Flight Status</a>
+      <!-- Island sub-tabs -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center;">
+        <button onclick="showQIsland('around','all',this)" class="qisland-tab active" id="qi-around-all">🌺 All Islands</button>
+        <button onclick="showQIsland('around','oahu',this)" class="qisland-tab" id="qi-around-oahu">🌆 Oahu</button>
+        <button onclick="showQIsland('around','maui',this)" class="qisland-tab" id="qi-around-maui">🏄 Maui</button>
+        <button onclick="showQIsland('around','kauai',this)" class="qisland-tab" id="qi-around-kauai">🌿 Kauaʻi</button>
+        <button onclick="showQIsland('around','big',this)" class="qisland-tab" id="qi-around-big">🌋 Big Island</button>
+      </div>
+      <div id="qisland-around-all" class="qisland-panel">
+        <div class="qgrid">
+          <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+          <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+          <a href="https://www.hawaiianairlines.com/check-in" target="_blank" class="qbtn">✈️ Check In Online</a>
+          <a href="https://www.flightradar24.com/HNL" target="_blank" class="qbtn">🛫 Flight Status</a>
+          <a href="https://www.google.com/maps/search/car+rental+return+near+me" target="_blank" class="qbtn">🔑 Car Return</a>
+          <a href="https://www.google.com/maps/search/parking+near+me+hawaii" target="_blank" class="qbtn">🅿️ Find Parking</a>
+          <a href="https://www.google.com/maps/search/gas+station+near+me+hawaii" target="_blank" class="qbtn">⛽ Gas Station</a>
+          <a href="https://www.google.com/maps/search/bike+rental+hawaii" target="_blank" class="qbtn">🚲 Bike Rental</a>
+        </div>
+      </div>
+      <div id="qisland-around-oahu" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+          <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+          <a href="https://www.thebus.org" target="_blank" class="qbtn">🚌 TheBus Oahu</a>
+          <a href="https://www.bikiorg.com" target="_blank" class="qbtn">🚲 Biki Bike Share</a>
+          <a href="https://www.honoluluharbor.com" target="_blank" class="qbtn">⛴️ Harbor Ferry</a>
+          <a href="https://www.parkwaikiki.com" target="_blank" class="qbtn">🅿️ Waikiki Parking</a>
+          <a href="https://www.google.com/maps/search/car+rental+HNL+airport" target="_blank" class="qbtn">🔑 HNL Car Rental</a>
+          <a href="https://www.flightradar24.com/HNL" target="_blank" class="qbtn">🛫 HNL Flight Status</a>
+        </div>
+      </div>
+      <div id="qisland-around-maui" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+          <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+          <a href="https://www.speedishuttle.com" target="_blank" class="qbtn">🚐 Speedi Shuttle</a>
+          <a href="https://www.mauibus.org" target="_blank" class="qbtn">🚌 Maui Bus</a>
+          <a href="https://www.google.com/maps/search/car+rental+OGG+airport" target="_blank" class="qbtn">🔑 OGG Car Rental</a>
+          <a href="https://www.google.com/maps/search/parking+lahaina+maui" target="_blank" class="qbtn">🅿️ Lahaina Parking</a>
+          <a href="https://www.flightradar24.com/OGG" target="_blank" class="qbtn">🛫 OGG Flight Status</a>
+          <a href="https://www.google.com/maps/search/bike+rental+maui" target="_blank" class="qbtn">🚲 Bike Rental Maui</a>
+        </div>
+      </div>
+      <div id="qisland-around-kauai" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+          <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+          <a href="https://www.kauairide.com" target="_blank" class="qbtn">🚌 Kauai Ride</a>
+          <a href="https://www.google.com/maps/search/car+rental+LIH+airport" target="_blank" class="qbtn">🔑 LIH Car Rental</a>
+          <a href="https://www.google.com/maps/search/parking+kauai" target="_blank" class="qbtn">🅿️ Find Parking</a>
+          <a href="https://www.flightradar24.com/LIH" target="_blank" class="qbtn">🛫 LIH Flight Status</a>
+          <a href="https://www.google.com/maps/search/scooter+rental+kauai" target="_blank" class="qbtn">🛵 Scooter Rental</a>
+          <a href="https://www.google.com/maps/search/kayak+rental+kauai" target="_blank" class="qbtn">🚣 Kayak Rental</a>
+        </div>
+      </div>
+      <div id="qisland-around-big" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location" target="_blank" class="qbtn">🚗 Call Uber</a>
+          <a href="https://www.lyft.com/rider" target="_blank" class="qbtn">🟣 Call Lyft</a>
+          <a href="https://www.heleonbus.org" target="_blank" class="qbtn">🚌 Hele-On Bus</a>
+          <a href="https://www.google.com/maps/search/car+rental+KOA+airport" target="_blank" class="qbtn">🔑 KOA Car Rental</a>
+          <a href="https://www.google.com/maps/search/parking+kona+hawaii" target="_blank" class="qbtn">🅿️ Kona Parking</a>
+          <a href="https://www.flightradar24.com/KOA" target="_blank" class="qbtn">🛫 KOA Flight Status</a>
+          <a href="https://www.google.com/maps/search/bike+rental+big+island" target="_blank" class="qbtn">🚲 Bike Rental</a>
+          <a href="https://www.speedishuttle.com" target="_blank" class="qbtn">🚐 Airport Shuttle</a>
+        </div>
       </div>
     </div>
 
-    <!-- Food & Delivery -->
+    <!-- FOOD & DELIVERY -->
     <div id="qpanel-food" class="qpanel" style="display:none;">
-      <div class="qgrid">
-        <a href="https://www.doordash.com" target="_blank" class="qbtn">?? DoorDash</a>
-        <a href="https://www.ubereats.com" target="_blank" class="qbtn">?? Uber Eats</a>
-        <a href="https://www.grubhub.com" target="_blank" class="qbtn">?? Grubhub</a>
-        <a href="https://www.instacart.com" target="_blank" class="qbtn">?? Instacart</a>
-        <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Hawaii" target="_blank" class="qbtn">⭐ Yelp Hawaii</a>
-        <a href="https://www.opentable.com/s?covers=2&metroId=4894" target="_blank" class="qbtn">??️ Reserve Table</a>
-        <a href="https://www.google.com/maps/search/grocery+store+near+me+hawaii" target="_blank" class="qbtn">?? Grocery Store</a>
-        <a href="https://www.google.com/maps/search/pharmacy+near+me+hawaii" target="_blank" class="qbtn">?? Pharmacy</a>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center;">
+        <button onclick="showQIsland('food','all',this)" class="qisland-tab active" id="qi-food-all">🌺 All Islands</button>
+        <button onclick="showQIsland('food','oahu',this)" class="qisland-tab" id="qi-food-oahu">🌆 Oahu</button>
+        <button onclick="showQIsland('food','maui',this)" class="qisland-tab" id="qi-food-maui">🏄 Maui</button>
+        <button onclick="showQIsland('food','kauai',this)" class="qisland-tab" id="qi-food-kauai">🌿 Kauaʻi</button>
+        <button onclick="showQIsland('food','big',this)" class="qisland-tab" id="qi-food-big">🌋 Big Island</button>
+      </div>
+      <div id="qisland-food-all" class="qisland-panel">
+        <div class="qgrid">
+          <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+          <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+          <a href="https://www.grubhub.com" target="_blank" class="qbtn">🥡 Grubhub</a>
+          <a href="https://www.instacart.com" target="_blank" class="qbtn">🛒 Instacart</a>
+          <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Hawaii" target="_blank" class="qbtn">⭐ Yelp Hawaii</a>
+          <a href="https://www.opentable.com/s?covers=2&metroId=4894" target="_blank" class="qbtn">🍽️ Reserve Table</a>
+          <a href="https://www.google.com/maps/search/grocery+store+near+me+hawaii" target="_blank" class="qbtn">🏪 Grocery Store</a>
+          <a href="https://www.google.com/maps/search/pharmacy+near+me+hawaii" target="_blank" class="qbtn">💊 Pharmacy</a>
+        </div>
+      </div>
+      <div id="qisland-food-oahu" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+          <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+          <a href="https://www.zippy.com" target="_blank" class="qbtn">🌮 Zippy's (Local!)</a>
+          <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Waikiki+Honolulu" target="_blank" class="qbtn">⭐ Best Waikiki Food</a>
+          <a href="https://www.google.com/maps/search/plate+lunch+honolulu" target="_blank" class="qbtn">🍱 Plate Lunch</a>
+          <a href="https://www.google.com/maps/search/poke+bowl+oahu" target="_blank" class="qbtn">🐟 Poke Bowl</a>
+          <a href="https://www.google.com/maps/search/shave+ice+oahu" target="_blank" class="qbtn">🧊 Shave Ice</a>
+          <a href="https://www.google.com/maps/search/farmers+market+honolulu" target="_blank" class="qbtn">🥬 Farmers Market</a>
+        </div>
+      </div>
+      <div id="qisland-food-maui" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+          <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+          <a href="https://www.mamasfishhouse.com" target="_blank" class="qbtn">🐟 Mama's Fish House</a>
+          <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Maui+Hawaii" target="_blank" class="qbtn">⭐ Best Maui Food</a>
+          <a href="https://www.google.com/maps/search/poke+bowl+maui" target="_blank" class="qbtn">🐟 Poke Bowl</a>
+          <a href="https://www.google.com/maps/search/shave+ice+maui" target="_blank" class="qbtn">🧊 Shave Ice</a>
+          <a href="https://www.google.com/maps/search/food+truck+maui" target="_blank" class="qbtn">🚚 Food Trucks</a>
+          <a href="https://www.google.com/maps/search/farmers+market+maui" target="_blank" class="qbtn">🥬 Farmers Market</a>
+        </div>
+      </div>
+      <div id="qisland-food-kauai" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+          <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+          <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Kauai+Hawaii" target="_blank" class="qbtn">⭐ Best Kauai Food</a>
+          <a href="https://www.google.com/maps/search/poke+bowl+kauai" target="_blank" class="qbtn">🐟 Poke Bowl</a>
+          <a href="https://www.google.com/maps/search/shave+ice+kauai" target="_blank" class="qbtn">🧊 Shave Ice</a>
+          <a href="https://www.google.com/maps/search/food+truck+kauai" target="_blank" class="qbtn">🚚 Food Trucks</a>
+          <a href="https://www.google.com/maps/search/malasadas+kauai" target="_blank" class="qbtn">🍩 Malasadas</a>
+          <a href="https://www.google.com/maps/search/farmers+market+kauai" target="_blank" class="qbtn">🥬 Farmers Market</a>
+        </div>
+      </div>
+      <div id="qisland-food-big" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.doordash.com" target="_blank" class="qbtn">🚪 DoorDash</a>
+          <a href="https://www.ubereats.com" target="_blank" class="qbtn">🍔 Uber Eats</a>
+          <a href="https://www.yelp.com/search?find_desc=restaurants&find_loc=Kona+Hawaii" target="_blank" class="qbtn">⭐ Best Kona Food</a>
+          <a href="https://www.google.com/maps/search/kona+coffee+cafe" target="_blank" class="qbtn">☕ Kona Coffee</a>
+          <a href="https://www.google.com/maps/search/poke+bowl+big+island" target="_blank" class="qbtn">🐟 Poke Bowl</a>
+          <a href="https://www.google.com/maps/search/shave+ice+big+island" target="_blank" class="qbtn">🧊 Shave Ice</a>
+          <a href="https://www.google.com/maps/search/food+truck+kona+hawaii" target="_blank" class="qbtn">🚚 Food Trucks</a>
+          <a href="https://www.google.com/maps/search/farmers+market+big+island" target="_blank" class="qbtn">🥬 Farmers Market</a>
+        </div>
       </div>
     </div>
 
-    <!-- Hotel Help -->
+    <!-- HOTEL HELP -->
     <div id="qpanel-hotel" class="qpanel" style="display:none;">
       <div class="qgrid">
-        <a href="https://www.hotels.com" target="_blank" class="qbtn">?? Early Check-In</a>
-        <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">?? Luggage Storage</a>
-        <a href="https://www.booking.com/index.html?label=hawaii-today" target="_blank" class="qbtn">?? Find a Hotel</a>
-        <a href="https://www.airbnb.com/s/Hawaii" target="_blank" class="qbtn">?? Find Airbnb</a>
-        <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">?? Find VRBO</a>
-        <a href="https://www.google.com/maps/search/laundromat+near+me+hawaii" target="_blank" class="qbtn">?? Laundromat</a>
-        <a href="https://www.google.com/maps/search/atm+near+me+hawaii" target="_blank" class="qbtn">?? Find ATM</a>
-        <a href="https://www.google.com/maps/search/post+office+near+me+hawaii" target="_blank" class="qbtn">?? Post Office</a>
+        <a href="https://www.booking.com/index.html?label=hawaii-today" target="_blank" class="qbtn">🔍 Find a Hotel</a>
+        <a href="https://www.airbnb.com/s/Hawaii" target="_blank" class="qbtn">🏠 Find Airbnb</a>
+        <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii" target="_blank" class="qbtn">🌴 Find VRBO</a>
+        <a href="https://www.luggagestorage.com/search?location=Hawaii" target="_blank" class="qbtn">🧳 Luggage Storage</a>
+        <a href="https://www.google.com/maps/search/laundromat+near+me+hawaii" target="_blank" class="qbtn">👕 Laundromat</a>
+        <a href="https://www.google.com/maps/search/atm+near+me+hawaii" target="_blank" class="qbtn">💰 Find ATM</a>
+        <a href="https://www.google.com/maps/search/post+office+near+me+hawaii" target="_blank" class="qbtn">📮 Post Office</a>
+        <a href="https://www.google.com/maps/search/24+hour+convenience+store+hawaii" target="_blank" class="qbtn">🏪 24hr Store</a>
+        <a href="https://www.google.com/maps/search/wifi+cafe+hawaii" target="_blank" class="qbtn">📶 Free WiFi Café</a>
+        <a href="https://www.google.com/maps/search/print+shop+hawaii" target="_blank" class="qbtn">🖨️ Print Shop</a>
+        <a href="https://www.google.com/maps/search/phone+repair+hawaii" target="_blank" class="qbtn">📱 Phone Repair</a>
+        <a href="https://www.google.com/maps/search/travel+adapter+hawaii" target="_blank" class="qbtn">🔌 Travel Adapter</a>
       </div>
     </div>
 
-    <!-- Activities -->
+    <!-- ACTIVITIES -->
     <div id="qpanel-activities" class="qpanel" style="display:none;">
-      <div class="qgrid">
-        <a href="https://klook.tp.st/qCs2Z39t" target="_blank" class="qbtn">?? Book Activities</a>
-        <a href="https://www.google.com/maps/search/luau+near+me+hawaii" target="_blank" class="qbtn">?? Book a Luau</a>
-        <a href="https://www.google.com/maps/search/snorkel+rental+hawaii" target="_blank" class="qbtn">?? Snorkel Rental</a>
-        <a href="https://www.google.com/maps/search/surf+lessons+hawaii" target="_blank" class="qbtn">?? Surf Lessons</a>
-        <a href="https://www.google.com/maps/search/whale+watching+hawaii" target="_blank" class="qbtn">?? Whale Watching</a>
-        <a href="https://www.google.com/maps/search/helicopter+tour+hawaii" target="_blank" class="qbtn">?? Helicopter Tour</a>
-        <a href="https://www.google.com/maps/search/sunset+cruise+hawaii" target="_blank" class="qbtn">?? Sunset Cruise</a>
-        <a href="https://www.google.com/maps/search/golf+course+hawaii" target="_blank" class="qbtn">⛳ Golf Course</a>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center;">
+        <button onclick="showQIsland('activities','all',this)" class="qisland-tab active" id="qi-activities-all">🌺 All Islands</button>
+        <button onclick="showQIsland('activities','oahu',this)" class="qisland-tab" id="qi-activities-oahu">🌆 Oahu</button>
+        <button onclick="showQIsland('activities','maui',this)" class="qisland-tab" id="qi-activities-maui">🏄 Maui</button>
+        <button onclick="showQIsland('activities','kauai',this)" class="qisland-tab" id="qi-activities-kauai">🌿 Kauaʻi</button>
+        <button onclick="showQIsland('activities','big',this)" class="qisland-tab" id="qi-activities-big">🌋 Big Island</button>
+      </div>
+      <div id="qisland-activities-all" class="qisland-panel">
+        <div class="qgrid">
+          <a href="https://www.klook.com/?aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎯 Book Activities</a>
+          <a href="https://www.google.com/maps/search/luau+near+me+hawaii" target="_blank" class="qbtn">🌺 Book a Luau</a>
+          <a href="https://www.google.com/maps/search/snorkel+rental+hawaii" target="_blank" class="qbtn">🤿 Snorkel Rental</a>
+          <a href="https://www.google.com/maps/search/surf+lessons+hawaii" target="_blank" class="qbtn">🏄 Surf Lessons</a>
+          <a href="https://www.google.com/maps/search/whale+watching+hawaii" target="_blank" class="qbtn">🐋 Whale Watching</a>
+          <a href="https://www.google.com/maps/search/helicopter+tour+hawaii" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+          <a href="https://www.google.com/maps/search/sunset+cruise+hawaii" target="_blank" class="qbtn">🌅 Sunset Cruise</a>
+          <a href="https://www.google.com/maps/search/golf+course+hawaii" target="_blank" class="qbtn">⛳ Golf Course</a>
+        </div>
+      </div>
+      <div id="qisland-activities-oahu" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.klook.com/en-US/search/?query=oahu&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎯 Oahu Activities</a>
+          <a href="https://www.klook.com/en-US/search/?query=pearl+harbor&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">⚓ Pearl Harbor</a>
+          <a href="https://www.klook.com/en-US/search/?query=diamond+head&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌊 Diamond Head</a>
+          <a href="https://www.klook.com/en-US/search/?query=hanauma+bay&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🤿 Hanauma Bay</a>
+          <a href="https://www.klook.com/en-US/search/?query=polynesian+cultural+center&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌺 Cultural Center</a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+oahu&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🏄 Surf Lessons</a>
+          <a href="https://www.klook.com/en-US/search/?query=luau+oahu&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎭 Waikiki Luau</a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+oahu&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+        </div>
+      </div>
+      <div id="qisland-activities-maui" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.klook.com/en-US/search/?query=maui&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎯 Maui Activities</a>
+          <a href="https://www.klook.com/en-US/search/?query=snorkel+maui&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🤿 Molokini Snorkel</a>
+          <a href="https://www.klook.com/en-US/search/?query=haleakala+sunrise&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌅 Haleakala Sunrise</a>
+          <a href="https://www.klook.com/en-US/search/?query=road+to+hana&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🛣️ Road to Hana</a>
+          <a href="https://www.klook.com/en-US/search/?query=whale+watching+maui&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🐋 Whale Watching</a>
+          <a href="https://www.klook.com/en-US/search/?query=maui+luau&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌺 Old Lahaina Luau</a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+maui&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+lessons+maui&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🏄 Surf Lessons</a>
+        </div>
+      </div>
+      <div id="qisland-activities-kauai" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.klook.com/en-US/search/?query=kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎯 Kauai Activities</a>
+          <a href="https://www.klook.com/en-US/search/?query=na+pali+coast&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🛶 Na Pali Boat</a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+          <a href="https://www.klook.com/en-US/search/?query=waimea+canyon&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🏞️ Waimea Canyon</a>
+          <a href="https://www.klook.com/en-US/search/?query=kayak+kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🚣 Wailua Kayak</a>
+          <a href="https://www.klook.com/en-US/search/?query=luau+kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌺 Kauai Luau</a>
+          <a href="https://www.klook.com/en-US/search/?query=snorkel+kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🤿 Poipu Snorkel</a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+kauai&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🏄 Surf Lessons</a>
+        </div>
+      </div>
+      <div id="qisland-activities-big" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="https://www.klook.com/en-US/search/?query=big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🎯 Big Island Activities</a>
+          <a href="https://www.klook.com/en-US/search/?query=volcano+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌋 Volcano Tour</a>
+          <a href="https://www.klook.com/en-US/search/?query=manta+ray+hawaii&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🤿 Manta Ray Dive</a>
+          <a href="https://www.klook.com/en-US/search/?query=stargazing+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🔭 Mauna Kea Stars</a>
+          <a href="https://www.klook.com/en-US/search/?query=helicopter+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🚁 Helicopter Tour</a>
+          <a href="https://www.klook.com/en-US/search/?query=dolphin+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🐬 Swim with Dolphins</a>
+          <a href="https://www.klook.com/en-US/search/?query=luau+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🌺 Big Island Luau</a>
+          <a href="https://www.klook.com/en-US/search/?query=surf+big+island&aid=api%7C13694%7C6ab15503d053473bb020de3b8-729483%7Cpid%7C729483&aff_pid=729483&utm_medium=affiliate-alwayson&utm_source=network&utm_campaign=13694&utm_term=729483" target="_blank" class="qbtn">🏄 Surf Lessons Kona</a>
+        </div>
       </div>
     </div>
 
-    <!-- Emergency -->
+    <!-- EMERGENCY -->
     <div id="qpanel-emergency" class="qpanel" style="display:none;">
-      <div class="qgrid">
-        <a href="tel:911" class="qbtn qbtn-red">?? Call 911</a>
-        <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
-        <a href="tel:18002746342" class="qbtn qbtn-red">?? Coast Guard</a>
-        <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
-        <a href="https://hawaiiemergencymanagement.com" target="_blank" class="qbtn qbtn-orange">?? Emergency Mgmt</a>
-        <a href="https://www.google.com/maps/search/urgent+care+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">?? Urgent Care</a>
-        <a href="https://www.google.com/maps/search/hospital+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">?? Hospital</a>
-        <a href="https://www.travel.state.gov/content/travel/en/passports/have-passport/lost-stolen.html" target="_blank" class="qbtn qbtn-orange">?? Lost Passport</a>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center;">
+        <button onclick="showQIsland('emergency','all',this)" class="qisland-tab active" id="qi-emergency-all">🌺 All Islands</button>
+        <button onclick="showQIsland('emergency','oahu',this)" class="qisland-tab" id="qi-emergency-oahu">🌆 Oahu</button>
+        <button onclick="showQIsland('emergency','maui',this)" class="qisland-tab" id="qi-emergency-maui">🏄 Maui</button>
+        <button onclick="showQIsland('emergency','kauai',this)" class="qisland-tab" id="qi-emergency-kauai">🌿 Kauaʻi</button>
+        <button onclick="showQIsland('emergency','big',this)" class="qisland-tab" id="qi-emergency-big">🌋 Big Island</button>
+      </div>
+      <div id="qisland-emergency-all" class="qisland-panel">
+        <div class="qgrid">
+          <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+          <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+          <a href="tel:18009921525" class="qbtn qbtn-red">🌊 Coast Guard</a>
+          <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+          <a href="https://dod.hawaii.gov/hiema/" target="_blank" class="qbtn qbtn-orange">🌋 Emergency Mgmt</a>
+          <a href="https://www.google.com/maps/search/urgent+care+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care</a>
+          <a href="https://www.google.com/maps/search/hospital+near+me+hawaii" target="_blank" class="qbtn qbtn-orange">🚑 Hospital</a>
+          <a href="https://www.travel.state.gov/content/travel/en/passports/have-passport/lost-stolen.html" target="_blank" class="qbtn qbtn-orange">📘 Lost Passport</a>
+        </div>
+      </div>
+      <div id="qisland-emergency-oahu" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+          <a href="tel:18088484444" class="qbtn qbtn-red">👮 Honolulu Police</a>
+          <a href="https://www.queens.org" target="_blank" class="qbtn qbtn-orange">🏥 Queen's Medical Center</a>
+          <a href="https://www.kpwhawaii.com" target="_blank" class="qbtn qbtn-orange">🏥 Kaiser Honolulu</a>
+          <a href="https://www.google.com/maps/search/urgent+care+honolulu" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care Oahu</a>
+          <a href="https://www.google.com/maps/search/24+hour+pharmacy+honolulu" target="_blank" class="qbtn qbtn-orange">💊 24hr Pharmacy</a>
+          <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+          <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+        </div>
+      </div>
+      <div id="qisland-emergency-maui" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+          <a href="tel:18082441800" class="qbtn qbtn-red">👮 Maui Police</a>
+          <a href="https://mauihealth.org" target="_blank" class="qbtn qbtn-orange">🏥 Maui Memorial Hospital</a>
+          <a href="https://www.google.com/maps/search/urgent+care+maui" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care Maui</a>
+          <a href="https://www.google.com/maps/search/24+hour+pharmacy+maui" target="_blank" class="qbtn qbtn-orange">💊 24hr Pharmacy</a>
+          <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+          <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+          <a href="https://dod.hawaii.gov/hiema/" target="_blank" class="qbtn qbtn-orange">🌋 Emergency Mgmt</a>
+        </div>
+      </div>
+      <div id="qisland-emergency-kauai" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+          <a href="tel:18082411711" class="qbtn qbtn-red">👮 Kauai Police</a>
+          <a href="https://www.wilcoxhealth.org" target="_blank" class="qbtn qbtn-orange">🏥 Wilcox Medical Center</a>
+          <a href="https://www.google.com/maps/search/urgent+care+kauai" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care Kauai</a>
+          <a href="https://www.google.com/maps/search/pharmacy+lihue+kauai" target="_blank" class="qbtn qbtn-orange">💊 Pharmacy Kauai</a>
+          <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+          <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+          <a href="https://dod.hawaii.gov/hiema/" target="_blank" class="qbtn qbtn-orange">🌋 Emergency Mgmt</a>
+        </div>
+      </div>
+      <div id="qisland-emergency-big" class="qisland-panel" style="display:none;">
+        <div class="qgrid">
+          <a href="tel:911" class="qbtn qbtn-red">🚨 Call 911</a>
+          <a href="tel:18089353311" class="qbtn qbtn-red">👮 Big Island Police</a>
+          <a href="https://www.hilo.hawaii.edu/mhsc" target="_blank" class="qbtn qbtn-orange">🏥 Hilo Medical Center</a>
+          <a href="https://www.nhch.com" target="_blank" class="qbtn qbtn-orange">🏥 Kona Community Hospital</a>
+          <a href="https://www.google.com/maps/search/urgent+care+kona+hawaii" target="_blank" class="qbtn qbtn-orange">🏥 Urgent Care Kona</a>
+          <a href="https://www.usgs.gov/volcanoes/kilauea" target="_blank" class="qbtn qbtn-orange">🌋 Volcano Updates</a>
+          <a href="https://www.weather.gov/hfo/" target="_blank" class="qbtn qbtn-orange">⛈️ Weather Alerts</a>
+          <a href="tel:18004249300" class="qbtn qbtn-red">☠️ Poison Control</a>
+        </div>
       </div>
     </div>
+
   </div>
 
   <style>
   .qtab{padding:8px 16px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
   .qtab.active{border-color:var(--foam);color:var(--foam);background:rgba(34,211,238,0.1);}
   .qtab:hover{border-color:var(--foam);color:var(--foam);}
-  .qpanel{}
-  .qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .qisland-tab{padding:6px 14px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .qisland-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(251,191,36,0.1);}
+  .qisland-tab:hover{border-color:var(--gold);color:var(--gold);}
+  .qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
   .qbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 10px;border-radius:14px;font-size:13px;font-weight:500;text-decoration:none;border:1px solid rgba(34,211,238,0.2);background:rgba(34,211,238,0.06);color:var(--text);transition:all 0.2s;text-align:center;font-family:'DM Sans',sans-serif;}
   .qbtn:hover{transform:translateY(-3px);border-color:rgba(34,211,238,0.5);background:rgba(34,211,238,0.12);box-shadow:0 6px 20px rgba(34,211,238,0.15);}
   .qbtn-red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#fca5a5;}
@@ -700,16 +937,27 @@
   .qbtn-orange{border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.08);color:#fdba74;}
   .qbtn-orange:hover{border-color:rgba(249,115,22,0.6);background:rgba(249,115,22,0.15);box-shadow:0 6px 20px rgba(249,115,22,0.2);}
   </style>
-
   <script>
-  function showQTab(tab, btn) {
-    document.querySelectorAll('.qpanel').forEach(function(p){ p.style.display='none'; });
-    document.querySelectorAll('.qtab').forEach(function(b){ b.classList.remove('active'); });
+  function showQTab(tab,btn){
+    document.querySelectorAll('.qpanel').forEach(function(p){p.style.display='none';});
+    document.querySelectorAll('.qtab').forEach(function(b){b.classList.remove('active');});
     document.getElementById('qpanel-'+tab).style.display='block';
+    btn.classList.add('active');
+    // Reset island tabs to 'all' when switching main tabs
+    var firstIslandBtn = document.querySelector('#qi-'+tab+'-all');
+    if(firstIslandBtn) showQIsland(tab,'all',firstIslandBtn);
+  }
+  function showQIsland(tab,island,btn){
+    var prefix = 'qisland-'+tab+'-';
+    document.querySelectorAll('[id^="'+prefix+'"]').forEach(function(p){p.style.display='none';});
+    document.querySelectorAll('#qi-'+tab+'-all,#qi-'+tab+'-oahu,#qi-'+tab+'-maui,#qi-'+tab+'-kauai,#qi-'+tab+'-big').forEach(function(b){b.classList.remove('active');});
+    var panel = document.getElementById(prefix+island);
+    if(panel) panel.style.display='block';
     btn.classList.add('active');
   }
   </script>
   <!-- END QUICK ACTION BUTTONS -->
+
 
   <!-- HERO -->
   <section class="hero fade-up">
