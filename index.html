@@ -522,6 +522,97 @@
   .photo-card img{width:100%;height:auto;object-fit:contain;display:block;transition:transform 0.3s ease;}
   .photo-card:hover img{transform:scale(1.04);}
   @media(max-width:768px){.photo-grid{grid-template-columns:1fr;gap:12px;}}
+
+  /* ── WEATHER ISLAND BUTTONS ── */
+  .wx-island-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 18px 12px;
+    border-radius: 18px;
+    border: 2px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .wx-island-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--island-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    border-radius: 16px;
+  }
+  .wx-island-btn:hover::before,
+  .wx-island-btn.active::before { opacity: 1; }
+  .wx-island-btn:hover {
+    border-color: var(--island-color);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px var(--island-glow);
+  }
+  .wx-island-btn.active {
+    border-color: var(--island-color);
+    background: rgba(255,255,255,0.07);
+    box-shadow: 0 8px 24px var(--island-glow);
+    transform: translateY(-2px);
+  }
+  .wx-island-emoji {
+    font-size: 32px;
+    line-height: 1;
+    display: block;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    transition: transform 0.25s ease;
+  }
+  .wx-island-btn:hover .wx-island-emoji,
+  .wx-island-btn.active .wx-island-emoji { transform: scale(1.15); }
+  .wx-island-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+    letter-spacing: 0.02em;
+  }
+  .wx-island-btn.active .wx-island-name { color: var(--island-color); }
+  .wx-island-sub {
+    font-size: 10px;
+    color: var(--muted);
+    display: block;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .wx-island-btn.active .wx-island-sub { color: var(--island-color); opacity: 0.7; }
+
+  /* ── WEATHER TOWN BUTTONS ── */
+  .wx-town-btn {
+    padding: 7px 16px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .wx-town-btn:hover {
+    border-color: rgba(34,211,238,0.4);
+    color: var(--foam);
+    background: rgba(34,211,238,0.06);
+  }
+  .wx-town-btn.active {
+    border-color: var(--foam);
+    color: var(--foam);
+    background: rgba(34,211,238,0.12);
+    box-shadow: 0 0 12px rgba(34,211,238,0.15);
+  }
 </style>
 
 <!-- Travelpayouts tracking -->
@@ -2362,13 +2453,16 @@ function getStableFallback() {
 
 // Load data — try API first, fall back to stable estimates
 fetch('/api/today')
-  .then(r => r.json())
+  .then(r => {
+    var ct = r.headers.get('content-type') || '';
+    if (!ct.includes('application/json')) throw new Error('Not JSON');
+    return r.json();
+  })
   .then(data => {
     if (data.error) throw new Error(data.error);
     renderIslandData(data);
   })
   .catch(err => {
-    console.warn('Using fallback data:', err);
     renderIslandData(getStableFallback());
   });
 
@@ -2762,27 +2856,31 @@ SURF_LOCATIONS.forEach(s => {
   drawWaveBars('wv-'+s.island.replace(' ',''), s.color);
 });
 
-// Fetch real wave data for each island
+// Fetch real wave data - marine API with graceful fallback
 SURF_LOCATIONS.forEach(s => {
-  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${s.lat}&longitude=${s.lon}&current=wave_height,wave_period,wave_direction&timezone=Pacific%2FHonolulu`;
-  fetch(url)
-    .then(r => r.json())
+  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${s.lat}&longitude=${s.lon}&current=wave_height,wave_period,wave_direction&timezone=Pacific%2FHonolulu`;
+
+  fetch(marineUrl)
+    .then(r => {
+      if (!r.ok) throw new Error('status ' + r.status);
+      var ct = r.headers.get('content-type') || '';
+      if (!ct.includes('json')) throw new Error('not json');
+      return r.json();
+    })
     .then(data => {
-      const curr = data.current;
-      const waveH = curr.wave_height || 1;
-      const period = Math.round(curr.wave_period || 10);
+      if (!data.current) throw new Error('no current data');
+      const waveH = data.current.wave_height || 1;
+      const period = Math.round(data.current.wave_period || 10);
       const { rating, label } = getRating(waveH);
-      const qualities = ['Excellent','Good','Fun','Fair','Choppy','Mellow','Clean','Rough','Flat'];
+      const qualities = ['Excellent','Good','Fun','Fair','Choppy','Mellow','Clean','Rough'];
       const shoresHTML = s.shores.map((sh, i) => {
         const shoreH = waveH * [1.1, 0.5, 0.7][i] || waveH;
-        const q = qualities[i % qualities.length];
         return `<div class="shore-row">
           <span class="shore-name"><span class="shore-dot" style="background:${sh.dot}"></span>${sh.name}</span>
-          <span class="shore-val">${formatWaveHeight(shoreH)} · ${q}</span>
+          <span class="shore-val">${formatWaveHeight(shoreH)} · ${qualities[i % qualities.length]}</span>
         </div>`;
       }).join('');
-
-      const card = document.getElementById('sc-'+s.island.replace(' ',''));
+      const card = document.getElementById(`sc-${s.island.replace(' ','')}`);
       if (card) {
         card.querySelector('.sc-rating').className = `sc-rating r-${rating}`;
         card.querySelector('.sc-rating').textContent = label;
@@ -2792,7 +2890,14 @@ SURF_LOCATIONS.forEach(s => {
         card.querySelector('.sc-shores').innerHTML = shoresHTML;
       }
     })
-    .catch(err => console.warn(`Surf fetch failed for ${s.island}:`, err));
+    .catch(() => {
+      // Silent fallback - just leave the placeholder values, no console spam
+      const card = document.getElementById(`sc-${s.island.replace(' ','')}`);
+      if (card) {
+        const rating = card.querySelector('.sc-rating');
+        if (rating) { rating.className = 'sc-rating r-fair'; rating.textContent = '🌊 Check Surfline'; }
+      }
+    });
 });
 
 // ============================================================
@@ -2989,6 +3094,7 @@ const HR_DATA = {
 };
 
 Object.keys(HR_DATA).forEach(key => buildHRCards(key, HR_DATA[key]));
+var surfTimeEl = document.getElementById('surfTime');
 if (surfTimeEl) {
   surfTimeEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
 }
@@ -3530,7 +3636,7 @@ function wxCondition(c){if(c===0)return'Clear Sky';if(c<=2)return'Partly Cloudy'
 
 function selectWxIsland(island, btn) {
   currentWxIsland = island;
-  document.querySelectorAll('[id^="wxtab-"]').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.wx-island-btn').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
 
   var towns = WX_TOWNS[island];
@@ -3539,12 +3645,10 @@ function selectWxIsland(island, btn) {
 
   towns.forEach(function(town) {
     var b = document.createElement('button');
-    b.className = 'qtab';
+    b.className = 'wx-town-btn';
     b.textContent = town.name;
-    b.style.fontSize = '12px';
-    b.style.padding = '6px 14px';
     b.onclick = function() {
-      document.querySelectorAll('#wx-town-buttons .qtab').forEach(function(x){ x.classList.remove('active'); });
+      document.querySelectorAll('#wx-town-buttons .wx-town-btn').forEach(function(x){ x.classList.remove('active'); });
       b.classList.add('active');
       loadTownWeather(town);
     };
