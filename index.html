@@ -1443,9 +1443,129 @@
       </div>
     </div>
     <div style="padding:24px;">
-      <script async src="https://tpwgts.com/content?currency=usd&trs=530157&shmarker=729483&show_hotels=true&powered_by=true&locale=en&searchUrl=www.aviasales.com%2Fsearch&primary_override=%2322d3ee&color_button=%230e7490&color_icons=%2322d3ee&dark=%23e8f4f8&light=%230a2e44&secondary=%23061d2c&special=%230e7490&color_focused=%2322d3ee&border_radius=12&no_labels=true&plain=true&promo_id=7879&campaign_id=100" charset="utf-8"></script>
-      <div style="margin-top:12px;font-size:12px;color:var(--muted);">✈️ Compare all major airlines — Hawaiian, United, Delta, Alaska, American and more</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="aviasalesForm">
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">✈️ Flying from</label>
+          <input type="text" id="avia-from" placeholder="City or airport e.g. Los Angeles" list="avia-from-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <datalist id="avia-from-list">
+            <option value="Los Angeles (LAX)">
+            <option value="San Francisco (SFO)">
+            <option value="Seattle (SEA)">
+            <option value="New York (JFK)">
+            <option value="Las Vegas (LAS)">
+            <option value="Chicago (ORD)">
+            <option value="Dallas (DFW)">
+            <option value="Phoenix (PHX)">
+            <option value="Denver (DEN)">
+            <option value="Portland (PDX)">
+            <option value="Vancouver (YVR)">
+            <option value="Tokyo (NRT)">
+            <option value="Sydney (SYD)">
+            <option value="Honolulu (HNL)">
+            <option value="Kahului Maui (OGG)">
+          </datalist>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">🌺 Flying to</label>
+          <input type="text" id="avia-to" placeholder="City or airport e.g. Honolulu" list="avia-to-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <datalist id="avia-to-list">
+            <option value="Honolulu Oahu (HNL)">
+            <option value="Kahului Maui (OGG)">
+            <option value="Lihue Kauai (LIH)">
+            <option value="Kona Big Island (KOA)">
+            <option value="Hilo Big Island (ITO)">
+            <option value="Los Angeles (LAX)">
+            <option value="San Francisco (SFO)">
+            <option value="Seattle (SEA)">
+            <option value="New York (JFK)">
+            <option value="Tokyo (NRT)">
+            <option value="Sydney (SYD)">
+          </datalist>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">📅 Depart</label>
+          <input type="date" id="avia-depart" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">📅 Return</label>
+          <input type="date" id="avia-return" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">✈️ Preferred Airline</label>
+          <select id="avia-airline" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+            <option value="" style="background:#0a2e44;">🌺 Any Airline (Best Price)</option>
+            <option value="HA" style="background:#0a2e44;">🌺 Hawaiian Airlines</option>
+            <option value="AS" style="background:#0a2e44;">✈️ Alaska Airlines</option>
+            <option value="UA" style="background:#0a2e44;">✈️ United Airlines</option>
+            <option value="DL" style="background:#0a2e44;">✈️ Delta Airlines</option>
+            <option value="AA" style="background:#0a2e44;">✈️ American Airlines</option>
+            <option value="WN" style="background:#0a2e44;">✈️ Southwest Airlines</option>
+            <option value="B6" style="background:#0a2e44;">✈️ JetBlue Airways</option>
+            <option value="NK" style="background:#0a2e44;">✈️ Spirit Airlines</option>
+            <option value="F9" style="background:#0a2e44;">✈️ Frontier Airlines</option>
+            <option value="NH" style="background:#0a2e44;">🗾 ANA All Nippon Airways</option>
+            <option value="JL" style="background:#0a2e44;">🗾 Japan Airlines</option>
+            <option value="KE" style="background:#0a2e44;">🇰🇷 Korean Air</option>
+            <option value="CX" style="background:#0a2e44;">🇭🇰 Cathay Pacific</option>
+            <option value="QF" style="background:#0a2e44;">🇦🇺 Qantas Airways</option>
+            <option value="AC" style="background:#0a2e44;">🇨🇦 Air Canada</option>
+          </select>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">👥 Passengers</label>
+          <select id="avia-pax" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+            <option value="1" style="background:#0a2e44;">1 Passenger</option>
+            <option value="2" style="background:#0a2e44;" selected>2 Passengers</option>
+            <option value="3" style="background:#0a2e44;">3 Passengers</option>
+            <option value="4" style="background:#0a2e44;">4 Passengers</option>
+            <option value="5" style="background:#0a2e44;">5 Passengers</option>
+            <option value="6" style="background:#0a2e44;">6+ Passengers</option>
+          </select>
+        </div>
+
+        <div style="grid-column:1/-1;">
+          <button onclick="searchAviasales()" style="width:100%;padding:16px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(34,211,238,0.3);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(34,211,238,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(34,211,238,0.3)'">🔍 Search Flights on Aviasales</button>
+        </div>
+
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted);text-align:center;">✈️ Compares Hawaiian, United, Delta, Alaska, American, Southwest, JetBlue and more · Powered by <a href="https://www.aviasales.com/?marker=530157" target="_blank" style="color:var(--foam);text-decoration:none;">Aviasales</a></div>
     </div>
+    <script>
+    (function(){
+      // Set default dates
+      var today = new Date();
+      var depart = new Date(today); depart.setDate(today.getDate() + 30);
+      var ret = new Date(depart); ret.setDate(depart.getDate() + 7);
+      var fmt = function(d){ return d.toISOString().split('T')[0]; };
+      var dd = document.getElementById('avia-depart');
+      var dr = document.getElementById('avia-return');
+      if(dd) dd.value = fmt(depart);
+      if(dr) dr.value = fmt(ret);
+    })();
+
+    function searchAviasales() {
+      var from = (document.getElementById('avia-from').value || 'Los Angeles').replace(/\s*\([^)]*\)/, '').trim();
+      var to = (document.getElementById('avia-to').value || 'Honolulu Hawaii').replace(/\s*\([^)]*\)/, '').trim();
+      var depart = document.getElementById('avia-depart').value;
+      var ret = document.getElementById('avia-return').value;
+      var airline = document.getElementById('avia-airline').value;
+      var pax = document.getElementById('avia-pax').value;
+
+      var url = 'https://www.aviasales.com/search/' + 
+                encodeURIComponent(from) + depart.replace(/-/g,'').slice(4) +
+                encodeURIComponent(to) + (ret ? ret.replace(/-/g,'').slice(4) : '') +
+                pax + '?marker=530157';
+
+      if(airline) url += '&airline=' + airline;
+      window.open(url, '_blank');
+    }
+    </script>
   </div>
   <!-- END AVIASALES FLIGHT SEARCH WIDGET -->
 
