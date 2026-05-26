@@ -1443,61 +1443,63 @@
       </div>
     </div>
     <div style="padding:24px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="aviasalesForm">
+
+      <!-- Travelpayouts Flight Search — earns commission -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">✈️ Flying from</label>
-          <input type="text" id="avia-from" placeholder="City or airport e.g. Los Angeles" list="avia-from-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
-          <datalist id="avia-from-list">
-            <option value="Los Angeles (LAX)">
-            <option value="San Francisco (SFO)">
-            <option value="Seattle (SEA)">
-            <option value="New York (JFK)">
-            <option value="Las Vegas (LAS)">
-            <option value="Chicago (ORD)">
-            <option value="Dallas (DFW)">
-            <option value="Phoenix (PHX)">
-            <option value="Denver (DEN)">
-            <option value="Portland (PDX)">
-            <option value="Vancouver (YVR)">
-            <option value="Tokyo (NRT)">
-            <option value="Sydney (SYD)">
-            <option value="Honolulu (HNL)">
-            <option value="Kahului Maui (OGG)">
+          <input type="text" id="tp-from" placeholder="City or airport e.g. Los Angeles" list="tp-from-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <datalist id="tp-from-list">
+            <option value="Los Angeles">
+            <option value="San Francisco">
+            <option value="Seattle">
+            <option value="New York">
+            <option value="Las Vegas">
+            <option value="Chicago">
+            <option value="Dallas">
+            <option value="Phoenix">
+            <option value="Denver">
+            <option value="Portland">
+            <option value="Vancouver">
+            <option value="Tokyo">
+            <option value="Sydney">
+            <option value="Honolulu">
+            <option value="Kahului Maui">
           </datalist>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">🌺 Flying to</label>
-          <input type="text" id="avia-to" placeholder="City or airport e.g. Honolulu" list="avia-to-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
-          <datalist id="avia-to-list">
-            <option value="Honolulu Oahu (HNL)">
-            <option value="Kahului Maui (OGG)">
-            <option value="Lihue Kauai (LIH)">
-            <option value="Kona Big Island (KOA)">
-            <option value="Hilo Big Island (ITO)">
-            <option value="Los Angeles (LAX)">
-            <option value="San Francisco (SFO)">
-            <option value="Seattle (SEA)">
-            <option value="New York (JFK)">
-            <option value="Tokyo (NRT)">
-            <option value="Sydney (SYD)">
+          <input type="text" id="tp-to" placeholder="e.g. Honolulu, Maui, Kauai" list="tp-to-list" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <datalist id="tp-to-list">
+            <option value="Honolulu Oahu">
+            <option value="Kahului Maui">
+            <option value="Lihue Kauai">
+            <option value="Kona Big Island">
+            <option value="Hilo Big Island">
+            <option value="Los Angeles">
+            <option value="San Francisco">
+            <option value="Seattle">
+            <option value="New York">
+            <option value="Tokyo">
+            <option value="Sydney">
           </datalist>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">📅 Depart</label>
-          <input type="date" id="avia-depart" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="date" id="tp-depart" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
         </div>
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">📅 Return</label>
-          <input type="date" id="avia-return" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="date" id="tp-return" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
         </div>
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">✈️ Preferred Airline</label>
-          <select id="avia-airline" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <select id="tp-airline" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
             <option value="" style="background:#0a2e44;">🌺 Any Airline (Best Price)</option>
             <option value="HA" style="background:#0a2e44;">🌺 Hawaiian Airlines</option>
             <option value="AS" style="background:#0a2e44;">✈️ Alaska Airlines</option>
@@ -1519,7 +1521,7 @@
 
         <div style="display:flex;flex-direction:column;gap:5px;">
           <label style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7fb3c8;">👥 Passengers</label>
-          <select id="avia-pax" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <select id="tp-pax" style="padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#22d3ee'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
             <option value="1" style="background:#0a2e44;">1 Passenger</option>
             <option value="2" style="background:#0a2e44;" selected>2 Passengers</option>
             <option value="3" style="background:#0a2e44;">3 Passengers</option>
@@ -1530,51 +1532,77 @@
         </div>
 
         <div style="grid-column:1/-1;">
-          <button onclick="searchAviasales()" style="width:100%;padding:16px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(34,211,238,0.3);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(34,211,238,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(34,211,238,0.3)'">🔍 Search Flights on Aviasales</button>
+          <button onclick="searchTPFlights()" style="width:100%;padding:16px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(34,211,238,0.3);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(34,211,238,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(34,211,238,0.3)'">🔍 Search Flights — Compare All Airlines</button>
         </div>
 
       </div>
-      <div style="margin-top:12px;font-size:12px;color:var(--muted);text-align:center;">✈️ Compares Hawaiian, United, Delta, Alaska, American, Southwest, JetBlue and more · Powered by <a href="https://www.aviasales.com/?marker=530157" target="_blank" style="color:var(--foam);text-decoration:none;">Aviasales</a></div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted);text-align:center;">✈️ Compares Hawaiian, United, Delta, Alaska, American, Southwest, JetBlue and more · Powered by Travelpayouts 💰</div>
     </div>
+
     <script>
     (function(){
-      // Set default dates
       var today = new Date();
       var depart = new Date(today); depart.setDate(today.getDate() + 30);
       var ret = new Date(depart); ret.setDate(depart.getDate() + 7);
       var fmt = function(d){ return d.toISOString().split('T')[0]; };
-      var dd = document.getElementById('avia-depart');
-      var dr = document.getElementById('avia-return');
+      var dd = document.getElementById('tp-depart');
+      var dr = document.getElementById('tp-return');
       if(dd) dd.value = fmt(depart);
       if(dr) dr.value = fmt(ret);
     })();
 
-    function searchAviasales() {
-      var fromRaw = document.getElementById('avia-from').value || 'Los Angeles';
-      var toRaw = document.getElementById('avia-to').value || 'Honolulu';
-      var depart = document.getElementById('avia-depart').value;
-      var ret = document.getElementById('avia-return').value;
-      var airline = document.getElementById('avia-airline').value;
-      var pax = document.getElementById('avia-pax').value || '1';
+    function searchTPFlights() {
+      var from = document.getElementById('tp-from').value.trim() || 'Los Angeles';
+      var to = document.getElementById('tp-to').value.trim() || 'Honolulu';
+      var depart = document.getElementById('tp-depart').value;
+      var ret = document.getElementById('tp-return').value;
+      var pax = document.getElementById('tp-pax').value || '1';
+      var airlineEl = document.getElementById('tp-airline');
+      var airlineCode = airlineEl.value;
+      var airlineName = airlineEl.options[airlineEl.selectedIndex].text;
 
-      // Build Google Flights URL with Aviasales fallback — always works!
-      var query = fromRaw + ' to ' + toRaw + ' flights';
-      if(depart) query += ' ' + depart;
-      if(airline) query += ' ' + document.getElementById('avia-airline').options[document.getElementById('avia-airline').selectedIndex].text;
+      // Airport code map for common cities
+      var AIRPORTS = {
+        'los angeles': 'LAX', 'san francisco': 'SFO', 'seattle': 'SEA',
+        'new york': 'JFK', 'las vegas': 'LAS', 'chicago': 'ORD',
+        'dallas': 'DFW', 'phoenix': 'PHX', 'denver': 'DEN',
+        'portland': 'PDX', 'vancouver': 'YVR', 'tokyo': 'NRT',
+        'sydney': 'SYD', 'honolulu': 'HNL', 'honolulu oahu': 'HNL',
+        'kahului': 'OGG', 'kahului maui': 'OGG', 'maui': 'OGG',
+        'lihue': 'LIH', 'lihue kauai': 'LIH', 'kauai': 'LIH',
+        'kona': 'KOA', 'kona big island': 'KOA',
+        'hilo': 'ITO', 'hilo big island': 'ITO',
+        'toronto': 'YYZ', 'london': 'LHR', 'paris': 'CDG',
+        'seoul': 'ICN', 'hong kong': 'HKG', 'singapore': 'SIN',
+        'auckland': 'AKL', 'miami': 'MIA', 'boston': 'BOS',
+        'washington': 'IAD', 'atlanta': 'ATL', 'houston': 'IAH'
+      };
 
-      // Primary: Aviasales with correct format
-      var url = 'https://www.aviasales.com/?marker=530157' +
-                '&origin=' + encodeURIComponent(fromRaw) +
-                '&destination=' + encodeURIComponent(toRaw) +
-                (depart ? '&depart_date=' + depart : '') +
-                (ret ? '&return_date=' + ret : '') +
-                '&adults=' + pax +
-                (airline ? '&airline=' + airline : '');
+      var fromCode = AIRPORTS[from.toLowerCase()] || from.toUpperCase().slice(0,3);
+      var toCode = AIRPORTS[to.toLowerCase()] || to.toUpperCase().slice(0,3);
+
+      // Format dates as DDMM for Aviasales URL
+      var departStr = '';
+      var retStr = '';
+      if(depart) {
+        var d = new Date(depart);
+        departStr = ('0'+d.getDate()).slice(-2) + ('0'+(d.getMonth()+1)).slice(-2);
+      }
+      if(ret) {
+        var r = new Date(ret);
+        retStr = ('0'+r.getDate()).slice(-2) + ('0'+(r.getMonth()+1)).slice(-2);
+      }
+
+      // Build Aviasales URL with correct format
+      // Format: aviasales.com/search/LAX1025HNL1101{pax}?marker=530157
+      var searchPath = fromCode + departStr + toCode + (retStr ? retStr : '') + pax;
+      var url = 'https://www.aviasales.com/search/' + searchPath + '?marker=530157&trs=530157';
+      if(airlineCode) url += '&airline_codes=' + airlineCode;
 
       window.open(url, '_blank');
     }
     </script>
-  </div>
+
   <!-- END AVIASALES FLIGHT SEARCH WIDGET -->
 
   <!-- PHOTO GRID 1-3 -->
