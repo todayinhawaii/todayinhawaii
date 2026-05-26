@@ -641,6 +641,27 @@
     color: rgba(34,211,238,0.9);
     background: rgba(34,211,238,0.08);
   }
+  .airline-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .airline-btn:hover {
+    border-color: var(--al-border);
+    background: var(--al-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
 </style>
 
 <!-- Travelpayouts tracking -->
@@ -1437,92 +1458,7 @@
     <div class="photo-card"><img src="/3.jpg" alt="Hawaii" loading="lazy"></div>
   </div>
 
-  <!-- AIRLINE DIRECT LINKS -->
-  <div style="margin-bottom:24px;">
-    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:24px;overflow:hidden;">
-      <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <div>
-          <div style="font-size:15px;font-weight:600;color:var(--text);">✈️ Book Direct With Your Airline</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Keep your frequent flyer miles & points — search Hawaii flights direct</div>
-        </div>
-        <span style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:99px;padding:4px 12px;font-size:11px;color:#fbbf24;">🏆 Miles & Points</span>
-      </div>
-      <div style="padding:20px 24px;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
-          <a href="https://www.hawaiianairlines.com/book/flights" target="_blank" class="airline-btn" style="--al-color:rgba(138,43,226,0.3);--al-border:rgba(138,43,226,0.4);">
-            <span style="font-size:20px;">🌺</span><span>Hawaiian Airlines</span>
-          </a>
-          <a href="https://www.alaskaair.com/booking/choose-flights" target="_blank" class="airline-btn" style="--al-color:rgba(0,114,206,0.3);--al-border:rgba(0,114,206,0.4);">
-            <span style="font-size:20px;">✈️</span><span>Alaska Airlines</span>
-          </a>
-          <a href="https://www.united.com/en/us/flights-to-hawaii" target="_blank" class="airline-btn" style="--al-color:rgba(0,36,122,0.3);--al-border:rgba(0,36,122,0.4);">
-            <span style="font-size:20px;">✈️</span><span>United Airlines</span>
-          </a>
-          <a href="https://www.delta.com/us/en/flight-search/book-a-flight" target="_blank" class="airline-btn" style="--al-color:rgba(204,0,0,0.3);--al-border:rgba(204,0,0,0.4);">
-            <span style="font-size:20px;">✈️</span><span>Delta Airlines</span>
-          </a>
-          <a href="https://www.aa.com/booking/flights" target="_blank" class="airline-btn" style="--al-color:rgba(34,72,148,0.3);--al-border:rgba(34,72,148,0.4);">
-            <span style="font-size:20px;">✈️</span><span>American Airlines</span>
-          </a>
-          <a href="https://www.southwest.com/air/booking" target="_blank" class="airline-btn" style="--al-color:rgba(255,190,0,0.3);--al-border:rgba(255,190,0,0.4);">
-            <span style="font-size:20px;">✈️</span><span>Southwest Airlines</span>
-          </a>
-          <a href="https://www.jetblue.com/booking/flights" target="_blank" class="airline-btn" style="--al-color:rgba(0,158,224,0.3);--al-border:rgba(0,158,224,0.4);">
-            <span style="font-size:20px;">✈️</span><span>JetBlue Airways</span>
-          </a>
-          <a href="https://www.ana.co.jp/en/us/flights/" target="_blank" class="airline-btn" style="--al-color:rgba(0,86,179,0.3);--al-border:rgba(0,86,179,0.4);">
-            <span style="font-size:20px;">🗾</span><span>ANA Airways</span>
-          </a>
-          <a href="https://www.jal.co.jp/en/inter/booking/" target="_blank" class="airline-btn" style="--al-color:rgba(178,0,0,0.3);--al-border:rgba(178,0,0,0.4);">
-            <span style="font-size:20px;">🗾</span><span>Japan Airlines</span>
-          </a>
-          <a href="https://www.koreanair.com/booking/flight-booking" target="_blank" class="airline-btn" style="--al-color:rgba(0,70,127,0.3);--al-border:rgba(0,70,127,0.4);">
-            <span style="font-size:20px;">🇰🇷</span><span>Korean Air</span>
-          </a>
-          <a href="https://www.cathaypacific.com/cx/en_US/book-a-trip/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(0,100,80,0.3);--al-border:rgba(0,100,80,0.4);">
-            <span style="font-size:20px;">🇭🇰</span><span>Cathay Pacific</span>
-          </a>
-          <a href="https://www.qantas.com/us/en/book-a-trip/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(229,0,0,0.3);--al-border:rgba(229,0,0,0.4);">
-            <span style="font-size:20px;">🇦🇺</span><span>Qantas Airways</span>
-          </a>
-          <a href="https://www.aircanada.com/us/en/aco/home/book/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(210,0,0,0.3);--al-border:rgba(210,0,0,0.4);">
-            <span style="font-size:20px;">🇨🇦</span><span>Air Canada</span>
-          </a>
-          <a href="https://www.airNewZealand.com/us" target="_blank" class="airline-btn" style="--al-color:rgba(0,0,0,0.3);--al-border:rgba(100,100,100,0.4);">
-            <span style="font-size:20px;">🇳🇿</span><span>Air New Zealand</span>
-          </a>
-        </div>
-        <div style="margin-top:16px;padding:12px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.7;">
-          💡 <strong style="color:#fbbf24;">Don't have a preferred airline?</strong> Compare hundreds of flights and find the best price using our full search below — flights, hotels, cars and packages all in one place!
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <style>
-  .airline-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    color: var(--text);
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .airline-btn:hover {
-    border-color: var(--al-border);
-    background: var(--al-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  }
-  </style>
-  <!-- END AIRLINE DIRECT LINKS -->
 
     <!-- BOOKING WIDGET -->
   <div class="booking-widget">
@@ -1629,6 +1565,69 @@
     </div>
   </div>
 
+
+    <!-- AIRLINE DIRECT LINKS -->
+  <div style="margin-bottom:24px;">
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:24px;overflow:hidden;">
+      <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">✈️ Book Direct With Your Airline</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Keep your frequent flyer miles & points — search Hawaii flights direct</div>
+        </div>
+        <span style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:99px;padding:4px 12px;font-size:11px;color:#fbbf24;">🏆 Miles & Points</span>
+      </div>
+      <div style="padding:20px 24px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
+          <a href="https://www.hawaiianairlines.com/book/flights" target="_blank" class="airline-btn" style="--al-color:rgba(138,43,226,0.3);--al-border:rgba(138,43,226,0.4);">
+            <span style="font-size:20px;">🌺</span><span>Hawaiian Airlines</span>
+          </a>
+          <a href="https://www.alaskaair.com/booking/choose-flights" target="_blank" class="airline-btn" style="--al-color:rgba(0,114,206,0.3);--al-border:rgba(0,114,206,0.4);">
+            <span style="font-size:20px;">✈️</span><span>Alaska Airlines</span>
+          </a>
+          <a href="https://www.united.com/en/us/flights-to-hawaii" target="_blank" class="airline-btn" style="--al-color:rgba(0,36,122,0.3);--al-border:rgba(0,36,122,0.4);">
+            <span style="font-size:20px;">✈️</span><span>United Airlines</span>
+          </a>
+          <a href="https://www.delta.com/us/en/flight-search/book-a-flight" target="_blank" class="airline-btn" style="--al-color:rgba(204,0,0,0.3);--al-border:rgba(204,0,0,0.4);">
+            <span style="font-size:20px;">✈️</span><span>Delta Airlines</span>
+          </a>
+          <a href="https://www.aa.com/booking/flights" target="_blank" class="airline-btn" style="--al-color:rgba(34,72,148,0.3);--al-border:rgba(34,72,148,0.4);">
+            <span style="font-size:20px;">✈️</span><span>American Airlines</span>
+          </a>
+          <a href="https://www.southwest.com/air/booking" target="_blank" class="airline-btn" style="--al-color:rgba(255,190,0,0.3);--al-border:rgba(255,190,0,0.4);">
+            <span style="font-size:20px;">✈️</span><span>Southwest Airlines</span>
+          </a>
+          <a href="https://www.jetblue.com/booking/flights" target="_blank" class="airline-btn" style="--al-color:rgba(0,158,224,0.3);--al-border:rgba(0,158,224,0.4);">
+            <span style="font-size:20px;">✈️</span><span>JetBlue Airways</span>
+          </a>
+          <a href="https://www.ana.co.jp/en/us/flights/" target="_blank" class="airline-btn" style="--al-color:rgba(0,86,179,0.3);--al-border:rgba(0,86,179,0.4);">
+            <span style="font-size:20px;">🗾</span><span>ANA Airways</span>
+          </a>
+          <a href="https://www.jal.co.jp/en/inter/booking/" target="_blank" class="airline-btn" style="--al-color:rgba(178,0,0,0.3);--al-border:rgba(178,0,0,0.4);">
+            <span style="font-size:20px;">🗾</span><span>Japan Airlines</span>
+          </a>
+          <a href="https://www.koreanair.com/booking/flight-booking" target="_blank" class="airline-btn" style="--al-color:rgba(0,70,127,0.3);--al-border:rgba(0,70,127,0.4);">
+            <span style="font-size:20px;">🇰🇷</span><span>Korean Air</span>
+          </a>
+          <a href="https://www.cathaypacific.com/cx/en_US/book-a-trip/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(0,100,80,0.3);--al-border:rgba(0,100,80,0.4);">
+            <span style="font-size:20px;">🇭🇰</span><span>Cathay Pacific</span>
+          </a>
+          <a href="https://www.qantas.com/us/en/book-a-trip/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(229,0,0,0.3);--al-border:rgba(229,0,0,0.4);">
+            <span style="font-size:20px;">🇦🇺</span><span>Qantas Airways</span>
+          </a>
+          <a href="https://www.aircanada.com/us/en/aco/home/book/flights.html" target="_blank" class="airline-btn" style="--al-color:rgba(210,0,0,0.3);--al-border:rgba(210,0,0,0.4);">
+            <span style="font-size:20px;">🇨🇦</span><span>Air Canada</span>
+          </a>
+          <a href="https://www.airNewZealand.com/us" target="_blank" class="airline-btn" style="--al-color:rgba(0,0,0,0.3);--al-border:rgba(100,100,100,0.4);">
+            <span style="font-size:20px;">🇳🇿</span><span>Air New Zealand</span>
+          </a>
+        </div>
+        <div style="margin-top:16px;padding:12px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.7;">
+          💡 <strong style="color:#fbbf24;">Don't have a preferred airline?</strong> Compare hundreds of flights and find the best price using our full search below — flights, hotels, cars and packages all in one place!
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END AIRLINE DIRECT LINKS -->
 
   <!-- AFFILIATE PARTNERS -->
   <div style="margin:0 0 48px;padding:32px;background:linear-gradient(135deg,rgba(14,116,144,0.2),rgba(6,29,44,0.8));border:1px solid rgba(34,211,238,0.2);border-radius:24px;">
