@@ -1596,8 +1596,13 @@
       // Build Aviasales URL with correct format
       // Format: aviasales.com/search/LAX1025HNL1101{pax}?marker=530157
       var searchPath = fromCode + departStr + toCode + (retStr ? retStr : '') + pax;
-      // Direct Aviasales link with marker — commission tracked by Travelpayouts
-      var url = 'https://www.aviasales.com/search/' + searchPath + '?marker=530157';
+      // Aviasales parameter format — more reliable than /search/ path
+      var url = 'https://www.aviasales.com/?marker=530157' +
+                '&origin_iata=' + fromCode +
+                '&destination_iata=' + toCode +
+                (depart ? '&depart_date=' + depart : '') +
+                (ret ? '&return_date=' + ret : '') +
+                '&adults=' + pax;
       if(airlineCode) url += '&airline_codes=' + airlineCode;
 
       window.open(url, '_blank');
