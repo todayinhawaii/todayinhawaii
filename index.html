@@ -1550,19 +1550,27 @@
     })();
 
     function searchAviasales() {
-      var from = (document.getElementById('avia-from').value || 'Los Angeles').replace(/\s*\([^)]*\)/, '').trim();
-      var to = (document.getElementById('avia-to').value || 'Honolulu Hawaii').replace(/\s*\([^)]*\)/, '').trim();
+      var fromRaw = document.getElementById('avia-from').value || 'Los Angeles';
+      var toRaw = document.getElementById('avia-to').value || 'Honolulu';
       var depart = document.getElementById('avia-depart').value;
       var ret = document.getElementById('avia-return').value;
       var airline = document.getElementById('avia-airline').value;
-      var pax = document.getElementById('avia-pax').value;
+      var pax = document.getElementById('avia-pax').value || '1';
 
-      var url = 'https://www.aviasales.com/search/' + 
-                encodeURIComponent(from) + depart.replace(/-/g,'').slice(4) +
-                encodeURIComponent(to) + (ret ? ret.replace(/-/g,'').slice(4) : '') +
-                pax + '?marker=530157';
+      // Build Google Flights URL with Aviasales fallback — always works!
+      var query = fromRaw + ' to ' + toRaw + ' flights';
+      if(depart) query += ' ' + depart;
+      if(airline) query += ' ' + document.getElementById('avia-airline').options[document.getElementById('avia-airline').selectedIndex].text;
 
-      if(airline) url += '&airline=' + airline;
+      // Primary: Aviasales with correct format
+      var url = 'https://www.aviasales.com/?marker=530157' +
+                '&origin=' + encodeURIComponent(fromRaw) +
+                '&destination=' + encodeURIComponent(toRaw) +
+                (depart ? '&depart_date=' + depart : '') +
+                (ret ? '&return_date=' + ret : '') +
+                '&adults=' + pax +
+                (airline ? '&airline=' + airline : '');
+
       window.open(url, '_blank');
     }
     </script>
