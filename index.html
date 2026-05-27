@@ -733,6 +733,227 @@
   @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
   </style>
 
+  <!-- HAWAIIAN LANGUAGE TRANSLATOR -->
+  <div style="max-width:740px;margin:0 auto 16px;position:relative;z-index:10;">
+    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:99px;padding:8px 8px 8px 20px;box-shadow:0 4px 24px rgba(0,0,0,0.2);flex-wrap:wrap;">
+
+      <!-- Label -->
+      <span style="font-size:14px;flex-shrink:0;">🌺</span>
+      <span style="font-size:12px;font-weight:600;color:var(--foam);white-space:nowrap;flex-shrink:0;letter-spacing:0.04em;">ʻŌlelo Hawaiʻi</span>
+
+      <!-- Language selector -->
+      <select id="hw-lang" style="padding:6px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:99px;color:#e8f4f8;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;flex-shrink:0;" onchange="">
+        <option value="en" style="background:#0a2e44;">English → Hawaiian</option>
+        <option value="es" style="background:#0a2e44;">Spanish → Hawaiian</option>
+        <option value="fr" style="background:#0a2e44;">French → Hawaiian</option>
+        <option value="de" style="background:#0a2e44;">German → Hawaiian</option>
+        <option value="ja" style="background:#0a2e44;">Japanese → Hawaiian</option>
+        <option value="zh" style="background:#0a2e44;">Chinese → Hawaiian</option>
+        <option value="pt" style="background:#0a2e44;">Portuguese → Hawaiian</option>
+        <option value="ko" style="background:#0a2e44;">Korean → Hawaiian</option>
+        <option value="it" style="background:#0a2e44;">Italian → Hawaiian</option>
+        <option value="ru" style="background:#0a2e44;">Russian → Hawaiian</option>
+      </select>
+
+      <!-- Input -->
+      <input id="hw-input" type="text" placeholder="Type a word or phrase..." maxlength="100"
+        style="flex:1;min-width:120px;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:13px;font-family:'DM Sans',sans-serif;"
+        onkeydown="if(event.key==='Enter')translateToHawaiian()">
+
+      <!-- Translate button -->
+      <button onclick="translateToHawaiian()" style="padding:7px 18px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Translate 🌺</button>
+    </div>
+
+    <!-- Result bar -->
+    <div id="hw-result" style="display:none;margin-top:8px;padding:10px 20px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;display:none;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font-size:13px;color:var(--muted);">🌺 In Hawaiian:</span>
+      <span id="hw-translation" style="font-size:15px;font-weight:600;color:#22d3ee;font-family:'Playfair Display',serif;"></span>
+      <span id="hw-pronunciation" style="font-size:12px;color:var(--muted);font-style:italic;"></span>
+      <button onclick="speakHawaiian()" id="hw-speak" style="padding:4px 12px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:99px;color:var(--foam);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;display:none;">🔊 Hear it</button>
+    </div>
+  </div>
+
+  <script>
+  // Hawaiian dictionary — common words and phrases
+  // Uses MyMemory free translation API for words not in dictionary
+  var HW_DICT = {
+    // Greetings & basics
+    'hello': {hw:'Aloha', pro:'ah-LOH-ha'},
+    'hi': {hw:'Aloha', pro:'ah-LOH-ha'},
+    'goodbye': {hw:'Aloha', pro:'ah-LOH-ha'},
+    'thank you': {hw:'Mahalo', pro:'mah-HAH-loh'},
+    'thanks': {hw:'Mahalo', pro:'mah-HAH-loh'},
+    'welcome': {hw:'Welina', pro:'veh-LEE-nah'},
+    'you are welcome': {hw:'ʻAʻole pilikia', pro:'ah-OH-leh pee-lee-KEE-ah'},
+    'please': {hw:'E ʻoluʻolu', pro:'eh oh-loo-OH-loo'},
+    'yes': {hw:'ʻAe', pro:'EYE'},
+    'no': {hw:'ʻAʻole', pro:'ah-OH-leh'},
+    'love': {hw:'Aloha', pro:'ah-LOH-ha'},
+    'family': {hw:'ʻOhana', pro:'oh-HAH-nah'},
+    'friend': {hw:'Hoaaloha', pro:'hoh-ah-ah-LOH-ha'},
+    'child': {hw:'Keiki', pro:'KAY-kee'},
+    'children': {hw:'Nā keiki', pro:'nah KAY-kee'},
+    'woman': {hw:'Wahine', pro:'vah-HEE-neh'},
+    'man': {hw:'Kāne', pro:'KAH-neh'},
+    'king': {hw:'Aliʻi', pro:'ah-LEE-ee'},
+    'queen': {hw:'Aliʻi wahine', pro:'ah-LEE-ee vah-HEE-neh'},
+    // Nature
+    'ocean': {hw:'Kai', pro:'KAI'},
+    'sea': {hw:'Moana', pro:'moh-AH-nah'},
+    'water': {hw:'Wai', pro:'VYE'},
+    'rain': {hw:'Ua', pro:'OO-ah'},
+    'sun': {hw:'Lā', pro:'LAH'},
+    'moon': {hw:'Mahina', pro:'mah-HEE-nah'},
+    'star': {hw:'Hōkū', pro:'HOH-koo'},
+    'sky': {hw:'Lani', pro:'LAH-nee'},
+    'wind': {hw:'Makani', pro:'mah-KAH-nee'},
+    'fire': {hw:'Ahi', pro:'AH-hee'},
+    'flower': {hw:'Pua', pro:'POO-ah'},
+    'mountain': {hw:'Mauna', pro:'MAU-nah'},
+    'rainbow': {hw:'Ānuenue', pro:'ah-noo-EH-noo-eh'},
+    'island': {hw:'Mokupuni', pro:'moh-koo-POO-nee'},
+    'beach': {hw:'Kahakai', pro:'kah-hah-KAI'},
+    'wave': {hw:'Nalu', pro:'NAH-loo'},
+    'fish': {hw:'Iʻa', pro:'EE-ah'},
+    'turtle': {hw:'Honu', pro:'HOH-noo'},
+    'shark': {hw:'Manō', pro:'mah-NOH'},
+    'whale': {hw:'Kohola', pro:'koh-HOH-lah'},
+    'bird': {hw:'Manu', pro:'MAH-noo'},
+    'land': {hw:'ʻĀina', pro:'EYE-nah'},
+    'earth': {hw:'Honua', pro:'hoh-NOO-ah'},
+    'tree': {hw:'Lāʻau', pro:'LAH-ah-oo'},
+    'leaf': {hw:'Lau', pro:'LAU'},
+    'plumeria': {hw:'Pua melia', pro:'poo-ah MEH-lee-ah'},
+    'hibiscus': {hw:'Pua aloalo', pro:'poo-ah ah-loh-AH-loh'},
+    // Food
+    'food': {hw:'ʻAi', pro:'EYE'},
+    'eat': {hw:'ʻAi', pro:'EYE'},
+    'fish': {hw:'Iʻa', pro:'EE-ah'},
+    'taro': {hw:'Kalo', pro:'KAH-loh'},
+    'poi': {hw:'Poi', pro:'POY'},
+    'coconut': {hw:'Niu', pro:'NEE-oo'},
+    'banana': {hw:'Maiʻa', pro:'my-EE-ah'},
+    'pineapple': {hw:'Hala kahiki', pro:'hah-lah kah-HEE-kee'},
+    // Common phrases
+    'good morning': {hw:'Aloha kakahiaka', pro:'ah-LOH-ha kah-kah-hee-AH-kah'},
+    'good evening': {hw:'Aloha ahiahi', pro:'ah-LOH-ha ah-hee-AH-hee'},
+    'good night': {hw:'Aloha pō', pro:'ah-LOH-ha POH'},
+    'how are you': {hw:'Pehea ʻoe?', pro:'peh-HEH-ah OH-eh'},
+    'i love you': {hw:'Aloha au iā ʻoe', pro:'ah-LOH-ha au ee-ah OH-eh'},
+    'beautiful': {hw:'Nani', pro:'NAH-nee'},
+    'happy': {hw:'Hauʻoli', pro:'hau-OH-lee'},
+    'spirit': {hw:'Uhane', pro:'oo-HAH-neh'},
+    'breath': {hw:'Ha', pro:'HAH'},
+    'life': {hw:'Ola', pro:'OH-lah'},
+    'wisdom': {hw:'Naʻauao', pro:'nah-ah-OO-ah-oh'},
+    'peace': {hw:'Maluhia', pro:'mah-loo-HEE-ah'},
+    'unity': {hw:'Lokahi', pro:'loh-KAH-hee'},
+    'god': {hw:'Akua', pro:'ah-KOO-ah'},
+    'prayer': {hw:'Pule', pro:'POO-leh'},
+    'song': {hw:'Mele', pro:'MEH-leh'},
+    'dance': {hw:'Hula', pro:'HOO-lah'},
+    'story': {hw:'Moʻolelo', pro:'moh-oh-LEH-loh'},
+    'home': {hw:'Hale', pro:'HAH-leh'},
+    'house': {hw:'Hale', pro:'HAH-leh'},
+    'canoe': {hw:'Waʻa', pro:'VAH-ah'},
+    'chief': {hw:'Aliʻi', pro:'ah-LEE-ee'},
+    'teacher': {hw:'Kumu', pro:'KOO-moo'},
+    'student': {hw:'Haumāna', pro:'hau-MAH-nah'},
+    'work': {hw:'Hana', pro:'HAH-nah'},
+    'strength': {hw:'Ikaika', pro:'ee-KAI-kah'},
+    'brave': {hw:'Koa', pro:'KOH-ah'},
+    'warrior': {hw:'Koa', pro:'KOH-ah'},
+    'gift': {hw:'Makana', pro:'mah-KAH-nah'},
+    'heart': {hw:'Puʻuwai', pro:'poo-oo-VAI'},
+    'soul': {hw:'Uhane', pro:'oo-HAH-neh'},
+    'dream': {hw:'Moe uhane', pro:'MOH-eh oo-HAH-neh'},
+    'hope': {hw:'Manaʻo', pro:'mah-NAH-oh'},
+    'faith': {hw:'Manaʻo', pro:'mah-NAH-oh'},
+    'joy': {hw:'Hauʻoli', pro:'hau-OH-lee'},
+    'sing': {hw:'Mele', pro:'MEH-leh'},
+    'run': {hw:'Holo', pro:'HOH-loh'},
+    'swim': {hw:'ʻAu', pro:'AU'},
+    'surf': {hw:'Heʻe nalu', pro:'heh-EH NAH-loo'},
+    'good': {hw:'Maikaʻi', pro:'my-KAH-ee'},
+    'great': {hw:'Nani loa', pro:'NAH-nee LOH-ah'},
+    'amazing': {hw:'Kupanaha', pro:'koo-pah-NAH-ha'},
+    'wonderful': {hw:'Nani', pro:'NAH-nee'},
+    'hawaii': {hw:'Hawaiʻi', pro:'hah-VAI-ee'},
+    'maui': {hw:'Maui', pro:'MAU-ee'},
+    'oahu': {hw:'Oʻahu', pro:'oh-AH-hoo'},
+    'kauai': {hw:'Kauaʻi', pro:'kau-AH-ee'},
+    'aloha': {hw:'Aloha', pro:'ah-LOH-ha'},
+    'mahalo': {hw:'Mahalo', pro:'mah-HAH-loh'},
+  };
+
+  function translateToHawaiian() {
+    var input = document.getElementById('hw-input').value.trim().toLowerCase();
+    if(!input) return;
+
+    var resultDiv = document.getElementById('hw-result');
+    var translationEl = document.getElementById('hw-translation');
+    var pronunciationEl = document.getElementById('hw-pronunciation');
+    var speakBtn = document.getElementById('hw-speak');
+
+    // Check our dictionary first
+    if(HW_DICT[input]) {
+      var entry = HW_DICT[input];
+      translationEl.textContent = entry.hw;
+      pronunciationEl.textContent = '(' + entry.pro + ')';
+      resultDiv.style.display = 'flex';
+      speakBtn.style.display = 'inline-block';
+      window._hwSpeak = entry.hw;
+      return;
+    }
+
+    // Not in dictionary — use MyMemory API to translate to Hawaiian
+    translationEl.textContent = 'Translating...';
+    pronunciationEl.textContent = '';
+    resultDiv.style.display = 'flex';
+    speakBtn.style.display = 'none';
+
+    var langCode = document.getElementById('hw-lang').value;
+    var url = 'https://api.mymemory.translated.net/get?q=' + 
+              encodeURIComponent(input) + 
+              '&langpair=' + langCode + '|haw';
+
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var result = data.responseData && data.responseData.translatedText;
+        if(result && result !== input && result.toLowerCase() !== 'invalid language pair') {
+          translationEl.textContent = result;
+          pronunciationEl.textContent = '— translated via MyMemory';
+          speakBtn.style.display = 'none';
+        } else {
+          // Fallback — search Google Translate
+          translationEl.textContent = 'Not found in dictionary';
+          pronunciationEl.textContent = '';
+          // Add Google Translate link
+          var gtLink = document.createElement('a');
+          gtLink.href = 'https://translate.google.com/?sl=' + langCode + '&tl=haw&text=' + encodeURIComponent(input);
+          gtLink.target = '_blank';
+          gtLink.textContent = '→ Try Google Translate';
+          gtLink.style.cssText = 'font-size:11px;color:var(--foam);margin-left:8px;';
+          translationEl.parentNode.appendChild(gtLink);
+        }
+      })
+      .catch(function(){
+        translationEl.textContent = 'Could not translate — try Google Translate';
+        pronunciationEl.textContent = '';
+      });
+  }
+
+  function speakHawaiian() {
+    if(!window._hwSpeak) return;
+    var utterance = new SpeechSynthesisUtterance(window._hwSpeak);
+    utterance.lang = 'haw'; // Hawaiian
+    utterance.rate = 0.8;
+    speechSynthesis.speak(utterance);
+  }
+  </script>
+  <!-- END HAWAIIAN LANGUAGE TRANSLATOR -->
+
   <!-- GOOGLE-STYLE SEARCH -->
   <div style="max-width:740px;margin:0 auto 32px;position:relative;z-index:10;">
     <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:10px 10px 10px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
