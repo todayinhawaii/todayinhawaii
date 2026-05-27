@@ -742,14 +742,19 @@
 
   <!-- HAWAIIAN LANGUAGE TRANSLATOR -->
   <div style="max-width:740px;margin:0 auto 64px;position:relative;z-index:10;">
-    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:99px;padding:8px 8px 8px 20px;box-shadow:0 4px 24px rgba(0,0,0,0.2);flex-wrap:wrap;">
 
-      <!-- Label -->
+    <!-- Beautiful header message -->
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;">🌺 Learn the Local Hawaiian Language</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;">Help keep this beautiful language alive — type any word in your language and click translate</div>
+    </div>
+
+    <!-- Translator bar -->
+    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:99px;padding:8px 8px 8px 20px;box-shadow:0 4px 24px rgba(0,0,0,0.2);flex-wrap:wrap;">
       <span style="font-size:14px;flex-shrink:0;">🌺</span>
       <span style="font-size:12px;font-weight:600;color:var(--foam);white-space:nowrap;flex-shrink:0;letter-spacing:0.04em;">ʻŌlelo Hawaiʻi</span>
 
-      <!-- Language selector -->
-      <select id="hw-lang" style="padding:6px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:99px;color:#e8f4f8;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;flex-shrink:0;" onchange="">
+      <select id="hw-lang" style="padding:6px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:99px;color:#e8f4f8;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;flex-shrink:0;">
         <option value="en" style="background:#0a2e44;">English → Hawaiian</option>
         <option value="es" style="background:#0a2e44;">Spanish → Hawaiian</option>
         <option value="fr" style="background:#0a2e44;">French → Hawaiian</option>
@@ -762,28 +767,22 @@
         <option value="ru" style="background:#0a2e44;">Russian → Hawaiian</option>
       </select>
 
-      <!-- Input -->
       <input id="hw-input" type="text" placeholder="Type a word or phrase..." maxlength="100"
         style="flex:1;min-width:120px;background:transparent;border:none;outline:none;color:#e8f4f8;font-size:13px;font-family:'DM Sans',sans-serif;"
         onkeydown="if(event.key==='Enter')translateToHawaiian()">
 
-      <!-- Translate button -->
       <button onclick="translateToHawaiian()" style="padding:7px 18px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:99px;color:#fff;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Translate 🌺</button>
     </div>
 
-    <!-- Result bar -->
-    <div id="hw-result" style="display:none;margin-top:8px;padding:10px 20px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:16px;display:none;align-items:center;gap:12px;flex-wrap:wrap;">
+    <!-- Result -->
+    <div id="hw-result" style="display:none;margin-top:10px;padding:14px 24px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:16px;align-items:center;gap:16px;flex-wrap:wrap;">
       <span style="font-size:13px;color:var(--muted);">🌺 In Hawaiian:</span>
-      <span id="hw-translation" style="font-size:15px;font-weight:600;color:#22d3ee;font-family:'Playfair Display',serif;"></span>
+      <span id="hw-translation" style="font-size:18px;font-weight:700;color:#22d3ee;font-family:'Playfair Display',serif;"></span>
       <span id="hw-pronunciation" style="font-size:12px;color:var(--muted);font-style:italic;"></span>
-      <button onclick="speakHawaiian()" id="hw-speak" style="padding:4px 12px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:99px;color:var(--foam);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;display:none;">🔊 Hear it</button>
     </div>
   </div>
-
   <script>
-  // Hawaiian dictionary — common words and phrases
-  // Uses MyMemory free translation API for words not in dictionary
-  var HW_DICT = {
+    var HW_DICT = {
     // ── GREETINGS & BASICS ──
     'hello': {hw:'Aloha', pro:'ah-LOH-ha'},
     'hi': {hw:'Aloha', pro:'ah-LOH-ha'},
@@ -1190,6 +1189,7 @@
     'stand tall': {hw:'E kū pono', pro:'eh KOO POH-noh'},
   };
 
+
   function translateToHawaiian() {
     var input = document.getElementById('hw-input').value.trim().toLowerCase();
     if(!input) return;
@@ -1197,7 +1197,6 @@
     var resultDiv = document.getElementById('hw-result');
     var translationEl = document.getElementById('hw-translation');
     var pronunciationEl = document.getElementById('hw-pronunciation');
-    var speakBtn = document.getElementById('hw-speak');
 
     // Check our dictionary first
     if(HW_DICT[input]) {
@@ -1205,64 +1204,57 @@
       translationEl.textContent = entry.hw;
       pronunciationEl.textContent = '(' + entry.pro + ')';
       resultDiv.style.display = 'flex';
-      speakBtn.style.display = 'inline-block';
-      window._hwSpeak = entry.hw;
+
+
       return;
     }
 
-    // Not in dictionary — use MyMemory API to translate to Hawaiian
+    // Not in dictionary — use Google Translate API (translation only, no voice)
     translationEl.textContent = 'Translating...';
     pronunciationEl.textContent = '';
     resultDiv.style.display = 'flex';
-    speakBtn.style.display = 'none';
 
     var langCode = document.getElementById('hw-lang').value;
-    var url = 'https://api.mymemory.translated.net/get?q=' + 
-              encodeURIComponent(input) + 
-              '&langpair=' + langCode + '|haw';
+
+    // Google Translate free API — text translation only
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' +
+              langCode + '&tl=haw&dt=t&q=' + encodeURIComponent(input);
 
     fetch(url)
       .then(function(r){ return r.json(); })
       .then(function(data){
-        var result = data.responseData && data.responseData.translatedText;
-        if(result && result !== input && result.toLowerCase() !== 'invalid language pair') {
+        var result = '';
+        if(data && data[0]) {
+          data[0].forEach(function(item){ if(item && item[0]) result += item[0]; });
+        }
+        if(result && result.trim() && result.toLowerCase() !== input.toLowerCase()) {
           translationEl.textContent = result;
-          pronunciationEl.textContent = '— translated via MyMemory';
-          window._hwSpeak = result;
-          speakBtn.style.display = 'inline-block';
+          pronunciationEl.textContent = '— Google Translate · Hawaiian';
         } else {
-          // Fallback — search Google Translate
-          translationEl.textContent = 'Not found in dictionary';
+          translationEl.textContent = 'Not found — try a simpler word';
           pronunciationEl.textContent = '';
-          // Add Google Translate link
-          var gtLink = document.createElement('a');
-          gtLink.href = 'https://translate.google.com/?sl=' + langCode + '&tl=haw&text=' + encodeURIComponent(input);
-          gtLink.target = '_blank';
-          gtLink.textContent = '→ Try Google Translate';
-          gtLink.style.cssText = 'font-size:11px;color:var(--foam);margin-left:8px;';
-          translationEl.parentNode.appendChild(gtLink);
         }
       })
       .catch(function(){
-        translationEl.textContent = 'Could not translate — try Google Translate';
-        pronunciationEl.textContent = '';
+        // Fallback to MyMemory if Google fails
+        fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(input) + '&langpair=' + langCode + '|haw')
+          .then(function(r){ return r.json(); })
+          .then(function(data){
+            var result = data.responseData && data.responseData.translatedText;
+            if(result && result !== input) {
+              translationEl.textContent = result;
+              pronunciationEl.textContent = '— MyMemory · Hawaiian';
+            } else {
+              translationEl.textContent = 'Could not translate — please try again';
+              pronunciationEl.textContent = '';
+            }
+          }).catch(function(){
+            translationEl.textContent = 'Could not translate — please try again';
+            pronunciationEl.textContent = '';
+          });
       });
   }
 
-  function speakHawaiian() {
-    if(!window._hwSpeak) return;
-    // Use Google Translate TTS — handles Hawaiian sentences perfectly
-    var text = window._hwSpeak;
-    var audio = new Audio('https://translate.googleapis.com/translate_tts?ie=UTF-8&q=' + 
-                encodeURIComponent(text) + '&tl=haw&client=gtx&ttsspeed=0.8');
-    audio.play().catch(function(){
-      // Fallback to browser speech synthesis
-      var utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'haw';
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
-    });
-  }
   </script>
   <!-- END HAWAIIAN LANGUAGE TRANSLATOR -->
 
