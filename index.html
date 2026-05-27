@@ -1228,7 +1228,8 @@
         if(result && result !== input && result.toLowerCase() !== 'invalid language pair') {
           translationEl.textContent = result;
           pronunciationEl.textContent = '— translated via MyMemory';
-          speakBtn.style.display = 'none';
+          window._hwSpeak = result;
+          speakBtn.style.display = 'inline-block';
         } else {
           // Fallback — search Google Translate
           translationEl.textContent = 'Not found in dictionary';
@@ -1250,10 +1251,17 @@
 
   function speakHawaiian() {
     if(!window._hwSpeak) return;
-    var utterance = new SpeechSynthesisUtterance(window._hwSpeak);
-    utterance.lang = 'haw'; // Hawaiian
-    utterance.rate = 0.8;
-    speechSynthesis.speak(utterance);
+    // Use Google Translate TTS — handles Hawaiian sentences perfectly
+    var text = window._hwSpeak;
+    var audio = new Audio('https://translate.googleapis.com/translate_tts?ie=UTF-8&q=' + 
+                encodeURIComponent(text) + '&tl=haw&client=gtx&ttsspeed=0.8');
+    audio.play().catch(function(){
+      // Fallback to browser speech synthesis
+      var utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'haw';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    });
   }
   </script>
   <!-- END HAWAIIAN LANGUAGE TRANSLATOR -->
