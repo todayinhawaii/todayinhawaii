@@ -2465,7 +2465,15 @@
     if(btn) btn.classList.add('active');
     setTimeout(function(){ startAmzScroll(cat); }, 300);
   }
-  window.addEventListener('load', function(){ setTimeout(function(){ startAmzScroll('luggage'); }, 1500); });
+  // Only start scrolling when carousel comes into view — prevents page jumping!
+  (function(){
+    var amzEl = document.getElementById('amzcar-luggage');
+    if(!amzEl) return;
+    var amzObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ startAmzScroll('luggage'); amzObs.disconnect(); }
+    }, {threshold:0.3});
+    amzObs.observe(amzEl);
+  })();
   </script>
   <!-- END AMAZON HAWAII TRAVEL ESSENTIALS -->
 
@@ -3114,7 +3122,15 @@
     if(wrap)wrap.style.display='block';if(btn)btn.classList.add('active');
     setTimeout(function(){startCarouselScroll(island);},300);
   }
-  window.addEventListener('load',function(){setTimeout(function(){startCarouselScroll('maui');},1500);});
+  // Only start scrolling when carousel comes into view — prevents page jumping!
+  (function(){
+    var actEl = document.getElementById('acarousel-maui-inner');
+    if(!actEl) return;
+    var actObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ startCarouselScroll('maui'); actObs.disconnect(); }
+    }, {threshold:0.3});
+    actObs.observe(actEl);
+  })();
   </script>
   <!-- END ACTIVITIES CAROUSEL -->
 
@@ -3178,7 +3194,15 @@
     if(wrap)wrap.style.display='block';if(btn)btn.classList.add('active');
     setTimeout(function(){start808Scroll(island);},300);
   }
-  window.addEventListener('load',function(){setTimeout(function(){start808Scroll('maui');},1500);});
+  // Only start scrolling when carousel comes into view — prevents page jumping!
+  (function(){
+    var el808 = document.getElementById('p808-maui-inner');
+    if(!el808) return;
+    var obs808 = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ start808Scroll('maui'); obs808.disconnect(); }
+    }, {threshold:0.3});
+    obs808.observe(el808);
+  })();
   </script>
   <!-- END 808 PICTURES SECTION -->
 
