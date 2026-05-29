@@ -2980,7 +2980,7 @@
   <!-- HAWAII CHARITIES -->
   <div id="hawaii-charities" style="margin-bottom:56px;">
     <div class="section-title">🤍 Give Back to Hawaii <span class="section-note">Charities</span></div>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Hawaii gives so much to all of us — here are the incredible organizations working every day to protect her people, animals, ocean and culture. Every donation makes a difference! 🌺</p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Hawaii gives so much to all of us — here are the incredible organizations working every day to protect her people animals ocean and culture. Every donation makes a difference! 🌺</p>
 
     <div style="background:linear-gradient(135deg,rgba(245,230,200,0.1),rgba(6,29,44,0.97));border:2px solid rgba(210,180,140,0.3);border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
 
@@ -2990,33 +2990,459 @@
           <span style="font-size:28px;">🤍</span>
           <div>
             <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;">Hawaii Charities & Organizations</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px;">63 verified charities — hover to pause · click any card to donate directly</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">53 verified charities — hover to pause · click any card to donate directly</div>
           </div>
         </div>
         <span style="background:rgba(210,180,140,0.1);border:1px solid rgba(210,180,140,0.3);border-radius:99px;padding:4px 12px;font-size:11px;color:#d2b48c;">🌺 All Islands</span>
       </div>
 
-      <!-- Category filter tabs -->
+      <!-- Filter tabs -->
       <div style="padding:16px 28px 0;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
-        <button onclick="filterCharities('all',this)" class="ctab cactive">🌺 All 63</button>
-        <button onclick="filterCharities('animal',this)" class="ctab">🐾 Animals & Marine</button>
-        <button onclick="filterCharities('children',this)" class="ctab">👦 Children</button>
-        <button onclick="filterCharities('native',this)" class="ctab">🌺 Native Hawaiian</button>
-        <button onclick="filterCharities('environment',this)" class="ctab">🌿 Environment</button>
-        <button onclick="filterCharities('hunger',this)" class="ctab">🥫 Hunger & Housing</button>
-        <button onclick="filterCharities('health',this)" class="ctab">❤️ Health</button>
-        <button onclick="filterCharities('education',this)" class="ctab">📚 Education</button>
-        <button onclick="filterCharities('disaster',this)" class="ctab">💪 Community</button>
+        <button onclick="filterCh('all',this)" class="ctab cactive">🌺 All</button>
+        <button onclick="filterCh('animal',this)" class="ctab">🐾 Animals & Marine</button>
+        <button onclick="filterCh('children',this)" class="ctab">👦 Children</button>
+        <button onclick="filterCh('native',this)" class="ctab">🌺 Native Hawaiian</button>
+        <button onclick="filterCh('environment',this)" class="ctab">🌿 Environment</button>
+        <button onclick="filterCh('hunger',this)" class="ctab">🥫 Hunger & Housing</button>
+        <button onclick="filterCh('health',this)" class="ctab">❤️ Health</button>
+        <button onclick="filterCh('education',this)" class="ctab">📚 Education</button>
+        <button onclick="filterCh('disaster',this)" class="ctab">💪 Community</button>
       </div>
 
-      <!-- Carousel track -->
-      <div style="padding:20px 28px 24px;position:relative;">
-        <div id="charityCarousel" style="display:flex;gap:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(210,180,140,0.3) transparent;padding-bottom:8px;scroll-behavior:auto;"></div>
+      <!-- Static carousel -->
+      <div style="padding:20px 28px 24px;">
+        <div id="chCarousel" style="display:flex;gap:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(210,180,140,0.3) transparent;padding-bottom:8px;">
+          <a href="https://www.hawaiianhumane.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Hawaiian Humane Society</div>
+              <div class="ch-card-desc">Caring for homeless animals across Oahu — adoption rescue and welfare since 1883</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.mauihumanesociety.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui Humane Society</div>
+              <div class="ch-card-desc">Finding loving homes for animals across Maui — the heart of animal rescue on the Valley Isle</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.kauaihumane.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Kauai</div>
+              <div class="ch-card-name">Kauai Humane Society</div>
+              <div class="ch-card-desc">Dedicated to protecting and rehoming animals across the beautiful Garden Isle</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hihs.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Big Island</div>
+              <div class="ch-card-name">Hawaii Island Humane Society</div>
+              <div class="ch-card-desc">Serving animals across the Big Island with compassion care and community support</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.pacificwhale.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐋</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Pacific Whale Foundation</div>
+              <div class="ch-card-desc">Protecting humpback whales and Hawaii's ocean through research education and advocacy</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.fisheries.noaa.gov" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🦭</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaiian Monk Seal Research Program</div>
+              <div class="ch-card-desc">Protecting Hawaii's most endangered marine mammal — the critically endangered monk seal</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.seaturtles.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🐢</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Sea Turtle Conservation Hawaii</div>
+              <div class="ch-card-desc">Protecting Hawaii's beloved green sea turtles and hawksbill turtles across all islands</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.reefcheck.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🪸</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Reef Check Hawaii</div>
+              <div class="ch-card-desc">Monitoring and protecting Hawaii's precious coral reefs through citizen science</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.wildhawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🌿</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Hawaii Wildlife Fund</div>
+              <div class="ch-card-desc">Protecting Hawaii's unique wildlife and natural habitats across the islands</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://hawaii.surfrider.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="animal">
+            <div class="ch-card-top">🏄</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Surfrider Foundation Hawaii</div>
+              <div class="ch-card-desc">Protecting Hawaii's ocean waves and beaches for surfers and all who love the sea</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.bgch.com" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">👦</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Boys & Girls Club of Hawaii</div>
+              <div class="ch-card-desc">Empowering Hawaii's youth with after-school programs mentoring and life skills</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.childandfamilyservice.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">👨‍👩‍👧</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Child & Family Service Hawaii</div>
+              <div class="ch-card-desc">Supporting Hawaii families through counseling prevention and community programs</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.rmhc-hawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">🏠</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Ronald McDonald House Hawaii</div>
+              <div class="ch-card-desc">A home away from home for families of seriously ill children at Kapiolani Medical Center</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hccf.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">🎗️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Children's Cancer Foundation</div>
+              <div class="ch-card-desc">Supporting Hawaii children and families affected by cancer with programs and hope</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://hawaii.wish.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">⭐</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Make-A-Wish Hawaii</div>
+              <div class="ch-card-desc">Granting life-changing wishes for Hawaii children with critical illnesses</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.bbbshawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">🤝</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Big Brothers Big Sisters Hawaii</div>
+              <div class="ch-card-desc">Mentoring Hawaii's youth with caring one-to-one relationships that change lives</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaii.salvationarmy.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">❤️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Salvation Army Hawaii</div>
+              <div class="ch-card-desc">Emergency assistance food shelter and support to Hawaii's most vulnerable families</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.kapiolani.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="children">
+            <div class="ch-card-top">🏥</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Kapiolani Medical Center Foundation</div>
+              <div class="ch-card-desc">Supporting Hawaii's only hospital dedicated to women children and newborns</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.oha.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">🌺</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Office of Hawaiian Affairs</div>
+              <div class="ch-card-desc">Protecting and advancing the rights of Native Hawaiian people and culture</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.ksbe.edu" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">📚</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Kamehameha Schools</div>
+              <div class="ch-card-desc">Educating Native Hawaiian children from early childhood through higher education</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.iolanipalace.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">👑</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Iolani Palace Foundation</div>
+              <div class="ch-card-desc">Preserving Hawaii's royal palace — the only official royal residence in the USA</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.bishopmuseum.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">🏛️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Bishop Museum</div>
+              <div class="ch-card-desc">Preserving Hawaii's natural and cultural history — the largest museum in the Pacific</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.nhlc-hawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">⚖️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Native Hawaiian Legal Corporation</div>
+              <div class="ch-card-desc">Free legal services to Native Hawaiians on land water and cultural rights</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.kokuahawaiifoundation.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">♻️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Kokua Hawaii Foundation</div>
+              <div class="ch-card-desc">Nurturing Hawaii's children through environmental education and aloha aina</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hokulea.com" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">⛵</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Polynesian Voyaging Society</div>
+              <div class="ch-card-desc">Reviving ancient Hawaiian navigation aboard the legendary Hokule'a canoe</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.mauiculturallands.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="native">
+            <div class="ch-card-top">🌾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui Cultural Lands</div>
+              <div class="ch-card-desc">Restoring traditional Hawaiian land and farming — reconnecting people with aina</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.nature.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🌿</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">The Nature Conservancy Hawaii</div>
+              <div class="ch-card-desc">Protecting Hawaii's irreplaceable natural areas from mountain forests to coral reefs</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.sierraclubhawaii.com" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🏔️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Sierra Club Hawaii</div>
+              <div class="ch-card-desc">Advocating for Hawaii's environment clean energy and natural spaces since 1960</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiiconservation.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🦅</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Conservation Alliance</div>
+              <div class="ch-card-desc">Uniting organizations to protect Hawaii's native plants animals and ecosystems</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.malamahawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🌱</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Malama Hawaii</div>
+              <div class="ch-card-desc">Community stewardship and environmental education — caring for Hawaii's land and sea</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.waimeavalley.net" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🦜</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Waimea Valley Audubon Center</div>
+              <div class="ch-card-desc">Protecting native Hawaiian birds and their habitats through conservation</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiilandtrust.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🏞️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Land Trust</div>
+              <div class="ch-card-desc">Permanently protecting Hawaii's most treasured lands through conservation</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.kisc.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🌿</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Kauai</div>
+              <div class="ch-card-name">Kauai Invasive Species Committee</div>
+              <div class="ch-card-desc">Protecting Kauai's native ecosystems by controlling invasive plants and animals</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.seabirdrecovery.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="environment">
+            <div class="ch-card-top">🐦</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui Nui Seabird Recovery</div>
+              <div class="ch-card-desc">Saving Hawaii's endangered seabirds — protecting nesting sites and rescuing birds</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiifoodbank.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">🥫</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Foodbank</div>
+              <div class="ch-card-desc">Fighting hunger across Hawaii — providing food to over 300 community partners statewide</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.mauifoodbank.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">🍱</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui Food Bank</div>
+              <div class="ch-card-desc">Feeding hungry families across Maui County with aloha since 1995</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.kauaifoodbank.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">🥦</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Kauai</div>
+              <div class="ch-card-name">Kauai Food Bank</div>
+              <div class="ch-card-desc">Ensuring no one on the Garden Isle goes hungry — serving thousands of families</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.ihshawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">🏠</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">IHS — Institute for Human Services</div>
+              <div class="ch-card-desc">Hawaii's largest homeless shelter — restoring dignity and hope to thousands</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.alohaharvest.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">🌾</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Aloha Harvest</div>
+              <div class="ch-card-desc">Rescuing surplus food and delivering it to Hawaii's hungry with aloha</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.waikikihealthcenter.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="hunger">
+            <div class="ch-card-top">💊</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Waikiki Health</div>
+              <div class="ch-card-desc">Quality healthcare and social services to Hawaii's most vulnerable communities</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiicancer.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="health">
+            <div class="ch-card-top">🎗️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Cancer Consortium</div>
+              <div class="ch-card-desc">Reducing the cancer burden across Hawaii through research education and care</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.heart.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="health">
+            <div class="ch-card-top">❤️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">American Heart Association Hawaii</div>
+              <div class="ch-card-desc">Fighting heart disease and stroke — the leading causes of death in Hawaii</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.mhah.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="health">
+            <div class="ch-card-top">🧠</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Mental Health America Hawaii</div>
+              <div class="ch-card-desc">Promoting mental health and supporting those affected by mental illness</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hospicehawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="health">
+            <div class="ch-card-top">🕊️</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Hospice Hawaii</div>
+              <div class="ch-card-desc">Compassionate end-of-life care to Hawaii patients and families with dignity</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.eastersealshawaii.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="health">
+            <div class="ch-card-top">🌈</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Easter Seals Hawaii</div>
+              <div class="ch-card-desc">Supporting people with disabilities and their families with life-changing services</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiicommunityfoundation.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="education">
+            <div class="ch-card-top">🎓</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Community Foundation</div>
+              <div class="ch-card-desc">Strengthening Hawaii through philanthropic investment and scholarships since 1916</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.uhfoundation.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="education">
+            <div class="ch-card-top">🏫</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">University of Hawaii Foundation</div>
+              <div class="ch-card-desc">Supporting UH students faculty and programs — investing in Hawaii's future</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.alulike.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="education">
+            <div class="ch-card-top">🌺</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">ALU LIKE</div>
+              <div class="ch-card-desc">Assisting Native Hawaiians in achieving social and economic self-sufficiency</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.readtomeinternational.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="education">
+            <div class="ch-card-top">📖</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Read to Me International</div>
+              <div class="ch-card-desc">Promoting early literacy across Hawaii — books in the hands of children who need them</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.redcross.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="disaster">
+            <div class="ch-card-top">🏥</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">All Islands</div>
+              <div class="ch-card-name">Hawaii Red Cross</div>
+              <div class="ch-card-desc">Disaster relief emergency assistance and community support across Hawaii</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.hawaiicommunityfoundation.org/mauistrong" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="disaster">
+            <div class="ch-card-top">💪</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui Strong Fund</div>
+              <div class="ch-card-desc">Supporting Maui communities after the devastating 2023 Lahaina wildfires</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.mauiunitedway.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="disaster">
+            <div class="ch-card-top">🤝</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Maui</div>
+              <div class="ch-card-name">Maui United Way</div>
+              <div class="ch-card-desc">Building a stronger Maui through health education and financial stability programs</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a><a href="https://www.auw.org" target="_blank" rel="noopener noreferrer" class="ch-card" data-cat="disaster">
+            <div class="ch-card-top">🌺</div>
+            <div class="ch-card-body">
+              <div class="ch-card-island">Oahu</div>
+              <div class="ch-card-name">Aloha United Way</div>
+              <div class="ch-card-desc">Uniting Oahu's community resources to improve lives and create lasting change</div>
+              <div class="ch-card-cta">Donate 🤍</div>
+            </div>
+          </a>
+        </div>
       </div>
 
       <!-- Footer -->
       <div style="padding:14px 28px;border-top:1px solid rgba(210,180,140,0.12);font-size:12px;color:var(--muted);text-align:center;">
-        🤍 Today in Hawaii takes zero commission from donations — all links go directly to each charity · Verify at <a href="https://www.charitynavigator.org" target="_blank" style="color:#d2b48c;text-decoration:none;">charitynavigator.org</a>
+        🤍 Today in Hawaii takes zero commission — all links go directly to each charity · Verify at <a href="https://www.charitynavigator.org" target="_blank" style="color:#d2b48c;text-decoration:none;">charitynavigator.org</a>
       </div>
     </div>
   </div>
@@ -3024,10 +3450,10 @@
   <style>
   .ctab{padding:7px 16px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid rgba(210,180,140,0.2);background:rgba(210,180,140,0.04);color:#9a8a7a;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
   .ctab.cactive,.ctab:hover{border-color:#d2b48c;color:#d2b48c;background:rgba(210,180,140,0.12);}
-  .ch-card{display:flex;flex-direction:column;min-width:240px;max-width:240px;background:linear-gradient(160deg,rgba(245,230,200,0.1),rgba(6,29,44,0.9));border:1px solid rgba(210,180,140,0.2);border-radius:20px;overflow:hidden;transition:all 0.25s;flex-shrink:0;text-decoration:none;cursor:pointer;pointer-events:all;position:relative;z-index:1;}
-  .ch-card:hover{transform:translateY(-6px);border-color:rgba(210,180,140,0.5);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
-  .ch-card-top{height:90px;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,rgba(210,180,140,0.12),rgba(10,46,68,0.8));}
-  .ch-card-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:5px;}
+  .ch-card{display:flex;flex-direction:column;min-width:230px;max-width:230px;background:linear-gradient(160deg,rgba(245,230,200,0.08),rgba(6,29,44,0.9));border:1px solid rgba(210,180,140,0.2);border-radius:20px;overflow:hidden;transition:all 0.25s;flex-shrink:0;text-decoration:none;cursor:pointer;position:relative;z-index:2;}
+  .ch-card:hover{transform:translateY(-6px);border-color:rgba(210,180,140,0.55);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+  .ch-card-top{height:88px;display:flex;align-items:center;justify-content:center;font-size:50px;background:linear-gradient(135deg,rgba(210,180,140,0.1),rgba(10,46,68,0.8));pointer-events:none;}
+  .ch-card-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:5px;pointer-events:none;}
   .ch-card-island{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#d2b48c;}
   .ch-card-name{font-size:13px;font-weight:700;color:#fff;line-height:1.3;}
   .ch-card-desc{font-size:11px;color:#7fb3c8;line-height:1.5;flex:1;}
@@ -3035,169 +3461,48 @@
   </style>
 
   <script>
-  const CHARITIES = [
-  {name:"Hawaiian Humane Society",island:"Oahu",emoji:"🐾",desc:"Caring for homeless animals across Oahu — adoption, rescue and animal welfare since 1883",url:"https://www.hawaiianhumane.org"},
-  {name:"Maui Humane Society",island:"Maui",emoji:"🐾",desc:"Finding loving homes for animals across Maui — the heart of animal rescue on the Valley Isle",url:"https://www.mauihumanesociety.org"},
-  {name:"Kauai Humane Society",island:"Kauai",emoji:"🐾",desc:"Dedicated to protecting and rehoming animals across the Garden Isle of Kauai",url:"https://www.kauaihumane.org"},
-  {name:"Hawaii Island Humane Society",island:"Big Island",emoji:"🐾",desc:"Serving animals across the Big Island with compassion care and community support",url:"https://www.hihs.org"},
-  {name:"Pacific Whale Foundation",island:"Maui",emoji:"🐋",desc:"Protecting humpback whales and Hawaii\'s ocean ecosystem through research education and advocacy",url:"https://www.pacificwhale.org"},
-  {name:"Hawaiian Monk Seal Research Program",island:"All Islands",emoji:"🦭",desc:"Protecting Hawaii\'s most endangered marine mammal — the critically endangered Hawaiian monk seal",url:"https://www.fisheries.noaa.gov/contact/hawaiian-monk-seal-research-program"},
-  {name:"Sea Turtle Conservation Hawaii",island:"All Islands",emoji:"🐢",desc:"Protecting Hawaii\'s beloved green sea turtles and hawksbill turtles across all islands",url:"https://www.seaturtles.org"},
-  {name:"Reef Check Hawaii",island:"All Islands",emoji:"🪸",desc:"Monitoring and protecting Hawaii\'s precious coral reefs through citizen science and education",url:"https://www.reefcheck.org"},
-  {name:"Hawaii Wildlife Fund",island:"Maui",emoji:"🌿",desc:"Protecting Hawaii\'s unique wildlife and natural habitats across the islands",url:"https://www.wildhawaii.org"},
-  {name:"Surfrider Foundation Hawaii",island:"All Islands",emoji:"🏄",desc:"Protecting Hawaii\'s ocean waves and beaches for surfers and all who love the sea",url:"https://hawaii.surfrider.org"},
-  {name:"Oceanic Society Hawaii",island:"All Islands",emoji:"🌊",desc:"Ocean conservation education and marine wildlife protection across the Pacific",url:"https://www.oceanicsociety.org"},
-  {name:"Hawaii Ocean Time-series",island:"Oahu",emoji:"🔬",desc:"Scientific research protecting Hawaii\'s ocean health and marine ecosystems",url:"https://hahana.soest.hawaii.edu/hot"},
-  {name:"Boys & Girls Club of Hawaii",island:"All Islands",emoji:"👦",desc:"Empowering Hawaii\'s youth with after-school programs mentoring and life skills across all islands",url:"https://www.bgch.com"},
-  {name:"Child & Family Service Hawaii",island:"All Islands",emoji:"👨‍👩‍👧",desc:"Supporting Hawaii families through counseling prevention and community strengthening programs",url:"https://www.childandfamilyservice.org"},
-  {name:"Ronald McDonald House Hawaii",island:"Oahu",emoji:"🏠",desc:"Providing a home away from home for families of seriously ill children at Kapiolani Medical Center",url:"https://www.rmhc-hawaii.org"},
-  {name:"Hawaii Children\'s Cancer Foundation",island:"All Islands",emoji:"🎗️",desc:"Supporting Hawaii children and families affected by cancer with programs financial assistance and hope",url:"https://www.hccf.org"},
-  {name:"Make-A-Wish Hawaii",island:"All Islands",emoji:"⭐",desc:"Granting life-changing wishes for Hawaii children with critical illnesses — creating magical memories",url:"https://hawaii.wish.org"},
-  {name:"Big Brothers Big Sisters Hawaii",island:"All Islands",emoji:"🤝",desc:"Mentoring Hawaii\'s youth with caring one-to-one relationships that change lives forever",url:"https://www.bbbshawaii.org"},
-  {name:"Salvation Army Hawaii",island:"All Islands",emoji:"❤️",desc:"Providing emergency assistance food shelter and support to Hawaii\'s most vulnerable families",url:"https://www.hawaii.salvationarmy.org"},
-  {name:"Kapiolani Medical Center Foundation",island:"Oahu",emoji:"🏥",desc:"Supporting Hawaii\'s only hospital dedicated to women children and newborns — saving precious lives",url:"https://www.kapiolani.org/foundation"},
-  {name:"Hawaii Keiki Fund",island:"All Islands",emoji:"🌺",desc:"Supporting programs that give Hawaii\'s children the best possible start in life",url:"https://www.hawaiicommunityfoundation.org"},
-  {name:"Office of Hawaiian Affairs",island:"All Islands",emoji:"🌺",desc:"Protecting and advancing the rights and well-being of Native Hawaiian people and culture",url:"https://www.oha.org"},
-  {name:"Kamehameha Schools",island:"All Islands",emoji:"📚",desc:"Educating Native Hawaiian children from early childhood through higher education — preserving the culture",url:"https://www.ksbe.edu"},
-  {name:"Iolani Palace Foundation",island:"Oahu",emoji:"👑",desc:"Preserving Hawaii\'s royal palace — the only official royal residence in the United States",url:"https://www.iolanipalace.org"},
-  {name:"Bishop Museum",island:"Oahu",emoji:"🏛️",desc:"Preserving Hawaii\'s natural and cultural history — the largest museum in the Pacific",url:"https://www.bishopmuseum.org"},
-  {name:"Native Hawaiian Legal Corporation",island:"All Islands",emoji:"⚖️",desc:"Providing free legal services to Native Hawaiians on land water and cultural rights",url:"https://www.nhlc-hawaii.org"},
-  {name:"Kokua Hawaii Foundation",island:"All Islands",emoji:"♻️",desc:"Nurturing Hawaii\'s children and communities through environmental education and aloha aina",url:"https://www.kokuahawaiifoundation.org"},
-  {name:"Polynesian Voyaging Society",island:"All Islands",emoji:"⛵",desc:"Reviving ancient Hawaiian navigation and voyaging traditions aboard the Hokule\'a canoe",url:"https://www.hokulea.com"},
-  {name:"Hawaiian Mission Houses",island:"Oahu",emoji:"📜",desc:"Preserving Hawaii\'s historic mission houses and sharing the story of Hawaii\'s unique history",url:"https://www.missionhouses.org"},
-  {name:"Maui Cultural Lands",island:"Maui",emoji:"🌾",desc:"Restoring traditional Hawaiian land and farming practices — reconnecting people with aina",url:"https://www.mauiculturallands.org"},
-  {name:"The Nature Conservancy Hawaii",island:"All Islands",emoji:"🌿",desc:"Protecting Hawaii\'s irreplaceable natural areas — from mountain forests to coral reefs",url:"https://www.nature.org/hawaii"},
-  {name:"Sierra Club Hawaii",island:"All Islands",emoji:"🏔️",desc:"Advocating for Hawaii\'s environment clean energy and protection of natural spaces since 1960",url:"https://www.sierraclubhawaii.com"},
-  {name:"Hawaii Conservation Alliance",island:"All Islands",emoji:"🦅",desc:"Uniting conservation organizations to protect Hawaii\'s unique native plants animals and ecosystems",url:"https://www.hawaiiconservation.org"},
-  {name:"Malama Hawaii",island:"All Islands",emoji:"🌱",desc:"Community stewardship and environmental education — caring for Hawaii\'s land sea and people",url:"https://www.malamahawaii.org"},
-  {name:"Waimea Valley Audubon Center",island:"Oahu",emoji:"🦜",desc:"Protecting native Hawaiian birds and their habitats through conservation and education",url:"https://www.waimeavalley.net"},
-  {name:"Hawaii Forest & Trail Conservation",island:"Big Island",emoji:"🌲",desc:"Protecting Big Island forests and native species through guided eco-tourism and conservation",url:"https://www.hawaii-forest.com"},
-  {name:"Kauai Invasive Species Committee",island:"Kauai",emoji:"🌿",desc:"Protecting Kauai\'s native ecosystems by controlling invasive plants and animals",url:"https://www.kisc.org"},
-  {name:"Maui Nui Seabird Recovery",island:"Maui",emoji:"🐦",desc:"Saving Hawaii\'s endangered seabirds — protecting nesting sites and rescuing injured birds",url:"https://www.seabirdrecovery.org"},
-  {name:"Hawaii Land Trust",island:"All Islands",emoji:"🏞️",desc:"Permanently protecting Hawaii\'s most treasured lands through conservation easements and acquisition",url:"https://www.hawaiilandtrust.org"},
-  {name:"Hawaii Foodbank",island:"All Islands",emoji:"🥫",desc:"Fighting hunger across Hawaii — providing nutritious food to over 300 community partners statewide",url:"https://www.hawaiifoodbank.org"},
-  {name:"Maui Food Bank",island:"Maui",emoji:"🍱",desc:"Feeding hungry families across Maui County — nourishing the community with aloha since 1995",url:"https://www.mauifoodbank.org"},
-  {name:"Kauai Food Bank",island:"Kauai",emoji:"🥦",desc:"Ensuring no one on the Garden Isle goes hungry — serving thousands of Kauai families",url:"https://www.kauaifoodbank.org"},
-  {name:"IHS — Institute for Human Services",island:"Oahu",emoji:"🏠",desc:"Hawaii\'s largest homeless shelter and service provider — restoring dignity and hope to thousands",url:"https://www.ihshawaii.org"},
-  {name:"Waikiki Health",island:"Oahu",emoji:"💊",desc:"Providing quality healthcare and social services to Hawaii\'s most vulnerable — including the homeless",url:"https://www.waikikihealthcenter.org"},
-  {name:"Aloha Harvest",island:"Oahu",emoji:"🌾",desc:"Rescuing surplus food and delivering it to Hawaii\'s hungry — feeding thousands with aloha",url:"https://www.alohaharvest.org"},
-  {name:"Maui Economic Opportunity",island:"Maui",emoji:"💼",desc:"Empowering Maui individuals and families with services education and economic opportunities",url:"https://www.meo.org"},
-  {name:"Hawaii Cancer Consortium",island:"All Islands",emoji:"🎗️",desc:"Working together to reduce the cancer burden across Hawaii through research education and care",url:"https://www.hawaiicancer.org"},
-  {name:"American Heart Association Hawaii",island:"All Islands",emoji:"❤️",desc:"Fighting heart disease and stroke — the leading causes of death in Hawaii and across America",url:"https://www.heart.org/hawaii"},
-  {name:"Mental Health America Hawaii",island:"All Islands",emoji:"🧠",desc:"Promoting mental health and supporting those affected by mental illness across Hawaii",url:"https://www.mhah.org"},
-  {name:"Hospice Hawaii",island:"Oahu",emoji:"🕊️",desc:"Providing compassionate end-of-life care to Hawaii patients and their families with dignity and aloha",url:"https://www.hospicehawaii.org"},
-  {name:"Easter Seals Hawaii",island:"All Islands",emoji:"🌈",desc:"Supporting people with disabilities and their families across Hawaii with life-changing services",url:"https://www.eastersealshawaii.org"},
-  {name:"Hawaii Disability Rights Center",island:"All Islands",emoji:"♿",desc:"Protecting the rights of Hawaii\'s people with disabilities through advocacy and legal services",url:"https://www.hawaiidisabilityrights.org"},
-  {name:"Hawaii Community Foundation",island:"All Islands",emoji:"🎓",desc:"Strengthening Hawaii communities through philanthropic investment scholarships and grants since 1916",url:"https://www.hawaiicommunityfoundation.org"},
-  {name:"University of Hawaii Foundation",island:"All Islands",emoji:"🏫",desc:"Supporting UH students faculty and programs — investing in Hawaii\'s future through education",url:"https://www.uhfoundation.org"},
-  {name:"Hawaii Public Schools Foundation",island:"All Islands",emoji:"📖",desc:"Supporting Hawaii\'s public school students and teachers with resources programs and opportunities",url:"https://www.hawaiipublicschools.org"},
-  {name:"Read to Me International",island:"All Islands",emoji:"📚",desc:"Promoting early literacy across Hawaii — putting books in the hands of children who need them most",url:"https://www.readtomeinternational.org"},
-  {name:"ALU LIKE",island:"All Islands",emoji:"🌺",desc:"Assisting Native Hawaiians in achieving social and economic self-sufficiency through education",url:"https://www.alulike.org"},
-  {name:"Hawaii Red Cross",island:"All Islands",emoji:"🏥",desc:"Providing disaster relief emergency assistance and community support across the Hawaiian islands",url:"https://www.redcross.org/local/hawaii.html"},
-  {name:"Maui Strong Fund",island:"Maui",emoji:"💪",desc:"Supporting Maui communities affected by the devastating 2023 Lahaina wildfires — rebuilding with aloha",url:"https://www.hawaiicommunityfoundation.org/mauistrong"},
-  {name:"Maui United Way",island:"Maui",emoji:"🤝",desc:"Building a stronger Maui through health education and financial stability programs for all",url:"https://www.mauiunitedway.org"},
-  {name:"Aloha United Way",island:"Oahu",emoji:"🌺",desc:"Uniting Oahu\'s community resources to improve lives and create lasting positive change",url:"https://www.auw.org"},
-  {name:"Hawaii Community Reinvestment Corp",island:"All Islands",emoji:"🏘️",desc:"Providing affordable housing and community development financing across Hawaii\'s islands",url:"https://www.hcrc-hawaii.org"},
-  {name:"Kauai Economic Development Board",island:"Kauai",emoji:"🌱",desc:"Building a sustainable and thriving economy for all Kauai residents and communities",url:"https://www.kedb.com"},
-];
-
-  var CHARITY_CATS={
-    'animal':['Hawaiian Humane Society','Maui Humane Society','Kauai Humane Society','Hawaii Island Humane Society','Pacific Whale Foundation','Hawaiian Monk Seal Research Program','Sea Turtle Conservation Hawaii','Reef Check Hawaii','Hawaii Wildlife Fund','Surfrider Foundation Hawaii','Oceanic Society Hawaii','Hawaii Ocean Time-series'],
-    'children':['Boys & Girls Club of Hawaii','Child & Family Service Hawaii','Ronald McDonald House Hawaii','Hawaii Children's Cancer Foundation','Make-A-Wish Hawaii','Big Brothers Big Sisters Hawaii','Salvation Army Hawaii','Kapiolani Medical Center Foundation','Hawaii Keiki Fund'],
-    'native':['Office of Hawaiian Affairs','Kamehameha Schools','Iolani Palace Foundation','Bishop Museum','Native Hawaiian Legal Corporation','Kokua Hawaii Foundation','Polynesian Voyaging Society','Hawaiian Mission Houses','Maui Cultural Lands'],
-    'environment':['The Nature Conservancy Hawaii','Sierra Club Hawaii','Hawaii Conservation Alliance','Malama Hawaii','Waimea Valley Audubon Center','Hawaii Forest & Trail Conservation','Kauai Invasive Species Committee','Maui Nui Seabird Recovery','Hawaii Land Trust'],
-    'hunger':['Hawaii Foodbank','Maui Food Bank','Kauai Food Bank','IHS — Institute for Human Services','Waikiki Health','Aloha Harvest','Maui Economic Opportunity'],
-    'health':['Hawaii Cancer Consortium','American Heart Association Hawaii','Mental Health America Hawaii','Hospice Hawaii','Easter Seals Hawaii','Hawaii Disability Rights Center'],
-    'education':['Hawaii Community Foundation','University of Hawaii Foundation','Hawaii Public Schools Foundation','Read to Me International','ALU LIKE'],
-    'disaster':['Hawaii Red Cross','Maui Strong Fund','Maui United Way','Aloha United Way','Hawaii Community Reinvestment Corp','Kauai Economic Development Board'],
-  };
-
-  var chTimer=null;
-  var chPaused=false;
-
-  function renderCharityCarousel(list){
-    var car=document.getElementById('charityCarousel');
-    if(!car)return;
-    // Stop existing timer
-    if(chTimer){clearInterval(chTimer);chTimer=null;}
-    // Build cards
-    car.innerHTML='';
-    list.forEach(function(c){
-      var a=document.createElement('a');
-      a.href=c.url;
-      a.target='_blank';
-      a.rel='noopener noreferrer';
-      a.className='ch-card';
-      a.style.cssText+='pointer-events:all;position:relative;z-index:1;';
-      a.onclick=function(e){
-        e.stopPropagation();
-        window.open(c.url,'_blank');
-        return true;
-      };
-      a.innerHTML=
-        '<div class="ch-card-top">'+c.emoji+'</div>'+
-        '<div class="ch-card-body">'+
-          '<div class="ch-card-island">'+c.island+'</div>'+
-          '<div class="ch-card-name">'+c.name+'</div>'+
-          '<div class="ch-card-desc">'+c.desc+'</div>'+
-          '<div class="ch-card-cta">Donate 🤍</div>'+
-        '</div>';
-      car.appendChild(a);
+  // Filter function — shows/hides static cards
+  function filterCh(cat,btn){
+    document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('cactive');});
+    if(btn)btn.classList.add('cactive');
+    document.querySelectorAll('.ch-card').forEach(function(card){
+      if(cat==='all'||card.dataset.cat===cat){
+        card.style.display='flex';
+      }else{
+        card.style.display='none';
+      }
     });
-    // Start auto scroll
-    car.style.scrollBehavior='auto';
-    car.scrollLeft=0;
-    chPaused=false;
-    car.addEventListener('mouseenter',function(){chPaused=true;});
-    car.addEventListener('mouseleave',function(){chPaused=false;});
-    // Touch: pause but also detect swipe vs tap
-    var chTouchStartX=0;
-    var chTouchMoved=false;
-    car.addEventListener('touchstart',function(e){
-      chPaused=true;
-      chTouchStartX=e.touches[0].clientX;
-      chTouchMoved=false;
-    },{passive:true});
-    car.addEventListener('touchmove',function(e){
-      if(Math.abs(e.touches[0].clientX-chTouchStartX)>8){chTouchMoved=true;}
-    },{passive:true});
-    car.addEventListener('touchend',function(e){
-      setTimeout(function(){chPaused=false;},2500);
-    },{passive:true});
-    // Use IntersectionObserver so it only starts when visible
+    // Reset scroll
+    var car=document.getElementById('chCarousel');
+    if(car)car.scrollLeft=0;
+  }
+
+  // Auto scroll using IntersectionObserver — only when visible
+  (function(){
+    var car=document.getElementById('chCarousel');
+    if(!car)return;
+    var paused=false;
+    var timer=null;
+    car.addEventListener('mouseenter',function(){paused=true;});
+    car.addEventListener('mouseleave',function(){paused=false;});
+    car.addEventListener('touchstart',function(){paused=true;},{passive:true});
+    car.addEventListener('touchend',function(){setTimeout(function(){paused=false;},3000);},{passive:true});
     var obs=new IntersectionObserver(function(entries){
       if(entries[0].isIntersecting){
-        chTimer=setInterval(function(){
-          if(chPaused)return;
-          // Pause briefly if user is interacting
-          if(document.activeElement && car.contains(document.activeElement))return;
+        timer=setInterval(function(){
+          if(paused)return;
           if(car.scrollLeft>=car.scrollWidth-car.clientWidth-2){
-            car.style.scrollBehavior='auto';
             car.scrollLeft=0;
           }else{car.scrollLeft+=1;}
         },20);
         obs.disconnect();
       }
-    },{threshold:0.7});
+    },{threshold:0.5});
     obs.observe(car);
-  }
-
-  function filterCharities(cat,btn){
-    document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('cactive');});
-    if(btn)btn.classList.add('cactive');
-    var filtered=cat==='all'?CHARITIES:CHARITIES.filter(function(c){
-      return CHARITY_CATS[cat]&&CHARITY_CATS[cat].indexOf(c.name)>-1;
-    });
-    renderCharityCarousel(filtered);
-  }
-
-  // Init on load
-  (function(){
-    var car=document.getElementById('charityCarousel');
-    if(car){renderCharityCarousel(CHARITIES);}
   })();
   </script>
   <!-- END HAWAII CHARITIES -->
+
 
 
 
