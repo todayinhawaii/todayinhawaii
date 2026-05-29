@@ -2,7 +2,7 @@
 Today in Hawaii — Backend Server
 """
 
-from flask import Flask, jsonify, send_from_directory, request, Response
+from flask import Flask, redirect, jsonify, send_from_directory, request, Response
 from flask_cors import CORS
 import csv
 import os
@@ -130,45 +130,6 @@ def admin():
 @app.route("/banner.jpg")
 def banner():
     return send_from_directory(".", "banner.jpg")
-
-# Photo cards 1-12
-@app.route("/<int:num>.jpg")
-def photo_card(num):
-    if 1 <= num <= 12:
-        return send_from_directory(".", f"{num}.jpg")
-    return "Not found", 404
-
-# 808 Pictures photos 1-101
-@app.route("/808-<int:num>.jpg")
-def photos_808(num):
-    if 1 <= num <= 101:
-        return send_from_directory(".", f"808-{num}.jpg")
-    return "Not found", 404
-
-# 808 Pictures banner
-@app.route("/808-banner.png")
-def banner_808():
-    return send_from_directory(".", "808-banner.png")
-
-# PWA files
-@app.route("/manifest.json")
-def manifest():
-    return send_from_directory(".", "manifest.json")
-
-@app.route("/sw.js")
-def service_worker():
-    response = send_from_directory(".", "sw.js")
-    response.headers['Cache-Control'] = 'no-cache'
-    response.headers['Service-Worker-Allowed'] = '/'
-    return response
-
-@app.route("/icon-192.png")
-def icon192():
-    return send_from_directory(".", "icon-192.png")
-
-@app.route("/icon-512.png")
-def icon512():
-    return send_from_directory(".", "icon-512.png")
 
 @app.route("/sitemap.xml")
 def sitemap():
@@ -402,7 +363,6 @@ def delete_post_db(post_id):
     except Exception as e:
         print('Supabase delete error:', e)
         return False
-
 def check_admin(req):
     return req.headers.get('X-Admin-Key') == ADMIN_KEY
 
@@ -468,7 +428,7 @@ def blog_post_view(slug):
 
 
 # ── EMAIL SIGNUP ──
-MAILERLITE_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZWU4NzYwOWE5MTViZTMyZTE0NThiOWM5MDA3NTIxMzc2Zjk1OTFhZDdjY2ZjZTI0YjM5ZjA4OWJlZTQ4OGM2M2Q5MGI4YWU3MTAwN2Y2MDUiLCJpYXQiOjE3NzkxMjE2NzcuNjY5NjM2LCJuYmYiOjE3NzkxMjE2NzcuNjY5NjM5LCJleHAiOjQ5MzQ3OTUyNzcuNjYzMjU1LCJzdWIiOiIyMzc3NDc0Iiwic2NvcGVzIjpbXX0.PfkFmcHyhw9ERRgjh3r1UQA7nsBUI2Z2_qJvGehr15ioVFoOvfrdiGhcvbUPe5v-Lp1aooEa_aCeUzBzrFi3Nl3Iz6b-R9k7ULZuSX3boIAOwWGsHO4jrZkrW9tlZUL8zf5rtOBRdMfjfOaI5XGo0hew5QTqoyCzq-Jp-iVAOkzeHa2xAtxZos0psmgRnrz8EUmRm9WvAGMjGpJHUjb1zn3Do73QCI_2z81CMcouFJ7GREJTPC0PnSYvWjl5Z2xtCGfihGGsKG_rUbrpTKB4DsIp-MLErXS9KAeuggJVvLerrf5GLT3IzD0s-3Nh1WGEGGW2qFCZYWIZ43cMYwkghfx0RKC3yRMvdXVBs7YfyLcUzDMk3UNzMNgA_LIKIvuN3QRDIDLQrH7YdJti3CK1PG9JikMuRORpHpRIsKjeu55oUapVLCCUOy_M7Q1SWRBNwADep1QGYFDMzhoyvMOpLcO6YT_NtDe4C4pnTCZnBv4iVGOaExSEPlFhcMjfqxvdJUhzA8ukvbQT9co47l_IXDqp1OwoBsv_7ynTa43N4sTz8N2BxS-lI4hcE80h-aSXWrB10tOcje3eGINlrGlIPWb0lPJ2FdA0S7Vi9vT5bmvIPgbwTuTrxLosk-GN-ZJiFHf95ru2EBHRsMNPxsdBYY00NK5otkHiAgzSbp-Uss'
+MAILERLITE_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZWU4NzYwOWE5MTViZTMyZTE0NThiOWM5MDA3NTIxMzc2Zjk1OTFhZDdjY2ZjZTI0YjM5ZjA4OWJlZTQ4OGM2M2Q5MGI4YWU3MTAwN2Y2MDUiLCJpYXQiOjE3NzkxMjE2NzcuNjY5NjM2LCJuYmYiOjE3NzkxMjE2NzcuNjY5NjM5LCJleHAiOjQ5MzQ3OTUyNzcuNjYzMjU1LCJzdWIiOiIyMzc3NDc0Iiwic2NvcGVzIjpbXX0.PfkFmcHyhw9ERRgjh3r1UQA7nsBUI2Z2_qJvGehr15ioVFoOvfrdiGhcvbUPe5v-Lp1aooEa_aCeUzBzrFi3Nl3Iz6b-R9k7ULZuSX3boIAOwWGsHO4jrZkrW9tlZUL8zf5rtOBRdMfjfOaI5XGo0hew5QTqoyCzq-Jp-iVAOkzeHa2xAtxZos0psmgRnrz8EUmRm9WvAGMjGpJHUjb1zn3Do73QCI_2z81CMcouFJ7GREJTPC0PnSYvWjl5Z2xtCGfihGGsKG_rUbrpTKB4DsIp-MLErXS9KAeuggJVvLerrf5GLT3IzD0s-3Nh1WGEGGW2qFCZYWIZ43cMYwkghfx0RKC3yRMvdXVBs7YfyLcUzDMk3UNzMNgA_LIKIvuN3QRDIDLQrH7YdJti3CK1PG9JikMuRORpHpRIsKjeu55oUapVLCCUOy_M7Q1SWRBNwADep1QGYFDWMzhoyvMOpLcO6YT_NtDe4C4pnTCZnBv4iVGOaExSEPlFhcMjfqxvdJUhzA8ukvbQT9co47l_IXDqp1OwoBsv_7ynTa43N4sTz8N2BxS-lI4hcE80h-aSXWrB10tOcje3eGINlrGlIPWb0lPJ2FdA0S7Vi9vT5bmvIPgbwTuTrxLosk-GN-ZJiFHf95ru2EBHRsMNPxsdBYY00NK5otkHiAgzSbp-Uss'
 MAILERLITE_GROUP = '187822269207151744'
 
 @app.route('/subscribe', methods=['POST'])
@@ -494,6 +454,19 @@ def subscribe():
             return app.response_class(_j.dumps({'ok':True,'existing':True}), mimetype='application/json')
         print('Signup error:', e)
         return app.response_class(_j.dumps({'error':str(e)}), status=500, mimetype='application/json')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
+
+
+@app.route('/hawaiicharities')
+def hawaii_charities():
+    return redirect('/#hawaii-charities')
+
+@app.route('/charities')
+def charities_short():
+    return redirect('/#hawaii-charities')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
