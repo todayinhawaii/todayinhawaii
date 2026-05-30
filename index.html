@@ -681,66 +681,6 @@
   document.head.appendChild(script);
 })();
 </script>
-  <style>
-    .hdr-game-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      cursor: pointer;
-      animation: hdrBob 2s ease-in-out infinite;
-      margin: 0 8px;
-      flex-shrink: 0;
-    }
-    @keyframes hdrBob {
-      0%,100% { transform: translateY(0); }
-      50%      { transform: translateY(-5px); }
-    }
-    .hdr-game-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(180deg,#ffe566 0%,#f5c800 25%,#e6a800 55%,#c87800 85%,#f5c800 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 4px 0 #8b5000, 0 6px 12px rgba(0,0,0,0.4), 0 0 16px rgba(255,200,0,0.5);
-      animation: hdrGlow 1.5s ease-in-out infinite;
-      transition: all 0.1s;
-    }
-    .hdr-game-icon::after {
-      content: '';
-      position: absolute;
-      top: 3px; left: 5px; right: 5px; height: 38%;
-      background: linear-gradient(180deg,rgba(255,255,255,0.4),transparent);
-      border-radius: 50% 50% 0 0;
-    }
-    @keyframes hdrGlow {
-      0%,100% { box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 4px 0 #8b5000, 0 6px 12px rgba(0,0,0,0.4), 0 0 16px rgba(255,200,0,0.5); }
-      50%      { box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 4px 0 #8b5000, 0 6px 12px rgba(0,0,0,0.4), 0 0 35px rgba(255,200,0,1), 0 0 60px rgba(255,150,0,0.5); }
-    }
-    .hdr-game-btn:active .hdr-game-icon {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 1px 0 #8b5000, 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .hdr-game-text {
-      font-size: 10px;
-      font-weight: 900;
-      line-height: 1.3;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #fbbf24;
-      text-shadow: 0 0 10px rgba(251,191,36,0.5);
-    }
-    @media (max-width: 400px) {
-      .hdr-game-text { display: none; }
-      .hdr-game-btn { margin: 0 4px; }
-    }
-  </style>
 </head>
 <body>
 
@@ -759,12 +699,6 @@
         <div class="logo-icon"><img src="/icon-192.png" alt="Today in Hawaii" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"></div>
         <div class="logo-text">Today in <span>Hawaiʻi</span></div>
       </div>
-
-      <!-- MEMORY GAME BUTTON -->
-      <a href="/memorygame" class="hdr-game-btn">
-        <span class="hdr-game-icon">🧠</span>
-        <span class="hdr-game-text">Play<br>Memory</span>
-      </a>
 
       <div class="last-updated">
         <span class="pulse-dot"></span>
@@ -6378,6 +6312,141 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
+
+
+<!-- FLOATING MEMORY GAME BUTTON -->
+<style>
+  #fgbWrap {
+    position: fixed;
+    bottom: 24px;
+    left: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    animation: fgbBob 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 8px 24px rgba(249,115,22,0.5));
+  }
+  @keyframes fgbBob {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  #fgbWrap.hidden { display: none; }
+
+  /* X close button */
+  #fgbClose {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(30,30,30,0.9);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  #fgbClose:hover { background: #ef4444; border-color: #ef4444; }
+
+  /* Main button */
+  #fgbBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+  }
+  #fgbBtn:active .fgb-circle {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 1px 0 #8b5000, 0 2px 6px rgba(0,0,0,0.4) !important;
+  }
+
+  /* Gold 3D circle - 25% bigger than before */
+  .fgb-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(180deg,
+      #ffe566 0%, #f5c800 20%,
+      #e6a800 50%, #c87800 80%,
+      #f5c800 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.5) inset,
+      0 -2px 0 rgba(0,0,0,0.2) inset,
+      0 7px 0 #8b5000,
+      0 10px 20px rgba(0,0,0,0.5),
+      0 0 25px rgba(255,200,0,0.6),
+      0 0 50px rgba(255,150,0,0.3);
+    animation: fgbGlow 1.5s ease-in-out infinite;
+    transition: all 0.1s;
+  }
+  .fgb-circle::after {
+    content: '';
+    position: absolute;
+    top: 5px; left: 10px; right: 10px;
+    height: 38%;
+    background: linear-gradient(180deg,rgba(255,255,255,0.4),transparent);
+    border-radius: 50% 50% 0 0;
+    pointer-events: none;
+  }
+  @keyframes fgbGlow {
+    0%,100% {
+      box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 -2px 0 rgba(0,0,0,0.2) inset,
+        0 7px 0 #8b5000, 0 10px 20px rgba(0,0,0,0.5),
+        0 0 25px rgba(255,200,0,0.6), 0 0 50px rgba(255,150,0,0.3);
+    }
+    50% {
+      box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 -2px 0 rgba(0,0,0,0.2) inset,
+        0 7px 0 #8b5000, 0 10px 24px rgba(0,0,0,0.5),
+        0 0 40px rgba(255,200,0,1), 0 0 80px rgba(255,150,0,0.6);
+    }
+  }
+
+  /* Label pill */
+  .fgb-label {
+    margin-top: 8px;
+    background: linear-gradient(135deg,#f97316,#fbbf24);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 99px;
+    white-space: nowrap;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 3px 12px rgba(249,115,22,0.6);
+    animation: lblPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes lblPulse {
+    0%,100% { box-shadow: 0 3px 12px rgba(249,115,22,0.5); }
+    50%      { box-shadow: 0 3px 24px rgba(249,115,22,1), 0 0 40px rgba(251,191,36,0.5); }
+  }
+</style>
+
+<div id="fgbWrap">
+  <span id="fgbClose" onclick="document.getElementById('fgbWrap').classList.add('hidden');">✕</span>
+  <a id="fgbBtn" href="/memorygame">
+    <div class="fgb-circle">🧠</div>
+    <div class="fgb-label">Play Memory Game</div>
+  </a>
+</div>
+<!-- END FLOATING MEMORY GAME BUTTON -->
 
 </body>
 </html>
