@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌺 Hawaii Trivia Challenge — Today in Hawaii</title>
+  <meta name="description" content="Test your Hawaii knowledge with 222 questions! History culture ocean food and more. Compete on the Hawaii Trivia leaderboard!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{
+      background:linear-gradient(160deg,#061d2c 0%,#0a2e44 60%,#061d2c 100%);
+      min-height:100vh;font-family:system-ui,sans-serif;color:#e8f4f8;overflow-x:hidden;
+    }
+    .bg{position:fixed;font-size:40px;opacity:0.04;animation:fbg 18s ease-in-out infinite;pointer-events:none;z-index:0;}
+    @keyframes fbg{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-20px) rotate(12deg);}}
+    .wrap{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:14px 14px 60px;}
+
+    /* Header */
+    .hdr{text-align:center;padding:10px 0 16px;}
+    .hdr-logo{font-size:38px;margin-bottom:4px;}
+    .hdr-title{font-size:26px;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f97316,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
+    .hdr-sub{font-size:11px;color:#7fb3c8;margin-top:3px;}
+
+    /* Leaderboard */
+    .lb{background:rgba(251,191,36,0.07);border:1.5px solid rgba(251,191,36,0.2);border-radius:18px;padding:14px 16px;margin-bottom:12px;}
+    .lb h3{font-size:16px;font-weight:900;color:#fbbf24;text-transform:uppercase;letter-spacing:0.12em;text-align:center;margin-bottom:10px;}
+    .lb-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12px;margin-bottom:3px;}
+    .lb-row:last-child{margin:0;}
+    .lb-row.r1{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);}
+    .lb-row.r2{background:rgba(192,192,192,0.07);}
+    .lb-row.r3{background:rgba(205,127,50,0.07);}
+    .lb-row.me{background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);}
+    .lb-medal{font-size:15px;width:22px;text-align:center;flex-shrink:0;}
+    .lb-name{flex:1;font-weight:700;}
+    .lb-loc{font-size:10px;color:#7fb3c8;}
+    .lb-score{font-weight:900;color:#fbbf24;}
+    .lb-empty{text-align:center;font-size:12px;color:#7fb3c8;padding:8px;}
+
+    /* Name screen */
+    .name-scr{background:rgba(34,211,238,0.07);border:1.5px solid rgba(34,211,238,0.25);border-radius:20px;padding:22px 18px;margin-bottom:14px;}
+    .ns-title{font-size:18px;font-weight:800;color:#22d3ee;text-align:center;margin-bottom:4px;}
+    .ns-sub{font-size:12px;color:#7fb3c8;text-align:center;margin-bottom:16px;line-height:1.5;}
+    .ns-input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:11px;color:#e8f4f8;font-size:15px;font-family:inherit;outline:none;margin-bottom:10px;text-align:center;}
+    .ns-input::placeholder{color:#7fb3c8;}
+    .ns-select{width:100%;padding:12px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:11px;color:#e8f4f8;font-size:14px;font-family:inherit;outline:none;margin-bottom:14px;cursor:pointer;}
+    .ns-select option{background:#0a2e44;}
+
+    /* Vegas start button */
+    .vegas-btn{
+      width:100%;padding:17px 14px;border:none;border-radius:16px;
+      font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;
+      letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;
+      transition:all 0.1s;
+    }
+    .vegas-btn::after{content:'';position:absolute;top:3px;left:8px;right:8px;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);border-radius:10px 10px 50% 50%;pointer-events:none;}
+    .btn-gold{
+      background:linear-gradient(180deg,#ffe566 0%,#f5c800 20%,#e6a800 50%,#c87800 80%,#f5c800 100%);
+      color:#5a2d00;
+      box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.5);
+      text-shadow:0 1px 0 rgba(255,255,255,0.4);
+    }
+    .btn-gold:active{transform:translateY(4px);box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 2px 0 #8b5000,0 3px 6px rgba(0,0,0,0.4);}
+    .btn-gold:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .btn-gold.flash{animation:btnFlash 0.8s ease-in-out infinite;}
+    @keyframes btnFlash{
+      0%,100%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.5),0 0 20px rgba(255,200,0,0.3);}
+      50%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 20px rgba(0,0,0,0.5),0 0 40px rgba(255,200,0,0.9),0 0 80px rgba(255,150,0,0.5);}
+    }
+    .btn-red{
+      background:linear-gradient(180deg,#ff6666 0%,#ee2222 20%,#cc0000 50%,#990000 80%,#ee2222 100%);
+      color:#fff;
+      box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 6px 0 #660000,0 8px 14px rgba(0,0,0,0.5);
+      text-shadow:0 1px 2px rgba(0,0,0,0.4);
+      margin-top:10px;
+    }
+    .btn-red:active{transform:translateY(4px);box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 2px 0 #660000,0 3px 6px rgba(0,0,0,0.4);}
+
+    /* Game area */
+    #gameArea{display:none;}
+
+    /* Stats */
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:12px;}
+    .stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:9px 6px;text-align:center;}
+    .stat-v{font-size:20px;font-weight:900;color:#fbbf24;line-height:1;}
+    .stat-l{font-size:9px;color:#7fb3c8;margin-top:3px;text-transform:uppercase;letter-spacing:0.07em;}
+
+    /* Timer bar */
+    .timer-wrap{margin-bottom:12px;}
+    .timer-bar{height:8px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;}
+    .timer-fill{height:100%;background:linear-gradient(90deg,#22d3ee,#a78bfa);border-radius:99px;transition:width 0.1s linear;}
+    .timer-fill.urgent{background:linear-gradient(90deg,#f97316,#ef4444);}
+
+    /* Category badge */
+    .cat-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
+
+    /* Question card */
+    .q-card{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(6,29,44,0.9));border:1.5px solid rgba(255,255,255,0.1);border-radius:20px;padding:22px 18px;margin-bottom:14px;}
+    .q-num{font-size:11px;color:#7fb3c8;font-weight:700;margin-bottom:8px;}
+    .q-text{font-size:17px;font-weight:700;color:#e8f4f8;line-height:1.5;}
+
+    /* Answer options */
+    .answers{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+    .ans-btn{
+      width:100%;padding:14px 16px;
+      background:rgba(255,255,255,0.05);
+      border:1.5px solid rgba(255,255,255,0.1);
+      border-radius:14px;color:#e8f4f8;
+      font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;
+      text-align:left;transition:all 0.15s;
+      display:flex;align-items:center;gap:10px;
+    }
+    .ans-btn:hover:not(:disabled){background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);transform:translateX(4px);}
+    .ans-btn.correct{background:rgba(34,197,94,0.2)!important;border-color:#22c55e!important;color:#4ade80!important;animation:correctPop 0.4s ease;}
+    .ans-btn.wrong{background:rgba(239,68,68,0.2)!important;border-color:#ef4444!important;color:#f87171!important;animation:wrongShake 0.4s ease;}
+    .ans-btn:disabled{cursor:not-allowed;}
+    @keyframes correctPop{0%{transform:scale(1);}40%{transform:scale(1.03);}100%{transform:scale(1);}}
+    @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+    .ans-letter{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+
+    /* Fun fact box */
+    .fact-box{background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:14px;padding:14px;margin-bottom:14px;display:none;font-size:13px;color:#7fb3c8;line-height:1.6;}
+    .fact-box.show{display:block;animation:fadeIn 0.4s ease;}
+    .fact-box strong{color:#22d3ee;}
+    @keyframes fadeIn{0%{opacity:0;transform:translateY(8px);}100%{opacity:1;transform:translateY(0);}}
+
+    /* Progress dots */
+    .progress-dots{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+    .pdot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;flex-shrink:0;}
+    .pdot.correct{background:#22c55e;border-color:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.6);}
+    .pdot.wrong{background:#ef4444;border-color:#ef4444;}
+    .pdot.current{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,0.7);animation:dotPulse 0.6s ease infinite;}
+    @keyframes dotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);}}
+
+    /* Particles */
+    .particle{position:fixed;pointer-events:none;z-index:999;font-size:20px;animation:pfly 0.9s ease forwards;}
+    @keyframes pfly{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.2);}}
+
+    /* Score popup */
+    .score-pop{position:fixed;font-size:20px;font-weight:900;color:#fbbf24;pointer-events:none;z-index:999;animation:spop 1s ease forwards;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+    @keyframes spop{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-70px) scale(1.3);}}
+
+    /* Overlay */
+    .overlay{position:fixed;inset:0;background:rgba(6,29,44,0.93);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px);}
+    .overlay.show{display:flex;}
+    .ov{background:linear-gradient(135deg,#0a2e44,#061d2c);border:2px solid rgba(251,191,36,0.4);border-radius:26px;padding:28px 22px;text-align:center;max-width:360px;width:94%;box-shadow:0 20px 60px rgba(0,0,0,0.7);}
+    .ov-emoji{font-size:58px;margin-bottom:10px;}
+    .ov-title{font-size:24px;font-weight:900;color:#fbbf24;margin-bottom:6px;}
+    .ov-score{font-size:48px;font-weight:900;color:#f97316;margin:10px 0;}
+    .ov-rank{font-size:15px;color:#22d3ee;font-weight:700;margin-bottom:6px;}
+    .ov-correct{font-size:14px;color:#7fb3c8;margin-bottom:16px;}
+    .ov-share{width:100%;padding:13px;background:linear-gradient(135deg,#1877f2,#0d65d9);border:none;border-radius:13px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+    .ov-play{width:100%;padding:13px;background:linear-gradient(135deg,#f97316,#fbbf24);border:none;border-radius:13px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+    .ov-close{width:100%;padding:11px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:13px;color:#e8f4f8;font-size:13px;cursor:pointer;font-family:inherit;}
+
+    /* Mute & back */
+    .mute-btn{position:fixed;bottom:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:50;}
+    .back{text-align:center;padding:8px 0 16px;font-size:13px;color:#7fb3c8;}
+    .back a{color:#22d3ee;text-decoration:none;font-weight:600;}
+  </style>
+</head>
+<body>
+<div class="bg" style="top:5%;left:5%;">🌺</div>
+<div class="bg" style="top:30%;right:6%;font-size:50px;animation-delay:5s;">🌊</div>
+<div class="bg" style="top:65%;left:4%;font-size:44px;animation-delay:10s;">🏝️</div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hdr-logo">🌺</div>
+    <div class="hdr-title">Hawaii Trivia Challenge</div>
+    <div class="hdr-sub">222 questions · How well do you know Hawaii? · Today in Hawaii</div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="lb">
+    <h3>🏆 Hawaii Trivia Leaderboard</h3>
+    <div id="lbList"><div class="lb-empty">Loading... 🌺</div></div>
+    <div id="lbTarget" style="display:none;margin-top:8px;padding:7px;background:rgba(251,191,36,0.08);border-radius:9px;font-size:11px;color:#fbbf24;text-align:center;"></div>
+  </div>
+
+  <!-- Name Screen -->
+  <div id="nameScr" class="name-scr">
+    <div class="ns-title">🌺 Join the Challenge!</div>
+    <div class="ns-sub">Enter your name and location to compete on the Hawaii Trivia leaderboard!</div>
+    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLoc" class="ns-select">
+      <option value="">📍 Where are you from?</option>
+      <optgroup label="🌺 Hawaii">
+        <option value="Maui, Hawaii">🌺 Maui</option>
+        <option value="Oahu, Hawaii">🌊 Oahu</option>
+        <option value="Kauai, Hawaii">🌿 Kauai</option>
+        <option value="Big Island, Hawaii">🌋 Big Island</option>
+        <option value="Molokai, Hawaii">🌴 Molokai</option>
+        <option value="Lanai, Hawaii">🌸 Lanai</option>
+      </optgroup>
+      <optgroup label="🇺🇸 USA States">
+        <option value="Alabama, USA">Alabama</option><option value="Alaska, USA">Alaska</option>
+        <option value="Arizona, USA">Arizona</option><option value="Arkansas, USA">Arkansas</option>
+        <option value="California, USA">California</option><option value="Colorado, USA">Colorado</option>
+        <option value="Connecticut, USA">Connecticut</option><option value="Delaware, USA">Delaware</option>
+        <option value="Florida, USA">Florida</option><option value="Georgia, USA">Georgia</option>
+        <option value="Idaho, USA">Idaho</option><option value="Illinois, USA">Illinois</option>
+        <option value="Indiana, USA">Indiana</option><option value="Iowa, USA">Iowa</option>
+        <option value="Kansas, USA">Kansas</option><option value="Kentucky, USA">Kentucky</option>
+        <option value="Louisiana, USA">Louisiana</option><option value="Maine, USA">Maine</option>
+        <option value="Maryland, USA">Maryland</option><option value="Massachusetts, USA">Massachusetts</option>
+        <option value="Michigan, USA">Michigan</option><option value="Minnesota, USA">Minnesota</option>
+        <option value="Mississippi, USA">Mississippi</option><option value="Missouri, USA">Missouri</option>
+        <option value="Montana, USA">Montana</option><option value="Nebraska, USA">Nebraska</option>
+        <option value="Nevada, USA">Nevada</option><option value="New Hampshire, USA">New Hampshire</option>
+        <option value="New Jersey, USA">New Jersey</option><option value="New Mexico, USA">New Mexico</option>
+        <option value="New York, USA">New York</option><option value="North Carolina, USA">North Carolina</option>
+        <option value="North Dakota, USA">North Dakota</option><option value="Ohio, USA">Ohio</option>
+        <option value="Oklahoma, USA">Oklahoma</option><option value="Oregon, USA">Oregon</option>
+        <option value="Pennsylvania, USA">Pennsylvania</option><option value="Rhode Island, USA">Rhode Island</option>
+        <option value="South Carolina, USA">South Carolina</option><option value="South Dakota, USA">South Dakota</option>
+        <option value="Tennessee, USA">Tennessee</option><option value="Texas, USA">Texas</option>
+        <option value="Utah, USA">Utah</option><option value="Vermont, USA">Vermont</option>
+        <option value="Virginia, USA">Virginia</option><option value="Washington, USA">Washington State</option>
+        <option value="Washington DC, USA">Washington DC</option><option value="West Virginia, USA">West Virginia</option>
+        <option value="Wisconsin, USA">Wisconsin</option><option value="Wyoming, USA">Wyoming</option>
+      </optgroup>
+      <optgroup label="🌍 Countries">
+        <option value="Australia">🇦🇺 Australia</option><option value="Brazil">🇧🇷 Brazil</option>
+        <option value="Canada">🇨🇦 Canada</option><option value="China">🇨🇳 China</option>
+        <option value="France">🇫🇷 France</option><option value="Germany">🇩🇪 Germany</option>
+        <option value="India">🇮🇳 India</option><option value="Ireland">🇮🇪 Ireland</option>
+        <option value="Italy">🇮🇹 Italy</option><option value="Japan">🇯🇵 Japan</option>
+        <option value="Mexico">🇲🇽 Mexico</option><option value="Netherlands">🇳🇱 Netherlands</option>
+        <option value="New Zealand">🇳🇿 New Zealand</option><option value="Norway">🇳🇴 Norway</option>
+        <option value="Philippines">🇵🇭 Philippines</option><option value="Portugal">🇵🇹 Portugal</option>
+        <option value="South Korea">🇰🇷 South Korea</option><option value="Spain">🇪🇸 Spain</option>
+        <option value="Sweden">🇸🇪 Sweden</option><option value="Thailand">🇹🇭 Thailand</option>
+        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+        <option value="Other">🌍 Other Country</option>
+      </optgroup>
+    </select>
+    <button class="vegas-btn btn-gold" id="startBtn" onclick="startGame()" disabled>
+      <div style="font-size:18px;font-weight:900;letter-spacing:2px;">🌺 START CHALLENGE!</div>
+      <div style="font-size:11px;opacity:0.8;margin-top:3px;">20 Random Questions · Beat the Leaderboard!</div>
+    </button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="gameArea">
+
+    <!-- Player badge -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:7px 13px;margin-bottom:12px;font-size:12px;">
+      <div>🌺 <span style="font-weight:700;color:#22d3ee;" id="badgeName"></span></div>
+      <div style="color:#fbbf24;font-weight:700;" id="badgeRank">Warming up!</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="scoreVal">0</div><div class="stat-l">🏆 Score</div></div>
+      <div class="stat"><div class="stat-v" id="qNumVal">1/20</div><div class="stat-l">📝 Question</div></div>
+      <div class="stat"><div class="stat-v" id="correctVal">0</div><div class="stat-l">✅ Correct</div></div>
+      <div class="stat"><div class="stat-v" id="streakVal">0</div><div class="stat-l">🔥 Streak</div></div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-wrap">
+      <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="progress-dots" id="progressDots"></div>
+
+    <!-- Category badge -->
+    <div style="text-align:center;margin-bottom:10px;">
+      <span class="cat-badge" id="catBadge" style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:#fbbf24;">🌺 Culture</span>
+    </div>
+
+    <!-- Question -->
+    <div class="q-card">
+      <div class="q-num" id="qNum">Question 1 of 20</div>
+      <div class="q-text" id="qText">Loading...</div>
+    </div>
+
+    <!-- Answers -->
+    <div class="answers" id="answers"></div>
+
+    <!-- Fun fact -->
+    <div class="fact-box" id="factBox">
+      <strong>🌺 Did you know?</strong><br>
+      <span id="factText"></span>
+    </div>
+
+    <!-- Next button -->
+    <button class="vegas-btn btn-gold" id="nextBtn" onclick="nextQuestion()" style="display:none;margin-bottom:10px;">
+      <div style="font-size:16px;font-weight:900;letter-spacing:1px;">NEXT QUESTION →</div>
+    </button>
+
+    <!-- End game -->
+    <button class="vegas-btn btn-red" id="endBtn" onclick="endGame()">
+      🏁 END GAME & SAVE SCORE
+    </button>
+
+  </div>
+
+  <div class="back"><a href="/games">← Back to Hawaii Games Hub 🎮</a></div>
+</div>
+
+<!-- Result Overlay -->
+<div class="overlay" id="overlay">
+  <div class="ov">
+    <div class="ov-emoji" id="ovEmoji">🌺</div>
+    <div class="ov-title" id="ovTitle">Challenge Complete!</div>
+    <div class="ov-score" id="ovScore">0</div>
+    <div class="ov-rank" id="ovRank"></div>
+    <div class="ov-correct" id="ovCorrect"></div>
+    <button class="ov-share" onclick="shareScore()">📘 Challenge Friends on Facebook</button>
+    <button class="ov-play" onclick="playAgain()">🌺 Play Again!</button>
+    <button class="ov-close" onclick="closeOverlay()">View Leaderboard</button>
+  </div>
+</div>
+
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+
+<script>
+const TRIVIA_QUESTIONS = [{"q": "What does 'Aloha' mean?", "a": "Love peace and compassion", "w": ["Hello only", "Goodbye only", "Welcome only"], "cat": "culture", "f": "Aloha is one of the most powerful words in Hawaiian — it means love peace compassion and a way of life!"}, {"q": "What does 'Mahalo' mean?", "a": "Thank you", "w": ["Hello", "Goodbye", "Please"], "cat": "culture", "f": "Mahalo is one of the first Hawaiian words visitors learn — always say mahalo to show appreciation!"}, {"q": "What does 'Ohana' mean?", "a": "Family", "w": ["Friend", "Home", "Love"], "cat": "culture", "f": "Ohana means family in Hawaiian — and as they say in Lilo and Stitch — ohana means nobody gets left behind!"}, {"q": "What does 'Kokua' mean?", "a": "Help or cooperation", "w": ["Danger", "Food", "Water"], "cat": "culture", "f": "Kokua means to help or extend aid — you'll see it on signs asking people to cooperate and help keep Hawaii clean!"}, {"q": "What is a Hula?", "a": "Traditional Hawaiian dance", "w": ["Hawaiian food", "Sacred prayer", "Type of canoe"], "cat": "culture", "f": "Hula is the sacred dance of Hawaii — a living tradition that tells stories of nature gods and history through movement!"}, {"q": "What is a Lei?", "a": "Garland of flowers worn around the neck", "w": ["Hawaiian drum", "Sacred temple", "Fishing net"], "cat": "culture", "f": "Lei are given as symbols of love friendship and welcome — never refuse a lei as it is considered rude!"}, {"q": "What does 'Pau Hana' mean?", "a": "End of work — happy hour!", "w": ["Morning prayer", "Sacred ceremony", "Hard work"], "cat": "culture", "f": "Pau Hana means work is finished — it's Hawaii's version of happy hour and everyone celebrates with aloha!"}, {"q": "What is a Luau?", "a": "Traditional Hawaiian feast and celebration", "w": ["Type of surfboard", "Sacred temple", "Fishing village"], "cat": "culture", "f": "The luau is one of Hawaii's greatest traditions — a feast featuring kalua pig poi and hula dancing under the stars!"}, {"q": "What does 'Keiki' mean?", "a": "Child", "w": ["Elder", "Teacher", "Ocean"], "cat": "culture", "f": "Keiki means child in Hawaiian — you'll see Keiki menus keiki surf lessons and keiki hula classes all over Hawaii!"}, {"q": "What does 'Wahine' mean?", "a": "Woman", "w": ["Man", "Child", "Elder"], "cat": "culture", "f": "Wahine means woman in Hawaiian — you'll see it on bathroom signs and surf competitions across the islands!"}, {"q": "What does 'Kane' mean?", "a": "Man", "w": ["Woman", "Chief", "Ocean"], "cat": "culture", "f": "Kane means man in Hawaiian — Kane was also the name of the Hawaiian god of creation and fresh water!"}, {"q": "What is Taro?", "a": "Sacred Hawaiian plant used to make poi", "w": ["Type of fish", "Sacred flower", "Hawaiian drum"], "cat": "culture", "f": "Taro is the most sacred plant in Hawaiian culture — Hawaiians believe they are descended from the taro plant!"}, {"q": "What is Poi?", "a": "Paste made from taro root", "w": ["Grilled fish", "Coconut pudding", "Tropical fruit"], "cat": "culture", "f": "Poi is the staple food of traditional Hawaii — made by pounding taro root it can be one two or three finger poi depending on thickness!"}, {"q": "What does 'Malama' mean?", "a": "To care for or protect", "w": ["To celebrate", "To fish", "To dance"], "cat": "culture", "f": "Malama means to care for — Malama Aina means to care for the land which is a core Hawaiian value!"}, {"q": "What is a Kahuna?", "a": "Expert or priest", "w": ["Type of wave", "Sacred fish", "Hawaiian boat"], "cat": "culture", "f": "Kahuna means expert or master — a Kahuna Nui was a high priest with great spiritual power in ancient Hawaii!"}, {"q": "What does 'Pono' mean?", "a": "Righteousness and balance", "w": ["Danger", "Celebration", "Harvest"], "cat": "culture", "f": "Pono is a fundamental Hawaiian value meaning righteousness goodness and balance — Hawaii's state motto is Ua Mau ke Ea o ka Aina i ka Pono!"}, {"q": "What is Kapa?", "a": "Traditional Hawaiian bark cloth", "w": ["Sacred chant", "Type of canoe", "Fishing technique"], "cat": "culture", "f": "Kapa is cloth made from pounded bark — Hawaiian women created intricate patterns on kapa used for clothing and ceremonies!"}, {"q": "What does 'Mana' mean?", "a": "Spiritual power or energy", "w": ["Sacred mountain", "Ocean current", "Tropical storm"], "cat": "culture", "f": "Mana is the spiritual power that flows through all things in Hawaiian belief — great chiefs warriors and healers were said to have great mana!"}, {"q": "What is a Heiau?", "a": "Ancient Hawaiian temple", "w": ["Traditional home", "Fishing pond", "Sacred canoe"], "cat": "culture", "f": "Heiau are sacred stone temples found across Hawaii — some were used for worship others for human sacrifice in ancient times!"}, {"q": "What does 'Nui' mean?", "a": "Big or great", "w": ["Small", "Beautiful", "Ancient"], "cat": "culture", "f": "Nui means big or great in Hawaiian — Mahalo Nui Loa means thank you very much!"}, {"q": "What is the Hawaiian alphabet called?", "a": "Ka Piapa", "w": ["Ka Moku", "Ka Nui", "Ka Pono"], "cat": "culture", "f": "The Hawaiian alphabet Ka Piapa has only 13 letters — 5 vowels and 8 consonants making it one of the smallest alphabets in the world!"}, {"q": "How many letters are in the Hawaiian alphabet?", "a": "13", "w": ["26", "18", "20"], "cat": "culture", "f": "Hawaiian has only 13 letters — A E I O U H K L M N P W and the okina which is a glottal stop!"}, {"q": "What is the okina in Hawaiian?", "a": "A glottal stop mark that separates vowels", "w": ["A type of flower", "A sacred chant", "A fishing hook"], "cat": "culture", "f": "The okina looks like an apostrophe and represents a brief pause — Hawaiʻi with an okina is the correct spelling!"}, {"q": "What does 'Wiki' mean in Hawaiian?", "a": "Quick or fast", "w": ["Water", "Mountain", "Sacred"], "cat": "culture", "f": "Wiki means quick in Hawaiian — that's where the word Wikipedia comes from! Ward Cunningham named it after the Wiki Wiki shuttle bus at Honolulu Airport!"}, {"q": "What is Kalo?", "a": "Another name for taro", "w": ["Sacred bird", "Type of canoe", "Ocean fish"], "cat": "culture", "f": "Kalo is the Hawaiian word for taro — the most sacred food plant in Hawaiian culture and the foundation of traditional Hawaiian diet!"}, {"q": "What does 'Mauka' mean?", "a": "Toward the mountains", "w": ["Toward the ocean", "To the left", "To the right"], "cat": "culture", "f": "Hawaiians use mauka and makai for directions — mauka means toward the mountains and makai means toward the ocean!"}, {"q": "What does 'Makai' mean?", "a": "Toward the ocean", "w": ["Toward the mountains", "To the north", "To the south"], "cat": "culture", "f": "Makai means toward the sea — in Hawaii locals give directions using mauka toward mountains and makai toward ocean instead of north south east west!"}, {"q": "What is a Ukulele?", "a": "Small four-stringed Hawaiian instrument", "w": ["Type of drum", "Sacred flute", "Hawaiian harp"], "cat": "culture", "f": "The ukulele came to Hawaii from Portugal in the 1880s — Hawaiians adopted it and it became a symbol of Hawaiian music worldwide!"}, {"q": "What does Ukulele mean in Hawaiian?", "a": "Jumping flea", "w": ["Sweet music", "Four strings", "Small guitar"], "cat": "culture", "f": "Ukulele literally means jumping flea — possibly because players fingers jumping on the strings resembled a flea!"}, {"q": "What is slack-key guitar?", "a": "Hawaiian guitar style with loosened strings", "w": ["Type of ukulele", "Sacred instrument", "Ancient drum"], "cat": "culture", "f": "Slack-key or Ki Hoalu is a uniquely Hawaiian guitar style where strings are loosened to create a rich open sound — a true Hawaiian treasure!"}, {"q": "What is the name of Hawaii's traditional chant?", "a": "Mele", "w": ["Hula", "Pono", "Aloha"], "cat": "culture", "f": "Mele are Hawaiian songs chants and poems — they preserve Hawaiian history and genealogy passed down through generations!"}, {"q": "What is Kapu?", "a": "Ancient Hawaiian system of sacred laws", "w": ["Type of feast", "Sacred dance", "Fishing method"], "cat": "culture", "f": "The Kapu system was ancient Hawaii's strict code of conduct — breaking Kapu could mean death! It was abolished in 1819 by King Kamehameha II!"}, {"q": "What does 'Pau' mean?", "a": "Finished or done", "w": ["Beginning", "Sacred", "Beautiful"], "cat": "culture", "f": "Pau means finished or done in Hawaiian — Pau Hana means work is done and time to relax!"}, {"q": "What is a Canoe in Hawaiian?", "a": "Waa", "w": ["Moku", "Kai", "Hoe"], "cat": "culture", "f": "The waa or outrigger canoe was the most important vessel in ancient Hawaii — Polynesians navigated thousands of miles using these amazing crafts!"}, {"q": "What does 'Kai' mean?", "a": "Ocean or sea", "w": ["Mountain", "Rain", "Wind"], "cat": "culture", "f": "Kai means ocean or sea water in Hawaiian — you'll see it in many Hawaiian names like Malakai and Kaimana!"}, {"q": "What is a Kukui?", "a": "Hawaii's state tree", "w": ["Sacred bird", "Type of fish", "Hawaiian flower"], "cat": "culture", "f": "The Kukui or candlenut tree is Hawaii's state tree — ancient Hawaiians used kukui nuts for oil lamps medicine and leis!"}, {"q": "What does 'Nene' mean?", "a": "Hawaii's state bird", "w": ["Sacred chant", "Type of wave", "Hawaiian dance"], "cat": "culture", "f": "The Nene is Hawaii's state bird and the world's rarest goose — nearly extinct it was saved through conservation and now about 3000 exist!"}, {"q": "What is Imu?", "a": "Underground oven used for kalua pig", "w": ["Sacred temple", "Type of canoe", "Hawaiian drum"], "cat": "culture", "f": "The imu is an underground oven where kalua pig is slow-cooked for hours — digging the imu and cooking the pig is a sacred family tradition!"}, {"q": "What does 'Ono' mean?", "a": "Delicious", "w": ["Sacred", "Beautiful", "Strong"], "cat": "culture", "f": "Ono means delicious in Hawaiian — it's also the name of a delicious Hawaiian fish also called wahoo! Ono grinds means delicious food!"}, {"q": "What is Hapa in Hawaii?", "a": "Person of mixed heritage", "w": ["Sacred ceremony", "Type of food", "Ocean current"], "cat": "culture", "f": "Hapa means half or mixed in Hawaiian — Hawaii's beautiful multicultural mix of people makes it one of the most diverse places on earth!"}, {"q": "How many main islands make up Hawaii?", "a": "8", "w": ["6", "4", "10"], "cat": "geography", "f": "Hawaii has 8 main islands — Hawaii Maui Oahu Kauai Molokai Lanai Niihau and Kahoolawe — plus 124 smaller islets!"}, {"q": "What is Hawaii's nickname?", "a": "The Aloha State", "w": ["The Island State", "The Paradise State", "The Pacific State"], "cat": "geography", "f": "Hawaii is officially the Aloha State — aloha representing the spirit of love peace and compassion that defines Hawaiian culture!"}, {"q": "Which Hawaiian island is known as the Garden Isle?", "a": "Kauai", "w": ["Maui", "Big Island", "Oahu"], "cat": "geography", "f": "Kauai is called the Garden Isle because of its incredible lush green valleys dramatic cliffs and stunning natural beauty!"}, {"q": "Which Hawaiian island is known as the Valley Isle?", "a": "Maui", "w": ["Kauai", "Oahu", "Big Island"], "cat": "geography", "f": "Maui is the Valley Isle — named for the massive valley between its two volcanic mountains Haleakala and the West Maui Mountains!"}, {"q": "Which Hawaiian island is known as the Gathering Place?", "a": "Oahu", "w": ["Maui", "Kauai", "Big Island"], "cat": "geography", "f": "Oahu is the Gathering Place — home to Honolulu and nearly 70% of Hawaii's entire population!"}, {"q": "Which Hawaiian island is known as the Big Island?", "a": "Hawaii Island", "w": ["Maui", "Oahu", "Molokai"], "cat": "geography", "f": "Hawaii Island is called the Big Island because it is literally bigger than all other Hawaiian islands combined — and still growing!"}, {"q": "Which island is known as the Friendly Isle?", "a": "Molokai", "w": ["Lanai", "Kauai", "Niihau"], "cat": "geography", "f": "Molokai is the Friendly Isle — the most rural and traditional of the main islands with a deeply authentic Hawaiian community!"}, {"q": "Which island is known as the Pineapple Isle?", "a": "Lanai", "w": ["Maui", "Molokai", "Kauai"], "cat": "geography", "f": "Lanai was once the world's largest pineapple plantation owned by Dole — today it's a luxury destination owned by Larry Ellison!"}, {"q": "Which Hawaiian island is forbidden to outsiders?", "a": "Niihau", "w": ["Kahoolawe", "Molokai", "Lanai"], "cat": "geography", "f": "Niihau is called the Forbidden Island — privately owned by the Robinson family access is strictly limited to protect its pure Hawaiian culture!"}, {"q": "What is the capital of Hawaii?", "a": "Honolulu", "w": ["Hilo", "Lahaina", "Kailua"], "cat": "geography", "f": "Honolulu on Oahu is Hawaii's capital and largest city — home to over 350000 people and the famous Waikiki Beach!"}, {"q": "What is the highest peak in Hawaii?", "a": "Mauna Kea", "w": ["Mauna Loa", "Haleakala", "Diamond Head"], "cat": "geography", "f": "Mauna Kea rises 13796 feet above sea level — but measured from the ocean floor it is the world's tallest mountain at over 33000 feet!"}, {"q": "On which island is Pearl Harbor located?", "a": "Oahu", "w": ["Maui", "Big Island", "Kauai"], "cat": "geography", "f": "Pearl Harbor on Oahu is one of the most visited historic sites in Hawaii — the USS Arizona Memorial honors the 1177 sailors lost on December 7 1941!"}, {"q": "What ocean surrounds Hawaii?", "a": "Pacific Ocean", "w": ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"], "cat": "geography", "f": "Hawaii sits in the central Pacific Ocean — the most isolated population center on Earth being 2400 miles from the US mainland!"}, {"q": "What year did Hawaii become a US state?", "a": "1959", "w": ["1941", "1898", "1776"], "cat": "geography", "f": "Hawaii became the 50th and final US state on August 21 1959 — making it the newest state in the union!"}, {"q": "What is the famous volcanic crater on Oahu?", "a": "Diamond Head", "w": ["Haleakala", "Mauna Kea", "Punchbowl"], "cat": "geography", "f": "Diamond Head is Oahu's most iconic landmark — British sailors named it thinking they found diamonds but they were actually calcite crystals!"}, {"q": "What is the largest volcano on Earth by volume?", "a": "Mauna Loa", "w": ["Mauna Kea", "Kilauea", "Haleakala"], "cat": "geography", "f": "Mauna Loa on the Big Island is the world's largest volcano by volume — it has erupted 33 times since 1843!"}, {"q": "Which volcano in Hawaii has been erupting almost continuously since 1983?", "a": "Kilauea", "w": ["Mauna Loa", "Mauna Kea", "Haleakala"], "cat": "geography", "f": "Kilauea is one of the most active volcanoes on Earth — it erupted almost continuously from 1983 to 2018 creating new land for Hawaii!"}, {"q": "What famous road on Maui has 620 curves?", "a": "Road to Hana", "w": ["Pali Highway", "Kamehameha Highway", "Mamalahoa Highway"], "cat": "geography", "f": "The Road to Hana is one of the world's most scenic drives — 64 miles of curves waterfalls and breathtaking views through Maui's rainforest!"}, {"q": "What is the name of Hawaii's famous surfing beach on Oahu's North Shore?", "a": "Waimea Bay", "w": ["Waikiki", "Kaanapali", "Poipu"], "cat": "geography", "f": "Waimea Bay on Oahu's North Shore is legendary for giant waves reaching 30 feet or more in winter — home to the famous Eddie surfing contest!"}, {"q": "What is the wettest spot on Earth?", "a": "Mount Waialeale on Kauai", "w": ["Hilo on Big Island", "Waimea Canyon", "Hana on Maui"], "cat": "geography", "f": "Mount Waialeale on Kauai receives an average of 460 inches of rain per year making it one of the wettest places on Earth!"}, {"q": "What is the name of Maui's giant dormant volcano?", "a": "Haleakala", "w": ["Mauna Loa", "Mauna Kea", "Kilauea"], "cat": "geography", "f": "Haleakala means House of the Sun — this massive crater stands 10023 feet high and watching sunrise from its summit is a bucket list experience!"}, {"q": "What famous valley is on the island of Oahu?", "a": "Manoa Valley", "w": ["Waimea Valley", "Iao Valley", "Halawa Valley"], "cat": "geography", "f": "Manoa Valley on Oahu is home to the University of Hawaii and the famous Manoa Falls — it receives heavy rainfall creating a lush tropical environment!"}, {"q": "What is the name of Kauai's famous canyon?", "a": "Waimea Canyon", "w": ["Grand Canyon", "Pololu Valley", "Waipio Valley"], "cat": "geography", "f": "Waimea Canyon is called the Grand Canyon of the Pacific — 14 miles long and over 3600 feet deep it's one of Hawaii's most spectacular sights!"}, {"q": "What is the famous cliff coastline on Kauai called?", "a": "Na Pali Coast", "w": ["Hamakua Coast", "Kohala Coast", "Puna Coast"], "cat": "geography", "f": "The Na Pali Coast on Kauai features dramatic cliffs soaring 4000 feet above the sea — only accessible by boat helicopter or a challenging hike!"}, {"q": "Which island has the famous black sand beach Punaluu?", "a": "Big Island", "w": ["Maui", "Kauai", "Oahu"], "cat": "geography", "f": "Punaluu Black Sand Beach on the Big Island is formed from lava flowing into the ocean and cooling rapidly — sea turtles love to rest here!"}, {"q": "What is the name of the famous beach in Waikiki?", "a": "Waikiki Beach", "w": ["Kaanapali Beach", "Poipu Beach", "Hapuna Beach"], "cat": "geography", "f": "Waikiki Beach on Oahu is one of the most famous beaches in the world — the birthplace of modern surfing and visited by millions every year!"}, {"q": "What number state is Hawaii?", "a": "50th", "w": ["48th", "49th", "47th"], "cat": "geography", "f": "Hawaii is the 50th state admitted to the Union on August 21 1959 — making it the last and newest of the 50 United States!"}, {"q": "What is the total land area of Hawaii?", "a": "About 10932 square miles", "w": ["5000 square miles", "20000 square miles", "15000 square miles"], "cat": "geography", "f": "Hawaii's total land area is about 10932 square miles — making it the 47th largest US state but one of the most geographically diverse!"}, {"q": "What famous filming location is on Kauai?", "a": "Jurassic Park's filming location", "w": ["Lost island", "Pirates of Caribbean", "Avatar landscape"], "cat": "geography", "f": "Kauai's dramatic landscapes have been used in dozens of films including Jurassic Park Raiders of the Lost Ark and Pirates of the Caribbean!"}, {"q": "What is the name of Oahu's famous pali lookout?", "a": "Nuuanu Pali Lookout", "w": ["Diamond Head Lookout", "Makapuu Lookout", "Tantalus Lookout"], "cat": "geography", "f": "The Nuuanu Pali Lookout offers breathtaking views of Oahu's windward coast — and is where King Kamehameha drove rival warriors off the cliffs in 1795!"}, {"q": "What is Hawaii's most southern point called?", "a": "Ka Lae — South Point", "w": ["Cape Kumukahi", "Upolu Point", "Kaena Point"], "cat": "geography", "f": "Ka Lae or South Point on the Big Island is the southernmost point in the entire United States — ancient Hawaiians launched canoes from here!"}, {"q": "What is the name of the famous road on the Big Island?", "a": "Chain of Craters Road", "w": ["Road to Hana", "Pali Highway", "Saddle Road"], "cat": "geography", "f": "Chain of Craters Road in Hawaii Volcanoes National Park descends 3700 feet to the ocean passing ancient petroglyphs and lava landscapes!"}, {"q": "What is Hawaii's state fish?", "a": "Humuhumunukunukuapuaa", "w": ["Mahi Mahi", "Ono", "Ahi"], "cat": "geography", "f": "The Humuhumunukunukuapuaa or rectangular triggerfish is Hawaii's state fish — its name is one of the longest words in the Hawaiian language!"}, {"q": "What percentage of the world's endangered species are found in Hawaii?", "a": "About 25%", "w": ["5%", "10%", "15%"], "cat": "geography", "f": "Hawaii is called the endangered species capital of the world — about 25% of all endangered species in the US are found in Hawaii!"}, {"q": "What is the name of the famous valley on the Big Island?", "a": "Waipio Valley", "w": ["Manoa Valley", "Halawa Valley", "Pololu Valley"], "cat": "geography", "f": "Waipio Valley on the Big Island is called the Valley of the Kings — a sacred place where ancient Hawaiian royalty lived among waterfalls and taro fields!"}, {"q": "What is the Hawaiian name for the green sea turtle?", "a": "Honu", "w": ["Nai'a", "Kohola", "Manō"], "cat": "ocean", "f": "The Honu is sacred in Hawaiian culture — a symbol of good luck longevity and the spirit of the ocean! Never touch a Honu — it's illegal and disrespectful!"}, {"q": "What is the Hawaiian name for the humpback whale?", "a": "Kohola", "w": ["Honu", "Manō", "Nai'a"], "cat": "ocean", "f": "Kohola humpback whales migrate to Hawaii's warm waters every winter to breed and give birth — the Hawaiian Islands Humpback Whale National Marine Sanctuary protects them!"}, {"q": "What is the Hawaiian name for dolphin?", "a": "Nai'a", "w": ["Honu", "Kohola", "Manō"], "cat": "ocean", "f": "Nai'a spinner dolphins are commonly seen off Hawaii's coasts — they rest in shallow bays during the day and feed at night in deep water!"}, {"q": "What is the Hawaiian name for shark?", "a": "Manō", "w": ["Honu", "Nai'a", "Kohola"], "cat": "ocean", "f": "Manō sharks were considered aumakua or family guardians by many Hawaiian families — some believed their ancestors could take the form of sharks!"}, {"q": "What months do humpback whales visit Hawaii?", "a": "November to May", "w": ["June to October", "Year round", "July to December"], "cat": "ocean", "f": "Humpback whales migrate to Hawaii from Alaska every winter — peak season is January through March when you can see them breaching right from shore!"}, {"q": "What is the most dangerous jellyfish in Hawaii?", "a": "Box jellyfish", "w": ["Portuguese Man O War", "Moon jellyfish", "Lion's mane"], "cat": "ocean", "f": "Box jellyfish arrive on Oahu's shores about 8-10 days after a full moon — their tentacles can cause severe pain and in rare cases death!"}, {"q": "What is the name of Hawaii's state marine mammal?", "a": "Hawaiian monk seal", "w": ["Humpback whale", "Spinner dolphin", "Hawaiian green turtle"], "cat": "ocean", "f": "The Hawaiian monk seal is one of the most endangered marine mammals in the world with only about 1400 remaining — they are found nowhere else on Earth!"}, {"q": "What is the Hawaiian word for ocean?", "a": "Kai", "w": ["Wai", "Nalu", "Moana"], "cat": "ocean", "f": "Kai means ocean or sea water in Hawaiian — Moana also means ocean and was made famous by the Disney film!"}, {"q": "What is the Hawaiian word for wave?", "a": "Nalu", "w": ["Kai", "Wai", "Moana"], "cat": "ocean", "f": "Nalu means wave in Hawaiian — Hawaiians were the first people in history to ride waves for sport inventing surfing thousands of years ago!"}, {"q": "How many species of fish are found only in Hawaii?", "a": "About 25%", "w": ["5%", "50%", "75%"], "cat": "ocean", "f": "About 25% of Hawaii's reef fish are endemic meaning they exist nowhere else on Earth — Hawaii's isolation created unique species found only here!"}, {"q": "What is the famous surfing contest held at Waimea Bay?", "a": "The Eddie", "w": ["The Pipeline Masters", "The Triple Crown", "The Vans World Cup"], "cat": "ocean", "f": "The Eddie is held in honor of legendary waterman Eddie Aikau — it only runs when waves reach 20 feet or more and has only been held 9 times since 1984!"}, {"q": "What is the Hawaiian name for surfboard?", "a": "Papa he'e nalu", "w": ["Waa", "Hoe", "Pahe'e"], "cat": "ocean", "f": "Papa he'e nalu means wave sliding board — ancient Hawaiian surfboards were made from koa wood and could be up to 18 feet long!"}, {"q": "Which Hawaiian island has the most beaches?", "a": "Oahu", "w": ["Maui", "Big Island", "Kauai"], "cat": "ocean", "f": "Oahu has 125 beaches covering 60 miles of coastline — from the famous Waikiki to the wild North Shore surfing beaches!"}, {"q": "What color are the sand beaches on Papakolea Beach on the Big Island?", "a": "Green", "w": ["Black", "White", "Pink"], "cat": "ocean", "f": "Papakolea is one of only four green sand beaches in the world — the color comes from olivine crystals eroded from the nearby Pu'u Mahana cinder cone!"}, {"q": "What is the name of the underwater volcanic ridge that formed Hawaii?", "a": "Hawaiian-Emperor seamount chain", "w": ["Pacific Ridge", "Polynesian Chain", "Ring of Fire"], "cat": "ocean", "f": "Hawaii sits on the Hawaiian-Emperor seamount chain — a 3700 mile long string of volcanoes created as the Pacific Plate moves over a hot spot!"}, {"q": "What is the Hawaiian word for fresh water?", "a": "Wai", "w": ["Kai", "Nalu", "Moana"], "cat": "ocean", "f": "Wai means fresh water in Hawaiian — the word for wealth or value is Waiwai showing how precious fresh water was to ancient Hawaiians!"}, {"q": "What fish is commonly called Ahi in Hawaii?", "a": "Yellowfin tuna", "w": ["Mahi Mahi", "Ono", "Opah"], "cat": "ocean", "f": "Ahi is yellowfin or bigeye tuna — a prized fish in Hawaiian cuisine used in poke sashimi and as ahi steaks at restaurants across the islands!"}, {"q": "What fish is known as Mahi Mahi?", "a": "Dolphinfish", "w": ["Yellowfin tuna", "Wahoo", "Swordfish"], "cat": "ocean", "f": "Mahi Mahi means very strong in Hawaiian — despite being called dolphinfish it is not related to dolphins and is one of Hawaii's most delicious fish!"}, {"q": "What is the Hawaiian name for the monk seal?", "a": "Ilio-holo-i-ka-uaua", "w": ["Manō", "Nai'a", "Kohola"], "cat": "ocean", "f": "Ilio-holo-i-ka-uaua means dog that runs in rough water — the Hawaiian monk seal is a critically endangered species found only in Hawaiian waters!"}, {"q": "What ocean channel separates Maui and the Big Island?", "a": "Alenuihaha Channel", "w": ["Kalohi Channel", "Pailolo Channel", "Auau Channel"], "cat": "ocean", "f": "The Alenuihaha Channel is one of the roughest ocean channels in the world — winds funnel between the tall peaks of Maui and the Big Island creating treacherous seas!"}, {"q": "What is the most venomous fish in Hawaii?", "a": "Scorpionfish", "w": ["Lionfish", "Stonefish", "Pufferfish"], "cat": "ocean", "f": "The scorpionfish or nohu blends perfectly with reef and has venomous spines — stepping on one is extremely painful! Always shuffle your feet in shallow reef areas!"}, {"q": "How deep is the ocean around Hawaii?", "a": "About 18000 feet", "w": ["5000 feet", "10000 feet", "25000 feet"], "cat": "ocean", "f": "The ocean around Hawaii reaches depths of about 18000 feet — the Hawaiian islands are just the peaks of enormous undersea mountains!"}, {"q": "What is poke?", "a": "Hawaiian dish of marinated raw fish", "w": ["Type of surfboard", "Sacred ceremony", "Hawaiian dessert"], "cat": "ocean", "f": "Poke means to slice or cut in Hawaiian — this traditional dish of marinated raw fish seasoned with sea salt seaweed and kukui nuts is now loved worldwide!"}, {"q": "What is the name of the endangered Hawaiian goose?", "a": "Nene", "w": ["Pueo", "Koloa", "Alala"], "cat": "ocean", "f": "The Nene is Hawaii's state bird — nearly hunted to extinction by the 1950s conservation efforts brought it back from just 30 birds to over 3000 today!"}, {"q": "What is the Hawaiian word for rain?", "a": "Ua", "w": ["Wai", "Kai", "Ao"], "cat": "ocean", "f": "Ua means rain in Hawaiian — Hawaii has over 200 different names for different types of rain showing how important and varied rainfall is to the islands!"}, {"q": "What large ray is commonly seen in Hawaii?", "a": "Manta ray", "w": ["Stingray", "Eagle ray", "Devil ray"], "cat": "ocean", "f": "Giant manta rays with wingspans up to 18 feet are seen off Kona on the Big Island — night snorkel tours to see them are one of Hawaii's most magical experiences!"}, {"q": "What is the Hawaiian name for the sea?", "a": "Moana", "w": ["Kai", "Nalu", "Wai"], "cat": "ocean", "f": "Moana means ocean or open sea in Hawaiian — it was made famous worldwide by Disney's 2016 film celebrating Polynesian navigation and culture!"}, {"q": "What dangerous ocean current should swimmers watch for?", "a": "Rip current", "w": ["Undertow", "Longshore drift", "Tsunami current"], "cat": "ocean", "f": "Rip currents cause most ocean drownings in Hawaii — if caught in one swim parallel to shore not against it to escape the narrow current!"}, {"q": "What is the best island for whale watching?", "a": "Maui", "w": ["Oahu", "Kauai", "Big Island"], "cat": "ocean", "f": "Maui's shallow warm waters between Maui Lanai and Molokai are the prime humpback whale breeding grounds — the best whale watching in all of Hawaii!"}, {"q": "What is Limu?", "a": "Hawaiian seaweed", "w": ["Type of fish", "Sacred flower", "Ocean current"], "cat": "ocean", "f": "Limu is the Hawaiian word for seaweed or algae — over 60 varieties of limu were used in traditional Hawaiian cooking as medicine and in ceremonies!"}, {"q": "What fish is illegal to remove from Hawaii's waters?", "a": "Humuhumunukunukuapuaa", "w": ["Mahi Mahi", "Ahi", "Ono"], "cat": "ocean", "f": "The Humuhumunukunukuapuaa Hawaii's state fish is protected — it's illegal to remove them from Hawaii's waters to keep their reef populations healthy!"}, {"q": "What is Hawaii's state flower?", "a": "Yellow Hibiscus (Pua Aloalo)", "w": ["Red Hibiscus", "Plumeria", "Bird of Paradise"], "cat": "nature", "f": "The Yellow Hibiscus or Pua Aloalo is Hawaii's state flower — chosen in 1988 it grows wild on Oahu and Maui and is endangered in the wild!"}, {"q": "What is Hawaii's state tree?", "a": "Kukui (Candlenut tree)", "w": ["Koa", "Palm tree", "Banyan tree"], "cat": "nature", "f": "The Kukui or candlenut tree is Hawaii's state tree — ancient Hawaiians used every part of this tree for oil medicine dye and ceremonies!"}, {"q": "What is the name of Hawaii's native owl?", "a": "Pueo", "w": ["Nene", "Koloa", "Alala"], "cat": "nature", "f": "The Pueo is the Hawaiian short-eared owl — considered a sacred aumakua or family guardian spirit it is a symbol of wisdom and protection!"}, {"q": "What is the rarest goose in the world found in Hawaii?", "a": "Nene", "w": ["Koloa", "Pueo", "Alala"], "cat": "nature", "f": "The Nene Hawaii's state bird is the world's rarest goose — it evolved from Canada geese and adapted to Hawaii's volcanic terrain over thousands of years!"}, {"q": "What is Hawaii's state bird?", "a": "Nene", "w": ["Pueo", "Koloa", "Alala"], "cat": "nature", "f": "The Nene or Hawaiian goose is Hawaii's state bird — it's found only in Hawaii and was brought back from the brink of extinction through conservation!"}, {"q": "What precious wood is native to Hawaii?", "a": "Koa", "w": ["Teak", "Mahogany", "Ebony"], "cat": "nature", "f": "Koa is Hawaii's most prized native wood — used for canoes surfboards furniture and ukuleles it is found only in Hawaii and can grow to 100 feet tall!"}, {"q": "What endangered bird is native only to Hawaii?", "a": "Hawaiian honeycreeper", "w": ["Hawaiian hawk", "Pueo", "Nene"], "cat": "nature", "f": "Hawaiian honeycreepers evolved from a single finch ancestor into over 50 colorful species — sadly more than half are now extinct due to habitat loss and disease!"}, {"q": "What invasive species threatens Hawaii's native birds?", "a": "Mosquitoes carrying avian malaria", "w": ["Mongooses", "Rats", "Wild pigs"], "cat": "nature", "f": "Mosquitoes introduced in 1826 carry avian malaria which decimates native birds — Hawaii's native birds survived for millions of years without any mosquitoes!"}, {"q": "What is the name of Hawaii's native hawk?", "a": "Io", "w": ["Pueo", "Nene", "Koloa"], "cat": "nature", "f": "The Io or Hawaiian hawk is a sacred bird found only on the Big Island — in ancient Hawaii only high chiefs could wear io feathers!"}, {"q": "What plant is considered the most invasive in Hawaii?", "a": "Strawberry guava", "w": ["Bamboo", "Banana poka", "Miconia"], "cat": "nature", "f": "Strawberry guava is one of Hawaii's most damaging invasive plants — it spreads rapidly and creates dense forests that choke out native species!"}, {"q": "What is Silversword?", "a": "Rare plant found only on Haleakala's summit", "w": ["Type of fern", "Sacred tree", "Hawaiian moss"], "cat": "nature", "f": "The Silversword or Ahinahina is one of Hawaii's most spectacular plants — it grows only on Haleakala blooms once in its 50 year life then dies!"}, {"q": "What animal was introduced to Hawaii to control rats but caused more harm?", "a": "Mongoose", "w": ["Cat", "Dog", "Ferret"], "cat": "nature", "f": "Mongooses were brought to Hawaii in 1883 to control rats in sugarcane fields — but rats are nocturnal and mongooses are diurnal so they rarely met! Instead mongooses devastated Hawaii's ground-nesting birds!"}, {"q": "What percentage of Hawaii's plants are found nowhere else on Earth?", "a": "About 90%", "w": ["25%", "50%", "75%"], "cat": "nature", "f": "About 90% of Hawaii's native plants are endemic — found nowhere else on Earth! Hawaii's isolation for millions of years created an extraordinary diversity of unique life!"}, {"q": "What is the largest native land animal in Hawaii?", "a": "Hawaiian hoary bat", "w": ["Hawaiian hawk", "Nene goose", "Sea turtle"], "cat": "nature", "f": "The Hawaiian hoary bat or Ope'ape'a is Hawaii's only native land mammal — all other land mammals in Hawaii including humans arrived by sea or air!"}, {"q": "What invasive tree has taken over large areas of Hawaii?", "a": "Christmas berry (Schinus)", "w": ["Banana", "Mango", "Guava"], "cat": "nature", "f": "Christmas berry or Brazilian pepper is highly invasive in Hawaii — its berries are eaten by birds who spread seeds across the islands displacing native plants!"}, {"q": "What is the native Hawaiian fern called?", "a": "Hapu'u", "w": ["Koa fern", "Palapalai", "Uluhe"], "cat": "nature", "f": "The Hapu'u is Hawaii's giant tree fern — it can grow up to 20 feet tall and its fuzzy brown fiber called pulu was once exported worldwide for pillow stuffing!"}, {"q": "What rare plant only blooms once every 50 years?", "a": "Silversword", "w": ["Ohia lehua", "Hala tree", "Loulu palm"], "cat": "nature", "f": "The Silversword blooms just once in its lifetime — sending up a spectacular spike of hundreds of flowers then dying. Climate change threatens this irreplaceable plant!"}, {"q": "What is the Ohia Lehua?", "a": "Hawaii's most common native tree", "w": ["Sacred palm tree", "Type of fern", "Native grass"], "cat": "nature", "f": "Ohia Lehua is Hawaii's most beloved native tree — it's often the first plant to grow on new lava. Legend says picking the flower brings rain as the goddess Ohia weeps!"}, {"q": "What disease is killing Hawaii's Ohia trees?", "a": "Rapid Ohia Death", "w": ["Coconut rhinoceros beetle", "Erythrina gall wasp", "Fire blight"], "cat": "nature", "f": "Rapid Ohia Death is a devastating fungal disease that has killed millions of Ohia trees on the Big Island — it spreads through soil on boots and equipment!"}, {"q": "What is the name of Hawaii's volcanic national park?", "a": "Hawaii Volcanoes National Park", "w": ["Haleakala National Park", "Waimea Canyon Park", "Napali Coast Park"], "cat": "nature", "f": "Hawaii Volcanoes National Park on the Big Island is a UNESCO World Heritage Site — you can watch active lava flows and walk through lava tubes!"}, {"q": "What spectacular natural light show occurs on the Big Island?", "a": "Lava flowing into the ocean", "w": ["Aurora Borealis", "Bioluminescent bay", "Meteor shower"], "cat": "nature", "f": "Watching lava pour into the ocean on the Big Island is one of nature's most spectacular shows — the dramatic meeting of fire and water creates massive steam clouds!"}, {"q": "What is the name of the colorful native Hawaiian bird?", "a": "Apapane", "w": ["Nene", "Pueo", "Io"], "cat": "nature", "f": "The Apapane is a brilliant crimson native Hawaiian honeycreeper — it feeds on Ohia Lehua flowers and its cheerful song fills Hawaii's native forests!"}, {"q": "What native Hawaiian tree has rainbow colored bark?", "a": "Eucalyptus deglupta", "w": ["Koa", "Kukui", "Monkey pod"], "cat": "nature", "f": "The Rainbow Eucalyptus has spectacular multicolored bark that peels to reveal bright green red orange and purple — one of nature's most extraordinary trees!"}, {"q": "What is the name of Kauai's famous tropical botanical garden?", "a": "Na Aina Kai", "w": ["Limahuli Garden", "McBryde Garden", "Allerton Garden"], "cat": "nature", "f": "Na Aina Kai Botanical Gardens on Kauai covers 240 acres featuring sculptures tropical plants and one of Hawaii's most magical natural landscapes!"}, {"q": "What type of lava forms smooth ropy surfaces?", "a": "Pahoehoe", "w": ["Aa", "Pillow lava", "Pumice"], "cat": "nature", "f": "Pahoehoe lava forms smooth glassy ropy surfaces when it cools slowly — the word pahoehoe is now used by volcanologists worldwide!"}, {"q": "What type of lava forms rough jagged surfaces?", "a": "Aa", "w": ["Pahoehoe", "Pillow lava", "Pumice"], "cat": "nature", "f": "Aa lava is rough jagged and extremely painful to walk on barefoot — the name aa is thought to represent the sound you make walking across it!"}, {"q": "What is the name of the native Hawaiian forest bird with a curved bill?", "a": "Iiwi", "w": ["Apapane", "Amakihi", "Elepaio"], "cat": "nature", "f": "The Iiwi is one of Hawaii's most spectacular birds with bright scarlet plumage and a long curved orange bill perfectly designed for sipping Ohia flowers!"}, {"q": "What threatens Hawaii's coral reefs?", "a": "Climate change and bleaching", "w": ["Overfishing only", "Tourism only", "Pollution only"], "cat": "nature", "f": "Hawaii's coral reefs face multiple threats including warming ocean temperatures causing bleaching sunscreen chemicals and runoff — protecting reefs is critical for Hawaii's future!"}, {"q": "What is the name of Hawaii's native duck?", "a": "Koloa", "w": ["Nene", "Pueo", "Io"], "cat": "nature", "f": "The Koloa or Hawaiian duck is endemic to Hawaii — once nearly extinct conservation efforts have helped their numbers recover on Kauai and Oahu!"}, {"q": "What tree produces Hawaii's most valuable timber?", "a": "Koa", "w": ["Sandalwood", "Monkey pod", "Kukui"], "cat": "nature", "f": "Koa is Hawaii's most valuable wood selling for thousands of dollars per board foot — its beautiful golden grain makes it prized for guitars furniture and canoes!"}, {"q": "What is shave ice?", "a": "Finely shaved ice with flavored syrup", "w": ["Snow cone", "Sorbet", "Frozen yogurt"], "cat": "food", "f": "Shave ice is NOT a snow cone! The ice is shaved paper-thin creating a soft fluffy texture that soaks up the flavored syrup — Matsumoto's on Oahu's North Shore is legendary!"}, {"q": "What is plate lunch?", "a": "Hawaiian meal with rice mac salad and protein", "w": ["Formal dinner", "Traditional feast", "Sacred ceremony"], "cat": "food", "f": "The Hawaiian plate lunch is the ultimate comfort food — two scoops of rice one scoop of macaroni salad and your choice of protein like chicken katsu or kalua pig!"}, {"q": "What is kalua pig?", "a": "Pig slow-cooked in an underground imu oven", "w": ["BBQ pulled pork", "Pan fried pork", "Roasted whole pig"], "cat": "food", "f": "Kalua pig is cooked in an underground imu for 8-12 hours with hot lava rocks — the result is impossibly tender smoky shredded pork that melts in your mouth!"}, {"q": "What is loco moco?", "a": "Rice hamburger patty egg and brown gravy", "w": ["Fried rice dish", "Sweet dessert", "Breakfast burrito"], "cat": "food", "f": "Loco Moco was invented in Hilo in 1949 — white rice topped with a hamburger patty fried egg and rich brown gravy. Pure Hawaiian comfort food!"}, {"q": "What is saimin?", "a": "Hawaiian noodle soup", "w": ["Fried noodles", "Cold noodle salad", "Rice porridge"], "cat": "food", "f": "Saimin is Hawaii's beloved noodle soup — soft wheat noodles in a dashi broth with char siu pork fish cake and green onions. Hawaii's answer to ramen!"}, {"q": "What is musubi?", "a": "Spam and rice wrapped in seaweed", "w": ["Hawaiian sushi", "Fish wrapped in banana leaf", "Coconut rice cake"], "cat": "food", "f": "Spam musubi is Hawaii's ultimate on-the-go food — a block of rice topped with Spam and wrapped in nori. Hawaii consumes more Spam per capita than any other US state!"}, {"q": "Why does Hawaii consume so much Spam?", "a": "US military brought it during WWII", "w": ["Hawaiian tradition", "Japanese influence", "Easy to grow locally"], "cat": "food", "f": "Spam came to Hawaii during WWII when fresh meat was rationed — locals embraced it and today Hawaii consumes 7 million cans of Spam per year!"}, {"q": "What is haupia?", "a": "Coconut milk pudding", "w": ["Taro paste", "Mango sorbet", "Pineapple cake"], "cat": "food", "f": "Haupia is a traditional Hawaiian coconut milk dessert — a thick creamy pudding often served at luaus and used as frosting on Hawaiian wedding cakes!"}, {"q": "What is manapua?", "a": "Hawaiian version of char siu bao (baked bun)", "w": ["Fried dough", "Sweet rice cake", "Coconut bread"], "cat": "food", "f": "Manapua is Hawaii's beloved steamed or baked bun filled with sweet char siu pork — adapted from Chinese dim sum by Hawaii's early Chinese immigrants!"}, {"q": "What fruit was once Hawaii's biggest agricultural export?", "a": "Pineapple", "w": ["Coconut", "Sugarcane", "Macadamia nut"], "cat": "food", "f": "Pineapple made Hawaii famous — at its peak in the 1950s Hawaii produced 80% of the world's canned pineapple! Today most pineapple farming has moved to Asia!"}, {"q": "What nut is famous from Hawaii?", "a": "Macadamia nut", "w": ["Kukui nut", "Coconut", "Cashew"], "cat": "food", "f": "Macadamia nuts were brought to Hawaii from Australia in 1882 — today Hawaii produces about 90% of the world's macadamia nuts! They're the hardest nut in the world to crack!"}, {"q": "What is poi usually eaten with?", "a": "Lomi salmon and kalua pig", "w": ["Shave ice", "Fresh fruit", "Sweet bread"], "cat": "food", "f": "Poi is traditionally eaten with lomi lomi salmon kalua pig and other Hawaiian dishes — Hawaiians eat it by dipping fingers making one two or three finger poi!"}, {"q": "What is the most popular food at a Hawaiian luau?", "a": "Kalua pig", "w": ["Poke", "Poi", "Laulau"], "cat": "food", "f": "Kalua pig is the centerpiece of every traditional luau — the whole pig is wrapped in ti leaves cooked in the underground imu and shredded for the feast!"}, {"q": "What is laulau?", "a": "Pork and fish wrapped in taro leaves", "w": ["Grilled fish", "Coconut pudding", "Taro soup"], "cat": "food", "f": "Laulau is a traditional Hawaiian dish of pork fish and taro leaves wrapped in ti leaves and steamed for hours — one of Hawaii's most beloved foods!"}, {"q": "What is the name of Hawaii's local-style mixed plate?", "a": "Mixed plate lunch", "w": ["Pu pu platter", "Luau plate", "Aloha plate"], "cat": "food", "f": "The mixed plate lunch is Hawaii's multicultural food story in one meal — Japanese rice Chinese char siu Korean kim chee and Hawaiian macaroni salad all on one plate!"}, {"q": "What is lilikoi?", "a": "Passion fruit", "w": ["Mango", "Guava", "Papaya"], "cat": "food", "f": "Lilikoi is the Hawaiian word for passion fruit — its tart tropical flavor is used in everything from butter and jam to cocktails and desserts across Hawaii!"}, {"q": "What is the most popular shave ice flavor in Hawaii?", "a": "Rainbow (strawberry lemon lime)", "w": ["Mango", "Coconut", "Cherry"], "cat": "food", "f": "Rainbow shave ice with strawberry lemon and lime is the classic — but Hawaiian shave ice comes in dozens of flavors and can be topped with sweet cream or mochi!"}, {"q": "What Hawaiian bread is famous for its slightly sweet taste?", "a": "King's Hawaiian bread", "w": ["Taro bread", "Coconut bread", "Poi bread"], "cat": "food", "f": "King's Hawaiian sweet bread was created by Robert Taira in Hilo in 1950 — inspired by Portuguese sweet bread it is now sold worldwide and beloved everywhere!"}, {"q": "What is fish sauce called in Hawaii?", "a": "Patis", "w": ["Shoyu", "Ponzu", "Furikake"], "cat": "food", "f": "Hawaii's Filipino community brought patis fish sauce to the islands — Hawaii's multicultural food scene blends Filipino Japanese Chinese Korean Portuguese and Hawaiian flavors!"}, {"q": "What is furikake?", "a": "Japanese seasoning sprinkled on rice", "w": ["Hawaiian sea salt", "Taro paste", "Coconut flakes"], "cat": "food", "f": "Furikake is a Japanese seasoning of sesame seeds dried seaweed and bonito flakes — it's everywhere in Hawaii sprinkled on poke rice snacks and even popcorn!"}, {"q": "What is the Hawaiian word for food?", "a": "Ai", "w": ["Kaukau", "Mea", "Ono"], "cat": "food", "f": "Ai means to eat or food in Hawaiian — kaukau is a more informal slang word for food used by locals! Ono kaukau means delicious food!"}, {"q": "What drink is associated with Hawaii?", "a": "Mai Tai", "w": ["Pina Colada", "Blue Hawaii", "Margarita"], "cat": "food", "f": "The Mai Tai was actually invented in Oakland California in 1944 by Trader Vic — but it became so associated with Hawaii that it is now considered Hawaii's signature cocktail!"}, {"q": "What is the Blue Hawaii cocktail made with?", "a": "Rum vodka blue curacao and pineapple juice", "w": ["Rum coconut cream and pineapple", "Vodka lime and blue soda", "Gin blue curacao and soda"], "cat": "food", "f": "The Blue Hawaii was created at the Hilton Hawaiian Village in 1957 by bartender Harry Yee — its beautiful blue color from blue curacao perfectly represents Hawaii's ocean!"}, {"q": "What fruit is used to make Hawaiian punch?", "a": "A blend of tropical fruits", "w": ["Only pineapple", "Only guava", "Only passion fruit"], "cat": "food", "f": "Hawaiian Punch was actually created in California in 1934 — but its blend of tropical fruits including passion fruit guava and pineapple evokes the flavors of Hawaii!"}, {"q": "What is the traditional Hawaiian salt?", "a": "Alaea red salt", "w": ["Black lava salt", "White sea salt", "Pink Himalayan salt"], "cat": "food", "f": "Alaea red salt is Hawaii's traditional sea salt mixed with red volcanic clay — it has a mild earthy flavor and was used in Hawaiian ceremonies and cooking for centuries!"}, {"q": "Who is known as the father of modern surfing?", "a": "Duke Kahanamoku", "w": ["Eddie Aikau", "Kelly Slater", "Andy Irons"], "cat": "sports", "f": "Duke Kahanamoku was a five-time Olympic swimming medalist who introduced surfing to the world — this legendary Hawaiian is the greatest waterman who ever lived!"}, {"q": "What Hawaiian sport involves riding an outrigger canoe?", "a": "Outrigger canoe paddling", "w": ["Surfing", "Stand up paddleboarding", "Kite surfing"], "cat": "sports", "f": "Outrigger canoe paddling is Hawaii's oldest and most important sport — the ancient Hawaiians crossed thousands of miles of open ocean in these incredible vessels!"}, {"q": "What is the name of the Hawaiian martial art?", "a": "Lua", "w": ["Kendo", "Capoeira", "Aikido"], "cat": "sports", "f": "Lua is the ancient Hawaiian martial art — a deadly combat system using bone-breaking strikes joint locks and weapons that was practiced by Hawaiian warriors!"}, {"q": "Where was surfing invented?", "a": "Hawaii", "w": ["Australia", "California", "Brazil"], "cat": "sports", "f": "Surfing was invented in Hawaii thousands of years ago — ancient Hawaiians called it he'e nalu or wave sliding and it was deeply spiritual not just recreational!"}, {"q": "What is the famous Ironman Triathlon held in Hawaii?", "a": "Ironman World Championship in Kona", "w": ["Honolulu Marathon", "North Shore Swim", "Maui Invitational"], "cat": "sports", "f": "The Ironman World Championship in Kona Big Island is the most prestigious triathlon on Earth — a 2.4 mile swim 112 mile bike and 26.2 mile run in brutal heat!"}, {"q": "What famous marathon is held in Honolulu every December?", "a": "Honolulu Marathon", "w": ["Maui Marathon", "Kauai Marathon", "Big Island Marathon"], "cat": "sports", "f": "The Honolulu Marathon is one of the world's largest marathons — held every December it's famous for its beautiful course along Oahu's coastline and through Diamond Head!"}, {"q": "What water sport was invented in Hawaii?", "a": "Stand-up paddleboarding", "w": ["Windsurfing", "Kitesurfing", "Wakeboarding"], "cat": "sports", "f": "Stand-up paddleboarding or SUP was popularized in Hawaii in the 1960s by surf instructors at Waikiki who used paddles to see their students better from above the water!"}, {"q": "What is the name of Hawaii's famous big wave surf spot on Maui?", "a": "Peahi (Jaws)", "w": ["Pipeline", "Waimea Bay", "Sunset Beach"], "cat": "sports", "f": "Peahi known as Jaws on Maui's north shore produces some of the biggest waves in the world — reaching 60 feet or more it is one of surfing's most terrifying spots!"}, {"q": "What famous surfer from Hawaii won 11 world titles?", "a": "Kelly Slater (from Florida, but honorary Hawaiian)", "w": ["Eddie Aikau", "Duke Kahanamoku", "Andy Irons"], "cat": "sports", "f": "Andy Irons from Kauai won 3 consecutive World Surf League championships 2002-2004 — beloved as the soul of surfing his passing in 2010 devastated the surf world!"}, {"q": "What is the name of Hawaii's famous cliff diving spot?", "a": "Black Rock (Kaanapali, Maui)", "w": ["Diamond Head", "Waimea Bay", "Na Pali"], "cat": "sports", "f": "Black Rock at Kaanapali Beach on Maui is famous for cliff diving — legend says it is where souls leap off to join their ancestors in the spirit world!"}, {"q": "What outdoor activity is Molokai famous for?", "a": "Sea cliffs and mule rides", "w": ["Volcano hiking", "Surfing", "Snorkeling"], "cat": "sports", "f": "Molokai has the world's highest sea cliffs reaching 3900 feet — and the famous mule ride down to the Kalaupapa leprosy settlement is one of Hawaii's great adventures!"}, {"q": "What is Hawaii's most popular visitor activity?", "a": "Snorkeling", "w": ["Surfing", "Hiking", "Helicopter tours"], "cat": "sports", "f": "Snorkeling is Hawaii's most popular activity — with crystal clear warm water colorful reef fish sea turtles and dolphins Hawaii offers some of the world's best snorkeling!"}, {"q": "What is the best island for windsurfing?", "a": "Maui", "w": ["Oahu", "Kauai", "Big Island"], "cat": "sports", "f": "Maui's Hookipa Beach is considered the windsurfing capital of the world — powerful trade winds and perfect waves make it a mecca for world-class windsurfers!"}, {"q": "What is the Merrie Monarch Festival?", "a": "World's premier hula competition", "w": ["Outrigger canoe race", "Surfing contest", "Ironman triathlon"], "cat": "sports", "f": "The Merrie Monarch Festival in Hilo every April is the Olympics of hula — named after the Merry Monarch King Kalakaua who revived Hawaiian culture!"}, {"q": "What dangerous activity do daredevils do at Makapu'u?", "a": "Hang gliding and paragliding", "w": ["Cliff diving", "Base jumping", "Volcano surfing"], "cat": "sports", "f": "Makapu'u on Oahu's eastern tip is famous for hang gliding and paragliding — the trade winds create perfect conditions for soaring above the stunning coastline!"}, {"q": "What is slack key guitar competitions called?", "a": "Ka Himeni Ana", "w": ["Merrie Monarch", "Aloha Festival", "Na Hoku Hanohano"], "cat": "sports", "f": "Ka Himeni Ana is an unaccompanied Hawaiian slack key guitar and song competition — celebrating the most uniquely Hawaiian of all musical traditions!"}, {"q": "What ocean race goes from Molokai to Oahu?", "a": "Molokai to Oahu Paddleboard Race", "w": ["TransPac Race", "Duke Classic", "Quicksilver Invitational"], "cat": "sports", "f": "The Molokai to Oahu Paddleboard Race covers 32 miles of open ocean — called the channel crossing it's considered the Mount Everest of paddleboarding!"}, {"q": "What is the name of Hawaii's famous canoe race?", "a": "Na Wahine O Ke Kai and Molokai Hoe", "w": ["Duke Classic", "Aloha Race", "Pacific Challenge"], "cat": "sports", "f": "The Molokai Hoe for men and Na Wahine O Ke Kai for women are Hawaii's premier outrigger canoe races — crossing 41 miles of open ocean from Molokai to Oahu!"}, {"q": "What sport was Eddie Aikau famous for?", "a": "Big wave surfing and ocean lifeguarding", "w": ["Outrigger canoe racing", "Windsurfing", "Freediving"], "cat": "sports", "f": "Eddie Aikau was Hawaii's greatest waterman — the first lifeguard at Waimea Bay he saved over 500 lives. He died in 1978 trying to paddle for help when the Hokule'a capsized!"}, {"q": "What hike on Oahu goes inside an extinct volcano?", "a": "Diamond Head Crater Trail", "w": ["Manoa Falls Trail", "Koko Head Trail", "Makapuu Trail"], "cat": "sports", "f": "The Diamond Head Crater Trail is Oahu's most popular hike — a 1.6 mile round trip inside an extinct volcanic crater with panoramic views of Waikiki and the Pacific!"}, {"q": "Who was the first king to unite all Hawaiian islands?", "a": "King Kamehameha I", "w": ["King Kalakaua", "King Liholiho", "King Lunalilo"], "cat": "history", "f": "King Kamehameha the Great united all Hawaiian islands by 1810 through military conquest and diplomacy — establishing the Kingdom of Hawaii that lasted until 1893!"}, {"q": "What year did Captain Cook first arrive in Hawaii?", "a": "1778", "w": ["1776", "1820", "1800"], "cat": "history", "f": "Captain James Cook arrived at Kauai on January 18 1778 — he named the islands the Sandwich Islands after his patron the Earl of Sandwich. He was killed in Kealakekua Bay in 1779!"}, {"q": "What happened on December 7 1941 in Hawaii?", "a": "Japan attacked Pearl Harbor", "w": ["Hawaii became a US state", "First King crowned", "US annexed Hawaii"], "cat": "history", "f": "The attack on Pearl Harbor on December 7 1941 killed 2403 Americans and brought the US into World War II — President Roosevelt called it a date which will live in infamy!"}, {"q": "Who was Hawaii's only queen?", "a": "Queen Liliuokalani", "w": ["Queen Emma", "Queen Kaahumanu", "Princess Kaiulani"], "cat": "history", "f": "Queen Liliuokalani was Hawaii's last monarch — she was overthrown in 1893 by American businessmen backed by US Marines and placed under house arrest in Iolani Palace!"}, {"q": "What was the name of the overthrow of Hawaii's monarchy?", "a": "1893 Overthrow of the Hawaiian Kingdom", "w": ["Hawaiian Revolution", "Aloha Overthrow", "Pacific Coup"], "cat": "history", "f": "In 1893 American businessmen and US Marines overthrew Queen Liliuokalani — in 1993 President Clinton officially apologized for the illegal overthrow of the Hawaiian Kingdom!"}, {"q": "What is the name of Hawaii's royal palace?", "a": "Iolani Palace", "w": ["Diamond Head Palace", "Waikiki Palace", "Manoa Palace"], "cat": "history", "f": "Iolani Palace in downtown Honolulu is the only royal palace on US soil — built in 1882 it had electricity and telephones before the White House!"}, {"q": "What beautiful song did Queen Liliuokalani compose?", "a": "Aloha Oe", "w": ["Hawaii Ponoi", "Ka Uluwehi", "Sweet Leilani"], "cat": "history", "f": "Aloha Oe or Farewell to Thee was composed by Queen Liliuokalani — it remains the most beloved Hawaiian song ever written and is played at every meaningful farewell!"}, {"q": "What is the name of the legendary double-hulled canoe that sailed ancient routes?", "a": "Hokule'a", "w": ["Waa Kaulua", "Mokumanamana", "Kahoaiokalani"], "cat": "history", "f": "Hokule'a was launched in 1975 and sailed ancient Polynesian routes using only stars winds and waves — proving that Polynesians intentionally navigated to Hawaii not accidentally drifted!"}, {"q": "What was Hawaii's main cash crop for 150 years?", "a": "Sugar cane", "w": ["Pineapple", "Coffee", "Macadamia nuts"], "cat": "history", "f": "Sugar cane dominated Hawaii's economy from the 1850s to the 1990s — sugar plantations brought workers from Japan China Korea Portugal and the Philippines creating Hawaii's multicultural society!"}, {"q": "When did the Hawaiian Islands form?", "a": "Over millions of years from volcanic activity", "w": ["10000 years ago", "50000 years ago", "500 years ago"], "cat": "history", "f": "The Hawaiian Islands formed over millions of years as the Pacific Plate moved over a volcanic hot spot — the Big Island is the youngest and still actively growing!"}, {"q": "What is the legend of Maui the demigod?", "a": "He lassoed the sun to make days longer", "w": ["He created the first surfboard", "He planted the first taro", "He discovered Hawaii"], "cat": "history", "f": "Maui the demigod lassoed the sun from atop Haleakala to slow it down so his mother could dry her kapa cloth — this is why Haleakala means House of the Sun!"}, {"q": "What goddess is associated with Hawaii's volcanoes?", "a": "Pele", "w": ["Hina", "Laka", "Poliahu"], "cat": "history", "f": "Pele is the goddess of fire volcanoes and creation in Hawaiian mythology — she is said to live in Kilauea's Halema'uma'u crater and her tears are lava falling from eruptions!"}, {"q": "What is the legend of the Menehune?", "a": "Mythical small people who built ancient structures overnight", "w": ["Hawaiian giants", "Ocean spirits", "Mountain gods"], "cat": "history", "f": "The Menehune are Hawaii's legendary small people said to be master builders who constructed fish ponds walls and temples overnight disappearing before sunrise!"}, {"q": "What was the name of Hawaii's last king?", "a": "King Kalakaua", "w": ["King Kamehameha V", "King Lunalilo", "King Liholiho"], "cat": "history", "f": "King David Kalakaua was the Merry Monarch who revived Hawaiian culture arts and hula — he also wrote Hawaii's national anthem and traveled around the world meeting other monarchs!"}, {"q": "What nationality brought the ukulele to Hawaii?", "a": "Portuguese", "w": ["Japanese", "Chinese", "Spanish"], "cat": "history", "f": "Portuguese immigrants brought the braguinha a small stringed instrument to Hawaii in 1879 — Hawaiians adapted it and named it ukulele creating one of the world's most joyful instruments!"}, {"q": "What religion did missionaries bring to Hawaii in 1820?", "a": "Christianity", "w": ["Buddhism", "Islam", "Hinduism"], "cat": "history", "f": "American Congregationalist missionaries arrived in Hawaii in 1820 — they created the written Hawaiian language translated the Bible into Hawaiian and profoundly changed Hawaiian society!"}, {"q": "What is the name of Hawaii's leprosy settlement?", "a": "Kalaupapa on Molokai", "w": ["Kalapana on Big Island", "Koloa on Kauai", "Kaaawa on Oahu"], "cat": "history", "f": "Kalaupapa on Molokai's isolated peninsula was Hawaii's leprosy settlement from 1866 to 1969 — Father Damien the Belgian priest who served there was made a saint in 2009!"}, {"q": "Who was Father Damien?", "a": "Belgian priest who served Hawaii's leprosy patients", "w": ["First Catholic bishop", "Hawaiian king's advisor", "US military chaplain"], "cat": "history", "f": "Father Damien de Veuster served the leprosy patients of Kalaupapa from 1873 until he died of leprosy himself in 1889 — Pope Benedict XVI declared him a saint in 2009!"}, {"q": "What happened to Lahaina in 2023?", "a": "Devastating wildfire destroyed the historic town", "w": ["Major hurricane", "Volcanic eruption", "Tsunami"], "cat": "history", "f": "On August 8 2023 a catastrophic wildfire fueled by dry conditions and strong winds destroyed Lahaina killing at least 100 people and devastating this historic Hawaiian town!"}, {"q": "What year did the US formally apologize for overthrowing Hawaii?", "a": "1993", "w": ["1959", "1941", "2000"], "cat": "history", "f": "In 1993 Congress passed the Apology Resolution signed by President Clinton formally acknowledging the illegal overthrow of the Hawaiian Kingdom 100 years earlier!"}, {"q": "What is the name of Hawaii's freedom fighter who opposed annexation?", "a": "Queen Liliuokalani", "w": ["Princess Kaiulani", "King Kalakaua", "Prince Jonah Kuhio"], "cat": "history", "f": "Queen Liliuokalani fought tirelessly against the annexation of Hawaii to the United States — she even traveled to Washington DC to plead her case to President Cleveland!"}, {"q": "What ancient Hawaiian navigation method was used?", "a": "Stars waves winds and birds", "w": ["Magnetic compass", "Sun only", "Written charts"], "cat": "history", "f": "Ancient Hawaiian navigators used an extraordinary system reading stars ocean swells wind patterns and bird flight to navigate thousands of miles of open Pacific without instruments!"}, {"q": "What is the significance of the number 808 in Hawaii?", "a": "Hawaii's telephone area code", "w": ["Sacred number", "Year of founding", "Number of temples"], "cat": "history", "f": "808 is Hawaii's area code for all phone numbers — it has become a symbol of Hawaii culture music and identity used in everything from restaurant names to music styles!"}, {"q": "What was the first capital of the Hawaiian Kingdom?", "a": "Lahaina on Maui", "w": ["Honolulu on Oahu", "Hilo on Big Island", "Waimea on Kauai"], "cat": "history", "f": "Lahaina on Maui was the first capital of the Hawaiian Kingdom under Kamehameha I and II — it was also the whaling capital of the Pacific in the 1800s before Honolulu took over!"}, {"q": "What is the name of the Hawaiian sovereignty movement?", "a": "Hawaiian sovereignty movement (La Akea)", "w": ["Hawaiian independence", "Aloha movement", "Pacific freedom"], "cat": "history", "f": "The Hawaiian sovereignty movement seeks to restore some form of self-governance to Native Hawaiians — ranging from a nation within a nation to full independence from the United States!"}, {"q": "Hawaii is the only US state that grows what?", "a": "Coffee", "w": ["Tea", "Chocolate", "Vanilla"], "cat": "fun", "f": "Hawaii is the only US state that commercially grows coffee — Kona coffee from the Big Island is one of the world's most prized coffees fetching premium prices worldwide!"}, {"q": "What is Hawaii's state gemstone?", "a": "Black coral", "w": ["Diamond", "Emerald", "Pearl"], "cat": "fun", "f": "Black coral is Hawaii's state gemstone — found in deep Hawaiian waters it grows only 8 centimeters per year making it incredibly precious and closely protected!"}, {"q": "How far is Hawaii from the US mainland?", "a": "About 2400 miles", "w": ["1000 miles", "500 miles", "5000 miles"], "cat": "fun", "f": "Hawaii is the most isolated population center on Earth — about 2400 miles from California making it the farthest state from the US mainland!"}, {"q": "What is unique about Hawaii's flag?", "a": "It includes the British Union Jack", "w": ["It has 50 stars", "It shows a volcano", "It features a hula dancer"], "cat": "fun", "f": "Hawaii's flag uniquely includes the British Union Jack — honoring Hawaii's friendship with Britain under King Kamehameha I who admired Captain Vancouver's British flag!"}, {"q": "What time zone is Hawaii in?", "a": "Hawaii-Aleutian Standard Time", "w": ["Pacific Time", "Mountain Time", "Central Time"], "cat": "fun", "f": "Hawaii uses Hawaii-Aleutian Standard Time — it does NOT observe Daylight Saving Time making it 2-3 hours behind California depending on the time of year!"}, {"q": "How many visitors does Hawaii receive each year?", "a": "About 10 million", "w": ["1 million", "5 million", "20 million"], "cat": "fun", "f": "Hawaii welcomes about 10 million visitors per year — nearly 10 times its resident population of about 1.4 million! Tourism is Hawaii's number one industry!"}, {"q": "What is the population of Hawaii?", "a": "About 1.4 million", "w": ["500000", "3 million", "5 million"], "cat": "fun", "f": "Hawaii has about 1.4 million residents — Oahu is home to about 70% of the population while the other islands have much smaller communities!"}, {"q": "What is the only royal palace on US soil?", "a": "Iolani Palace", "w": ["Waikiki Palace", "Diamond Head Estate", "Nuuanu Palace"], "cat": "fun", "f": "Iolani Palace in Honolulu is the only official royal palace on American soil — it was built in 1882 and had electricity before the White House!"}, {"q": "What two languages are official in Hawaii?", "a": "English and Hawaiian", "w": ["English and Japanese", "English and Spanish", "Hawaiian and Pidgin"], "cat": "fun", "f": "Hawaii is the only US state with two official languages — English and Hawaiian. Hawaii Creole English or Pidgin is also widely spoken but is not officially recognized!"}, {"q": "What is Hawaii Pidgin?", "a": "Creole language spoken by locals", "w": ["Hawaiian dialect", "Tourist language", "Ancient chant"], "cat": "fun", "f": "Hawaii Pidgin or Hawaii Creole English developed on sugar plantations as workers from Japan China Korea Portugal and Hawaii needed to communicate — it's now a beloved part of local identity!"}, {"q": "What famous tech product was named after a Hawaii airport shuttle?", "a": "Wiki", "w": ["Yahoo", "Google", "Apple"], "cat": "fun", "f": "Ward Cunningham named his collaborative website WikiWikiWeb after the Wiki Wiki Shuttle at Honolulu Airport — wiki means quick in Hawaiian!"}, {"q": "What is the most isolated city on Earth?", "a": "Honolulu", "w": ["Auckland", "Tokyo", "Sydney"], "cat": "fun", "f": "Honolulu is the most geographically isolated major city on Earth — surrounded by thousands of miles of Pacific Ocean in every direction!"}, {"q": "What color is most Hawaiian lava?", "a": "Black (after cooling)", "w": ["Red", "Gray", "Brown"], "cat": "fun", "f": "Fresh lava glows bright orange-red but cools quickly to jet black — Hawaii's Big Island adds acres of new black lava land to its surface every year!"}, {"q": "What famous movie was filmed at Kualoa Ranch on Oahu?", "a": "Jurassic Park", "w": ["Avatar", "Pirates of Caribbean", "King Kong"], "cat": "fun", "f": "Kualoa Ranch on Oahu's windward coast has been used in dozens of films including Jurassic Park Godzilla Hawaii Five-0 and Lost — it's one of Hollywood's favorite locations!"}, {"q": "What is the name of Hawaii's state song?", "a": "Hawaii Ponoi", "w": ["Aloha Oe", "Sweet Leilani", "Blue Hawaii"], "cat": "fun", "f": "Hawaii Ponoi meaning Hawaii's Own was written by King Kalakaua in 1874 — it served as the national anthem of the Hawaiian Kingdom and is now the state song!"}, {"q": "What percentage of Hawaii's land is protected?", "a": "About 25%", "w": ["5%", "10%", "50%"], "cat": "fun", "f": "About 25% of Hawaii's land is protected in national parks state parks wildlife refuges and conservation areas — essential for protecting Hawaii's unique biodiversity!"}, {"q": "What is the Hawaiian word for Hawaii?", "a": "Hawaiʻi", "w": ["Aloha Nei", "Ka Pae Aina", "Mokupuni"], "cat": "fun", "f": "The correct spelling is Hawaiʻi with an okina before the final i — the name may come from Hawaiiloa the legendary Polynesian navigator who first discovered the islands!"}];
+
+// ═══════════════════════════════════════════════
+// HAWAII TRIVIA CHALLENGE — Today in Hawaii © 2026
+// 222 Questions · 20 per game · Live Leaderboard!
+// ═══════════════════════════════════════════════
+
+const QUESTIONS_PER_GAME = 20;
+const TIME_PER_QUESTION = 20; // seconds
+const CAT_INFO = {
+  culture:   {label:'🌺 Culture & Language', color:'rgba(249,115,22,0.1)', border:'rgba(249,115,22,0.25)', text:'#f97316'},
+  geography: {label:'🏝️ Islands & Geography', color:'rgba(34,197,94,0.1)', border:'rgba(34,197,94,0.25)', text:'#22c55e'},
+  ocean:     {label:'🌊 Ocean & Marine Life', color:'rgba(59,130,246,0.1)', border:'rgba(59,130,246,0.25)', text:'#3b82f6'},
+  nature:    {label:'🌿 Nature & Wildlife', color:'rgba(16,185,129,0.1)', border:'rgba(16,185,129,0.25)', text:'#10b981'},
+  food:      {label:'🍍 Food & Drink', color:'rgba(251,191,36,0.1)', border:'rgba(251,191,36,0.25)', text:'#fbbf24'},
+  sports:    {label:'🏄 Sports & Activities', color:'rgba(168,85,247,0.1)', border:'rgba(168,85,247,0.25)', text:'#a855f7'},
+  history:   {label:'📜 History & Legends', color:'rgba(239,68,68,0.1)', border:'rgba(239,68,68,0.25)', text:'#ef4444'},
+  fun:       {label:'⭐ Fun Hawaii Facts', color:'rgba(34,211,238,0.1)', border:'rgba(34,211,238,0.25)', text:'#22d3ee'},
+};
+const LETTERS = ['A','B','C','D'];
+
+let playerName = '', playerLoc = '';
+let gameQuestions = [];
+let currentQ = 0;
+let score = 0, correct = 0, streak = 0, bestStreak = 0;
+let timerInterval = null;
+let timeLeft = TIME_PER_QUESTION;
+let answered = false;
+let muted = false;
+let myRank = 0;
+let dots = [];
+
+// ── Name Entry ──────────────────────────────
+document.getElementById('pName').addEventListener('input', checkReady);
+document.getElementById('pLoc').addEventListener('change', checkReady);
+function checkReady() {
+  const ok = document.getElementById('pName').value.trim().length >= 2
+           && document.getElementById('pLoc').value;
+  document.getElementById('startBtn').disabled = !ok;
+}
+
+function startGame() {
+  playerName = document.getElementById('pName').value.trim();
+  playerLoc  = document.getElementById('pLoc').value;
+  if (!playerName || !playerLoc) return;
+  document.getElementById('nameScr').style.display = 'none';
+  document.getElementById('gameArea').style.display = 'block';
+  document.getElementById('badgeName').textContent = playerName + ' · ' + playerLoc;
+  newGame();
+}
+
+function newGame() {
+  // Pick 20 random questions — spread across categories
+  const shuffled = [...TRIVIA_QUESTIONS].sort(() => Math.random() - 0.5);
+  gameQuestions = shuffled.slice(0, QUESTIONS_PER_GAME);
+  currentQ = 0; score = 0; correct = 0; streak = 0; bestStreak = 0;
+  dots = new Array(QUESTIONS_PER_GAME).fill('');
+  updateStats();
+  buildDots();
+  showQuestion();
+}
+
+function playAgain() {
+  closeOverlay();
+  newGame();
+}
+
+// ── Question Display ──────────────────────────
+function showQuestion() {
+  answered = false;
+  const q = gameQuestions[currentQ];
+  const cat = CAT_INFO[q.cat] || CAT_INFO.fun;
+
+  // Category badge
+  const badge = document.getElementById('catBadge');
+  badge.textContent = cat.label;
+  badge.style.background = cat.color;
+  badge.style.borderColor = cat.border;
+  badge.style.color = cat.text;
+
+  // Question
+  document.getElementById('qNum').textContent = 'Question ' + (currentQ+1) + ' of ' + QUESTIONS_PER_GAME;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qNumVal').textContent = (currentQ+1) + '/' + QUESTIONS_PER_GAME;
+
+  // Shuffle answers
+  const allAnswers = [q.a, ...q.w].sort(() => Math.random() - 0.5);
+  const answersDiv = document.getElementById('answers');
+  answersDiv.innerHTML = '';
+  allAnswers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.innerHTML = '<span class="ans-letter">' + LETTERS[i] + '</span>' + ans;
+    btn.onclick = () => selectAnswer(btn, ans, q);
+    answersDiv.appendChild(btn);
+  });
+
+  // Hide fact and next
+  document.getElementById('factBox').classList.remove('show');
+  document.getElementById('nextBtn').style.display = 'none';
+
+  // Update dot
+  updateDot(currentQ, 'current');
+  startTimer();
+}
+
+function selectAnswer(btn, ans, q) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const isCorrect = ans === q.a;
+  const buttons = document.querySelectorAll('.ans-btn');
+
+  // Disable all buttons
+  buttons.forEach(b => {
+    b.disabled = true;
+    const btnText = b.textContent.slice(1); // remove letter
+    if (btnText === q.a) b.classList.add('correct');
+  });
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    const pts = Math.max(10, Math.round(timeLeft / TIME_PER_QUESTION * 100));
+    const bonus = streak >= 2 ? Math.round(pts * 0.5) : 0;
+    score += pts + bonus;
+    correct++;
+    streak++;
+    bestStreak = Math.max(bestStreak, streak);
+    updateDot(currentQ, 'correct');
+    playCorrectSound();
+    showScorePop(pts + bonus, streak);
+    celebrate();
+  } else {
+    btn.classList.add('wrong');
+    streak = 0;
+    updateDot(currentQ, 'wrong');
+    playWrongSound();
+  }
+
+  // Show fun fact
+  const factBox = document.getElementById('factBox');
+  document.getElementById('factText').textContent = q.f;
+  factBox.classList.add('show');
+
+  updateStats();
+
+  // Show next or finish
+  if (currentQ < QUESTIONS_PER_GAME - 1) {
+    document.getElementById('nextBtn').style.display = 'block';
+    document.getElementById('nextBtn').classList.add('flash');
+  } else {
+    setTimeout(() => finishGame(), 1500);
+  }
+}
+
+function nextQuestion() {
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('nextBtn').classList.remove('flash');
+  currentQ++;
+  showQuestion();
+}
+
+// ── Timer ──────────────────────────────────────
+function startTimer() {
+  timeLeft = TIME_PER_QUESTION;
+  updateTimerBar();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft -= 0.1;
+    updateTimerBar();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!answered) timeUp();
+    }
+  }, 100);
+}
+
+function updateTimerBar() {
+  const pct = Math.max(0, (timeLeft / TIME_PER_QUESTION) * 100);
+  const fill = document.getElementById('timerFill');
+  fill.style.width = pct + '%';
+  if (pct < 30) fill.classList.add('urgent');
+  else fill.classList.remove('urgent');
+}
+
+function timeUp() {
+  answered = true;
+  streak = 0;
+  updateDot(currentQ, 'wrong');
+  playWrongSound();
+
+  const q = gameQuestions[currentQ];
+  document.querySelectorAll('.ans-btn').forEach(b => {
+    b.disabled = true;
+    const btnText = b.textContent.slice(1);
+    if (btnText === q.a) b.classList.add('correct');
+  });
+
+  document.getElementById('factText').textContent = q.f;
+  document.getElementById('factBox').classList.add('show');
+  updateStats();
+
+  if (currentQ < QUESTIONS_PER_GAME - 1) {
+    document.getElementById('nextBtn').style.display = 'block';
+    document.getElementById('nextBtn').classList.add('flash');
+  } else {
+    setTimeout(() => finishGame(), 1500);
+  }
+}
+
+// ── Progress Dots ──────────────────────────────
+function buildDots() {
+  const container = document.getElementById('progressDots');
+  container.innerHTML = '';
+  for (let i = 0; i < QUESTIONS_PER_GAME; i++) {
+    const d = document.createElement('div');
+    d.className = 'pdot';
+    d.id = 'pdot' + i;
+    container.appendChild(d);
+  }
+}
+
+function updateDot(i, state) {
+  const d = document.getElementById('pdot' + i);
+  if (d) { d.className = 'pdot ' + state; }
+}
+
+// ── Stats ──────────────────────────────────────
+function updateStats() {
+  document.getElementById('scoreVal').textContent = score.toLocaleString();
+  document.getElementById('correctVal').textContent = correct;
+  document.getElementById('streakVal').textContent = streak;
+}
+
+// ── Finish ─────────────────────────────────────
+async function finishGame() {
+  clearInterval(timerInterval);
+  await submitScore();
+  await loadLeaderboard();
+
+  const pct = Math.round((correct / QUESTIONS_PER_GAME) * 100);
+  const grade = pct >= 90 ? '🥇 Hawaii Expert!!' : pct >= 70 ? '🌺 Aloha Scholar!' : pct >= 50 ? '🌊 Getting There!' : '🌱 Keep Learning!';
+  const msgs = {
+    90: 'Incredible!! You know Hawaii like a true local! 🌺🏆',
+    70: 'Great job!! You know your Hawaii really well! 🌺',
+    50: 'Not bad! Hawaii has a lot to discover — play again! 🌊',
+    0:  'Hawaii is calling you to learn more! Try again! 🌴'
+  };
+  const msg = Object.entries(msgs).reverse().find(([k]) => pct >= Number(k))[1];
+
+  document.getElementById('ovEmoji').textContent = pct >= 90 ? '🥇' : pct >= 70 ? '🏆' : '🌺';
+  document.getElementById('ovTitle').textContent = grade;
+  document.getElementById('ovScore').textContent = score.toLocaleString() + ' pts';
+  document.getElementById('ovRank').textContent = myRank > 0 ? '🏆 #' + myRank + ' on the Hawaii Leaderboard!' : '';
+  document.getElementById('ovCorrect').textContent = correct + '/' + QUESTIONS_PER_GAME + ' correct · Best streak: ' + bestStreak + ' 🔥 · ' + msg;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function endGame() {
+  clearInterval(timerInterval);
+  finishGame();
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function shareScore() {
+  const pct = Math.round((correct / QUESTIONS_PER_GAME) * 100);
+  const txt = myRank === 1
+    ? '🥇 I scored ' + score.toLocaleString() + ' points on the Hawaii Trivia Challenge and I\'m #1!! Can YOU beat me? 🌺'
+    : '🌺 I scored ' + score.toLocaleString() + ' points (' + correct + '/' + QUESTIONS_PER_GAME + ' correct) on the Hawaii Trivia Challenge from ' + playerLoc + '! Can you beat me? 🏆';
+  window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://www.todayinhawaii.com/trivia') + '&quote=' + encodeURIComponent(txt), '_blank');
+}
+
+// ── Sound ──────────────────────────────────────
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, type, vol, dur, delay) {
+  if (muted) return;
+  delay = delay || 0;
+  try {
+    const c = getAudio(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, c.currentTime + delay);
+    g.gain.linearRampToValueAtTime(vol, c.currentTime + delay + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + dur);
+    o.start(c.currentTime + delay);
+    o.stop(c.currentTime + delay + dur + 0.01);
+  } catch(e) {}
+}
+function playCorrectSound() {
+  [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.5,0.2,i*0.07));
+}
+function playWrongSound() {
+  [300,240,200].forEach((f,i) => playTone(f,'sawtooth',0.3,0.15,i*0.08));
+}
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
+}
+
+// ── Particles ──────────────────────────────────
+function celebrate() {
+  const em = ['🌺','⭐','✨','🎉','💫','🌸','🤙'];
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.fontSize = (14 + Math.random()*14) + 'px';
+    p.style.left = (20 + Math.random()*60) + '%';
+    p.style.top = (30 + Math.random()*30) + '%';
+    const ang = Math.random() * Math.PI * 2;
+    const d = 50 + Math.random()*70;
+    p.style.setProperty('--tx', Math.cos(ang)*d+'px');
+    p.style.setProperty('--ty', Math.sin(ang)*d+'px');
+    p.style.animationDuration = (0.6 + Math.random()*0.4)+'s';
+    p.style.animationDelay = (Math.random()*0.2)+'s';
+    p.textContent = em[Math.floor(Math.random()*em.length)];
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1100);
+  }
+}
+
+function showScorePop(pts, streak) {
+  const el = document.createElement('div');
+  el.className = 'score-pop';
+  el.textContent = '+' + pts + (streak >= 2 ? ' 🔥x' + streak : '');
+  el.style.left = (25 + Math.random()*50) + '%';
+  el.style.top = (20 + Math.random()*25) + '%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+// ── Leaderboard ─────────────────────────────────
+async function loadLeaderboard() {
+  try {
+    const res = await fetch('/api/trivia-scores');
+    const data = await res.json();
+    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+    if (!data.length) {
+      document.getElementById('lbList').innerHTML = '<div class="lb-empty">Be the first Hawaii Trivia Champion! 🌺</div>';
+      return;
+    }
+    document.getElementById('lbList').innerHTML = data.slice(0,10).map((s,i) => {
+      const isMe = playerName && s.name.toLowerCase() === playerName.toLowerCase();
+      const cls = i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
+      return '<div class="lb-row ' + cls + '">' +
+        '<span class="lb-medal">' + (medals[i]||i+1) + '</span>' +
+        '<div style="flex:1"><div class="lb-name">' + s.name + (isMe?' ← You!':'') + '</div>' +
+        '<div class="lb-loc">📍 ' + s.island + ' · ' + (s.correct||0) + '/20 correct</div></div>' +
+        '<span class="lb-score">' + Number(s.score).toLocaleString() + '</span></div>';
+    }).join('');
+
+    if (playerName) {
+      const myIdx = data.findIndex(s => s.name.toLowerCase() === playerName.toLowerCase());
+      const rankEl = document.getElementById('badgeRank');
+      const targetEl = document.getElementById('lbTarget');
+      if (myIdx >= 0) {
+        rankEl.textContent = '#' + (myIdx+1) + ' 🏆';
+        if (myIdx > 0) {
+          const needed = data[myIdx-1].score - data[myIdx].score + 1;
+          targetEl.style.display = 'block';
+          targetEl.textContent = '🎯 Score ' + needed.toLocaleString() + ' more to beat ' + data[myIdx-1].name + '!';
+        } else {
+          targetEl.style.display = 'block';
+          targetEl.textContent = '🥇 YOU ARE THE HAWAII TRIVIA CHAMPION!! 🌺';
+        }
+      } else if (data.length > 0) {
+        targetEl.style.display = 'block';
+        targetEl.textContent = '🎯 Beat ' + data[0].name + ' with ' + Number(data[0].score).toLocaleString() + ' pts to reach #1!';
+      }
+    }
+  } catch(e) {
+    document.getElementById('lbList').innerHTML = '<div class="lb-empty">Play to get on the board! 🌺</div>';
+  }
+}
+
+async function submitScore() {
+  if (!playerName || score <= 0) return;
+  try {
+    const res = await fetch('/api/trivia-scores', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name:playerName, score, island:playerLoc, level:correct, correct})
+    });
+    const data = await res.json();
+    if (data.ok) {
+      myRank = data.rank;
+      document.getElementById('badgeRank').textContent = '#' + myRank + ' 🏆';
+    }
+  } catch(e) {}
+}
+
+// Init
+loadLeaderboard();
+setInterval(loadLeaderboard, 20000);
+</script>
+</body>
+</html>
