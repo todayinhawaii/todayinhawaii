@@ -165,6 +165,57 @@ def hula_crush():
 def games_hub():
     return send_from_directory('.', 'games.html')
 
+@app.route('/trivia')
+def trivia_game():
+    return send_from_directory('.', 'trivia.html')
+
+@app.route('/api/trivia-scores', methods=['GET'])
+def get_trivia_scores():
+    import json as _j
+    try:
+        if os.path.exists('trivia_scores.json'):
+            with open('trivia_scores.json') as f:
+                scores = _j.load(f)
+        else:
+            scores = []
+        scores.sort(key=lambda x: x.get('score',0), reverse=True)
+        return app.response_class(_j.dumps(scores[:20]), mimetype='application/json')
+    except:
+        return app.response_class('[]', mimetype='application/json')
+
+@app.route('/api/trivia-scores', methods=['POST'])
+def post_trivia_score():
+    import json as _j
+    try:
+        data = request.get_json()
+        name = str(data.get('name',''))[:20].strip()
+        score = int(data.get('score',0))
+        island = str(data.get('island',''))[:30]
+        correct = int(data.get('correct',0))
+        if score <= 0:
+            return app.response_class(_j.dumps({'ok':False}), mimetype='application/json')
+        scores = []
+        if os.path.exists('trivia_scores.json'):
+            with open('trivia_scores.json') as f:
+                scores = _j.load(f)
+        existing = next((s for s in scores if s.get('name','').lower()==name.lower()), None)
+        if existing:
+            if score > existing.get('score',0):
+                existing['score'] = score
+                existing['island'] = island
+                existing['correct'] = correct
+                existing['date'] = datetime.now().strftime('%b %d, %Y')
+        else:
+            scores.append({'name':name,'score':score,'island':island,'correct':correct,'date':datetime.now().strftime('%b %d, %Y')})
+        scores.sort(key=lambda x: x.get('score',0), reverse=True)
+        scores = scores[:100]
+        with open('trivia_scores.json','w') as f:
+            _j.dump(scores, f)
+        rank = next((i+1 for i,s in enumerate(scores) if s.get('name','').lower()==name.lower()), 0)
+        return app.response_class(_j.dumps({'ok':True,'rank':rank}), mimetype='application/json')
+    except Exception as e:
+        return app.response_class(_j.dumps({'ok':False}), status=500, mimetype='application/json')
+
 @app.route('/memorygame')
 def memory_game():
     return send_from_directory('.', 'hulaCrush.html')
