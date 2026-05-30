@@ -407,10 +407,14 @@
     <div style="margin-top:10px;font-size:11px;color:#a78bfa;font-weight:600;">🌺 Great for memory training · Perfect for all ages!</div>
   </div>
 
-  <!-- Leaderboard -->
+  <!-- Leaderboard — always visible! -->
   <div id="lb">
-    <h3>🏆 Hawaii Leaderboard</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <h3 style="margin:0;">🏆 Hawaii Leaderboard</h3>
+      <span id="lbMyRank" style="font-size:11px;color:#fbbf24;font-weight:700;"></span>
+    </div>
     <div id="lbList"><div style="color:#7fb3c8;font-size:12px;text-align:center;padding:8px;">Loading... 🌺</div></div>
+    <div id="lbTarget" style="display:none;margin-top:8px;padding:8px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);border-radius:10px;font-size:11px;color:#fbbf24;text-align:center;"></div>
   </div>
 
   <!-- Name Screen -->
@@ -712,8 +716,9 @@ function roundComplete() {
   const btn = document.getElementById('playBtn');
   document.getElementById('roundLabel').textContent = 'ROUND ' + (ROUND_NAMES[roundNum] || roundNum).toUpperCase() + ' · ' + (seqLen + 1) + ' TILES';
   btn.style.display = 'block';
-  btn.classList.add('flashing'); // Flash to show ready!
+  btn.classList.add('flashing');
   busy = false;
+  loadLeaderboard(); // Refresh leaderboard after every correct round!
 
   // Auto start next round after 2.5 seconds
   setTimeout(() => { if (!busy) startRound(); }, 2500);
@@ -867,16 +872,55 @@ async function loadLeaderboard() {
   try {
     const res = await fetch('/api/hula-scores');
     const data = await res.json();
-    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
-    document.getElementById('lbList').innerHTML = !data.length
-      ? '<div style="color:#7fb3c8;font-size:12px;text-align:center;padding:8px;">Be the first champion! 🌺</div>'
-      : data.slice(0,5).map((s,i) => `
-        <div class="lb-row">
-          <span class="lb-medal">${medals[i]||i+1}</span>
-          <div style="flex:1"><div class="lb-name">${s.name}</div>
-          <div class="lb-loc">📍 ${s.island}</div></div>
-          <span class="lb-score">${Number(s.score).toLocaleString()}</span>
-        </div>`).join('');
+    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+
+    if (!data.length) {
+      document.getElementById('lbList').innerHTML =
+        '<div style="color:#7fb3c8;font-size:12px;text-align:center;padding:8px;">Be the first champion! 🌺</div>';
+      return;
+    }
+
+    document.getElementById('lbList').innerHTML = data.slice(0,10).map((s,i) => {
+      const isMe = playerName && s.name.toLowerCase() === playerName.toLowerCase();
+      const rowStyle = isMe
+        ? 'background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:4px 0;'
+        : '';
+      return `<div class="lb-row" style="${rowStyle}">
+        <span class="lb-medal">${medals[i]||i+1}</span>
+        <div style="flex:1">
+          <div class="lb-name">${s.name}${isMe ? ' ← You!' : ''}</div>
+          <div class="lb-loc">📍 ${s.island}</div>
+        </div>
+        <span class="lb-score">${Number(s.score).toLocaleString()}</span>
+      </div>`;
+    }).join('');
+
+    // Show player's rank
+    if (playerName) {
+      const myIdx = data.findIndex(s => s.name.toLowerCase() === playerName.toLowerCase());
+      const rankEl = document.getElementById('lbMyRank');
+      const targetEl = document.getElementById('lbTarget');
+
+      if (myIdx >= 0) {
+        rankEl.textContent = 'You are #' + (myIdx + 1) + '!';
+
+        // Show points needed to beat next person
+        if (myIdx > 0) {
+          const above = data[myIdx - 1];
+          const needed = above.score - data[myIdx].score + 1;
+          targetEl.style.display = 'block';
+          targetEl.textContent = '🎯 Score ' + needed.toLocaleString() + ' more points to beat ' + above.name + '!';
+        } else {
+          targetEl.style.display = 'block';
+          targetEl.textContent = '🥇 YOU ARE THE HAWAII CHAMPION!! 🌺';
+        }
+      } else if (data.length > 0) {
+        const topScore = data[0].score;
+        targetEl.style.display = 'block';
+        targetEl.textContent = '🎯 Beat ' + data[0].name + ' with ' + Number(topScore).toLocaleString() + ' pts to reach #1!';
+        targetEl.style.display = 'block';
+      }
+    }
   } catch(e) {
     document.getElementById('lbList').innerHTML =
       '<div style="color:#7fb3c8;font-size:12px;text-align:center;">Play to get on the board! 🌺</div>';
@@ -896,7 +940,7 @@ async function submitScore() {
 }
 
 loadLeaderboard();
-setInterval(loadLeaderboard, 30000);
+setInterval(loadLeaderboard, 15000);
 </script>
 </body>
 </html>
