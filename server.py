@@ -169,6 +169,50 @@ def games_hub():
 def trivia_game():
     return send_from_directory('.', 'trivia.html')
 
+@app.route('/wordsearch')
+def wordsearch_game():
+    return send_from_directory('.', 'wordsearch.html')
+
+@app.route('/api/wordsearch-scores', methods=['GET'])
+def get_ws_scores():
+    import json as _j
+    try:
+        scores = _j.load(open('wordsearch_scores.json')) if os.path.exists('wordsearch_scores.json') else []
+        scores.sort(key=lambda x: x.get('score',0), reverse=True)
+        return app.response_class(_j.dumps(scores[:20]), mimetype='application/json')
+    except:
+        return app.response_class('[]', mimetype='application/json')
+
+@app.route('/api/wordsearch-scores', methods=['POST'])
+def post_ws_score():
+    import json as _j
+    try:
+        data = request.get_json()
+        name = str(data.get('name',''))[:20].strip()
+        score = int(data.get('score',0))
+        island = str(data.get('island',''))[:30]
+        level = int(data.get('level',0))
+        if score <= 0:
+            return app.response_class(_j.dumps({'ok':False}), mimetype='application/json')
+        scores = []
+        if os.path.exists('wordsearch_scores.json'):
+            with open('wordsearch_scores.json') as f:
+                scores = _j.load(f)
+        existing = next((s for s in scores if s.get('name','').lower()==name.lower()), None)
+        if existing:
+            if score > existing.get('score',0):
+                existing.update({'score':score,'island':island,'level':level,'date':datetime.now().strftime('%b %d, %Y')})
+        else:
+            scores.append({'name':name,'score':score,'island':island,'level':level,'date':datetime.now().strftime('%b %d, %Y')})
+        scores.sort(key=lambda x: x.get('score',0), reverse=True)
+        scores = scores[:100]
+        with open('wordsearch_scores.json','w') as f:
+            _j.dump(scores, f)
+        rank = next((i+1 for i,s in enumerate(scores) if s.get('name','').lower()==name.lower()), 0)
+        return app.response_class(_j.dumps({'ok':True,'rank':rank}), mimetype='application/json')
+    except Exception as e:
+        return app.response_class(_j.dumps({'ok':False}), status=500, mimetype='application/json')
+
 @app.route('/api/trivia-scores', methods=['GET'])
 def get_trivia_scores():
     import json as _j
