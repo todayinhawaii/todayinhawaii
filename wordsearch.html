@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌺 Hawaii Word Search — Today in Hawaii</title>
+  <meta name="description" content="Play Hawaii Word Search! 222 puzzle themes — find words in all directions. Today in Hawaii's free word game!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{background:linear-gradient(160deg,#061d2c,#0a2e44,#061d2c);min-height:100vh;font-family:system-ui,sans-serif;color:#e8f4f8;overflow-x:hidden;}
+    .bg{position:fixed;font-size:40px;opacity:0.04;animation:fbg 18s ease-in-out infinite;pointer-events:none;z-index:0;}
+    @keyframes fbg{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-20px) rotate(10deg);}}
+    .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:12px 12px 60px;}
+
+    /* Header */
+    .hdr{text-align:center;padding:8px 0 14px;}
+    .hdr-logo{font-size:36px;margin-bottom:3px;}
+    .hdr-title{font-size:24px;font-weight:900;background:linear-gradient(135deg,#22d3ee,#a78bfa,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
+    .hdr-sub{font-size:11px;color:#7fb3c8;margin-top:2px;}
+
+    /* Leaderboard */
+    .lb{background:rgba(34,211,238,0.06);border:1.5px solid rgba(34,211,238,0.2);border-radius:18px;padding:13px 15px;margin-bottom:12px;}
+    .lb h3{font-size:15px;font-weight:900;color:#22d3ee;text-transform:uppercase;letter-spacing:0.1em;text-align:center;margin-bottom:9px;}
+    .lb-row{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:8px;font-size:12px;margin-bottom:3px;}
+    .lb-row.r1{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);}
+    .lb-row.r2{background:rgba(192,192,192,0.07);}
+    .lb-row.r3{background:rgba(205,127,50,0.07);}
+    .lb-row.me{background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);}
+    .lb-medal{font-size:15px;width:22px;flex-shrink:0;}
+    .lb-name{flex:1;font-weight:700;font-size:12px;}
+    .lb-loc{font-size:10px;color:#7fb3c8;}
+    .lb-score{font-weight:900;color:#22d3ee;}
+    .lb-empty{text-align:center;font-size:12px;color:#7fb3c8;padding:8px;}
+
+    /* Name screen */
+    .name-scr{background:rgba(34,211,238,0.06);border:1.5px solid rgba(34,211,238,0.2);border-radius:20px;padding:20px 16px;margin-bottom:12px;}
+    .ns-title{font-size:17px;font-weight:800;color:#22d3ee;text-align:center;margin-bottom:4px;}
+    .ns-sub{font-size:12px;color:#7fb3c8;text-align:center;margin-bottom:14px;line-height:1.5;}
+    .ns-input{width:100%;padding:11px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:11px;color:#e8f4f8;font-size:15px;font-family:inherit;outline:none;margin-bottom:9px;text-align:center;}
+    .ns-input::placeholder{color:#7fb3c8;}
+    .ns-select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:11px;color:#e8f4f8;font-size:14px;font-family:inherit;outline:none;margin-bottom:13px;cursor:pointer;}
+    .ns-select option{background:#0a2e44;}
+
+    /* Vegas buttons */
+    .vegas-btn{width:100%;padding:16px 14px;border:none;border-radius:15px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;transition:all 0.1s;margin-bottom:8px;}
+    .vegas-btn::after{content:'';position:absolute;top:3px;left:8px;right:8px;height:38%;background:linear-gradient(180deg,rgba(255,255,255,0.28),transparent);border-radius:10px 10px 50% 50%;pointer-events:none;}
+    .btn-cyan{background:linear-gradient(180deg,#88ffee 0%,#22d3ee 20%,#0ea5c9 50%,#0878a0 80%,#22d3ee 100%);color:#003344;box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #056080,0 8px 14px rgba(0,0,0,0.5);text-shadow:0 1px 0 rgba(255,255,255,0.3);}
+    .btn-cyan:active{transform:translateY(4px);box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 2px 0 #056080,0 3px 6px rgba(0,0,0,0.4);}
+    .btn-cyan:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+    .btn-gold{background:linear-gradient(180deg,#ffe566 0%,#f5c800 20%,#e6a800 50%,#c87800 80%,#f5c800 100%);color:#5a2d00;box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.5);text-shadow:0 1px 0 rgba(255,255,255,0.4);}
+    .btn-gold:active{transform:translateY(4px);box-shadow:0 1px 0 #fff8 inset,0 2px 0 #8b5000,0 3px 6px rgba(0,0,0,0.4);}
+    .btn-gold.flash{animation:btnFlash 0.8s ease-in-out infinite;}
+    @keyframes btnFlash{0%,100%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.5),0 0 20px rgba(255,200,0,0.3);}50%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 20px rgba(0,0,0,0.5),0 0 40px rgba(255,200,0,0.9),0 0 70px rgba(255,150,0,0.5);}}
+    .btn-red{background:linear-gradient(180deg,#ff6666 0%,#ee2222 20%,#cc0000 50%,#990000 80%,#ee2222 100%);color:#fff;box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 6px 0 #660000,0 8px 14px rgba(0,0,0,0.5);text-shadow:0 1px 2px rgba(0,0,0,0.4);}
+    .btn-red:active{transform:translateY(4px);box-shadow:0 1px 0 #fff6 inset,0 2px 0 #660000,0 3px 6px rgba(0,0,0,0.4);}
+    .btn-purple{background:linear-gradient(180deg,#c4b5fd 0%,#a78bfa 20%,#7c3aed 50%,#5b21b6 80%,#a78bfa 100%);color:#fff;box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 6px 0 #3b0764,0 8px 14px rgba(0,0,0,0.5);text-shadow:0 1px 2px rgba(0,0,0,0.3);}
+    .btn-purple:active{transform:translateY(4px);}
+
+    /* Game area */
+    #gameArea{display:none;}
+
+    /* Stats */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+    .stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:8px 4px;text-align:center;}
+    .stat-v{font-size:18px;font-weight:900;color:#22d3ee;line-height:1;}
+    .stat-l{font-size:9px;color:#7fb3c8;margin-top:2px;text-transform:uppercase;letter-spacing:0.05em;}
+
+    /* Theme badge */
+    .theme-badge{text-align:center;margin-bottom:8px;}
+    .theme-pill{display:inline-block;padding:6px 16px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:99px;font-size:13px;font-weight:700;color:#22d3ee;}
+
+    /* Word list */
+    .word-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;}
+    .word-chip{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;transition:all 0.2s;letter-spacing:0.5px;}
+    .word-chip.found{background:rgba(34,197,94,0.2);border-color:#22c55e;color:#4ade80;text-decoration:line-through;opacity:0.7;}
+    .word-chip.revealed{background:rgba(251,191,36,0.15);border-color:#fbbf24;color:#fbbf24;font-style:italic;}
+
+    /* Grid */
+    .grid-wrap{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:8px;margin-bottom:10px;overflow:hidden;}
+    #wsGrid{display:inline-grid;gap:2px;width:100%;touch-action:none;user-select:none;-webkit-user-select:none;}
+    .cell{
+      aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+      font-size:clamp(11px,3.5vw,18px);font-weight:800;
+      border-radius:6px;cursor:pointer;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.06);
+      color:#e8f4f8;transition:all 0.1s;
+      position:relative;
+    }
+    .cell.selecting{background:rgba(34,211,238,0.25);border-color:#22d3ee;color:#22d3ee;transform:scale(1.08);z-index:2;}
+    .cell.found-word{border:none;animation:foundPop 0.4s ease;z-index:1;}
+    .cell.revealed-cell{color:#fbbf24;font-weight:900;}
+    @keyframes foundPop{0%{transform:scale(1);}40%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+    /* Found colors - different color per word */
+    .fc-0{background:rgba(239,68,68,0.25)!important;color:#fca5a5!important;border-color:rgba(239,68,68,0.4)!important;}
+    .fc-1{background:rgba(249,115,22,0.25)!important;color:#fdba74!important;border-color:rgba(249,115,22,0.4)!important;}
+    .fc-2{background:rgba(234,179,8,0.25)!important;color:#fde047!important;border-color:rgba(234,179,8,0.4)!important;}
+    .fc-3{background:rgba(34,197,94,0.25)!important;color:#86efac!important;border-color:rgba(34,197,94,0.4)!important;}
+    .fc-4{background:rgba(59,130,246,0.25)!important;color:#93c5fd!important;border-color:rgba(59,130,246,0.4)!important;}
+    .fc-5{background:rgba(168,85,247,0.25)!important;color:#d8b4fe!important;border-color:rgba(168,85,247,0.4)!important;}
+    .fc-6{background:rgba(34,211,238,0.25)!important;color:#67e8f9!important;border-color:rgba(34,211,238,0.4)!important;}
+    .fc-7{background:rgba(236,72,153,0.25)!important;color:#f9a8d4!important;border-color:rgba(236,72,153,0.4)!important;}
+    .fc-8{background:rgba(16,185,129,0.25)!important;color:#6ee7b7!important;border-color:rgba(16,185,129,0.4)!important;}
+    .fc-9{background:rgba(251,191,36,0.25)!important;color:#fde68a!important;border-color:rgba(251,191,36,0.4)!important;}
+
+    /* Control buttons */
+    .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px;}
+
+    /* Particles */
+    .particle{position:fixed;pointer-events:none;z-index:999;animation:pfly 0.8s ease forwards;}
+    @keyframes pfly{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0);}}
+
+    /* Score pop */
+    .score-pop{position:fixed;font-size:18px;font-weight:900;color:#22d3ee;pointer-events:none;z-index:999;animation:spop 1s ease forwards;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+    @keyframes spop{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-60px) scale(1.3);}}
+
+    /* Overlay */
+    .overlay{position:fixed;inset:0;background:rgba(6,29,44,0.93);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px);}
+    .overlay.show{display:flex;}
+    .ov{background:linear-gradient(135deg,#0a2e44,#061d2c);border:2px solid rgba(34,211,238,0.4);border-radius:24px;padding:26px 20px;text-align:center;max-width:350px;width:94%;box-shadow:0 20px 60px rgba(0,0,0,0.7);}
+    .ov-emoji{font-size:56px;margin-bottom:8px;}
+    .ov-title{font-size:22px;font-weight:900;color:#22d3ee;margin-bottom:6px;}
+    .ov-score{font-size:44px;font-weight:900;color:#a78bfa;margin:8px 0;}
+    .ov-rank{font-size:14px;color:#fbbf24;font-weight:700;margin-bottom:6px;}
+    .ov-msg{font-size:13px;color:#7fb3c8;line-height:1.6;margin-bottom:18px;}
+
+    /* Paused overlay */
+    #pauseOverlay{position:fixed;inset:0;background:rgba(6,29,44,0.92);display:none;align-items:center;justify-content:center;z-index:80;backdrop-filter:blur(6px);}
+    #pauseOverlay.show{display:flex;}
+    .pause-card{text-align:center;padding:30px;background:rgba(10,46,68,0.95);border:2px solid rgba(34,211,238,0.3);border-radius:24px;}
+    .pause-emoji{font-size:60px;margin-bottom:12px;}
+    .pause-title{font-size:24px;font-weight:900;color:#22d3ee;margin-bottom:20px;}
+
+    .mute-btn{position:fixed;bottom:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:50;}
+    .back{text-align:center;padding:6px 0 14px;font-size:13px;color:#7fb3c8;}
+    .back a{color:#22d3ee;text-decoration:none;font-weight:600;}
+
+    /* Timer bar */
+    .timer-wrap{margin-bottom:8px;}
+    .timer-bar{height:6px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;}
+    .timer-fill{height:100%;background:linear-gradient(90deg,#22d3ee,#a78bfa);border-radius:99px;transition:width 0.5s linear;}
+  </style>
+</head>
+<body>
+
+<div class="bg" style="top:5%;left:5%;">🌺</div>
+<div class="bg" style="top:35%;right:6%;font-size:50px;animation-delay:6s;">🌊</div>
+<div class="bg" style="top:70%;left:4%;font-size:44px;animation-delay:12s;">🔤</div>
+
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="hdr-logo">🔤</div>
+    <div class="hdr-title">Hawaii Word Search</div>
+    <div class="hdr-sub">222 puzzle themes · Find all 10 words · Today in Hawaii 🌺</div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="lb">
+    <h3>🏆 Word Search Champions</h3>
+    <div id="lbList"><div class="lb-empty">Loading... 🌺</div></div>
+  </div>
+
+  <!-- Name screen -->
+  <div id="nameScr" class="name-scr">
+    <div class="ns-title">🔤 Join the Challenge!</div>
+    <div class="ns-sub">Find all 10 hidden words — horizontal vertical and diagonal!</div>
+    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLoc" class="ns-select">
+      <option value="">📍 Where are you from?</option>
+      <optgroup label="🌺 Hawaii">
+        <option value="Maui, Hawaii">🌺 Maui</option>
+        <option value="Oahu, Hawaii">🌊 Oahu</option>
+        <option value="Kauai, Hawaii">🌿 Kauai</option>
+        <option value="Big Island, Hawaii">🌋 Big Island</option>
+        <option value="Molokai, Hawaii">🌴 Molokai</option>
+        <option value="Lanai, Hawaii">🌸 Lanai</option>
+      </optgroup>
+      <optgroup label="🇺🇸 USA States">
+        <option value="Alabama, USA">Alabama</option><option value="Alaska, USA">Alaska</option>
+        <option value="Arizona, USA">Arizona</option><option value="Arkansas, USA">Arkansas</option>
+        <option value="California, USA">California</option><option value="Colorado, USA">Colorado</option>
+        <option value="Connecticut, USA">Connecticut</option><option value="Delaware, USA">Delaware</option>
+        <option value="Florida, USA">Florida</option><option value="Georgia, USA">Georgia</option>
+        <option value="Idaho, USA">Idaho</option><option value="Illinois, USA">Illinois</option>
+        <option value="Indiana, USA">Indiana</option><option value="Iowa, USA">Iowa</option>
+        <option value="Kansas, USA">Kansas</option><option value="Kentucky, USA">Kentucky</option>
+        <option value="Louisiana, USA">Louisiana</option><option value="Maine, USA">Maine</option>
+        <option value="Maryland, USA">Maryland</option><option value="Massachusetts, USA">Massachusetts</option>
+        <option value="Michigan, USA">Michigan</option><option value="Minnesota, USA">Minnesota</option>
+        <option value="Mississippi, USA">Mississippi</option><option value="Missouri, USA">Missouri</option>
+        <option value="Montana, USA">Montana</option><option value="Nebraska, USA">Nebraska</option>
+        <option value="Nevada, USA">Nevada</option><option value="New Hampshire, USA">New Hampshire</option>
+        <option value="New Jersey, USA">New Jersey</option><option value="New Mexico, USA">New Mexico</option>
+        <option value="New York, USA">New York</option><option value="North Carolina, USA">North Carolina</option>
+        <option value="North Dakota, USA">North Dakota</option><option value="Ohio, USA">Ohio</option>
+        <option value="Oklahoma, USA">Oklahoma</option><option value="Oregon, USA">Oregon</option>
+        <option value="Pennsylvania, USA">Pennsylvania</option><option value="Rhode Island, USA">Rhode Island</option>
+        <option value="South Carolina, USA">South Carolina</option><option value="South Dakota, USA">South Dakota</option>
+        <option value="Tennessee, USA">Tennessee</option><option value="Texas, USA">Texas</option>
+        <option value="Utah, USA">Utah</option><option value="Vermont, USA">Vermont</option>
+        <option value="Virginia, USA">Virginia</option><option value="Washington, USA">Washington</option>
+        <option value="Washington DC, USA">Washington DC</option><option value="West Virginia, USA">West Virginia</option>
+        <option value="Wisconsin, USA">Wisconsin</option><option value="Wyoming, USA">Wyoming</option>
+      </optgroup>
+      <optgroup label="🌍 Countries">
+        <option value="Australia">🇦🇺 Australia</option><option value="Brazil">🇧🇷 Brazil</option>
+        <option value="Canada">🇨🇦 Canada</option><option value="China">🇨🇳 China</option>
+        <option value="France">🇫🇷 France</option><option value="Germany">🇩🇪 Germany</option>
+        <option value="India">🇮🇳 India</option><option value="Ireland">🇮🇪 Ireland</option>
+        <option value="Italy">🇮🇹 Italy</option><option value="Japan">🇯🇵 Japan</option>
+        <option value="Mexico">🇲🇽 Mexico</option><option value="Netherlands">🇳🇱 Netherlands</option>
+        <option value="New Zealand">🇳🇿 New Zealand</option><option value="Norway">🇳🇴 Norway</option>
+        <option value="Philippines">🇵🇭 Philippines</option><option value="Portugal">🇵🇹 Portugal</option>
+        <option value="South Korea">🇰🇷 South Korea</option><option value="Spain">🇪🇸 Spain</option>
+        <option value="Sweden">🇸🇪 Sweden</option><option value="Thailand">🇹🇭 Thailand</option>
+        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+        <option value="Other">🌍 Other Country</option>
+      </optgroup>
+    </select>
+    <button class="vegas-btn btn-cyan" id="startBtn" onclick="startGame()" disabled>
+      <div style="font-size:17px;font-weight:900;letter-spacing:2px;">🔤 START SEARCHING!</div>
+      <div style="font-size:11px;opacity:0.8;margin-top:2px;">222 Puzzles · All Directions!</div>
+    </button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="gameArea">
+
+    <!-- Player badge -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:7px 12px;margin-bottom:10px;font-size:12px;">
+      <div>🔤 <span style="font-weight:700;color:#22d3ee;" id="badgeName"></span></div>
+      <div style="color:#fbbf24;font-weight:700;" id="badgeRank">Let's play!</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="scoreVal">0</div><div class="stat-l">🏆 Score</div></div>
+      <div class="stat"><div class="stat-v" id="foundVal">0/10</div><div class="stat-l">✅ Found</div></div>
+      <div class="stat"><div class="stat-v" id="puzzleVal">1</div><div class="stat-l">🔤 Puzzle</div></div>
+      <div class="stat"><div class="stat-v" id="timerVal">0</div><div class="stat-l">⏱️ Secs</div></div>
+    </div>
+
+    <!-- Timer bar -->
+    <div class="timer-wrap">
+      <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    </div>
+
+    <!-- Theme -->
+    <div class="theme-badge">
+      <span class="theme-pill" id="themePill">🌺 Loading...</span>
+    </div>
+
+    <!-- Word chips -->
+    <div class="word-list" id="wordList"></div>
+
+    <!-- Grid -->
+    <div class="grid-wrap">
+      <div id="wsGrid"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="vegas-btn btn-purple" onclick="togglePause()" id="pauseBtn">
+        <div>⏸️ PAUSE</div>
+      </button>
+      <button class="vegas-btn btn-gold" onclick="toggleReveal()" id="revealBtn">
+        <div>👁️ REVEAL</div>
+      </button>
+      <button class="vegas-btn btn-cyan" onclick="nextPuzzle()" id="nextBtn">
+        <div>⏭️ NEXT</div>
+      </button>
+    </div>
+
+    <button class="vegas-btn btn-red" onclick="stopGame()">
+      🛑 STOP & SAVE SCORE
+    </button>
+
+  </div>
+
+  <div class="back"><a href="/games">← Back to Hawaii Games Hub 🎮</a></div>
+</div>
+
+<!-- Pause overlay -->
+<div id="pauseOverlay">
+  <div class="pause-card">
+    <div class="pause-emoji">⏸️</div>
+    <div class="pause-title">Game Paused</div>
+    <button class="vegas-btn btn-cyan" onclick="togglePause()" style="width:200px;margin:0 auto;">
+      ▶️ RESUME
+    </button>
+  </div>
+</div>
+
+<!-- Result Overlay -->
+<div class="overlay" id="overlay">
+  <div class="ov">
+    <div class="ov-emoji" id="ovEmoji">🔤</div>
+    <div class="ov-title" id="ovTitle">Puzzle Complete!</div>
+    <div class="ov-score" id="ovScore">0</div>
+    <div class="ov-rank" id="ovRank"></div>
+    <div class="ov-msg" id="ovMsg"></div>
+    <button style="width:100%;padding:12px;background:linear-gradient(135deg,#1877f2,#0d65d9);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;" onclick="shareScore()">📘 Challenge Friends!</button>
+    <button class="vegas-btn btn-cyan" onclick="playAgain()" style="margin-bottom:8px;">🔤 Play Again!</button>
+    <button style="width:100%;padding:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#e8f4f8;font-size:13px;cursor:pointer;font-family:inherit;" onclick="closeOverlay()">View Board</button>
+  </div>
+</div>
+
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+
+<script>
+const WORD_PUZZLES = [{"theme": "🌺 Hawaiian Aloha", "words": ["ALOHA", "MAHALO", "OHANA", "KOKUA", "HULA", "PONO", "MANA", "KAPU", "HEIAU", "LUAU"]}, {"theme": "🌺 Hawaiian Nature", "words": ["MAUNA", "KAHUNA", "NALU", "MOANA", "WAIMEA", "KAUAI", "MAUI", "OAHU", "KONA", "HILO"]}, {"theme": "🌺 Hawaiian Food", "words": ["POKE", "TARO", "HAUPIA", "SAIMIN", "SPAM", "LILIKOI", "GUAVA", "MANGO", "PAPAYA", "LOMI"]}, {"theme": "🌺 Hawaiian Words", "words": ["KEIKI", "WAHINE", "KANE", "MAKAI", "MAUKA", "WIKI", "ALOHA", "NENE", "PUEO", "HONU"]}, {"theme": "🌺 Hawaiian Ocean", "words": ["HONU", "MANO", "NAIA", "KOHOLA", "LIMU", "POKE", "NALU", "MOANA", "CORAL", "REEF"]}, {"theme": "🦁 African Animals", "words": ["LION", "CHEETAH", "ZEBRA", "GIRAFFE", "ELEPHANT", "HIPPO", "RHINO", "LEOPARD", "HYENA", "MEERKAT"]}, {"theme": "🐘 Asian Animals", "words": ["TIGER", "PANDA", "COBRA", "PEACOCK", "MONKEY", "ELEPHANT", "DEER", "TAPIR", "GIBBON", "ORANGUTAN"]}, {"theme": "🐨 Australian Animals", "words": ["KOALA", "KANGAROO", "WOMBAT", "PLATYPUS", "DINGO", "ECHIDNA", "QUOKKA", "POSSUM", "WALLABY", "EMU"]}, {"theme": "🦋 Insects", "words": ["BUTTERFLY", "BEETLE", "DRAGONFLY", "CRICKET", "FIREFLY", "MANTIS", "TERMITE", "WASP", "HORNET", "LOCUST"]}, {"theme": "🐠 Ocean Fish", "words": ["TUNA", "SALMON", "SWORDFISH", "MARLIN", "GROUPER", "SNAPPER", "WAHOO", "MAHI", "HALIBUT", "BARRACUDA"]}, {"theme": "🦅 Birds of Prey", "words": ["EAGLE", "FALCON", "HAWK", "OSPREY", "CONDOR", "KITE", "HARRIER", "BUZZARD", "VULTURE", "OWL"]}, {"theme": "🐊 Reptiles", "words": ["GECKO", "IGUANA", "PYTHON", "COBRA", "MONITOR", "CHAMELEON", "TORTOISE", "SKINK", "TUATARA", "CAIMAN"]}, {"theme": "🐋 Sea Mammals", "words": ["WHALE", "DOLPHIN", "SEAL", "WALRUS", "MANATEE", "ORCA", "PORPOISE", "NARWHAL", "DUGONG", "OTTERS"]}, {"theme": "🦁 Big Cats", "words": ["LION", "TIGER", "JAGUAR", "LEOPARD", "CHEETAH", "PUMA", "COUGAR", "OCELOT", "SERVAL", "LYNX"]}, {"theme": "🐦 Tropical Birds", "words": ["PARROT", "TOUCAN", "FLAMINGO", "MACAW", "COCKATOO", "IBIS", "HERON", "EGRET", "PELICAN", "HORNBILL"]}, {"theme": "🍕 Italian Food", "words": ["PIZZA", "PASTA", "GELATO", "RISOTTO", "LASAGNA", "TIRAMISU", "GNOCCHI", "CANNOLI", "PESTO", "BRUSCHETTA"]}, {"theme": "🍣 Japanese Food", "words": ["SUSHI", "RAMEN", "TEMPURA", "MISO", "TERIYAKI", "WASABI", "SASHIMI", "UDON", "YAKITORI", "TONKATSU"]}, {"theme": "🌮 Mexican Food", "words": ["TACO", "BURRITO", "GUACAMOLE", "SALSA", "ENCHILADA", "TAMALE", "QUESADILLA", "CHORIZO", "MOLE", "POZOLE"]}, {"theme": "🍜 Asian Noodles", "words": ["RAMEN", "PHO", "UDON", "SOBA", "LAKSA", "MIFAN", "MISUA", "CHOWMEIN", "VERMICELLI", "SAIMIN"]}, {"theme": "🍰 Desserts", "words": ["CAKE", "GELATO", "TIRAMISU", "BROWNIE", "MACARON", "PARFAIT", "MOUSSE", "TRIFLE", "PAVLOVA", "CREPE"]}, {"theme": "🍹 Tropical Drinks", "words": ["COCONUT", "MANGO", "PAPAYA", "GUAVA", "PASSION", "LYCHEE", "TAMARIND", "HIBISCUS", "SOURSOP", "STARFRUIT"]}, {"theme": "🧀 European Food", "words": ["CHEESE", "CROISSANT", "PAELLA", "FONDUE", "SCHNITZEL", "PIEROGI", "GOULASH", "CREPE", "WAFFLE", "BRATWURST"]}, {"theme": "🍱 Street Food", "words": ["FALAFEL", "KEBAB", "SAMOSA", "DUMPLING", "EMPANADA", "CREPE", "PRETZEL", "CHURRO", "POUTINE", "SATAY"]}, {"theme": "☕ Hot Drinks", "words": ["COFFEE", "ESPRESSO", "CAPPUCCINO", "LATTE", "MOCHA", "CHAI", "MATCHA", "OOLONG", "ROOIBOS", "COCOA"]}, {"theme": "🍺 World Drinks", "words": ["SAKE", "CHICHA", "KEFIR", "MEAD", "KVASS", "PULQUE", "RAKIA", "SOJU", "TODDY", "TEQUILA"]}, {"theme": "🌍 World Capitals", "words": ["PARIS", "LONDON", "TOKYO", "ROME", "BERLIN", "MADRID", "CAIRO", "SYDNEY", "DUBAI", "BEIJING"]}, {"theme": "🏔️ Mountain Ranges", "words": ["ALPS", "ANDES", "ROCKIES", "HIMALAYAS", "URALS", "ATLAS", "CASCADES", "PYRENEES", "DOLOMITES", "SIERRA"]}, {"theme": "🌊 Famous Oceans", "words": ["PACIFIC", "ATLANTIC", "INDIAN", "ARCTIC", "SOUTHERN", "CARIBBEAN", "MEDITERRANEAN", "CORAL", "TASMAN", "BERING"]}, {"theme": "🌆 US Cities", "words": ["CHICAGO", "MIAMI", "DALLAS", "DENVER", "BOSTON", "SEATTLE", "PHOENIX", "DETROIT", "ATLANTA", "HOUSTON"]}, {"theme": "🗼 European Cities", "words": ["PARIS", "ROME", "MADRID", "BERLIN", "VIENNA", "PRAGUE", "DUBLIN", "LISBON", "ATHENS", "WARSAW"]}, {"theme": "🏝️ Famous Islands", "words": ["BALI", "HAWAII", "SICILY", "SARDINIA", "CRETE", "MALDIVES", "SEYCHELLES", "TAHITI", "FIJI", "ICELAND"]}, {"theme": "🌏 Asian Cities", "words": ["TOKYO", "BEIJING", "SEOUL", "BANGKOK", "DUBAI", "MUMBAI", "JAKARTA", "MANILA", "TAIPEI", "HANOI"]}, {"theme": "🌎 South American Cities", "words": ["LIMA", "BOGOTA", "CARACAS", "QUITO", "SANTIAGO", "BRASILIA", "MONTEVIDEO", "ASUNCION", "LAPAZ", "GUYANA"]}, {"theme": "🏜️ Famous Deserts", "words": ["SAHARA", "GOBI", "MOJAVE", "SONORAN", "NAMIB", "KALAHARI", "ARABIAN", "ATACAMA", "PATAGONIAN", "THAR"]}, {"theme": "🌊 Famous Rivers", "words": ["AMAZON", "NILE", "DANUBE", "GANGES", "YANGTZE", "MISSISSIPPI", "CONGO", "VOLGA", "THAMES", "RHINE"]}, {"theme": "⚽ World Football", "words": ["SOCCER", "GOAL", "STRIKER", "DEFENDER", "OFFSIDE", "PENALTY", "CORNER", "KEEPER", "TACKLE", "DRIBBLE"]}, {"theme": "🏄 Water Sports", "words": ["SURFING", "DIVING", "KAYAKING", "SAILING", "ROWING", "SWIMMING", "POLO", "SKIING", "WAKEBOARD", "KNEEBOARD"]}, {"theme": "🎾 Racket Sports", "words": ["TENNIS", "BADMINTON", "SQUASH", "PING", "RACQUET", "SMASH", "VOLLEY", "SERVE", "DEUCE", "RALLY"]}, {"theme": "🏋️ Gym Words", "words": ["SQUAT", "DEADLIFT", "BENCH", "BARBELL", "DUMBBELL", "CARDIO", "PLANK", "BURPEE", "LUNGE", "PULLUP"]}, {"theme": "🏊 Olympics", "words": ["SPRINT", "HURDLES", "JAVELIN", "DISCUS", "MARATHON", "DECATHLON", "PENTATHLON", "RELAY", "VAULT", "HAMMER"]}, {"theme": "🥊 Combat Sports", "words": ["BOXING", "WRESTLING", "JUDO", "KARATE", "TAEKWONDO", "FENCING", "SUMO", "MUAY", "SAMBO", "CAPOEIRA"]}, {"theme": "🎿 Winter Sports", "words": ["SKIING", "SNOWBOARD", "LUGE", "BIATHLON", "CURLING", "SKATING", "BOBSLED", "HOCKEY", "SLALOM", "MOGUL"]}, {"theme": "🏈 American Sports", "words": ["FOOTBALL", "BASEBALL", "BASKETBALL", "HOCKEY", "LACROSSE", "RUGBY", "SOFTBALL", "VOLLEYBALL", "BOWLING", "GOLF"]}, {"theme": "🏆 Trophy Words", "words": ["CHAMPION", "WINNER", "TROPHY", "MEDAL", "GOLD", "SILVER", "BRONZE", "PODIUM", "VICTORY", "TRIUMPH"]}, {"theme": "🎵 Music Genres", "words": ["JAZZ", "BLUES", "REGGAE", "SALSA", "SAMBA", "BOSSA", "FLAMENCO", "TANGO", "RUMBA", "CALYPSO"]}, {"theme": "🎸 Instruments", "words": ["GUITAR", "PIANO", "VIOLIN", "TRUMPET", "SAXOPHONE", "UKULELE", "HARP", "FLUTE", "OBOE", "CELLO"]}, {"theme": "🎤 Music Terms", "words": ["MELODY", "HARMONY", "RHYTHM", "TEMPO", "CHORD", "SCALE", "OCTAVE", "TREBLE", "SOPRANO", "FALSETTO"]}, {"theme": "🥁 Percussion", "words": ["DRUMS", "BONGO", "CONGA", "TABLA", "DJEMBE", "MARIMBA", "XYLOPHONE", "TIMPANI", "CAJON", "COWBELL"]}, {"theme": "🎺 Classical Music", "words": ["SONATA", "CONCERTO", "SYMPHONY", "OPERA", "ARIA", "FUGUE", "CANTATA", "OVERTURE", "PRELUDE", "RHAPSODY"]}, {"theme": "🔬 Biology Words", "words": ["CELL", "NUCLEUS", "PROTEIN", "ENZYME", "HORMONE", "NEURON", "OSMOSIS", "GENETICS", "MITOSIS", "EVOLUTION"]}, {"theme": "⚗️ Chemistry", "words": ["ATOM", "MOLECULE", "ELECTRON", "PROTON", "NEUTRON", "ISOTOPE", "CATALYST", "POLYMER", "ACID", "OXIDE"]}, {"theme": "🌌 Space & Astronomy", "words": ["GALAXY", "NEBULA", "PULSAR", "QUASAR", "COMET", "ASTEROID", "METEOR", "ORBIT", "COSMOS", "ECLIPSE"]}, {"theme": "🌍 Earth Science", "words": ["TECTONIC", "VOLCANO", "MAGMA", "SEISMIC", "EROSION", "SEDIMENT", "GLACIER", "TSUNAMI", "TYPHOON", "MONSOON"]}, {"theme": "💻 Technology", "words": ["ALGORITHM", "BINARY", "BROWSER", "CODING", "DATABASE", "ETHERNET", "FIREWALL", "GIGABYTE", "HARDWARE", "INTERNET"]}, {"theme": "🔭 Solar System", "words": ["MERCURY", "VENUS", "EARTH", "MARS", "JUPITER", "SATURN", "URANUS", "NEPTUNE", "PLUTO", "MOON"]}, {"theme": "🧬 Human Body", "words": ["BRAIN", "HEART", "LIVER", "KIDNEY", "LUNG", "STOMACH", "PANCREAS", "THYROID", "SPLEEN", "FEMUR"]}, {"theme": "🌿 Plants & Botany", "words": ["PHOTOSYNTHESIS", "CHLOROPHYLL", "POLLEN", "PISTIL", "STAMEN", "SEPAL", "TAPROOT", "CAMBIUM", "XYLEM", "PHLOEM"]}, {"theme": "🎨 Art Movements", "words": ["CUBISM", "BAROQUE", "GOTHIC", "SURREAL", "ABSTRACT", "REALISM", "DADA", "IMPRESSIONISM", "FUTURISM", "BAUHAUS"]}, {"theme": "📚 Literary Genres", "words": ["MYSTERY", "FANTASY", "ROMANCE", "THRILLER", "HORROR", "COMEDY", "TRAGEDY", "SATIRE", "EPIC", "FABLE"]}, {"theme": "🎬 Film Genres", "words": ["ACTION", "COMEDY", "DRAMA", "HORROR", "THRILLER", "ROMANCE", "FANTASY", "WESTERN", "MUSICAL", "NOIR"]}, {"theme": "🏛️ Architecture", "words": ["BAROQUE", "GOTHIC", "MODERN", "DORIC", "IONIC", "CORINTHIAN", "BRUTALIST", "TUDOR", "COLONIAL", "ROMAN"]}, {"theme": "🎭 Theatre Words", "words": ["DRAMA", "COMEDY", "TRAGEDY", "SOLILOQUY", "MONOLOGUE", "DIALOGUE", "CURTAIN", "ENCORE", "PROLOGUE", "EPILOGUE"]}, {"theme": "📖 Famous Authors", "words": ["SHAKESPEARE", "DICKENS", "TOLSTOY", "HEMINGWAY", "AUSTEN", "ORWELL", "KAFKA", "PROUST", "BORGES", "CHEKHOV"]}, {"theme": "🖼️ Art Techniques", "words": ["SKETCH", "WATERCOLOR", "FRESCO", "MOSAIC", "COLLAGE", "ETCHING", "LITHOGRAPH", "ENGRAVING", "PASTEL", "TEMPERA"]}, {"theme": "🌸 Types of Flowers", "words": ["ROSE", "TULIP", "ORCHID", "HIBISCUS", "JASMINE", "LAVENDER", "PEONY", "DAHLIA", "LILY", "SUNFLOWER"]}, {"theme": "🌳 Types of Trees", "words": ["OAK", "MAPLE", "PINE", "CEDAR", "WILLOW", "BIRCH", "REDWOOD", "BAMBOO", "BANYAN", "BAOBAB"]}, {"theme": "🍄 Types of Mushrooms", "words": ["SHIITAKE", "PORTOBELLO", "CHANTERELLE", "MOREL", "TRUFFLE", "OYSTER", "BUTTON", "CREMINI", "ENOKI", "PORCINI"]}, {"theme": "🌊 Weather Words", "words": ["THUNDER", "LIGHTNING", "TORNADO", "HURRICANE", "BLIZZARD", "DROUGHT", "MONSOON", "TYPHOON", "CYCLONE", "HAILSTORM"]}, {"theme": "🌈 Colors of Nature", "words": ["CRIMSON", "SCARLET", "AZURE", "INDIGO", "VIOLET", "AMBER", "EMERALD", "CORAL", "IVORY", "OCHRE"]}, {"theme": "💎 Gemstones", "words": ["DIAMOND", "EMERALD", "RUBY", "SAPPHIRE", "TOPAZ", "AMETHYST", "OPAL", "GARNET", "JADE", "PEARL"]}, {"theme": "🌙 Sky & Weather", "words": ["CUMULUS", "STRATUS", "NIMBUS", "CIRRUS", "AURORA", "ZENITH", "HORIZON", "TWILIGHT", "SOLSTICE", "EQUINOX"]}, {"theme": "🏛️ Ancient Civilizations", "words": ["EGYPT", "GREECE", "ROME", "BABYLON", "PERSIA", "AZTEC", "MAYA", "INCA", "MONGOL", "VIKING"]}, {"theme": "⚔️ Historical Battles", "words": ["MARATHON", "WATERLOO", "TRAFALGAR", "GETTYSBURG", "STALINGRAD", "MIDWAY", "HASTINGS", "THERMOPYLAE", "AGINCOURT", "VERDUN"]}, {"theme": "👑 Famous Rulers", "words": ["CLEOPATRA", "CAESAR", "NAPOLEON", "ALEXANDER", "GENGHIS", "RAMESSES", "CHARLEMAGNE", "VICTORIA", "ELIZABETH", "SALADIN"]}, {"theme": "🗺️ Age of Exploration", "words": ["COLUMBUS", "MAGELLAN", "VASCO", "DRAKE", "COOK", "CABOT", "CARTIER", "HUDSON", "BALBOA", "CORTES"]}, {"theme": "📜 World Religions", "words": ["BUDDHISM", "HINDUISM", "ISLAM", "CHRISTIANITY", "JUDAISM", "TAOISM", "SHINTO", "SIKHISM", "JAINISM", "ZOROASTRIANISM"]}, {"theme": "🏰 Medieval Words", "words": ["CASTLE", "KNIGHT", "SIEGE", "MOAT", "DUNGEON", "JOUSTING", "FEUDAL", "CRUSADE", "HERALDRY", "CHIVALRY"]}, {"theme": "🏠 Around the House", "words": ["KITCHEN", "BEDROOM", "BATHROOM", "GARAGE", "GARDEN", "BALCONY", "BASEMENT", "ATTIC", "HALLWAY", "PANTRY"]}, {"theme": "👗 Fashion Words", "words": ["COUTURE", "RUNWAY", "VINTAGE", "BESPOKE", "LINEN", "VELVET", "CHIFFON", "DENIM", "CASHMERE", "TWEED"]}, {"theme": "✈️ Travel Words", "words": ["PASSPORT", "VISA", "LUGGAGE", "CUSTOMS", "TERMINAL", "DEPARTURE", "ARRIVAL", "LAYOVER", "BOARDING", "ITINERARY"]}, {"theme": "💼 Business Words", "words": ["REVENUE", "PROFIT", "INVOICE", "BUDGET", "CAPITAL", "DIVIDEND", "MERGER", "ACQUISITION", "FRANCHISE", "VENTURE"]}, {"theme": "🏥 Medical Words", "words": ["DIAGNOSIS", "SURGERY", "THERAPY", "VACCINE", "ANTIBIOTIC", "STETHOSCOPE", "PRESCRIPTION", "SYMPTOM", "PROGNOSIS", "PANDEMIC"]}, {"theme": "🎓 School Subjects", "words": ["ALGEBRA", "GEOMETRY", "BIOLOGY", "CHEMISTRY", "PHYSICS", "HISTORY", "GEOGRAPHY", "LITERATURE", "ECONOMICS", "PHILOSOPHY"]}, {"theme": "🍳 Cooking Terms", "words": ["SAUTE", "SIMMER", "BRAISE", "BLANCH", "DEGLAZE", "JULIENNE", "MARINATE", "POACH", "SEAR", "EMULSIFY"]}, {"theme": "🔧 Tools & Workshop", "words": ["HAMMER", "WRENCH", "DRILL", "CHISEL", "PLIERS", "SCREWDRIVER", "LEVEL", "CLAMP", "SANDER", "ROUTER"]}, {"theme": "😊 Positive Emotions", "words": ["HAPPY", "JOYFUL", "BLISS", "SERENE", "GRATEFUL", "CONTENT", "ELATED", "CHEERFUL", "HOPEFUL", "RADIANT"]}, {"theme": "🧘 Mindfulness Words", "words": ["PEACE", "CALM", "BREATH", "MINDFUL", "PRESENT", "AWARE", "BALANCE", "HARMONY", "STILLNESS", "CENTERED"]}, {"theme": "💪 Strength Words", "words": ["COURAGE", "RESILIENT", "BRAVE", "STRONG", "FIERCE", "BOLD", "MIGHTY", "TENACIOUS", "STEADFAST", "INVINCIBLE"]}, {"theme": "🌟 Inspirational Words", "words": ["DREAM", "INSPIRE", "ACHIEVE", "CREATE", "BELIEVE", "PASSION", "PURPOSE", "VISION", "IMAGINE", "TRANSFORM"]}, {"theme": "🚀 Space Missions", "words": ["APOLLO", "GEMINI", "MERCURY", "VOYAGER", "PIONEER", "CASSINI", "GALILEO", "HUBBLE", "INSIGHT", "ARTEMIS"]}, {"theme": "🎮 Video Game Words", "words": ["PIXEL", "AVATAR", "QUEST", "DUNGEON", "RESPAWN", "LOOT", "GUILD", "CRAFTING", "LEVELING", "BOSSFIGHT"]}, {"theme": "🌐 Internet Words", "words": ["VIRAL", "HASHTAG", "STREAM", "PODCAST", "BROWSER", "FIREWALL", "PIXEL", "BANDWIDTH", "CACHE", "SERVER"]}, {"theme": "🎪 Circus Words", "words": ["ACROBAT", "TRAPEZE", "JUGGLE", "CLOWN", "TIGHTROPE", "UNICYCLE", "CONTORTION", "MAGICIAN", "RINGMASTER", "CAROUSEL"]}, {"theme": "🧩 Puzzle Words", "words": ["RIDDLE", "ENIGMA", "CIPHER", "CRYPTIC", "ANAGRAM", "LABYRINTH", "PARADOX", "CONUNDRUM", "MYSTERY", "BRAINTEASER"]}, {"theme": "🌺 Tropical Paradise", "words": ["PALM", "COCONUT", "HIBISCUS", "REEF", "LAGOON", "BREEZE", "SUNSET", "PARADISE", "TROPICAL", "ISLAND"]}, {"theme": "🎄 Winter Holidays", "words": ["SNOWFLAKE", "MISTLETOE", "TINSEL", "WREATH", "GARLAND", "SOLSTICE", "REINDEER", "NUTCRACKER", "CAROLS", "LANTERN"]}, {"theme": "🌸 Spring Words", "words": ["BLOSSOM", "PETAL", "DEWDROP", "MEADOW", "ROBIN", "SPROUT", "RENEWAL", "TULIP", "PASTURE", "FRAGRANT"]}, {"theme": "🍂 Autumn Words", "words": ["HARVEST", "AMBER", "CRIMSON", "MAPLE", "ACORN", "PUMPKIN", "HAYSTACK", "EQUINOX", "FOLIAGE", "CHESTNUTS"]}, {"theme": "☀️ Summer Words", "words": ["SUNBURN", "SURFBOARD", "HAMMOCK", "LEMONADE", "BARBECUE", "FIREFLY", "TROPICAL", "SEASHELL", "SANDCASTLE", "SUNSCREEN"]}, {"theme": "🇫🇷 French Words", "words": ["BONJOUR", "MERCI", "AMOUR", "VOILA", "CROISSANT", "CHATEAU", "BAGUETTE", "PARFUM", "BALLET", "CUISINE"]}, {"theme": "🇪🇸 Spanish Words", "words": ["FIESTA", "SIESTA", "PLAZA", "MAÑANA", "GRACIAS", "AMIGOS", "CORAZON", "MARIPOSA", "FANTASIA", "GUITARRA"]}, {"theme": "🇮🇹 Italian Words", "words": ["AMORE", "BELLA", "CIAO", "PIZZA", "PASTA", "GONDOLA", "PIAZZA", "DOLCE", "PRONTO", "BRAVISSIMO"]}, {"theme": "🇯🇵 Japanese Words", "words": ["SAKURA", "SAMURAI", "GEISHA", "SUSHI", "ORIGAMI", "BONSAI", "KARATE", "NINJA", "KIMONO", "TSUNAMI"]}, {"theme": "🇩🇪 German Words", "words": ["WALTZ", "PRETZEL", "DIESEL", "KINDERGARTEN", "HAMSTER", "NOODLE", "ABSEIL", "RUCKSACK", "DACHSHUND", "POLTERGEIST"]}, {"theme": "🇵🇹 Portuguese Words", "words": ["SAMBA", "FADO", "AZULEJO", "PASTEL", "FUTEBOL", "OBRIGADO", "SAUDADE", "BRINDISI", "CAPOEIRA", "CARAVELA"]}, {"theme": "🇬🇷 Greek Words", "words": ["DEMOCRACY", "PHILOSOPHY", "MARATHON", "OLYMPUS", "ACROPOLIS", "AGORA", "COSMOS", "CHAOS", "ATLAS", "ODYSSEY"]}, {"theme": "🇦🇪 Arabic Words", "words": ["SAFARI", "ALGEBRA", "ALGORITHM", "SUGAR", "COFFEE", "COTTON", "LEMON", "ELIXIR", "MAGAZINE", "ADMIRAL"]}, {"theme": "⚡ Greek Mythology", "words": ["ZEUS", "ATHENA", "APOLLO", "POSEIDON", "HADES", "HERMES", "ARES", "HEPHAESTUS", "DIONYSUS", "ARTEMIS"]}, {"theme": "🔥 Norse Mythology", "words": ["ODIN", "THOR", "LOKI", "FREYA", "BALDUR", "TYRE", "HEIMDALL", "NJORD", "VIDAR", "FORSETI"]}, {"theme": "🌺 Hawaiian Mythology", "words": ["PELE", "MAUI", "LAKA", "HINA", "KANALOA", "LONO", "KANE", "KUKAILIMOKU", "NAMAKA", "POLIAHU"]}, {"theme": "🐉 Fantasy Creatures", "words": ["DRAGON", "UNICORN", "PHOENIX", "GRIFFIN", "MERMAID", "CENTAUR", "SPHINX", "KRAKEN", "BASILISK", "CHIMERA"]}, {"theme": "✨ Magic Words", "words": ["SPELL", "POTION", "WIZARD", "SORCERER", "ENCHANT", "MYSTICAL", "RUNE", "ORACLE", "PROPHECY", "ALCHEMY"]}, {"theme": "🏰 Fairy Tale Words", "words": ["CASTLE", "PRINCESS", "DRAGON", "KNIGHT", "WITCH", "WIZARD", "KINGDOM", "QUEST", "ENCHANTED", "MAGICAL"]}, {"theme": "👨‍⚕️ Medical Careers", "words": ["SURGEON", "PHYSICIAN", "PEDIATRIC", "CARDIOLOGIST", "NEUROLOGIST", "RADIOLOGIST", "PSYCHIATRIST", "ANESTHESIOLOGI", "ONCOLOGIST", "DERMATOLOGIST"]}, {"theme": "🎨 Creative Careers", "words": ["ARTIST", "DESIGNER", "ARCHITECT", "SCULPTOR", "PHOTOGRAPHER", "FILMMAKER", "MUSICIAN", "CHOREOGRAPHER", "ANIMATOR", "ILLUSTRATOR"]}, {"theme": "🔬 Science Careers", "words": ["BIOLOGIST", "CHEMIST", "PHYSICIST", "ASTRONOMER", "GEOLOGIST", "BOTANIST", "ZOOLOGIST", "ECOLOGIST", "GENETICIST", "OCEANOGRAPHER"]}, {"theme": "🏛️ Law & Justice", "words": ["LAWYER", "JUDGE", "PROSECUTOR", "DEFENDER", "JURY", "VERDICT", "PLAINTIFF", "TESTIMONY", "EVIDENCE", "LITIGATION"]}, {"theme": "✈️ Types of Aircraft", "words": ["JUMBO", "CONCORDE", "HELICOPTER", "GLIDER", "BIPLANE", "SEAPLANE", "AIRSHIP", "ULTRALIGHT", "DRONE", "ZEPPELIN"]}, {"theme": "🚢 Types of Ships", "words": ["YACHT", "TANKER", "FRIGATE", "GALLEON", "SCHOONER", "CLIPPER", "CATAMARAN", "TUGBOAT", "SUBMARINE", "DESTROYER"]}, {"theme": "🚂 Types of Trains", "words": ["MAGLEV", "BULLET", "MONORAIL", "FREIGHT", "EXPRESS", "SUBWAY", "TRAM", "FUNICULAR", "STEAM", "INTERCITY"]}, {"theme": "🏎️ Types of Cars", "words": ["SEDAN", "COUPE", "HATCHBACK", "CONVERTIBLE", "PICKUP", "MINIVAN", "ESTATE", "ROADSTER", "CROSSOVER", "LIMOUSINE"]}, {"theme": "🔢 Math Terms", "words": ["ALGEBRA", "CALCULUS", "GEOMETRY", "THEOREM", "EQUATION", "FRACTION", "DECIMAL", "INTEGER", "VARIABLE", "COEFFICIENT"]}, {"theme": "📐 Shapes", "words": ["HEXAGON", "PENTAGON", "OCTAGON", "RHOMBUS", "TRAPEZOID", "ELLIPSE", "CYLINDER", "PRISM", "PYRAMID", "DODECAHEDRON"]}, {"theme": "🌍 African Culture", "words": ["UBUNTU", "SAVANNA", "SERENGETI", "KILIMANJARO", "SAHARA", "SPHINX", "PYRAMID", "BAOBAB", "SAFARI", "MAASAI"]}, {"theme": "🌏 Asian Culture", "words": ["ORIGAMI", "KIMONO", "HAIKU", "MANGA", "SAMURAI", "RICKSHAW", "PAGODA", "BAMBOO", "DYNASTY", "IMPERIAL"]}, {"theme": "🌎 Latin Culture", "words": ["TANGO", "SALSA", "CARNIVAL", "FIESTA", "MARIACHI", "PONCHO", "GAUCHO", "SOMBRERO", "PIÑATA", "MARIMBA"]}, {"theme": "🇮🇳 Indian Culture", "words": ["YOGA", "KARMA", "GURU", "MANTRA", "SITAR", "TABLA", "CURRY", "SARI", "DIWALI", "NAMASTE"]}, {"theme": "🎎 East Asian Culture", "words": ["KARAOKE", "BONSAI", "ORIGAMI", "SUMO", "SUSHI", "TAICHI", "WONTON", "RAMEN", "DIMSUM", "CHOPSTICK"]}, {"theme": "🌍 Middle East Culture", "words": ["BAZAAR", "OASIS", "MINARET", "HENNA", "HOOKAH", "FALAFEL", "HUMMUS", "BAKLAVA", "KEBAB", "CARAVAN"]}, {"theme": "🎉 World Festivals", "words": ["CARNIVAL", "DIWALI", "HALLOWEEN", "SOLSTICE", "MARDI", "HANAMI", "LANTERN", "SONGKRAN", "HOLI", "OKTOBERFEST"]}, {"theme": "🎊 Party Words", "words": ["CONFETTI", "BALLOON", "STREAMERS", "FIREWORKS", "CHAMPAGNE", "TOAST", "CELEBRATE", "CHEERS", "FESTIVE", "JUBILEE"]}, {"theme": "💝 Love & Romance", "words": ["PASSION", "ROMANCE", "SERENADE", "DEVOTION", "CHERISH", "ADORE", "DARLING", "SWEETHEART", "BELOVED", "TENDERNESS"]}, {"theme": "🙏 Spiritual Words", "words": ["SACRED", "DIVINE", "BLESSED", "PRAYER", "MEDITATION", "SANCTUARY", "ENLIGHTEN", "TRANSCEND", "GRATITUDE", "REVERENCE"]}, {"theme": "💡 Famous Inventions", "words": ["TELEPHONE", "TELESCOPE", "MICROSCOPE", "PRINTING", "COMPASS", "STEAM", "ELECTRICITY", "RADIO", "TELEVISION", "INTERNET"]}, {"theme": "🏆 Nobel Prize Fields", "words": ["PHYSICS", "CHEMISTRY", "MEDICINE", "LITERATURE", "PEACE", "ECONOMICS", "BIOLOGY", "ASTRONOMY", "GENETICS", "NEUROSCIENCE"]}, {"theme": "🧪 Lab Equipment", "words": ["BEAKER", "BURETTE", "PIPETTE", "CENTRIFUGE", "MICROSCOPE", "SPECTROMETER", "THERMOMETER", "ELECTRODE", "CATALYST", "REAGENT"]}, {"theme": "🌡️ Physics Terms", "words": ["GRAVITY", "MOMENTUM", "VELOCITY", "FREQUENCY", "AMPLITUDE", "WAVELENGTH", "REFRACTION", "DIFFRACTION", "RESONANCE", "QUANTUM"]}, {"theme": "🌺 Aloha Spirit", "words": ["ALOHA", "MAHALO", "OHANA", "KOKUA", "MALAMA", "PONO", "MANA", "HANA", "KULEANA", "LOKOMAIKAI"]}, {"theme": "🏄 Surf Culture", "words": ["BARREL", "GOOFY", "REGULAR", "CUTBACK", "CARVE", "FLOATER", "AERIAL", "TUBE", "SHAKA", "STOKED"]}, {"theme": "🌊 Oceanography", "words": ["CURRENT", "SALINITY", "THERMOCLINE", "UPWELLING", "BIOLUMINESCENCE", "PELAGIC", "BENTHIC", "TIDAL", "CONTINENTAL", "ABYSSAL"]}, {"theme": "🎯 Game Words", "words": ["STRATEGY", "TACTICS", "BLUFF", "GAMBIT", "CHECKMATE", "JOKER", "WILDCARD", "JACKPOT", "BONUS", "POWERUP"]}, {"theme": "🌐 World Languages", "words": ["MANDARIN", "SPANISH", "ENGLISH", "ARABIC", "HINDI", "PORTUGUESE", "RUSSIAN", "JAPANESE", "FRENCH", "SWAHILI"]}, {"theme": "🎪 Entertainment", "words": ["BROADWAY", "CINEMA", "THEATRE", "CONCERT", "FESTIVAL", "CARNIVAL", "CIRCUS", "COMEDY", "MUSICAL", "CABARET"]}, {"theme": "🏖️ Beach Words", "words": ["SHORELINE", "DRIFTWOOD", "SEASHELL", "SANDBAR", "TIDEPOOLS", "SURFBOARD", "SNORKEL", "SUNSCREEN", "UMBRELLA", "HAMMOCK"]}, {"theme": "🌺 Hawaii Tourism", "words": ["LUAU", "SNORKEL", "HULA", "SURFING", "VOLCANO", "RAINBOW", "SUNSET", "PLUMERIA", "SHAVEICE", "PLATELUNCH"]}, {"theme": "💫 Positive Affirmations", "words": ["BELIEVE", "ACHIEVE", "INSPIRE", "GROW", "THRIVE", "FLOURISH", "SUCCEED", "MANIFEST", "PERSIST", "RADIATE"]}, {"theme": "🧠 Brain Power", "words": ["MEMORY", "FOCUS", "CREATIVE", "LOGIC", "CRITICAL", "ANALYTICAL", "INTUITIVE", "COGNITIVE", "NEURAL", "SYNAPSE"]}, {"theme": "🌿 Eco & Environment", "words": ["RECYCLE", "RENEWABLE", "SUSTAINABLE", "COMPOST", "BIODEGRADABLE", "CONSERVATION", "ECOSYSTEM", "ORGANIC", "SOLAR", "CARBON"]}, {"theme": "🏡 Dream Home", "words": ["VERANDA", "TERRACE", "GAZEBO", "PERGOLA", "CONSERVATORY", "COURTYARD", "ATRIUM", "FOYER", "LOFT", "BUNGALOW"]}, {"theme": "🌙 Night Sky", "words": ["STARLIGHT", "CONSTELLATION", "NEBULA", "GALAXY", "MOONRISE", "MIDNIGHT", "TWILIGHT", "SOLSTICE", "AURORA", "EQUINOX"]}, {"theme": "🎯 Life Goals", "words": ["FREEDOM", "WISDOM", "COURAGE", "KINDNESS", "JUSTICE", "PATIENCE", "LOYALTY", "HONESTY", "EMPATHY", "INTEGRITY"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}, {"theme": "🌺 Hawaii Bonus", "words": ["ALOHA", "OCEAN", "ISLAND", "SUNSET", "RAINBOW", "SURFING", "LUAU", "HULA", "PARADISE", "TROPICAL"]}];
+
+// ════════════════════════════════════════════════
+// HAWAII WORD SEARCH — Today in Hawaii © 2026
+// 222 Puzzle Themes · Click to select · All Directions!
+// ════════════════════════════════════════════════
+
+const GRID_SIZE = 14; // 14x14 grid
+const DIRECTIONS = [
+  [0,1],[0,-1],[1,0],[-1,0],   // H & V
+  [1,1],[1,-1],[-1,1],[-1,-1]  // Diagonal
+];
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+let playerName='', playerLoc='';
+let grid=[], wordPlacements=[];
+let selecting=false, selStart=null, selCells=[];
+let foundWords=[], foundColors={};
+let currentPuzzleIdx=0, puzzleOrder=[];
+let score=0, totalFound=0;
+let paused=false, revealed=false;
+let muted=false, myRank=0;
+let timerSecs=0, timerInterval=null;
+let currentWords=[];
+
+// ── Name Entry ────────────────────────────────
+document.getElementById('pName').addEventListener('input', checkReady);
+document.getElementById('pLoc').addEventListener('change', checkReady);
+function checkReady(){
+  const ok = document.getElementById('pName').value.trim().length>=2 && document.getElementById('pLoc').value;
+  document.getElementById('startBtn').disabled=!ok;
+}
+
+function startGame(){
+  playerName=document.getElementById('pName').value.trim();
+  playerLoc=document.getElementById('pLoc').value;
+  if(!playerName||!playerLoc) return;
+  document.getElementById('nameScr').style.display='none';
+  document.getElementById('gameArea').style.display='block';
+  document.getElementById('badgeName').textContent=playerName+' · '+playerLoc;
+
+  // Shuffle puzzle order
+  puzzleOrder = [...Array(WORD_PUZZLES.length).keys()].sort(()=>Math.random()-0.5);
+  currentPuzzleIdx=0; score=0; totalFound=0;
+  loadPuzzle();
+}
+
+function loadPuzzle(){
+  foundWords=[]; foundColors={}; revealed=false; selCells=[];
+  document.getElementById('revealBtn').style.opacity='1';
+
+  const puzzle = WORD_PUZZLES[puzzleOrder[currentPuzzleIdx % puzzleOrder.length]];
+  currentWords = puzzle.words.map(w=>w.toUpperCase().replace(/[^A-Z]/g,''));
+
+  document.getElementById('themePill').textContent = puzzle.theme;
+  document.getElementById('puzzleVal').textContent = currentPuzzleIdx+1;
+  updateStats();
+
+  // Build word chips
+  const wl=document.getElementById('wordList');
+  wl.innerHTML='';
+  currentWords.forEach((w,i)=>{
+    const chip=document.createElement('span');
+    chip.className='word-chip';
+    chip.id='chip-'+i;
+    chip.textContent=w;
+    wl.appendChild(chip);
+  });
+
+  // Generate grid
+  generateGrid();
+  renderGrid();
+  startTimer();
+}
+
+// ── Grid Generation ───────────────────────────
+function generateGrid(){
+  // Initialize with nulls
+  grid = Array.from({length:GRID_SIZE},()=>Array(GRID_SIZE).fill(null));
+  wordPlacements=[];
+
+  // Place each word
+  const shuffled=[...currentWords].sort(()=>Math.random()-0.5);
+  shuffled.forEach(word=>{
+    placeWord(word);
+  });
+
+  // Fill empty with random letters
+  for(let r=0;r<GRID_SIZE;r++){
+    for(let c=0;c<GRID_SIZE;c++){
+      if(grid[r][c]===null) grid[r][c]=ALPHABET[Math.floor(Math.random()*26)];
+    }
+  }
+}
+
+function placeWord(word){
+  const maxAttempts=200;
+  for(let attempt=0;attempt<maxAttempts;attempt++){
+    const dir=DIRECTIONS[Math.floor(Math.random()*DIRECTIONS.length)];
+    const startR=Math.floor(Math.random()*GRID_SIZE);
+    const startC=Math.floor(Math.random()*GRID_SIZE);
+    const endR=startR+dir[0]*(word.length-1);
+    const endC=startC+dir[1]*(word.length-1);
+
+    if(endR<0||endR>=GRID_SIZE||endC<0||endC>=GRID_SIZE) continue;
+
+    // Check if all cells are available
+    let canPlace=true;
+    const cells=[];
+    for(let i=0;i<word.length;i++){
+      const r=startR+dir[0]*i;
+      const c=startC+dir[1]*i;
+      if(grid[r][c]!==null && grid[r][c]!==word[i]){canPlace=false;break;}
+      cells.push([r,c]);
+    }
+
+    if(canPlace){
+      cells.forEach(([r,c],i)=>{ grid[r][c]=word[i]; });
+      wordPlacements.push({word,cells,dir});
+      return true;
+    }
+  }
+  return false;
+}
+
+// ── Render Grid ───────────────────────────────
+function renderGrid(){
+  const g=document.getElementById('wsGrid');
+  g.style.gridTemplateColumns='repeat('+GRID_SIZE+',1fr)';
+  g.innerHTML='';
+
+  for(let r=0;r<GRID_SIZE;r++){
+    for(let c=0;c<GRID_SIZE;c++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      cell.textContent=grid[r][c]||'';
+      cell.dataset.r=r; cell.dataset.c=c;
+
+      // Mouse events
+      cell.addEventListener('mousedown',e=>{e.preventDefault();startSelect(r,c);});
+      cell.addEventListener('mousemove',e=>{if(selecting) updateSelect(r,c);});
+      cell.addEventListener('mouseup',()=>endSelect());
+
+      // Touch events
+      cell.addEventListener('touchstart',e=>{
+        e.preventDefault();
+        startSelect(r,c);
+      },{passive:false});
+      cell.addEventListener('touchmove',e=>{
+        e.preventDefault();
+        const touch=e.touches[0];
+        const el=document.elementFromPoint(touch.clientX,touch.clientY);
+        if(el&&el.dataset.r!==undefined) updateSelect(parseInt(el.dataset.r),parseInt(el.dataset.c));
+      },{passive:false});
+      cell.addEventListener('touchend',()=>endSelect(),{passive:true});
+
+      g.appendChild(cell);
+    }
+  }
+
+  // Re-apply found word colors
+  applyFoundColors();
+}
+
+function getCell(r,c){return document.querySelector('[data-r="'+r+'"][data-c="'+c+'"]');}
+
+// ── Selection ─────────────────────────────────
+function startSelect(r,c){
+  if(paused) return;
+  selecting=true;
+  selStart={r,c};
+  selCells=[[r,c]];
+  playSelectSound();
+  vibrate(10);
+  updateSelectionVisual();
+}
+
+function updateSelect(r,c){
+  if(!selecting||!selStart) return;
+
+  // Determine direction from start to current
+  const dr=r-selStart.r;
+  const dc=c-selStart.c;
+  const len=Math.max(Math.abs(dr),Math.abs(dc));
+
+  if(len===0){
+    selCells=[[selStart.r,selStart.c]];
+    updateSelectionVisual();
+    return;
+  }
+
+  // Normalize direction
+  const normR=dr===0?0:dr/Math.abs(dr);
+  const normC=dc===0?0:dc/Math.abs(dc);
+
+  // Only allow 8 directions
+  const newCells=[];
+  for(let i=0;i<=len;i++){
+    const nr=selStart.r+normR*i;
+    const nc=selStart.c+normC*i;
+    if(nr>=0&&nr<GRID_SIZE&&nc>=0&&nc<GRID_SIZE) newCells.push([nr,nc]);
+  }
+
+  if(JSON.stringify(newCells)!==JSON.stringify(selCells)){
+    selCells=newCells;
+    playSelectSound();
+    vibrate(5);
+    updateSelectionVisual();
+  }
+}
+
+function endSelect(){
+  if(!selecting) return;
+  selecting=false;
+
+  // Check if selection matches a word
+  const selectedWord=selCells.map(([r,c])=>grid[r][c]).join('');
+  const revWord=selectedWord.split('').reverse().join('');
+
+  checkWordMatch(selectedWord,selCells) || checkWordMatch(revWord,[...selCells].reverse());
+
+  // Clear selection visual
+  selCells.forEach(([r,c])=>{
+    const el=getCell(r,c);
+    if(el&&!isFoundCell(r,c)) el.classList.remove('selecting');
+  });
+  selCells=[];
+}
+
+function checkWordMatch(word,cells){
+  const wIdx=currentWords.indexOf(word);
+  if(wIdx>=0 && !foundWords.includes(word)){
+    // Found it!
+    foundWords.push(word);
+    const colorIdx=foundWords.length-1;
+    foundColors[word]=colorIdx;
+
+    // Mark cells
+    cells.forEach(([r,c])=>{
+      const el=getCell(r,c);
+      if(el){
+        el.classList.remove('selecting');
+        el.classList.add('found-word','fc-'+colorIdx);
+      }
+    });
+
+    // Mark word chip
+    const chip=document.getElementById('chip-'+wIdx);
+    if(chip) chip.className='word-chip found';
+
+    // Score
+    const pts=100+cells.length*10;
+    score+=pts;
+    totalFound++;
+    showScorePop(pts);
+    celebrate(cells[0][0],cells[0][1]);
+    playFoundSound();
+    vibrate([50,30,50]);
+    updateStats();
+
+    // Check complete
+    if(foundWords.length===currentWords.length){
+      setTimeout(()=>puzzleComplete(),800);
+    }
+    return true;
+  }
+  return false;
+}
+
+function isFoundCell(r,c){
+  return Object.values(wordPlacements).some(p=>
+    p.cells.some(([pr,pc])=>pr===r&&pc===c) && foundWords.includes(p.word)
+  );
+}
+
+function updateSelectionVisual(){
+  // Clear all selecting
+  document.querySelectorAll('.cell.selecting').forEach(el=>el.classList.remove('selecting'));
+  // Apply to current selection
+  selCells.forEach(([r,c])=>{
+    const el=getCell(r,c);
+    if(el&&!isFoundCell(r,c)) el.classList.add('selecting');
+  });
+}
+
+function applyFoundColors(){
+  wordPlacements.forEach(p=>{
+    if(foundWords.includes(p.word)){
+      const colorIdx=foundColors[p.word]||0;
+      p.cells.forEach(([r,c])=>{
+        const el=getCell(r,c);
+        if(el) el.classList.add('found-word','fc-'+colorIdx);
+      });
+    }
+  });
+}
+
+// ── Controls ──────────────────────────────────
+function togglePause(){
+  paused=!paused;
+  const po=document.getElementById('pauseOverlay');
+  if(paused){po.classList.add('show');clearInterval(timerInterval);}
+  else{po.classList.remove('show');startTimer();}
+}
+
+function toggleReveal(){
+  revealed=!revealed;
+  const btn=document.getElementById('revealBtn');
+  if(revealed){
+    btn.style.opacity='0.6';
+    // Show unfound words on grid
+    wordPlacements.forEach(p=>{
+      if(!foundWords.includes(p.word)){
+        p.cells.forEach(([r,c])=>{
+          const el=getCell(r,c);
+          if(el) el.classList.add('revealed-cell');
+        });
+        // Mark chip
+        const wIdx=currentWords.indexOf(p.word);
+        const chip=document.getElementById('chip-'+wIdx);
+        if(chip) chip.className='word-chip revealed';
+      }
+    });
+  } else {
+    btn.style.opacity='1';
+    document.querySelectorAll('.cell.revealed-cell').forEach(el=>el.classList.remove('revealed-cell'));
+    currentWords.forEach((w,i)=>{
+      const chip=document.getElementById('chip-'+i);
+      if(chip&&!foundWords.includes(w)) chip.className='word-chip';
+    });
+  }
+}
+
+function nextPuzzle(){
+  clearInterval(timerInterval);
+  currentPuzzleIdx++;
+  loadPuzzle();
+}
+
+function stopGame(){
+  clearInterval(timerInterval);
+  showResult();
+}
+
+function playAgain(){
+  closeOverlay();
+  currentPuzzleIdx=0; score=0; totalFound=0;
+  puzzleOrder=[...Array(WORD_PUZZLES.length).keys()].sort(()=>Math.random()-0.5);
+  loadPuzzle();
+}
+
+function puzzleComplete(){
+  // Bonus for completing!
+  const bonus=200;
+  score+=bonus;
+  totalFound+=currentWords.length;
+  showScorePop('+'+bonus+' BONUS!');
+  submitScore();
+  loadLeaderboard();
+
+  // Auto next after 2 seconds
+  setTimeout(()=>nextPuzzle(),2000);
+}
+
+function showResult(){
+  submitScore();
+
+  document.getElementById('ovEmoji').textContent=score>5000?'🏆':score>2000?'🌺':'🔤';
+  document.getElementById('ovTitle').textContent=score>5000?'Word Search Legend!!':'Puzzle Complete!';
+  document.getElementById('ovScore').textContent=score.toLocaleString()+' pts';
+  document.getElementById('ovRank').textContent=myRank>0?'🏆 #'+myRank+' on the Leaderboard!':'';
+  document.getElementById('ovMsg').textContent='You completed '+currentPuzzleIdx+' puzzle'+(currentPuzzleIdx!==1?'s':'')+'! Found '+totalFound+' total words! Amazing! 🌺';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
+
+function shareScore(){
+  const txt='🔤 I scored '+score.toLocaleString()+' points on Hawaii Word Search — '+currentPuzzleIdx+' puzzles completed! Can you beat me? 🌺 todayinhawaii.com/wordsearch';
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/wordsearch')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Timer ─────────────────────────────────────
+function startTimer(){
+  timerSecs=0;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    if(paused) return;
+    timerSecs++;
+    document.getElementById('timerVal').textContent=timerSecs;
+  },1000);
+}
+
+// ── Stats ─────────────────────────────────────
+function updateStats(){
+  document.getElementById('scoreVal').textContent=score.toLocaleString();
+  document.getElementById('foundVal').textContent=foundWords.length+'/'+currentWords.length;
+}
+
+// ── Sound ─────────────────────────────────────
+let audioCtx=null;
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(freq,type,vol,dur,delay){
+  if(muted)return; delay=delay||0;
+  try{
+    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+0.01);
+  }catch(e){}
+}
+function playSelectSound(){playTone(800,'sine',0.05,0.04);}
+function playFoundSound(){
+  [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.4,0.2,i*0.07));
+}
+function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
+
+// ── Vibration ─────────────────────────────────
+function vibrate(pattern){
+  try{if(navigator.vibrate)navigator.vibrate(pattern);}catch(e){}
+}
+
+// ── Particles ─────────────────────────────────
+function celebrate(r,c){
+  const el=getCell(r,c);
+  if(!el) return;
+  const rect=el.getBoundingClientRect();
+  const cx=rect.left+rect.width/2;
+  const cy=rect.top+rect.height/2;
+  const em=['🌺','⭐','✨','💫','🌸','🤙','🎉'];
+  for(let i=0;i<8;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.fontSize=(12+Math.random()*12)+'px';
+    p.style.left=cx+'px'; p.style.top=cy+'px';
+    const ang=Math.random()*Math.PI*2;
+    const d=40+Math.random()*60;
+    p.style.setProperty('--tx',Math.cos(ang)*d+'px');
+    p.style.setProperty('--ty',Math.sin(ang)*d+'px');
+    p.style.animationDuration=(0.5+Math.random()*0.4)+'s';
+    p.textContent=em[Math.floor(Math.random()*em.length)];
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),900);
+  }
+}
+
+function showScorePop(pts){
+  const el=document.createElement('div');
+  el.className='score-pop';
+  el.textContent=typeof pts==='number'?'+'+pts:pts;
+  el.style.left=(20+Math.random()*60)+'%';
+  el.style.top=(20+Math.random()*30)+'%';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+
+// ── Leaderboard ───────────────────────────────
+async function loadLeaderboard(){
+  try{
+    const res=await fetch('/api/wordsearch-scores');
+    const data=await res.json();
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+    if(!data.length){
+      document.getElementById('lbList').innerHTML='<div class="lb-empty">Be the first Word Search Champion! 🔤</div>';
+      return;
+    }
+    document.getElementById('lbList').innerHTML=data.slice(0,8).map((s,i)=>{
+      const isMe=playerName&&s.name.toLowerCase()===playerName.toLowerCase();
+      const cls=i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
+      return '<div class="lb-row '+cls+'">' +
+        '<span class="lb-medal">'+(medals[i]||i+1)+'</span>' +
+        '<div style="flex:1"><div class="lb-name">'+s.name+(isMe?' ← You!':'')+'</div>' +
+        '<div class="lb-loc">📍 '+s.island+' · '+s.level+' puzzles</div></div>' +
+        '<span class="lb-score">'+Number(s.score).toLocaleString()+'</span></div>';
+    }).join('');
+
+    if(playerName){
+      const myIdx=data.findIndex(s=>s.name.toLowerCase()===playerName.toLowerCase());
+      if(myIdx>=0) document.getElementById('badgeRank').textContent='#'+(myIdx+1)+' 🏆';
+    }
+  }catch(e){
+    document.getElementById('lbList').innerHTML='<div class="lb-empty">Play to get on the board! 🔤</div>';
+  }
+}
+
+async function submitScore(){
+  if(!playerName||score<=0) return;
+  try{
+    const res=await fetch('/api/wordsearch-scores',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:playerName,score,island:playerLoc,level:currentPuzzleIdx})
+    });
+    const data=await res.json();
+    if(data.ok){myRank=data.rank;document.getElementById('badgeRank').textContent='#'+myRank+' 🏆';}
+  }catch(e){}
+}
+
+// Global mouse up
+document.addEventListener('mouseup',endSelect);
+
+// Init
+loadLeaderboard();
+setInterval(loadLeaderboard,20000);
+</script>
+</body>
+</html>
