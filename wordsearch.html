@@ -73,7 +73,8 @@
     /* Word list */
     .word-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;}
     .word-chip{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:#e8f4f8;transition:all 0.2s;letter-spacing:0.5px;}
-    .word-chip.found{background:rgba(34,197,94,0.2);border-color:#22c55e;color:#4ade80;text-decoration:line-through;opacity:0.7;}
+    .word-chip.found{background:rgba(34,197,94,0.2);border-color:#22c55e;color:#4ade80;text-decoration:line-through;opacity:0.8;animation:chipPulse 2s ease-in-out infinite;}
+    @keyframes chipPulse{0%,100%{box-shadow:0 0 4px rgba(34,197,94,0.3);}50%{box-shadow:0 0 12px rgba(34,197,94,0.8);transform:scale(1.05);}}
     .word-chip.revealed{background:rgba(251,191,36,0.15);border-color:#fbbf24;color:#fbbf24;font-style:italic;}
 
     /* Grid */
@@ -89,7 +90,31 @@
       position:relative;
     }
     .cell.selecting{background:rgba(34,211,238,0.25);border-color:#22d3ee;color:#22d3ee;transform:scale(1.08);z-index:2;}
-    .cell.found-word{border:none;animation:foundPop 0.4s ease;z-index:1;}
+    .cell.found-word{
+      animation:foundPop 0.4s ease forwards;
+      z-index:1;
+    }
+    /* Vegas pulse glow on found cells */
+    .cell.found-word.fc-0{animation:foundPop 0.4s ease forwards,fcPulse0 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-1{animation:foundPop 0.4s ease forwards,fcPulse1 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-2{animation:foundPop 0.4s ease forwards,fcPulse2 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-3{animation:foundPop 0.4s ease forwards,fcPulse3 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-4{animation:foundPop 0.4s ease forwards,fcPulse4 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-5{animation:foundPop 0.4s ease forwards,fcPulse5 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-6{animation:foundPop 0.4s ease forwards,fcPulse6 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-7{animation:foundPop 0.4s ease forwards,fcPulse7 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-8{animation:foundPop 0.4s ease forwards,fcPulse8 2s ease-in-out infinite 0.4s!important;}
+    .cell.found-word.fc-9{animation:foundPop 0.4s ease forwards,fcPulse9 2s ease-in-out infinite 0.4s!important;}
+    @keyframes fcPulse0{0%,100%{box-shadow:0 0 6px rgba(239,68,68,0.4);}50%{box-shadow:0 0 16px rgba(239,68,68,0.9),0 0 28px rgba(239,68,68,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse1{0%,100%{box-shadow:0 0 6px rgba(249,115,22,0.4);}50%{box-shadow:0 0 16px rgba(249,115,22,0.9),0 0 28px rgba(249,115,22,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse2{0%,100%{box-shadow:0 0 6px rgba(234,179,8,0.4);}50%{box-shadow:0 0 16px rgba(234,179,8,0.9),0 0 28px rgba(234,179,8,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse3{0%,100%{box-shadow:0 0 6px rgba(34,197,94,0.4);}50%{box-shadow:0 0 16px rgba(34,197,94,0.9),0 0 28px rgba(34,197,94,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse4{0%,100%{box-shadow:0 0 6px rgba(59,130,246,0.4);}50%{box-shadow:0 0 16px rgba(59,130,246,0.9),0 0 28px rgba(59,130,246,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse5{0%,100%{box-shadow:0 0 6px rgba(168,85,247,0.4);}50%{box-shadow:0 0 16px rgba(168,85,247,0.9),0 0 28px rgba(168,85,247,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse6{0%,100%{box-shadow:0 0 6px rgba(34,211,238,0.4);}50%{box-shadow:0 0 16px rgba(34,211,238,0.9),0 0 28px rgba(34,211,238,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse7{0%,100%{box-shadow:0 0 6px rgba(236,72,153,0.4);}50%{box-shadow:0 0 16px rgba(236,72,153,0.9),0 0 28px rgba(236,72,153,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse8{0%,100%{box-shadow:0 0 6px rgba(16,185,129,0.4);}50%{box-shadow:0 0 16px rgba(16,185,129,0.9),0 0 28px rgba(16,185,129,0.4);transform:scale(1.06);}}
+    @keyframes fcPulse9{0%,100%{box-shadow:0 0 6px rgba(251,191,36,0.4);}50%{box-shadow:0 0 16px rgba(251,191,36,0.9),0 0 28px rgba(251,191,36,0.4);transform:scale(1.06);}}
     .cell.revealed-cell{color:#fbbf24;font-weight:900;}
     @keyframes foundPop{0%{transform:scale(1);}40%{transform:scale(1.2);}100%{transform:scale(1);}}
 
@@ -168,6 +193,20 @@
     <div class="ns-title">🔤 Join the Challenge!</div>
     <div class="ns-sub">Find all 10 hidden words — horizontal vertical and diagonal!</div>
     <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLang" class="ns-select" onchange="changeLang(this.value)">
+      <option value="all">🌐 All Languages & Themes</option>
+      <option value="hawaiian">🌺 Hawaiian Themes Only</option>
+      <option value="french">🇫🇷 French Words</option>
+      <option value="spanish">🇪🇸 Spanish Words</option>
+      <option value="italian">🇮🇹 Italian Words</option>
+      <option value="japanese">🇯🇵 Japanese Words</option>
+      <option value="german">🇩🇪 German Words</option>
+      <option value="animals">🦁 Animals Only</option>
+      <option value="food">🍍 Food & Drink Only</option>
+      <option value="sports">🏄 Sports Only</option>
+      <option value="science">🔬 Science Only</option>
+      <option value="history">📜 History Only</option>
+    </select>
     <select id="pLoc" class="ns-select">
       <option value="">📍 Where are you from?</option>
       <optgroup label="🌺 Hawaii">
@@ -345,6 +384,32 @@ function checkReady(){
   document.getElementById('startBtn').disabled=!ok;
 }
 
+const LANG_FILTERS = {
+  'all': null,
+  'hawaiian': ['🌺'],
+  'french': ['🇫🇷'],
+  'spanish': ['🇪🇸'],
+  'italian': ['🇮🇹'],
+  'japanese': ['🇯🇵'],
+  'german': ['🇩🇪'],
+  'animals': ['🦁','🐘','🐨','🦋','🐠','🦅','🐊','🐋','🦁','🐦'],
+  'food': ['🍕','🍣','🌮','🍜','🍰','🍹','🧀','🍱','☕','🍺'],
+  'sports': ['⚽','🏄','🎾','🏋️','🏊','🥊','🎿','🏈','🏆'],
+  'science': ['🔬','⚗️','🌌','🌍','💻','🔭','🧬','🌿'],
+  'history': ['🏛️','⚔️','👑','🗺️','📜','🏰'],
+};
+
+function changeLang(val){
+  // Show preview of puzzle count
+  const filter = LANG_FILTERS[val];
+  let count = WORD_PUZZLES.length;
+  if(filter){
+    count = WORD_PUZZLES.filter(p=>filter.some(f=>p.theme.includes(f))).length;
+    if(count===0) count = WORD_PUZZLES.length; // fallback
+  }
+  console.log('Language filter:', val, 'Puzzles:', count);
+}
+
 function startGame(){
   playerName=document.getElementById('pName').value.trim();
   playerLoc=document.getElementById('pLoc').value;
@@ -353,8 +418,17 @@ function startGame(){
   document.getElementById('gameArea').style.display='block';
   document.getElementById('badgeName').textContent=playerName+' · '+playerLoc;
 
+  // Filter puzzles by language selection
+  const lang = document.getElementById('pLang').value;
+  const filter = LANG_FILTERS[lang];
+  let filtered = WORD_PUZZLES;
+  if(filter && filter.length){
+    const f = WORD_PUZZLES.filter(p=>filter.some(emoji=>p.theme.includes(emoji)));
+    if(f.length >= 3) filtered = f;
+  }
+
   // Shuffle puzzle order
-  puzzleOrder = [...Array(WORD_PUZZLES.length).keys()].sort(()=>Math.random()-0.5);
+  puzzleOrder = [...Array(filtered.length).keys()].map(i=>WORD_PUZZLES.indexOf(filtered[i])).sort(()=>Math.random()-0.5);
   currentPuzzleIdx=0; score=0; totalFound=0;
   loadPuzzle();
 }
