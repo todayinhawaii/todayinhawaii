@@ -6327,15 +6327,7 @@ window.addEventListener('DOMContentLoaded', function(){
     animation: fgbBob 2.5s ease-in-out infinite;
     filter: drop-shadow(0 8px 24px rgba(249,115,22,0.5));
   }
-  /* Mobile — fixed top left, always follows scroll */
-  @media (max-width: 768px) {
-    #fgbWrap {
-      position: fixed !important;
-      bottom: auto !important;
-      top: 75px !important;
-      left: 12px !important;
-    }
-  }
+
   @keyframes fgbBob {
     0%,100% { transform: translateY(0); }
     50%      { transform: translateY(-8px); }
@@ -6448,13 +6440,37 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 </style>
 
-<div id="fgbWrap" style="position:fixed;z-index:999999;will-change:transform;">
+<div id="fgbWrap" style="position:fixed;z-index:999999;bottom:24px;left:20px;">
   <span id="fgbClose" onclick="document.getElementById('fgbWrap').classList.add('hidden');">✕</span>
   <a id="fgbBtn" href="/memorygame">
     <div class="fgb-circle">🧠</div>
     <div class="fgb-label">Play Memory Game</div>
   </a>
 </div>
+<script>
+// Force fixed position on mobile via JavaScript
+(function(){
+  var btn = document.getElementById('fgbWrap');
+  if(!btn) return;
+  function posBtn(){
+    var isMobile = window.innerWidth <= 768;
+    btn.style.position = 'fixed';
+    btn.style.zIndex = '999999';
+    if(isMobile){
+      btn.style.bottom = '90px';
+      btn.style.left = '12px';
+      btn.style.top = 'auto';
+    } else {
+      btn.style.bottom = '24px';
+      btn.style.left = '20px';
+      btn.style.top = 'auto';
+    }
+  }
+  posBtn();
+  window.addEventListener('scroll', posBtn, {passive:true});
+  window.addEventListener('resize', posBtn, {passive:true});
+})();
+</script>
 <!-- END FLOATING MEMORY GAME BUTTON -->
 
 </body>
