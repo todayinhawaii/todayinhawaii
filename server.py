@@ -498,14 +498,10 @@ def hula_crush():
 
 @app.route('/fruit-<int:num>.jpg')
 def fruit_image(num):
-    return send_from_directory('.', f'fruit-{num}.jpg')
-
-@app.route('/<path:filename>')
-def static_files(filename):
-    # Serve any static file from root directory
-    if filename.endswith(('.jpg','.jpeg','.png','.gif','.svg','.ico','.webp')):
-        return send_from_directory('.', filename)
-    return send_from_directory('.', 'index.html')
+    try:
+        return send_from_directory('.', f'fruit-{num}.jpg', mimetype='image/jpeg')
+    except:
+        return '', 404
 
 @app.route('/api/hula-scores', methods=['GET'])
 def get_hula_scores():
