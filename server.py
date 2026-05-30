@@ -133,25 +133,30 @@ def banner():
 
 @app.route("/sitemap.xml")
 def sitemap():
-    content = '''<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.todayinhawaii.com/</loc><lastmod>2026-05-16</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.todayinhawaii.com/oahu</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.todayinhawaii.com/maui</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.todayinhawaii.com/kauai</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.todayinhawaii.com/bigisland</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.todayinhawaii.com/food</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.todayinhawaii.com/beaches</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.todayinhawaii.com/hiking</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.todayinhawaii.com/about</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.todayinhawaii.com/privacy</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-</urlset>'''
-    return Response(content, mimetype='application/xml')
+    return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
 
 @app.route("/robots.txt")
 def robots():
     return send_from_directory(".", "robots.txt")
 
+# ── FRUIT IMAGES FOR ALOHA MEMORY GAME ──
+@app.route('/fruit-<int:num>.jpg')
+def fruit_image(num):
+    return send_from_directory('.', 'fruit-' + str(num) + '.jpg')
+
+# ── HULA CRUSH / ALOHA MEMORY GAME ──
+@app.route('/hulacrush')
+def hula_crush():
+    return send_from_directory('.', 'hulaCrush.html')
+
+# ── HAWAII CHARITIES ──
+@app.route('/hawaiicharities')
+def hawaii_charities():
+    return redirect('/#hawaii-charities')
+
+@app.route('/charities')
+def charities_short():
+    return redirect('/#hawaii-charities')
 
 @app.route("/api/today")
 def api_today():
@@ -363,6 +368,7 @@ def delete_post_db(post_id):
     except Exception as e:
         print('Supabase delete error:', e)
         return False
+
 def check_admin(req):
     return req.headers.get('X-Admin-Key') == ADMIN_KEY
 
@@ -455,25 +461,8 @@ def subscribe():
         print('Signup error:', e)
         return app.response_class(_j.dumps({'error':str(e)}), status=500, mimetype='application/json')
 
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
-
-
-@app.route('/hawaiicharities')
-def hawaii_charities():
-    return redirect('/#hawaii-charities')
-
-@app.route('/charities')
-def charities_short():
-    return redirect('/#hawaii-charities')
-
-
-# ═══════════════════════════════════════
-# HULA CRUSH LEADERBOARD
-# ═══════════════════════════════════════
-import json, os
-
+# ── HULA SCORES LEADERBOARD ──
+import json
 SCORES_FILE = 'hula_scores.json'
 
 def load_scores():
@@ -492,24 +481,6 @@ def save_scores(scores):
     except Exception as e:
         print('Score save error:', e)
 
-@app.route('/hulacrush')
-def hula_crush():
-    return send_from_directory('.', 'hulaCrush.html')
-
-@app.route('/fruit-<int:num>.jpg')
-def fruit_image(num):
-    return send_from_directory('.', 'fruit-' + str(num) + '.jpg')
-
-@app.route('/debug-files')
-def debug_files():
-    import os
-    files = [f for f in os.listdir('.') if 'fruit' in f.lower()]
-    cwd = os.getcwd()
-    return app.response_class(
-        str({'cwd': cwd, 'fruit_files': sorted(files)}),
-        mimetype='text/plain'
-    )
-
 @app.route('/api/hula-scores', methods=['GET'])
 def get_hula_scores():
     scores = load_scores()
@@ -525,44 +496,31 @@ def post_hula_score():
         data = request.get_json()
         name = str(data.get('name', 'Hawaii Player'))[:20].strip()
         score = int(data.get('score', 0))
-        island = str(data.get('island', 'Hawaii'))[:20]
+        island = str(data.get('island', 'Hawaii'))[:30]
         level = int(data.get('level', 1))
-        
         if score <= 0:
             return app.response_class(json.dumps({'ok': False}), mimetype='application/json')
-        
         scores = load_scores()
-        
-        # Check if player already has a higher score
         existing = next((s for s in scores if s.get('name','').lower() == name.lower()), None)
         if existing:
             if score > existing.get('score', 0):
                 existing['score'] = score
                 existing['island'] = island
                 existing['level'] = level
-                existing['date'] = _datetime_str()
+                existing['date'] = datetime.now().strftime('%b %d, %Y')
         else:
             scores.append({
-                'name': name,
-                'score': score,
-                'island': island,
-                'level': level,
-                'date': _datetime_str()
+                'name': name, 'score': score, 'island': island,
+                'level': level, 'date': datetime.now().strftime('%b %d, %Y')
             })
-        
         scores.sort(key=lambda x: x.get('score', 0), reverse=True)
-        scores = scores[:100]  # Keep top 100
+        scores = scores[:100]
         save_scores(scores)
-        
         rank = next((i+1 for i, s in enumerate(scores) if s.get('name','').lower() == name.lower()), 0)
         return app.response_class(json.dumps({'ok': True, 'rank': rank}), mimetype='application/json')
     except Exception as e:
         print('Score post error:', e)
-        return app.response_class(json.dumps({'ok': False, 'error': str(e)}), status=500, mimetype='application/json')
-
-def _datetime_str():
-    from datetime import datetime
-    return datetime.now().strftime('%b %d, %Y')
+        return app.response_class(json.dumps({'ok': False}), status=500, mimetype='application/json')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
