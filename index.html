@@ -6327,12 +6327,13 @@ window.addEventListener('DOMContentLoaded', function(){
     animation: fgbBob 2.5s ease-in-out infinite;
     filter: drop-shadow(0 8px 24px rgba(249,115,22,0.5));
   }
-  /* Mobile — move higher so always visible above nav bars */
+  /* Mobile — fixed top left, always follows scroll */
   @media (max-width: 768px) {
     #fgbWrap {
-      bottom: auto;
-      top: 80px;
-      left: 12px;
+      position: fixed !important;
+      bottom: auto !important;
+      top: 75px !important;
+      left: 12px !important;
     }
   }
   @keyframes fgbBob {
@@ -6447,7 +6448,7 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 </style>
 
-<div id="fgbWrap">
+<div id="fgbWrap" style="position:fixed;z-index:999999;will-change:transform;">
   <span id="fgbClose" onclick="document.getElementById('fgbWrap').classList.add('hidden');">✕</span>
   <a id="fgbBtn" href="/memorygame">
     <div class="fgb-circle">🧠</div>
