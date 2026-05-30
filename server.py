@@ -161,6 +161,10 @@ def icon_image(num):
 def hula_crush():
     return send_from_directory('.', 'hulaCrush.html')
 
+@app.route('/memorygame')
+def memory_game():
+    return send_from_directory('.', 'hulaCrush.html')
+
 # ── HAWAII CHARITIES ──
 @app.route('/hawaiicharities')
 def hawaii_charities():
