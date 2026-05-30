@@ -139,10 +139,22 @@ def sitemap():
 def robots():
     return send_from_directory(".", "robots.txt")
 
-# ── FRUIT IMAGES FOR ALOHA MEMORY GAME ──
+# ── STATIC IMAGE ROUTES ──
 @app.route('/fruit-<int:num>.jpg')
 def fruit_image(num):
     return send_from_directory('.', 'fruit-' + str(num) + '.jpg')
+
+@app.route('/<int:num>.jpg')
+def photo_image(num):
+    return send_from_directory('.', str(num) + '.jpg')
+
+@app.route('/808-<int:num>.jpg')
+def photo_808(num):
+    return send_from_directory('.', '808-' + str(num) + '.jpg')
+
+@app.route('/icon-<int:num>.png')
+def icon_image(num):
+    return send_from_directory('.', 'icon-' + str(num) + '.png')
 
 # ── HULA CRUSH / ALOHA MEMORY GAME ──
 @app.route('/hulacrush')
