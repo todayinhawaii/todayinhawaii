@@ -38,13 +38,50 @@
     }
     #nameScreen select option { background: #0a2e44; }
     #startBtn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg,#22d3ee,#a78bfa);
-      border: none; border-radius: 12px;
-      color: #fff; font-size: 15px; font-weight: 700;
-      cursor: pointer; font-family: inherit;
+      width: 100%;
+      padding: 16px 14px;
+      background: linear-gradient(180deg,
+        #88ffcc 0%,
+        #22d3ee 20%,
+        #0ea5c9 50%,
+        #0878a0 80%,
+        #22d3ee 100%);
+      border: none;
+      border-radius: 16px;
+      color: #003344;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      box-shadow:
+        0 1px 0 #fff8 inset,
+        0 -2px 0 #0004 inset,
+        0 6px 0 #056080,
+        0 8px 12px rgba(0,0,0,0.5),
+        0 0 20px rgba(34,211,238,0.3);
+      transform: translateY(0);
+      transition: all 0.1s;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
     }
-    #startBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #startBtn:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 #fff8 inset, 0 -2px 0 #0004 inset,
+        0 2px 0 #056080, 0 3px 6px rgba(0,0,0,0.4);
+    }
+    #startBtn::before { content: '🌺'; margin-right: 8px; }
+    #startBtn::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 8px; right: 8px; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
+    }
+    #startBtn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     #gameArea { display: none; width: 100%; max-width: 400px; }
 
@@ -171,36 +208,133 @@
     .c8 { background: rgba(16,185,129,0.1)!important; border-color: rgba(16,185,129,0.2)!important; }
     .c9 { background: rgba(251,191,36,0.1)!important; border-color: rgba(251,191,36,0.2)!important; }
 
+    /* ═══ VEGAS SLOT MACHINE BUTTONS ═══ */
+
+    /* START button — gold 3D slot machine */
     #playBtn {
-      width: 100%; padding: 14px;
-      background: linear-gradient(135deg,#22d3ee,#a78bfa);
-      border: none; border-radius: 13px;
-      color: #fff; font-size: 15px; font-weight: 800;
-      cursor: pointer; font-family: inherit; margin-bottom: 10px;
-      transition: all 0.2s;
+      width: 100%;
+      padding: 18px 14px;
+      background: linear-gradient(180deg,
+        #ffe566 0%,
+        #f5c800 20%,
+        #e6a800 50%,
+        #c87800 80%,
+        #f5c800 100%);
+      border: none;
+      border-radius: 16px;
+      color: #5a2d00;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      /* 3D effect */
+      box-shadow:
+        0 1px 0 #fff8 inset,
+        0 -2px 0 #0004 inset,
+        0 6px 0 #8b5000,
+        0 8px 12px rgba(0,0,0,0.5),
+        0 0 20px rgba(255,200,0,0.3);
+      transform: translateY(0);
+      transition: all 0.1s;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.4);
     }
+    #playBtn:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 #fff8 inset,
+        0 -2px 0 #0004 inset,
+        0 2px 0 #8b5000,
+        0 3px 6px rgba(0,0,0,0.4);
+    }
+    #playBtn::before {
+      content: '🎰';
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    #playBtn::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 8px; right: 8px; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.35), transparent);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
+    }
+
+    /* Flashing animation */
     #playBtn.flashing {
-      animation: btnFlash 0.7s ease-in-out infinite;
+      animation: vegasFlash 0.8s ease-in-out infinite;
     }
-    @keyframes btnFlash {
+    @keyframes vegasFlash {
       0%,100% {
-        background: linear-gradient(135deg,#22d3ee,#a78bfa);
-        box-shadow: 0 0 0 rgba(34,211,238,0);
-        transform: scale(1);
+        box-shadow:
+          0 1px 0 #fff8 inset, 0 -2px 0 #0004 inset,
+          0 6px 0 #8b5000, 0 8px 12px rgba(0,0,0,0.5),
+          0 0 20px rgba(255,200,0,0.3);
+        transform: translateY(0) scale(1);
       }
       50% {
-        background: linear-gradient(135deg,#fbbf24,#f97316);
-        box-shadow: 0 0 24px rgba(251,191,36,0.8), 0 0 48px rgba(249,115,22,0.4);
-        transform: scale(1.04);
+        box-shadow:
+          0 1px 0 #fff8 inset, 0 -2px 0 #0004 inset,
+          0 6px 0 #8b5000, 0 8px 20px rgba(0,0,0,0.5),
+          0 0 40px rgba(255,200,0,0.9),
+          0 0 80px rgba(255,150,0,0.5);
+        transform: translateY(0) scale(1.03);
       }
     }
+
+    /* END GAME button — red retro Vegas style */
     #endBtn {
-      width: 100%; padding: 11px;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.25);
-      border-radius: 12px; color: #f87171;
-      font-size: 13px; font-weight: 700;
-      cursor: pointer; font-family: inherit; margin-bottom: 14px;
+      width: 100%;
+      padding: 15px 14px;
+      background: linear-gradient(180deg,
+        #ff6666 0%,
+        #ee2222 20%,
+        #cc0000 50%,
+        #990000 80%,
+        #ee2222 100%);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      box-shadow:
+        0 1px 0 #fff6 inset,
+        0 -2px 0 #0004 inset,
+        0 6px 0 #660000,
+        0 8px 12px rgba(0,0,0,0.5),
+        0 0 15px rgba(255,0,0,0.2);
+      transform: translateY(0);
+      transition: all 0.1s;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    #endBtn:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 #fff6 inset, 0 -2px 0 #0004 inset,
+        0 2px 0 #660000, 0 3px 6px rgba(0,0,0,0.4);
+    }
+    #endBtn::before {
+      content: '🏁';
+      margin-right: 8px;
+      font-size: 15px;
+    }
+    #endBtn::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 8px; right: 8px; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
     }
 
     /* Leaderboard */
@@ -370,7 +504,7 @@
         <option value="Other">🌍 Other Country</option>
       </optgroup>
     </select>
-    <button id="startBtn" onclick="startGame()" disabled>🧠 Start Training!</button>
+    <button id="startBtn" onclick="startGame()" disabled>Start Training!</button>
   </div>
 
   <!-- Game Area -->
@@ -383,10 +517,10 @@
     <div id="status">Press Start Round to begin! 🌺</div>
     <div id="grid"></div>
     <button id="playBtn" onclick="startRound()">
-      <div style="font-size:20px;font-weight:900;letter-spacing:1px;">START</div>
-      <div style="font-size:12px;font-weight:600;opacity:0.85;margin-top:2px;" id="roundLabel">Round One · 2 Tiles</div>
+      <div style="font-size:18px;font-weight:900;letter-spacing:2px;">START</div>
+      <div style="font-size:11px;font-weight:700;opacity:0.8;margin-top:3px;letter-spacing:1px;" id="roundLabel">ROUND ONE · 2 TILES</div>
     </button>
-    <button id="endBtn" onclick="endSession()">🏁 End Game & Save Score</button>
+    <button id="endBtn" onclick="endSession()">End Game &amp; Save Score</button>
   </div>
 
   <div class="back"><a href="/">← Back to Today in Hawaii 🌺</a></div>
@@ -576,7 +710,7 @@ function roundComplete() {
   updateUI();
 
   const btn = document.getElementById('playBtn');
-  document.getElementById('roundLabel').textContent = 'Round ' + (ROUND_NAMES[roundNum] || roundNum) + ' · ' + (seqLen + 1) + ' Tiles';
+  document.getElementById('roundLabel').textContent = 'ROUND ' + (ROUND_NAMES[roundNum] || roundNum).toUpperCase() + ' · ' + (seqLen + 1) + ' TILES';
   btn.style.display = 'block';
   btn.classList.add('flashing'); // Flash to show ready!
   busy = false;
@@ -609,7 +743,7 @@ function roundFailed() {
 
   setTimeout(() => {
     const btn = document.getElementById('playBtn');
-    document.getElementById('roundLabel').textContent = 'Round One · 2 Tiles';
+    document.getElementById('roundLabel').textContent = 'ROUND ONE · 2 TILES';
     btn.style.display = 'block';
     setStatus('🌺 Press Start to begin again!', '#7fb3c8');
   }, 3500);
