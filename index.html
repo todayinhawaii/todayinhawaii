@@ -6311,5 +6311,123 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
+
+<!-- FLOATING MEMORY GAME BUTTON -->
+<style>
+.float-game-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  animation: floatBob 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(249,115,22,0.6));
+}
+@keyframes floatBob {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-10px) rotate(2deg); }
+}
+.float-game-btn .fgb-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(180deg,
+    #ffe566 0%,
+    #f5c800 20%,
+    #e6a800 50%,
+    #c87800 80%,
+    #f5c800 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 -2px 0 rgba(0,0,0,0.25) inset,
+    0 6px 0 #8b5000,
+    0 8px 20px rgba(0,0,0,0.5),
+    0 0 30px rgba(255,200,0,0.6),
+    0 0 60px rgba(255,150,0,0.3);
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.float-game-btn .fgb-circle::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 8px; right: 8px;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+  border-radius: 50% 50% 0 0;
+}
+.float-game-btn:active .fgb-circle {
+  transform: translateY(4px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 -2px 0 rgba(0,0,0,0.25) inset,
+    0 2px 0 #8b5000,
+    0 3px 8px rgba(0,0,0,0.4);
+}
+.float-game-btn .fgb-label {
+  margin-top: 6px;
+  background: linear-gradient(135deg,#f97316,#fbbf24);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(249,115,22,0.5);
+  font-family: system-ui, sans-serif;
+  animation: labelPulse 1.5s ease-in-out infinite;
+}
+@keyframes labelPulse {
+  0%,100% { box-shadow: 0 3px 10px rgba(249,115,22,0.5); }
+  50%      { box-shadow: 0 3px 20px rgba(249,115,22,0.9), 0 0 30px rgba(251,191,36,0.4); }
+}
+/* Tooltip on hover */
+.float-game-btn .fgb-tip {
+  position: absolute;
+  right: 85px;
+  bottom: 50%;
+  transform: translateY(50%);
+  background: rgba(6,29,44,0.95);
+  border: 1px solid rgba(249,115,22,0.4);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fbbf24;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  font-family: system-ui, sans-serif;
+}
+.float-game-btn .fgb-tip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: rgba(249,115,22,0.4);
+}
+.float-game-btn:hover .fgb-tip { opacity: 1; }
+</style>
+
+<a href="/memorygame" class="float-game-btn">
+  <div class="fgb-tip">🧠 Play The Aloha Memory Game!</div>
+  <div class="fgb-circle">🧠</div>
+  <div class="fgb-label">Play Memory Game</div>
+</a>
+<!-- END FLOATING MEMORY GAME BUTTON -->
+
 </body>
 </html>
