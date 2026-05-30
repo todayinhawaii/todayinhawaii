@@ -1,760 +1,566 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🌺 The Aloha Memory Game — Today in Hawaii</title>
-  <link rel="icon" href="/icon-192.png">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background: linear-gradient(160deg,#061d2c,#0a2e44,#061d2c);
-      min-height: 100vh;
-      font-family: system-ui, sans-serif;
-      color: #e8f4f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px;
+"""
+Today in Hawaii — Backend Server
+"""
+
+from flask import Flask, redirect, jsonify, send_from_directory, request, Response
+from flask_cors import CORS
+import csv
+import os
+import json
+import hashlib
+from datetime import datetime, date
+from collections import defaultdict
+import threading
+import schedule
+import time
+
+import sys
+sys.path.insert(0, os.path.dirname(__file__))
+try:
+    from fetch_hawaii_data import main as fetch_data
+except ImportError:
+    fetch_data = None
+
+app = Flask(__name__, static_folder=".")
+CORS(app)
+
+DATA_FILE    = os.path.join(os.path.dirname(__file__), "hawaii_data.csv")
+MANUAL_FILE  = os.path.join(os.path.dirname(__file__), "manual_data.json")
+ORIGINS_FILE = os.path.join(os.path.dirname(__file__), "origins_data.json")
+
+ADMIN_PASSWORD = "hawaii2026"
+
+
+def load_csv():
+    if not os.path.exists(DATA_FILE):
+        return []
+    with open(DATA_FILE, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def load_manual():
+    if not os.path.exists(MANUAL_FILE):
+        return None
+    with open(MANUAL_FILE) as f:
+        return json.load(f)
+
+def load_origins():
+    if not os.path.exists(ORIGINS_FILE):
+        return None
+    with open(ORIGINS_FILE) as f:
+        return json.load(f)
+
+def to_int(val):
+    try:
+        return int(val) if val and str(val).strip() else None
+    except (ValueError, AttributeError):
+        return None
+
+def generate_stable_data(today):
+    seed = int(hashlib.md5(today.isoformat().encode()).hexdigest()[:8], 16)
+    dow = today.weekday()
+    dow_mult = 1.08 if dow in (4, 5) else (1.05 if dow == 6 else (0.94 if dow == 0 else 1.0))
+    month = today.month
+    month_mult = 1.08 if month in (12, 1, 2, 3) else (1.05 if month in (6, 7, 8) else (0.92 if month in (9, 10) else 1.0))
+    bases = {
+        'Maui':       {'arr': 7000,  'dep': 6500,  'dom': 6100, 'intl': 900},
+        'Oahu':       {'arr': 15800, 'dep': 14800, 'dom': 12000, 'intl': 3800},
+        'Kauai':      {'arr': 2200,  'dep': 2050,  'dom': 1950, 'intl': 250},
+        'Big Island': {'arr': 3500,  'dep': 3250,  'dom': 2950, 'intl': 550},
     }
-    h1 { font-size: 26px; font-weight: 900; margin-bottom: 4px;
-      background: linear-gradient(135deg,#22d3ee,#a78bfa);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .sub { font-size: 12px; color: #7fb3c8; margin-bottom: 16px; }
+    islands = {}
+    for island, b in bases.items():
+        island_seed = (seed + hash(island)) % 1000
+        variation = (island_seed / 1000.0 - 0.5) * 0.16
+        arr  = int(b['arr'] * dow_mult * month_mult * (1 + variation))
+        dep  = int(b['dep'] * dow_mult * month_mult * (1 + variation * 0.9))
+        dom  = int(b['dom'] * dow_mult * month_mult * (1 + variation))
+        intl = int(b['intl'] * dow_mult * month_mult * (1 + variation * 0.7))
+        islands[island] = {
+            'arrivals': arr, 'departures': dep, 'net_flow': arr - dep,
+            'domestic': dom, 'international': intl,
+            'change_pct': round(variation * 10, 1), 'on_island_est': round(arr * 9.2)
+        }
+    return islands
 
-    #nameScreen {
-      width: 100%; max-width: 400px;
-      background: rgba(34,211,238,0.08);
-      border: 1px solid rgba(34,211,238,0.25);
-      border-radius: 20px; padding: 20px; margin-bottom: 16px;
+
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
+
+@app.route("/oahu")
+def oahu():
+    return send_from_directory(".", "oahu.html")
+
+@app.route("/maui")
+def maui():
+    return send_from_directory(".", "maui.html")
+
+@app.route("/kauai")
+def kauai():
+    return send_from_directory(".", "kauai.html")
+
+@app.route("/bigisland")
+def bigisland():
+    return send_from_directory(".", "bigisland.html")
+
+@app.route("/privacy")
+def privacy():
+    return send_from_directory(".", "privacy.html")
+
+@app.route("/about")
+def about():
+    return send_from_directory(".", "about.html")
+
+@app.route("/hiking")
+def hiking():
+    return send_from_directory(".", "hiking.html")
+
+@app.route("/beaches")
+def beaches():
+    return send_from_directory(".", "beaches.html")
+
+@app.route("/food")
+def food():
+    return send_from_directory(".", "food.html")
+
+@app.route("/admin")
+def admin():
+    return send_from_directory(".", "admin.html")
+
+@app.route("/banner.jpg")
+def banner():
+    return send_from_directory(".", "banner.jpg")
+
+@app.route("/sitemap.xml")
+def sitemap():
+    content = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.todayinhawaii.com/</loc><lastmod>2026-05-16</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.todayinhawaii.com/oahu</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.todayinhawaii.com/maui</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.todayinhawaii.com/kauai</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.todayinhawaii.com/bigisland</loc><lastmod>2026-05-16</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.todayinhawaii.com/food</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.todayinhawaii.com/beaches</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.todayinhawaii.com/hiking</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.todayinhawaii.com/about</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.todayinhawaii.com/privacy</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+</urlset>'''
+    return Response(content, mimetype='application/xml')
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(".", "robots.txt")
+
+
+@app.route("/api/today")
+def api_today():
+    today = date.today()
+    manual = load_manual()
+    if manual and manual.get('date'):
+        islands = manual.get('islands', {})
+        total_arr = sum(v.get('arrivals', 0) for v in islands.values())
+        total_dep = sum(v.get('departures', 0) for v in islands.values())
+        return jsonify({
+            "date": manual['date'], "source": "manual",
+            "updated_at": manual.get('updated_at', ''),
+            "statewide": {"arrivals": total_arr, "departures": total_dep,
+                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
+            "islands": islands,
+        })
+
+    records = load_csv()
+    if records:
+        dates = sorted(set(r["data_date"] for r in records if r["data_date"]), reverse=True)
+        if dates:
+            latest_date = dates[0]
+            latest = [r for r in records if r["data_date"] == latest_date and r["island"] != "Statewide"]
+            prev_date = dates[1] if len(dates) > 1 else None
+            prev = {r["island"]: r for r in records if r["data_date"] == prev_date} if prev_date else {}
+            islands = {}
+            for r in latest:
+                island = r["island"]
+                arr = to_int(r.get("arrivals"))
+                dep = to_int(r.get("departures"))
+                dom = to_int(r.get("domestic"))
+                intl = to_int(r.get("international"))
+                net = (arr - dep) if arr and dep else None
+                prev_arr = to_int(prev.get(island, {}).get("arrivals"))
+                change_pct = round((arr - prev_arr) / prev_arr * 100, 1) if arr and prev_arr else None
+                islands[island] = {"arrivals": arr, "departures": dep, "net_flow": net,
+                                   "domestic": dom, "international": intl,
+                                   "change_pct": change_pct, "on_island_est": round(arr * 9.2) if arr else None}
+            total_arr = sum((v["arrivals"] or 0) for v in islands.values())
+            total_dep = sum((v["departures"] or 0) for v in islands.values())
+            return jsonify({"date": latest_date, "source": "csv", "updated_at": datetime.now().isoformat(),
+                            "statewide": {"arrivals": total_arr, "departures": total_dep,
+                                          "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
+                            "islands": islands})
+
+    islands = generate_stable_data(today)
+    total_arr = sum(v['arrivals'] for v in islands.values())
+    total_dep = sum(v['departures'] for v in islands.values())
+    return jsonify({"date": today.isoformat(), "source": "estimate", "updated_at": datetime.now().isoformat(),
+                    "statewide": {"arrivals": total_arr, "departures": total_dep,
+                                  "net_flow": total_arr - total_dep, "on_island_est": round(total_arr * 9.2)},
+                    "islands": islands})
+
+
+@app.route("/api/origins")
+def api_origins():
+    origins = load_origins()
+    if origins:
+        return jsonify(origins)
+    return jsonify({"error": "No origins data"}), 404
+
+
+@app.route("/api/status")
+def api_status():
+    records = load_csv()
+    dates = sorted(set(r["data_date"] for r in records if r["data_date"]), reverse=True)
+    manual = load_manual()
+    return jsonify({"status": "ok", "records": len(records),
+                    "latest_date": dates[0] if dates else None,
+                    "manual_date": manual.get('date') if manual else None,
+                    "server_time": datetime.now().isoformat()})
+
+
+@app.route("/api/fetch-now")
+def fetch_now():
+    t = threading.Thread(target=run_daily_fetch, daemon=True)
+    t.start()
+    return jsonify({"status": "fetch started", "time": datetime.now().isoformat()})
+
+
+@app.route("/api/admin/save-daily", methods=["POST"])
+def admin_save_daily():
+    data = request.get_json()
+    if not data or data.get('password') != ADMIN_PASSWORD:
+        return jsonify({"error": "Unauthorized"}), 401
+    manual = {"date": date.today().isoformat(), "updated_at": datetime.now().isoformat(),
+              "islands": data.get('islands', {})}
+    with open(MANUAL_FILE, 'w') as f:
+        json.dump(manual, f, indent=2)
+    return jsonify({"status": "saved", "date": manual['date']})
+
+
+@app.route("/api/admin/save-origins", methods=["POST"])
+def admin_save_origins():
+    data = request.get_json()
+    if not data or data.get('password') != ADMIN_PASSWORD:
+        return jsonify({"error": "Unauthorized"}), 401
+    origins = data.get('origins', {})
+    origins['updated_at'] = datetime.now().isoformat()
+    with open(ORIGINS_FILE, 'w') as f:
+        json.dump(origins, f, indent=2)
+    return jsonify({"status": "saved"})
+
+
+@app.route("/api/admin/clear-daily", methods=["POST"])
+def admin_clear_daily():
+    data = request.get_json()
+    if not data or data.get('password') != ADMIN_PASSWORD:
+        return jsonify({"error": "Unauthorized"}), 401
+    if os.path.exists(MANUAL_FILE):
+        os.remove(MANUAL_FILE)
+    return jsonify({"status": "cleared"})
+
+
+def run_daily_fetch():
+    if fetch_data:
+        print(f"[{datetime.now()}] Running fetch...")
+        try:
+            fetch_data()
+            print(f"[{datetime.now()}] Fetch complete.")
+        except Exception as e:
+            print(f"[{datetime.now()}] Fetch error: {e}")
+
+def schedule_loop():
+    schedule.every().day.at("18:30").do(run_daily_fetch)
+    if not os.path.exists(DATA_FILE):
+        run_daily_fetch()
+    while True:
+        schedule.run_pending()
+        time.sleep(30)
+
+_scheduler_started = False
+_scheduler_lock = threading.Lock()
+
+def start_scheduler():
+    global _scheduler_started
+    with _scheduler_lock:
+        if not _scheduler_started:
+            _scheduler_started = True
+            threading.Thread(target=schedule_loop, daemon=True).start()
+
+start_scheduler()
+
+
+# ── BLOG ROUTES ──
+import json as _json
+import urllib.request as _urllib
+
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
+ADMIN_KEY = 'aloha2026'
+
+def sb_headers():
+    return {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
     }
-    #nameScreen input, #nameScreen select {
-      width: 100%; padding: 11px 14px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(34,211,238,0.2);
-      border-radius: 11px; color: #e8f4f8;
-      font-size: 15px; font-family: inherit;
-      outline: none; margin-bottom: 10px;
-    }
-    #nameScreen select option { background: #0a2e44; }
-    #startBtn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg,#22d3ee,#a78bfa);
-      border: none; border-radius: 12px;
-      color: #fff; font-size: 15px; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-    }
-    #startBtn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    #gameArea { display: none; width: 100%; max-width: 400px; }
-
-    #status {
-      text-align: center; padding: 12px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; font-size: 14px;
-      font-weight: 600; margin-bottom: 12px;
-      min-height: 46px; display: flex;
-      align-items: center; justify-content: center;
-      line-height: 1.4;
-    }
-
-    .stats {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px; margin-bottom: 12px;
-    }
-    .stat {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px; padding: 10px; text-align: center;
-    }
-    .stat-v { font-size: 22px; font-weight: 900; color: #a78bfa; }
-    .stat-l { font-size: 10px; color: #7fb3c8; margin-top: 2px; }
-
-    /* 5 columns x 6 rows = 30 tiles */
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-      width: 100%;
-    }
-
-    .tile {
-      aspect-ratio: 1;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0; /* Hidden - using images */
-      cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.06);
-      user-select: none;
-      -webkit-user-select: none;
-      transition: transform 0.1s;
-      overflow: hidden;
-    }
-    .tile img {
-      width: 85%;
-      height: 85%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 8px;
-    }
-    .tile:active { transform: scale(0.93); }
-
-    /* Pulsating color glow — gentle, no dizziness! */
-    .tile.spinning {
-      animation: gentlePulse 1.2s ease-in-out infinite !important;
-      border-color: #fbbf24 !important;
-      z-index: 2;
-    }
-    @keyframes gentlePulse {
-      0%   { transform: scale(1.1);
-             background: rgba(251,191,36,0.3) !important;
-             box-shadow: 0 0 16px rgba(251,191,36,0.6);
-             border-color: #fbbf24 !important; }
-      25%  { transform: scale(1.2);
-             background: rgba(34,211,238,0.35) !important;
-             box-shadow: 0 0 24px rgba(34,211,238,0.7);
-             border-color: #22d3ee !important; }
-      50%  { transform: scale(1.25);
-             background: rgba(167,139,250,0.35) !important;
-             box-shadow: 0 0 30px rgba(167,139,250,0.8);
-             border-color: #a78bfa !important; }
-      75%  { transform: scale(1.2);
-             background: rgba(34,197,94,0.35) !important;
-             box-shadow: 0 0 24px rgba(34,197,94,0.7);
-             border-color: #22c55e !important; }
-      100% { transform: scale(1.1);
-             background: rgba(251,191,36,0.3) !important;
-             box-shadow: 0 0 16px rgba(251,191,36,0.6);
-             border-color: #fbbf24 !important; }
-    }
-
-    .tile.dimmed { opacity: 0.15 !important; pointer-events: none; }
-
-    /* Tap flash */
-    .tile.tapped { animation: tappedAnim 0.3s ease forwards !important; }
-    @keyframes tappedAnim {
-      0%   { transform: scale(1);    filter: brightness(1); }
-      40%  { transform: scale(1.35); filter: brightness(2.5); box-shadow: 0 0 20px rgba(255,255,255,0.6); }
-      100% { transform: scale(1);    filter: brightness(1); }
-    }
-
-    /* Correct */
-    .tile.correct { animation: correctAnim 0.35s ease forwards !important; }
-    @keyframes correctAnim {
-      0%   { transform: scale(1);   filter: brightness(1); }
-      50%  { transform: scale(1.4); filter: brightness(3) hue-rotate(100deg); box-shadow: 0 0 25px rgba(34,197,94,0.9); }
-      100% { transform: scale(1);   filter: brightness(1); }
-    }
-
-    /* Wrong */
-    .tile.wrong { animation: wrongAnim 0.4s ease forwards !important; }
-    @keyframes wrongAnim {
-      0%,100% { transform: translateX(0); filter: brightness(1); }
-      25%     { transform: translateX(-8px); filter: brightness(2) hue-rotate(300deg); }
-      75%     { transform: translateX(8px);  filter: brightness(2) hue-rotate(300deg); }
-    }
-
-    /* Tile backgrounds - subtle so images stand out */
-    .c0 { background: rgba(239,68,68,0.1)!important;  border-color: rgba(239,68,68,0.2)!important; }
-    .c1 { background: rgba(249,115,22,0.1)!important; border-color: rgba(249,115,22,0.2)!important; }
-    .c2 { background: rgba(234,179,8,0.1)!important;  border-color: rgba(234,179,8,0.2)!important; }
-    .c3 { background: rgba(34,197,94,0.1)!important;  border-color: rgba(34,197,94,0.2)!important; }
-    .c4 { background: rgba(59,130,246,0.1)!important; border-color: rgba(59,130,246,0.2)!important; }
-    .c5 { background: rgba(168,85,247,0.1)!important; border-color: rgba(168,85,247,0.2)!important; }
-    .c6 { background: rgba(34,211,238,0.1)!important; border-color: rgba(34,211,238,0.2)!important; }
-    .c7 { background: rgba(236,72,153,0.1)!important; border-color: rgba(236,72,153,0.2)!important; }
-    .c8 { background: rgba(16,185,129,0.1)!important; border-color: rgba(16,185,129,0.2)!important; }
-    .c9 { background: rgba(251,191,36,0.1)!important; border-color: rgba(251,191,36,0.2)!important; }
-
-    #playBtn {
-      width: 100%; padding: 14px;
-      background: linear-gradient(135deg,#22d3ee,#a78bfa);
-      border: none; border-radius: 13px;
-      color: #fff; font-size: 15px; font-weight: 800;
-      cursor: pointer; font-family: inherit; margin-bottom: 10px;
-      transition: all 0.2s;
-    }
-    #playBtn.flashing {
-      animation: btnFlash 0.7s ease-in-out infinite;
-    }
-    @keyframes btnFlash {
-      0%,100% {
-        background: linear-gradient(135deg,#22d3ee,#a78bfa);
-        box-shadow: 0 0 0 rgba(34,211,238,0);
-        transform: scale(1);
-      }
-      50% {
-        background: linear-gradient(135deg,#fbbf24,#f97316);
-        box-shadow: 0 0 24px rgba(251,191,36,0.8), 0 0 48px rgba(249,115,22,0.4);
-        transform: scale(1.04);
-      }
-    }
-    #endBtn {
-      width: 100%; padding: 11px;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.25);
-      border-radius: 12px; color: #f87171;
-      font-size: 13px; font-weight: 700;
-      cursor: pointer; font-family: inherit; margin-bottom: 14px;
-    }
-
-    /* Leaderboard */
-    #lb {
-      width: 100%; max-width: 400px;
-      background: rgba(167,139,250,0.08);
-      border: 1px solid rgba(167,139,250,0.2);
-      border-radius: 16px; padding: 14px; margin-bottom: 14px;
-    }
-    #lb h3 { font-size: 12px; font-weight: 800; color: #a78bfa;
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
-      text-align: center; }
-    .lb-row { display: flex; align-items: center; gap: 8px;
-      padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
-    .lb-row:last-child { border: none; }
-    .lb-medal { font-size: 16px; width: 24px; }
-    .lb-name { flex: 1; font-weight: 700; }
-    .lb-loc { font-size: 10px; color: #7fb3c8; }
-    .lb-score { font-weight: 900; color: #a78bfa; }
-
-    /* Particles */
-    .particle { position: fixed; pointer-events: none; z-index: 999;
-      animation: pfly 0.9s ease forwards; }
-    @keyframes pfly {
-      0%   { opacity: 1; transform: translate(0,0) scale(1); }
-      100% { opacity: 0; transform: translate(var(--tx),var(--ty)) scale(0.2); }
-    }
-
-    .back { font-size: 13px; color: #7fb3c8; margin-top: 8px; }
-    .back a { color: #22d3ee; text-decoration: none; }
-    .mute { position: fixed; bottom: 16px; right: 16px;
-      width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      font-size: 18px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; }
-  </style>
-</head>
-<body>
-
-  <div style="font-size:36px;margin-bottom:4px;">🧠</div>
-  <h1>The Aloha Memory Game</h1>
-  <p class="sub">Hawaii's brain training game · Today in Hawaii 🌺</p>
-
-  <!-- How to play -->
-  <div style="width:100%;max-width:400px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:16px;padding:16px 18px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:14px;font-weight:800;color:#22d3ee;margin-bottom:10px;letter-spacing:0.3px;">🧠 How to Play</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;">
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:10px;">
-        <div style="font-size:18px;margin-bottom:4px;">👀</div>
-        <div style="font-size:12px;font-weight:700;color:#e8f4f8;margin-bottom:2px;">Watch</div>
-        <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Tiles glow one by one — remember which ones and in what order!</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:10px;">
-        <div style="font-size:18px;margin-bottom:4px;">👆</div>
-        <div style="font-size:12px;font-weight:700;color:#e8f4f8;margin-bottom:2px;">Repeat</div>
-        <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Tap the same tiles in the exact same order!</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:10px;">
-        <div style="font-size:18px;margin-bottom:4px;">🎯</div>
-        <div style="font-size:12px;font-weight:700;color:#e8f4f8;margin-bottom:2px;">Score</div>
-        <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">Each correct round adds points — the longer the sequence the more you score!</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:10px;">
-        <div style="font-size:18px;margin-bottom:4px;">❌</div>
-        <div style="font-size:12px;font-weight:700;color:#e8f4f8;margin-bottom:2px;">Wrong?</div>
-        <div style="font-size:11px;color:#7fb3c8;line-height:1.5;">One wrong tap and you start over from Round One — no second chances!</div>
-      </div>
-    </div>
-    <div style="margin-top:10px;font-size:11px;color:#a78bfa;font-weight:600;">🌺 Great for memory training · Perfect for all ages!</div>
-  </div>
-
-  <!-- Leaderboard -->
-  <div id="lb">
-    <h3>🏆 Hawaii Leaderboard</h3>
-    <div id="lbList"><div style="color:#7fb3c8;font-size:12px;text-align:center;padding:8px;">Loading... 🌺</div></div>
-  </div>
-
-  <!-- Name Screen -->
-  <div id="nameScreen">
-    <div style="font-size:14px;font-weight:700;color:#22d3ee;margin-bottom:12px;text-align:center;">🌺 Enter your details to play!</div>
-    <input type="text" id="pName" placeholder="Your name..." maxlength="20">
-    <select id="pLoc">
-      <option value="">📍 Where are you from?</option>
-      <optgroup label="🌺 Hawaii">
-        <option value="Maui, Hawaii">🌺 Maui</option>
-        <option value="Oahu, Hawaii">🌊 Oahu</option>
-        <option value="Kauai, Hawaii">🌿 Kauai</option>
-        <option value="Big Island, Hawaii">🌋 Big Island</option>
-        <option value="Molokai, Hawaii">🌴 Molokai</option>
-        <option value="Lanai, Hawaii">🌸 Lanai</option>
-      </optgroup>
-      <optgroup label="🇺🇸 USA States">
-        <option value="Alabama, USA">Alabama</option>
-        <option value="Alaska, USA">Alaska</option>
-        <option value="Arizona, USA">Arizona</option>
-        <option value="Arkansas, USA">Arkansas</option>
-        <option value="California, USA">California</option>
-        <option value="Colorado, USA">Colorado</option>
-        <option value="Connecticut, USA">Connecticut</option>
-        <option value="Delaware, USA">Delaware</option>
-        <option value="Florida, USA">Florida</option>
-        <option value="Georgia, USA">Georgia</option>
-        <option value="Idaho, USA">Idaho</option>
-        <option value="Illinois, USA">Illinois</option>
-        <option value="Indiana, USA">Indiana</option>
-        <option value="Iowa, USA">Iowa</option>
-        <option value="Kansas, USA">Kansas</option>
-        <option value="Kentucky, USA">Kentucky</option>
-        <option value="Louisiana, USA">Louisiana</option>
-        <option value="Maine, USA">Maine</option>
-        <option value="Maryland, USA">Maryland</option>
-        <option value="Massachusetts, USA">Massachusetts</option>
-        <option value="Michigan, USA">Michigan</option>
-        <option value="Minnesota, USA">Minnesota</option>
-        <option value="Mississippi, USA">Mississippi</option>
-        <option value="Missouri, USA">Missouri</option>
-        <option value="Montana, USA">Montana</option>
-        <option value="Nebraska, USA">Nebraska</option>
-        <option value="Nevada, USA">Nevada</option>
-        <option value="New Hampshire, USA">New Hampshire</option>
-        <option value="New Jersey, USA">New Jersey</option>
-        <option value="New Mexico, USA">New Mexico</option>
-        <option value="New York, USA">New York</option>
-        <option value="North Carolina, USA">North Carolina</option>
-        <option value="North Dakota, USA">North Dakota</option>
-        <option value="Ohio, USA">Ohio</option>
-        <option value="Oklahoma, USA">Oklahoma</option>
-        <option value="Oregon, USA">Oregon</option>
-        <option value="Pennsylvania, USA">Pennsylvania</option>
-        <option value="Rhode Island, USA">Rhode Island</option>
-        <option value="South Carolina, USA">South Carolina</option>
-        <option value="South Dakota, USA">South Dakota</option>
-        <option value="Tennessee, USA">Tennessee</option>
-        <option value="Texas, USA">Texas</option>
-        <option value="Utah, USA">Utah</option>
-        <option value="Vermont, USA">Vermont</option>
-        <option value="Virginia, USA">Virginia</option>
-        <option value="Washington, USA">Washington State</option>
-        <option value="Washington DC, USA">Washington DC</option>
-        <option value="West Virginia, USA">West Virginia</option>
-        <option value="Wisconsin, USA">Wisconsin</option>
-        <option value="Wyoming, USA">Wyoming</option>
-      </optgroup>
-      <optgroup label="🌍 Countries">
-        <option value="Australia">🇦🇺 Australia</option>
-        <option value="Brazil">🇧🇷 Brazil</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="China">🇨🇳 China</option>
-        <option value="France">🇫🇷 France</option>
-        <option value="Germany">🇩🇪 Germany</option>
-        <option value="India">🇮🇳 India</option>
-        <option value="Ireland">🇮🇪 Ireland</option>
-        <option value="Italy">🇮🇹 Italy</option>
-        <option value="Japan">🇯🇵 Japan</option>
-        <option value="Mexico">🇲🇽 Mexico</option>
-        <option value="Netherlands">🇳🇱 Netherlands</option>
-        <option value="New Zealand">🇳🇿 New Zealand</option>
-        <option value="Norway">🇳🇴 Norway</option>
-        <option value="Philippines">🇵🇭 Philippines</option>
-        <option value="Portugal">🇵🇹 Portugal</option>
-        <option value="South Korea">🇰🇷 South Korea</option>
-        <option value="Spain">🇪🇸 Spain</option>
-        <option value="Sweden">🇸🇪 Sweden</option>
-        <option value="Thailand">🇹🇭 Thailand</option>
-        <option value="United Kingdom">🇬🇧 United Kingdom</option>
-        <option value="Other">🌍 Other Country</option>
-      </optgroup>
-    </select>
-    <button id="startBtn" onclick="startGame()" disabled>🧠 Start Training!</button>
-  </div>
-
-  <!-- Game Area -->
-  <div id="gameArea">
-    <div class="stats">
-      <div class="stat"><div class="stat-v" id="scoreVal">0</div><div class="stat-l">🎯 Score</div></div>
-      <div class="stat"><div class="stat-v" id="roundVal">1</div><div class="stat-l">🔢 Round</div></div>
-      <div class="stat"><div class="stat-v" id="totalVal">0</div><div class="stat-l">🏆 All Time</div></div>
-    </div>
-    <div id="status">Press Start Round to begin! 🌺</div>
-    <div id="grid"></div>
-    <button id="playBtn" onclick="startRound()">
-      <div style="font-size:20px;font-weight:900;letter-spacing:1px;">START</div>
-      <div style="font-size:12px;font-weight:600;opacity:0.85;margin-top:2px;" id="roundLabel">Round One · 2 Tiles</div>
-    </button>
-    <button id="endBtn" onclick="endSession()">🏁 End Game & Save Score</button>
-  </div>
-
-  <div class="back"><a href="/">← Back to Today in Hawaii 🌺</a></div>
-  <button class="mute" id="muteBtn" onclick="toggleMute()">🔊</button>
-
-<script>
-// ═══════════════════════════════════════════
-// ALOHA MEMORY — Today in Hawaii © 2026
-// ═══════════════════════════════════════════
-
-// Fruit images from GitHub — fruit-1.jpg to fruit-30.jpg
-const IMAGES = Array.from({length: 30}, (_, i) => '/fruit-' + (i + 1) + '.jpg');
-const TOTAL = 30;
-const ROUND_NAMES = ['','One','Two','Three','Four','Five','Six','Seven',
-  'Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen',
-  'Sixteen','Seventeen','Eighteen','Nineteen','Twenty'];
-
-let playerName = '', playerLoc = '';
-let sequence = [], playerInput = [];
-let score = 0, totalScore = 0, roundNum = 1, seqLen = 2;
-let busy = false;
-let muted = false;
-
-// ── Name entry ──────────────────────────────
-document.getElementById('pName').addEventListener('input', checkReady);
-document.getElementById('pLoc').addEventListener('change', checkReady);
-function checkReady() {
-  const ok = document.getElementById('pName').value.trim().length >= 2
-          && document.getElementById('pLoc').value;
-  document.getElementById('startBtn').disabled = !ok;
-}
-
-function startGame() {
-  playerName = document.getElementById('pName').value.trim();
-  playerLoc  = document.getElementById('pLoc').value;
-  if (!playerName || !playerLoc) return;
-  document.getElementById('nameScreen').style.display = 'none';
-  document.getElementById('gameArea').style.display   = 'block';
-  try {
-    const saved = JSON.parse(localStorage.getItem('aloha_' + playerName) || '{}');
-    totalScore = saved.totalScore || 0;
-  } catch(e) {}
-  buildGrid();
-  updateUI();
-  setStatus('👆 Press START to begin! 🌺', '#fbbf24');
-  setTimeout(() => {
-    document.getElementById('playBtn').classList.add('flashing');
-  }, 300);
-  
-}
-
-// ── Build grid ──────────────────────────────
-function buildGrid() {
-  const g = document.getElementById('grid');
-  g.innerHTML = '';
-  for (let i = 0; i < TOTAL; i++) {
-    const div = document.createElement('div');
-    div.className = 'tile c' + (i % 10);
-    div.id = 'tile' + i;
-    div.dataset.idx = i;
-
-    // Add fruit image
-    const img = document.createElement('img');
-    img.src = IMAGES[i % IMAGES.length];
-    img.alt = 'tile ' + (i + 1);
-    img.loading = 'lazy';
-    div.appendChild(img);
-
-    div.addEventListener('click', () => onTap(i));
-    g.appendChild(div);
-  }
-}
-function tile(i) { return document.getElementById('tile' + i); }
-
-// ── Start round ─────────────────────────────
-function startRound() {
-  if (busy) return;
-  busy = true;
-  const btn = document.getElementById('playBtn');
-  btn.classList.remove('flashing'); // Stop flashing
-  btn.style.display = 'none';
-
-  // Build sequence
-  if (sequence.length === 0) {
-    let a = rand(), b;
-    do { b = rand(); } while (b === a);
-    sequence = [a, b];
-    seqLen = 2;
-  } else {
-    let next;
-    do { next = rand(); } while (next === sequence[sequence.length - 1]);
-    sequence.push(next);
-    seqLen = sequence.length;
-  }
-
-  playerInput = [];
-  
-  setStatus('👀 Watch carefully — ' + seqLen + ' tile' + (seqLen > 1 ? 's' : '') + '!', '#22d3ee');
-  dimAll(true);
-  setTimeout(() => showNext(0), 1000);
-}
-
-function rand() { return Math.floor(Math.random() * TOTAL); }
-
-// ── Show sequence ────────────────────────────
-function showNext(i) {
-  if (i >= sequence.length) {
-    dimAll(false);
-    busy = false;
-    playerInput = [];
-    setStatus('🎯 Your turn! Tap the tiles in the same order!', '#4ade80');
-    
-    return;
-  }
-  const idx = sequence[i];
-  const t = tile(idx);
-  t.classList.remove('dimmed');
-  t.classList.add('spinning');
-  setStatus('👀 Tile ' + (i+1) + ' of ' + sequence.length + ' — remember this one!', '#22d3ee');
-  playNote(idx);
-  setTimeout(() => {
-    t.classList.remove('spinning');
-    t.classList.add('dimmed');
-    setTimeout(() => showNext(i + 1), 500);
-  }, 2500);
-}
-
-// ── Player taps ─────────────────────────────
-function onTap(idx) {
-  if (busy) return;
-  if (playerInput.length >= sequence.length) return;
-
-  const t = tile(idx);
-  const pos = playerInput.length;
-
-  // Flash and sound on EVERY tap
-  t.classList.add('tapped');
-  playNote(idx);
-  setTimeout(() => t.classList.remove('tapped'), 300);
-
-  playerInput.push(idx);
-
-  if (idx === sequence[pos]) {
-    // ✅ Correct!
-    setTimeout(() => {
-      t.classList.add('correct');
-      setTimeout(() => t.classList.remove('correct'), 350);
-    }, 80);
-    playCorrectTap(pos);
-
-    if (playerInput.length === sequence.length) {
-      busy = true;
-      setTimeout(() => roundComplete(), 500);
-    }
-  } else {
-    // ❌ Wrong!
-    setTimeout(() => {
-      t.classList.add('wrong');
-      setTimeout(() => t.classList.remove('wrong'), 400);
-    }, 80);
-    playWrongSound();
-    busy = true;
-    setTimeout(() => roundFailed(), 600);
-  }
-}
-
-// ── Round complete ───────────────────────────
-function roundComplete() {
-  const pts = seqLen * 10;
-  score += pts;
-  totalScore += pts;
-  saveProgress();
-  celebrate();
-  playWin();
-
-  const roundName = ROUND_NAMES[roundNum + 1] || (roundNum + 1);
-  
-  setStatus('✅ PERFECT!! +' + pts + ' points!! 🎉', '#4ade80');
-
-  roundNum++;
-  updateUI();
-
-  const btn = document.getElementById('playBtn');
-  document.getElementById('roundLabel').textContent = 'Round ' + (ROUND_NAMES[roundNum] || roundNum) + ' · ' + (seqLen + 1) + ' Tiles';
-  btn.style.display = 'block';
-  btn.classList.add('flashing'); // Flash to show ready!
-  busy = false;
-
-  // Auto start next round after 2.5 seconds
-  setTimeout(() => { if (!busy) startRound(); }, 2500);
-}
-
-// ── Round failed ─────────────────────────────
-function roundFailed() {
-  dimAll(true);
-  setTimeout(() => dimAll(false), 200);
-
-
-
-  setStatus('❌ ' + (score > 0
-    ? 'You scored ' + score + ' points! Good effort! 🌺 Press Start to try again!'
-    : 'Never mind! Press Start to try again! 🌺'), '#f87171');
-
-  
-
-  // Reset state
-  sequence = [];
-  playerInput = [];
-  roundNum = 1;
-  seqLen = 2;
-  score = 0;
-  busy = false;
-  updateUI();
-
-  setTimeout(() => {
-    const btn = document.getElementById('playBtn');
-    document.getElementById('roundLabel').textContent = 'Round One · 2 Tiles';
-    btn.style.display = 'block';
-    setStatus('🌺 Press Start to begin again!', '#7fb3c8');
-  }, 3500);
-}
-
-// ── End session ──────────────────────────────
-function endSession() {
-  saveProgress();
-  submitScore();
-  
-  setStatus('🌺 Score saved! All-time total: ' + totalScore.toLocaleString() + ' pts — come back tomorrow! 🧠', '#fbbf24');
-}
-
-// ── Helpers ──────────────────────────────────
-function dimAll(on) {
-  for (let i = 0; i < TOTAL; i++) {
-    const t = tile(i);
-    if (!t) continue;
-    if (on) { t.classList.add('dimmed'); t.classList.remove('spinning'); }
-    else     { t.classList.remove('dimmed'); }
-  }
-}
-
-function setStatus(msg, color) {
-  const el = document.getElementById('status');
-  el.textContent = msg;
-  el.style.borderColor = color || 'rgba(255,255,255,0.1)';
-  el.style.color = color || '#e8f4f8';
-}
-
-function updateUI() {
-  document.getElementById('scoreVal').textContent = score.toLocaleString();
-  document.getElementById('roundVal').textContent = roundNum;
-  document.getElementById('totalVal').textContent = totalScore.toLocaleString();
-}
-
-function saveProgress() {
-  try { localStorage.setItem('aloha_' + playerName, JSON.stringify({ totalScore })); } catch(e) {}
-}
-
-function celebrate() {
-  const em = ['🌺','⭐','✨','🎉','💫','🌸','🤙'];
-  for (let i = 0; i < 14; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.fontSize = (16 + Math.random() * 16) + 'px';
-    p.style.left = (15 + Math.random() * 70) + '%';
-    p.style.top  = (20 + Math.random() * 40) + '%';
-    const ang = Math.random() * Math.PI * 2;
-    const d = 60 + Math.random() * 80;
-    p.style.setProperty('--tx', Math.cos(ang) * d + 'px');
-    p.style.setProperty('--ty', Math.sin(ang) * d + 'px');
-    p.style.animationDuration = (0.6 + Math.random() * 0.5) + 's';
-    p.style.animationDelay = (Math.random() * 0.2) + 's';
-    p.textContent = em[Math.floor(Math.random() * em.length)];
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 1200);
-  }
-}
-
-// ── Sound ────────────────────────────────────
-let audioCtx = null;
-function getAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
-}
-
-function playTone(freq, type, vol, dur, delay) {
-  if (muted) return;
-  delay = delay || 0;
-  try {
-    const c = getAudio();
-    const o = c.createOscillator(), g = c.createGain();
-    o.connect(g); g.connect(c.destination);
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(0, c.currentTime + delay);
-    g.gain.linearRampToValueAtTime(vol, c.currentTime + delay + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + dur);
-    o.start(c.currentTime + delay);
-    o.stop(c.currentTime + delay + dur + 0.01);
-  } catch(e) {}
-}
-
-const NOTES = [261,293,329,349,392,440,493,523,587,659,
-               698,784,880,988,1047,523,659,784,880,1047,
-               349,392,440,494,523,587,659,784,880,988];
-
-function playNote(idx) {
-  const f = NOTES[idx % NOTES.length];
-  playTone(f, 'sine', 0.4, 0.6);
-  playTone(f * 2, 'triangle', 0.15, 0.3, 0.05);
-}
-
-const CORRECT_NOTES = [392,440,494,523,587,659,784,880,988,1047,1175,1319];
-function playCorrectTap(pos) {
-  const f = CORRECT_NOTES[pos % CORRECT_NOTES.length];
-  playTone(f, 'sine', 0.5, 0.2);
-  playTone(f * 1.5, 'triangle', 0.2, 0.12, 0.04);
-  setTimeout(() => playTone(f * 2, 'sine', 0.1, 0.1), 70);
-}
-
-function playWin() {
-  [523,659,784,1047,1319].forEach((f,i) => playTone(f,'sine',0.5,0.25,i*0.08));
-}
-function playWrongSound() {
-  // Dramatic wrong buzzer!
-  playTone(220,'sawtooth',0.4,0.15);
-  setTimeout(() => playTone(180,'sawtooth',0.4,0.15), 120);
-  setTimeout(() => playTone(150,'sawtooth',0.5,0.3), 240);
-  setTimeout(() => playTone(110,'sawtooth',0.3,0.4), 380);
-}
-function toggleMute() {
-  muted = !muted;
-  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
-}
-
-// Voice removed — using sounds and flashing button instead!
-
-// ── Leaderboard ──────────────────────────────
-async function loadLeaderboard() {
-  try {
-    const res = await fetch('/api/hula-scores');
-    const data = await res.json();
-    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
-    document.getElementById('lbList').innerHTML = !data.length
-      ? '<div style="color:#7fb3c8;font-size:12px;text-align:center;padding:8px;">Be the first champion! 🌺</div>'
-      : data.slice(0,5).map((s,i) => `
-        <div class="lb-row">
-          <span class="lb-medal">${medals[i]||i+1}</span>
-          <div style="flex:1"><div class="lb-name">${s.name}</div>
-          <div class="lb-loc">📍 ${s.island}</div></div>
-          <span class="lb-score">${Number(s.score).toLocaleString()}</span>
-        </div>`).join('');
-  } catch(e) {
-    document.getElementById('lbList').innerHTML =
-      '<div style="color:#7fb3c8;font-size:12px;text-align:center;">Play to get on the board! 🌺</div>';
-  }
-}
-
-async function submitScore() {
-  if (!playerName || totalScore <= 0) return;
-  try {
-    await fetch('/api/hula-scores', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ name:playerName, score:totalScore, island:playerLoc, level:roundNum })
-    });
-    loadLeaderboard();
-  } catch(e) {}
-}
-
-loadLeaderboard();
-setInterval(loadLeaderboard, 30000);
-</script>
-</body>
-</html>
+
+def load_posts():
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?select=*&status=eq.published&order=date.desc',
+            headers=sb_headers()
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        return _json.loads(r.read().decode())
+    except Exception as e:
+        print('Supabase load error:', e)
+        return []
+
+def load_all_posts():
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?select=*&order=date.desc',
+            headers=sb_headers()
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        return _json.loads(r.read().decode())
+    except Exception as e:
+        print('Supabase load error:', e)
+        return []
+
+def save_post(post):
+    try:
+        data = _json.dumps(post).encode()
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts',
+            data=data,
+            headers={**sb_headers(), 'Prefer': 'resolution=merge-duplicates,return=representation'},
+            method='POST'
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        return _json.loads(r.read().decode())
+    except Exception as e:
+        print('Supabase save error:', e)
+        return None
+
+def delete_post_db(post_id):
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?id=eq.' + post_id,
+            headers=sb_headers(),
+            method='DELETE'
+        )
+        _urllib.urlopen(req, timeout=5)
+        return True
+    except Exception as e:
+        print('Supabase delete error:', e)
+        return False
+def check_admin(req):
+    return req.headers.get('X-Admin-Key') == ADMIN_KEY
+
+@app.route('/blog')
+def blog_index():
+    return send_from_directory('.', 'blog.html')
+
+@app.route('/blog/admin')
+def blog_admin():
+    return send_from_directory('.', 'blog_admin.html')
+
+@app.route('/blog/posts', methods=['GET'])
+def get_posts():
+    posts = load_posts()
+    return app.response_class(_json.dumps(posts), mimetype='application/json')
+
+@app.route('/blog/all-posts', methods=['GET'])
+def get_all_posts():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    posts = load_all_posts()
+    return app.response_class(_json.dumps(posts), mimetype='application/json')
+
+@app.route('/blog/post/<slug>', methods=['GET'])
+def get_post(slug):
+    try:
+        req = _urllib.Request(
+            SUPABASE_URL + '/rest/v1/posts?slug=eq.' + slug + '&status=eq.published&select=*',
+            headers=sb_headers()
+        )
+        r = _urllib.urlopen(req, timeout=5)
+        posts = _json.loads(r.read().decode())
+        if not posts:
+            return app.response_class('{"error":"Not found"}', status=404, mimetype='application/json')
+        return app.response_class(_json.dumps(posts[0]), mimetype='application/json')
+    except Exception as e:
+        return app.response_class('{"error":"Server error"}', status=500, mimetype='application/json')
+
+@app.route('/blog/posts', methods=['POST'])
+def create_post():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    result = save_post(request.get_json())
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/posts', methods=['PUT'])
+def update_post():
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    result = save_post(request.get_json())
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/posts/<post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    if not check_admin(request):
+        return app.response_class('{"error":"Unauthorized"}', status=401, mimetype='application/json')
+    delete_post_db(post_id)
+    return app.response_class('{"ok":true}', mimetype='application/json')
+
+@app.route('/blog/<path:slug>')
+def blog_post_view(slug):
+    return send_from_directory('.', 'blog_post.html')
+
+
+# ── EMAIL SIGNUP ──
+MAILERLITE_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZWU4NzYwOWE5MTViZTMyZTE0NThiOWM5MDA3NTIxMzc2Zjk1OTFhZDdjY2ZjZTI0YjM5ZjA4OWJlZTQ4OGM2M2Q5MGI4YWU3MTAwN2Y2MDUiLCJpYXQiOjE3NzkxMjE2NzcuNjY5NjM2LCJuYmYiOjE3NzkxMjE2NzcuNjY5NjM5LCJleHAiOjQ5MzQ3OTUyNzcuNjYzMjU1LCJzdWIiOiIyMzc3NDc0Iiwic2NvcGVzIjpbXX0.PfkFmcHyhw9ERRgjh3r1UQA7nsBUI2Z2_qJvGehr15ioVFoOvfrdiGhcvbUPe5v-Lp1aooEa_aCeUzBzrFi3Nl3Iz6b-R9k7ULZuSX3boIAOwWGsHO4jrZkrW9tlZUL8zf5rtOBRdMfjfOaI5XGo0hew5QTqoyCzq-Jp-iVAOkzeHa2xAtxZos0psmgRnrz8EUmRm9WvAGMjGpJHUjb1zn3Do73QCI_2z81CMcouFJ7GREJTPC0PnSYvWjl5Z2xtCGfihGGsKG_rUbrpTKB4DsIp-MLErXS9KAeuggJVvLerrf5GLT3IzD0s-3Nh1WGEGGW2qFCZYWIZ43cMYwkghfx0RKC3yRMvdXVBs7YfyLcUzDMk3UNzMNgA_LIKIvuN3QRDIDLQrH7YdJti3CK1PG9JikMuRORpHpRIsKjeu55oUapVLCCUOy_M7Q1SWRBNwADep1QGYFDWMzhoyvMOpLcO6YT_NtDe4C4pnTCZnBv4iVGOaExSEPlFhcMjfqxvdJUhzA8ukvbQT9co47l_IXDqp1OwoBsv_7ynTa43N4sTz8N2BxS-lI4hcE80h-aSXWrB10tOcje3eGINlrGlIPWb0lPJ2FdA0S7Vi9vT5bmvIPgbwTuTrxLosk-GN-ZJiFHf95ru2EBHRsMNPxsdBYY00NK5otkHiAgzSbp-Uss'
+MAILERLITE_GROUP = '187822269207151744'
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    import json as _j
+    import urllib.request as _u
+    try:
+        data = request.get_json()
+        email = data.get('email','').strip()
+        name = data.get('name','').strip()
+        if not email:
+            return app.response_class(_j.dumps({'error':'Email required'}), status=400, mimetype='application/json')
+        payload = _j.dumps({'email':email,'fields':{'name':name},'groups':[MAILERLITE_GROUP],'status':'active'}).encode()
+        req = _u.Request('https://connect.mailerlite.com/api/subscribers',
+            data=payload,
+            headers={'Authorization':'Bearer '+MAILERLITE_KEY,'Content-Type':'application/json','Accept':'application/json'},
+            method='POST')
+        r = _u.urlopen(req, timeout=5)
+        return app.response_class(_j.dumps({'ok':True}), mimetype='application/json')
+    except Exception as e:
+        err = str(e)
+        if '422' in err or 'already' in err.lower():
+            return app.response_class(_j.dumps({'ok':True,'existing':True}), mimetype='application/json')
+        print('Signup error:', e)
+        return app.response_class(_j.dumps({'error':str(e)}), status=500, mimetype='application/json')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
+
+
+@app.route('/hawaiicharities')
+def hawaii_charities():
+    return redirect('/#hawaii-charities')
+
+@app.route('/charities')
+def charities_short():
+    return redirect('/#hawaii-charities')
+
+
+# ═══════════════════════════════════════
+# HULA CRUSH LEADERBOARD
+# ═══════════════════════════════════════
+import json, os
+
+SCORES_FILE = 'hula_scores.json'
+
+def load_scores():
+    try:
+        if os.path.exists(SCORES_FILE):
+            with open(SCORES_FILE, 'r') as f:
+                return json.load(f)
+    except:
+        pass
+    return []
+
+def save_scores(scores):
+    try:
+        with open(SCORES_FILE, 'w') as f:
+            json.dump(scores, f)
+    except Exception as e:
+        print('Score save error:', e)
+
+@app.route('/hulacrush')
+def hula_crush():
+    return send_from_directory('.', 'hulaCrush.html')
+
+@app.route('/fruit-<int:num>.jpg')
+def fruit_image(num):
+    return send_from_directory('.', f'fruit-{num}.jpg')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    # Serve any static file from root directory
+    if filename.endswith(('.jpg','.jpeg','.png','.gif','.svg','.ico','.webp')):
+        return send_from_directory('.', filename)
+    return send_from_directory('.', 'index.html')
+
+@app.route('/api/hula-scores', methods=['GET'])
+def get_hula_scores():
+    scores = load_scores()
+    scores.sort(key=lambda x: x.get('score', 0), reverse=True)
+    return app.response_class(
+        json.dumps(scores[:20]),
+        mimetype='application/json'
+    )
+
+@app.route('/api/hula-scores', methods=['POST'])
+def post_hula_score():
+    try:
+        data = request.get_json()
+        name = str(data.get('name', 'Hawaii Player'))[:20].strip()
+        score = int(data.get('score', 0))
+        island = str(data.get('island', 'Hawaii'))[:20]
+        level = int(data.get('level', 1))
+        
+        if score <= 0:
+            return app.response_class(json.dumps({'ok': False}), mimetype='application/json')
+        
+        scores = load_scores()
+        
+        # Check if player already has a higher score
+        existing = next((s for s in scores if s.get('name','').lower() == name.lower()), None)
+        if existing:
+            if score > existing.get('score', 0):
+                existing['score'] = score
+                existing['island'] = island
+                existing['level'] = level
+                existing['date'] = _datetime_str()
+        else:
+            scores.append({
+                'name': name,
+                'score': score,
+                'island': island,
+                'level': level,
+                'date': _datetime_str()
+            })
+        
+        scores.sort(key=lambda x: x.get('score', 0), reverse=True)
+        scores = scores[:100]  # Keep top 100
+        save_scores(scores)
+        
+        rank = next((i+1 for i, s in enumerate(scores) if s.get('name','').lower() == name.lower()), 0)
+        return app.response_class(json.dumps({'ok': True, 'rank': rank}), mimetype='application/json')
+    except Exception as e:
+        print('Score post error:', e)
+        return app.response_class(json.dumps({'ok': False, 'error': str(e)}), status=500, mimetype='application/json')
+
+def _datetime_str():
+    from datetime import datetime
+    return datetime.now().strftime('%b %d, %Y')
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
