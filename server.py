@@ -498,10 +498,17 @@ def hula_crush():
 
 @app.route('/fruit-<int:num>.jpg')
 def fruit_image(num):
-    try:
-        return send_from_directory('.', f'fruit-{num}.jpg', mimetype='image/jpeg')
-    except:
-        return '', 404
+    return send_from_directory('.', 'fruit-' + str(num) + '.jpg')
+
+@app.route('/debug-files')
+def debug_files():
+    import os
+    files = [f for f in os.listdir('.') if 'fruit' in f.lower()]
+    cwd = os.getcwd()
+    return app.response_class(
+        str({'cwd': cwd, 'fruit_files': sorted(files)}),
+        mimetype='text/plain'
+    )
 
 @app.route('/api/hula-scores', methods=['GET'])
 def get_hula_scores():
