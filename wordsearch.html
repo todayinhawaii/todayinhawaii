@@ -435,7 +435,8 @@ function generateGrid(){
 function placeWord(word){
   const maxAttempts=200;
   for(let attempt=0;attempt<maxAttempts;attempt++){
-    const dir=DIRECTIONS[Math.floor(Math.random()*DIRECTIONS.length)];
+    const dirIdx=Math.floor(Math.random()*DIRECTIONS.length);
+    const dir=DIRECTIONS[dirIdx];
     const startR=Math.floor(Math.random()*GRID_SIZE);
     const startC=Math.floor(Math.random()*GRID_SIZE);
     const endR=startR+dir[0]*(word.length-1);
@@ -444,23 +445,40 @@ function placeWord(word){
     if(endR<0||endR>=GRID_SIZE||endC<0||endC>=GRID_SIZE) continue;
 
     let canPlace=true;
-    const cells=[];
     for(let i=0;i<word.length;i++){
       const r=startR+dir[0]*i;
       const c=startC+dir[1]*i;
       if(r<0||r>=GRID_SIZE||c<0||c>=GRID_SIZE){canPlace=false;break;}
       if(grid[r][c]!==null && grid[r][c]!==word[i]){canPlace=false;break;}
-      cells.push([r,c]);
     }
 
-    // Double check: cells must be EXACTLY word.length
-    if(canPlace && cells.length===word.length){
-      cells.forEach(([r,c],i)=>{ grid[r][c]=word[i]; });
-      wordPlacements.push({word, cells:cells.slice(0,word.length), dir});
+    if(canPlace){
+      // Place letters
+      for(let i=0;i<word.length;i++){
+        grid[startR+dir[0]*i][startC+dir[1]*i]=word[i];
+      }
+      // Store START + DIRECTION + LENGTH only — never a cells array!
+      wordPlacements.push({
+        word,
+        startR, startC,
+        dirR: dir[0], dirC: dir[1]
+      });
       return true;
     }
   }
   return false;
+}
+
+// Get exact cells for a word placement — always calculated fresh!
+function getWordCells(placement){
+  const cells=[];
+  for(let i=0;i<placement.word.length;i++){
+    cells.push([
+      placement.startR + placement.dirR*i,
+      placement.startC + placement.dirC*i
+    ]);
+  }
+  return cells;
 }
 
 // ── Render Grid ───────────────────────────────
@@ -631,17 +649,18 @@ function explodeCell(r,c){
 function checkWordMatch(word,cells){
   const wIdx=currentWords.indexOf(word);
   if(wIdx>=0 && !foundWords.includes(word)){
-    // Found it!
     foundWords.push(word);
     const colorIdx=foundWords.length-1;
     foundColors[word]=colorIdx;
 
-    // Mark cells
-    cells.forEach(([r,c])=>{
+    // Find the placement and use getWordCells for EXACT cells
+    const placement=wordPlacements.find(p=>p.word===word);
+    const exactCells=placement?getWordCells(placement):cells;
+
+    exactCells.forEach(([r,c])=>{
       const el=getCell(r,c);
       if(el){
         el.classList.remove('selecting');
-        // Clear inline styles first
         el.style.transform='';
         el.style.background='';
         el.style.borderColor='';
@@ -649,7 +668,6 @@ function checkWordMatch(word,cells){
         el.style.boxShadow='';
         el.style.zIndex='';
         el.style.transition='';
-        // Apply found color class
         el.classList.add('found-word','fc-'+colorIdx);
       }
     });
@@ -678,8 +696,9 @@ function checkWordMatch(word,cells){
 }
 
 function isFoundCell(r,c){
-  return Object.values(wordPlacements).some(p=>
-    p.cells.some(([pr,pc])=>pr===r&&pc===c) && foundWords.includes(p.word)
+  return wordPlacements.some(p=>
+    foundWords.includes(p.word) &&
+    getWordCells(p).some(([pr,pc])=>pr===r&&pc===c)
   );
 }
 
@@ -720,7 +739,7 @@ function applyFoundColors(){
   wordPlacements.forEach(p=>{
     if(foundWords.includes(p.word)){
       const colorIdx=foundColors[p.word]||0;
-      p.cells.forEach(([r,c])=>{
+      getWordCells(p).forEach(([r,c])=>{
         const el=getCell(r,c);
         if(el) el.classList.add('found-word','fc-'+colorIdx);
       });
@@ -743,9 +762,8 @@ function toggleReveal(){
     btn.style.opacity='0.6';
     wordPlacements.forEach(p=>{
       if(!foundWords.includes(p.word)){
-        // Use EXACTLY word.length cells — no more, no less!
-        const exactCells = p.cells.slice(0, p.word.length);
-        exactCells.forEach(([r,c],i)=>{
+        // Calculate cells fresh from start+direction — NEVER use stored array!
+        getWordCells(p).forEach(([r,c])=>{
           const el=getCell(r,c);
           if(el) el.classList.add('revealed-cell');
         });
