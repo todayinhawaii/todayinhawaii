@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎰 Aloha Letters — Today in Hawaii</title>
+  <meta name="description" content="Play Aloha Letters — Hawaii's Vegas-style Scrabble word game! Build words from your tiles and score big!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{
+      background:linear-gradient(160deg,#0a0015 0%,#1a0030 40%,#0a0015 100%);
+      min-height:100vh;font-family:system-ui,sans-serif;color:#e8f4f8;overflow-x:hidden;
+    }
+
+    /* Vegas neon background */
+    body::before{
+      content:'';position:fixed;inset:0;
+      background:
+        radial-gradient(ellipse at 20% 30%,rgba(255,0,100,0.08),transparent 50%),
+        radial-gradient(ellipse at 80% 70%,rgba(0,200,255,0.08),transparent 50%),
+        radial-gradient(ellipse at 50% 50%,rgba(255,200,0,0.05),transparent 60%);
+      pointer-events:none;z-index:0;
+    }
+
+    .bg{position:fixed;font-size:40px;opacity:0.04;animation:fbg 20s ease-in-out infinite;pointer-events:none;z-index:0;}
+    @keyframes fbg{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-20px) rotate(10deg);}}
+
+    .wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:12px 12px 60px;}
+
+    /* Header */
+    .hdr{text-align:center;padding:8px 0 14px;}
+    .hdr-logo{font-size:44px;margin-bottom:4px;animation:logoBob 2s ease-in-out infinite;}
+    @keyframes logoBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+    .hdr-title{
+      font-size:28px;font-weight:900;letter-spacing:-0.5px;
+      background:linear-gradient(135deg,#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080);
+      background-size:300% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:rainbow 3s linear infinite;
+    }
+    @keyframes rainbow{0%{background-position:0% center;}100%{background-position:300% center;}}
+    .hdr-sub{font-size:11px;color:#a78bfa;margin-top:2px;}
+
+    /* Neon border box */
+    .neon-box{
+      border-radius:20px;padding:14px 16px;margin-bottom:12px;
+      background:rgba(0,0,0,0.4);
+      border:1.5px solid rgba(255,200,0,0.3);
+      box-shadow:0 0 20px rgba(255,200,0,0.1),inset 0 0 20px rgba(255,200,0,0.03);
+    }
+
+    /* Leaderboard */
+    .lb h3{font-size:15px;font-weight:900;color:#ffd700;text-transform:uppercase;letter-spacing:0.12em;text-align:center;margin-bottom:10px;text-shadow:0 0 10px rgba(255,215,0,0.5);}
+    .lb-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12px;margin-bottom:3px;}
+    .lb-row.r1{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);}
+    .lb-row.r2{background:rgba(192,192,192,0.08);}
+    .lb-row.r3{background:rgba(205,127,50,0.08);}
+    .lb-row.me{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);}
+    .lb-medal{font-size:16px;width:22px;flex-shrink:0;}
+    .lb-name{flex:1;font-weight:700;font-size:12px;}
+    .lb-loc{font-size:10px;color:#7fb3c8;}
+    .lb-pts{font-weight:900;color:#ffd700;}
+    .lb-empty{text-align:center;font-size:12px;color:#7fb3c8;padding:8px;}
+
+    /* Name screen */
+    .name-scr{border-radius:20px;padding:20px 16px;margin-bottom:12px;background:rgba(0,0,0,0.5);border:1.5px solid rgba(255,0,128,0.3);}
+    .ns-title{font-size:18px;font-weight:800;text-align:center;margin-bottom:4px;color:#ff0080;text-shadow:0 0 12px rgba(255,0,128,0.5);}
+    .ns-sub{font-size:12px;color:#a78bfa;text-align:center;margin-bottom:14px;line-height:1.5;}
+    .ns-input{width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,0,128,0.25);border-radius:11px;color:#e8f4f8;font-size:15px;font-family:inherit;outline:none;margin-bottom:9px;text-align:center;}
+    .ns-input::placeholder{color:#7fb3c8;}
+    .ns-select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,0,128,0.25);border-radius:11px;color:#e8f4f8;font-size:14px;font-family:inherit;outline:none;margin-bottom:13px;cursor:pointer;}
+    .ns-select option{background:#1a0030;}
+
+    /* Vegas buttons */
+    .vbtn{
+      width:100%;padding:16px 14px;border:none;border-radius:15px;
+      font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;
+      letter-spacing:1px;text-transform:uppercase;
+      position:relative;overflow:hidden;transition:all 0.1s;margin-bottom:8px;
+    }
+    .vbtn::after{content:'';position:absolute;top:3px;left:8px;right:8px;height:38%;background:linear-gradient(180deg,rgba(255,255,255,0.28),transparent);border-radius:10px 10px 50% 50%;pointer-events:none;}
+    .vbtn-gold{background:linear-gradient(180deg,#ffe566 0%,#f5c800 20%,#e6a800 50%,#c87800 80%,#f5c800 100%);color:#5a2d00;box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.6),0 0 20px rgba(255,200,0,0.3);text-shadow:0 1px 0 rgba(255,255,255,0.4);}
+    .vbtn-gold:active{transform:translateY(4px);box-shadow:0 1px 0 #fff8 inset,0 2px 0 #8b5000,0 3px 6px rgba(0,0,0,0.4);}
+    .vbtn-gold:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+    .vbtn-gold.flash{animation:vFlash 0.8s ease-in-out infinite;}
+    @keyframes vFlash{0%,100%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 14px rgba(0,0,0,0.5),0 0 20px rgba(255,200,0,0.3);}50%{box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #8b5000,0 8px 20px rgba(0,0,0,0.5),0 0 50px rgba(255,200,0,1),0 0 90px rgba(255,150,0,0.6);}}
+    .vbtn-pink{background:linear-gradient(180deg,#ff80c0 0%,#ff0080 20%,#cc0060 50%,#990040 80%,#ff0080 100%);color:#fff;box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 6px 0 #660030,0 8px 14px rgba(0,0,0,0.6),0 0 20px rgba(255,0,128,0.4);text-shadow:0 1px 2px rgba(0,0,0,0.3);}
+    .vbtn-pink:active{transform:translateY(4px);}
+    .vbtn-cyan{background:linear-gradient(180deg,#80ffff 0%,#00d4ff 20%,#0099cc 50%,#006699 80%,#00d4ff 100%);color:#003344;box-shadow:0 1px 0 #fff8 inset,0 -2px 0 #0004 inset,0 6px 0 #005577,0 8px 14px rgba(0,0,0,0.6),0 0 20px rgba(0,212,255,0.4);text-shadow:0 1px 0 rgba(255,255,255,0.3);}
+    .vbtn-cyan:active{transform:translateY(4px);}
+    .vbtn-red{background:linear-gradient(180deg,#ff6666 0%,#ee2222 20%,#cc0000 50%,#990000 80%,#ee2222 100%);color:#fff;box-shadow:0 1px 0 #fff6 inset,0 -2px 0 #0004 inset,0 6px 0 #660000,0 8px 14px rgba(0,0,0,0.6);text-shadow:0 1px 2px rgba(0,0,0,0.4);}
+    .vbtn-red:active{transform:translateY(4px);}
+
+    /* Game area */
+    #gameArea{display:none;}
+
+    /* Stats */
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+    .stat{background:rgba(0,0,0,0.4);border:1px solid rgba(255,200,0,0.2);border-radius:11px;padding:8px 4px;text-align:center;}
+    .stat-v{font-size:18px;font-weight:900;color:#ffd700;line-height:1;text-shadow:0 0 8px rgba(255,215,0,0.5);}
+    .stat-l{font-size:9px;color:#a78bfa;margin-top:2px;text-transform:uppercase;letter-spacing:0.05em;}
+
+    /* Timer */
+    .timer-wrap{margin-bottom:10px;}
+    .timer-bar{height:10px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;border:1px solid rgba(255,200,0,0.15);}
+    .timer-fill{height:100%;background:linear-gradient(90deg,#ff0080,#ff8c00,#ffd700);border-radius:99px;transition:width 0.1s linear;box-shadow:0 0 8px rgba(255,215,0,0.5);}
+    .timer-fill.urgent{background:linear-gradient(90deg,#ff0000,#ff4444);box-shadow:0 0 12px rgba(255,0,0,0.8);}
+
+    /* Word building area */
+    .word-area{
+      background:rgba(0,0,0,0.5);
+      border:2px solid rgba(255,200,0,0.3);
+      border-radius:16px;padding:14px;
+      margin-bottom:10px;
+      min-height:80px;
+      display:flex;align-items:center;justify-content:center;
+      flex-wrap:wrap;gap:6px;
+      box-shadow:0 0 20px rgba(255,200,0,0.1),inset 0 0 20px rgba(0,0,0,0.5);
+      position:relative;
+    }
+    .word-area-label{
+      position:absolute;top:-10px;left:16px;
+      background:#1a0030;padding:0 8px;
+      font-size:10px;font-weight:700;color:#ffd700;
+      text-transform:uppercase;letter-spacing:0.1em;
+    }
+    .word-placeholder{
+      font-size:13px;color:rgba(255,200,0,0.3);
+      font-weight:600;letter-spacing:1px;
+    }
+
+    /* Score preview */
+    .score-preview{
+      text-align:center;font-size:13px;color:#a78bfa;
+      margin-bottom:10px;font-weight:600;min-height:22px;
+    }
+    .score-preview.valid{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,0.5);}
+    .score-preview.invalid{color:#ff4444;}
+
+    /* Tile rack */
+    .rack-label{font-size:10px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;text-align:center;}
+    .rack{
+      display:flex;justify-content:center;flex-wrap:wrap;gap:6px;
+      padding:12px;background:rgba(0,0,0,0.4);
+      border:1.5px solid rgba(167,139,250,0.25);
+      border-radius:14px;margin-bottom:10px;
+      min-height:70px;align-items:center;
+    }
+
+    /* Tiles */
+    .tile{
+      width:46px;height:54px;
+      border-radius:10px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      cursor:pointer;
+      font-size:22px;font-weight:900;
+      position:relative;
+      transition:all 0.15s;
+      user-select:none;-webkit-user-select:none;
+      border:none;font-family:inherit;
+    }
+    .tile-val{
+      position:absolute;bottom:3px;right:5px;
+      font-size:9px;font-weight:700;opacity:0.8;
+    }
+
+    /* Tile colors — Vegas baby! */
+    .tile-common{
+      background:linear-gradient(180deg,#f0e0a0,#d4b840,#b89020,#8a6800,#d4b840);
+      color:#3a2000;
+      box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 4px 0 #6a4800,0 6px 12px rgba(0,0,0,0.6),0 0 8px rgba(212,184,64,0.4);
+    }
+    .tile-uncommon{
+      background:linear-gradient(180deg,#c0d8ff,#6090e0,#4070c0,#204a90,#6090e0);
+      color:#fff;
+      box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 4px 0 #102060,0 6px 12px rgba(0,0,0,0.6),0 0 8px rgba(96,144,224,0.4);
+    }
+    .tile-rare{
+      background:linear-gradient(180deg,#ffc0e0,#ff4090,#cc0060,#880030,#ff4090);
+      color:#fff;
+      box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 4px 0 #660020,0 6px 12px rgba(0,0,0,0.6),0 0 12px rgba(255,64,144,0.5);
+    }
+    .tile-epic{
+      background:linear-gradient(180deg,#e0c0ff,#a040ff,#7000cc,#400080,#a040ff);
+      color:#fff;
+      box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 4px 0 #300060,0 6px 12px rgba(0,0,0,0.6),0 0 14px rgba(160,64,255,0.6);
+      animation:epicPulse 2s ease-in-out infinite;
+    }
+    @keyframes epicPulse{0%,100%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 4px 0 #300060,0 6px 12px rgba(0,0,0,0.6),0 0 14px rgba(160,64,255,0.6);}50%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 4px 0 #300060,0 6px 12px rgba(0,0,0,0.6),0 0 28px rgba(160,64,255,1),0 0 50px rgba(200,100,255,0.4);}}
+
+    .tile:hover:not(.used){transform:translateY(-6px) scale(1.05);}
+    .tile.selected{transform:translateY(-10px) scale(1.08);filter:brightness(1.3);box-shadow:0 0 20px rgba(255,215,0,0.8),0 0 40px rgba(255,215,0,0.4)!important;}
+    .tile.used{opacity:0.3;cursor:not-allowed;transform:none!important;filter:grayscale(1);}
+    .tile:active:not(.used){transform:translateY(2px);}
+
+    /* Word tile in building area */
+    .word-tile{
+      padding:8px 12px;border-radius:9px;
+      font-size:20px;font-weight:900;
+      cursor:pointer;transition:all 0.15s;
+      position:relative;
+    }
+    .word-tile:hover{transform:scale(1.1);filter:brightness(1.2);}
+    .word-tile:active{transform:scale(0.95);}
+
+    /* Bonus squares display */
+    .bonus-bar{
+      display:flex;gap:8px;justify-content:center;
+      margin-bottom:10px;flex-wrap:wrap;
+    }
+    .bonus-pill{
+      padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;
+    }
+    .dw{background:rgba(255,100,100,0.2);border:1px solid #ff6464;color:#ff9999;}
+    .tw{background:rgba(255,50,50,0.3);border:1px solid #ff3232;color:#ffaaaa;}
+    .dl{background:rgba(100,180,255,0.2);border:1px solid #64b4ff;color:#99ccff;}
+    .tl{background:rgba(50,150,255,0.3);border:1px solid #3296ff;color:#aaccff;}
+
+    /* Active bonus */
+    .active-bonus{
+      text-align:center;font-size:12px;font-weight:700;
+      margin-bottom:8px;padding:6px;border-radius:10px;
+      display:none;
+    }
+
+    /* Controls */
+    .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px;}
+    .ctrl-btn{
+      padding:12px 8px;border-radius:13px;border:none;
+      font-size:11px;font-weight:800;cursor:pointer;
+      font-family:inherit;letter-spacing:0.5px;
+      text-transform:uppercase;transition:all 0.15s;
+    }
+    .ctrl-btn:active{transform:scale(0.95);}
+
+    /* Words found list */
+    .words-found{
+      background:rgba(0,0,0,0.4);border:1px solid rgba(255,200,0,0.15);
+      border-radius:14px;padding:10px 12px;margin-bottom:10px;
+      max-height:120px;overflow-y:auto;
+    }
+    .words-found-title{font-size:10px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
+    .found-word-chip{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;
+      margin:2px;background:rgba(255,215,0,0.1);
+      border:1px solid rgba(255,215,0,0.2);color:#ffd700;
+    }
+
+    /* Particles */
+    .particle{position:fixed;pointer-events:none;z-index:999;animation:pfly 0.9s ease forwards;}
+    @keyframes pfly{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.2);}}
+
+    /* Score popup */
+    .score-pop{position:fixed;font-size:22px;font-weight:900;pointer-events:none;z-index:999;animation:spop 1s ease forwards;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+    @keyframes spop{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-80px) scale(1.4);}}
+
+    /* Slot machine shuffle */
+    .tile.shuffling{animation:slotSpin 0.4s ease forwards;}
+    @keyframes slotSpin{0%{transform:rotateY(0);opacity:1;}50%{transform:rotateY(90deg);opacity:0;}100%{transform:rotateY(0);opacity:1;}}
+
+    /* Overlay */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px);}
+    .overlay.show{display:flex;}
+    .ov{background:linear-gradient(135deg,#1a0030,#0a0015);border:2px solid rgba(255,200,0,0.5);border-radius:26px;padding:28px 22px;text-align:center;max-width:360px;width:94%;box-shadow:0 0 40px rgba(255,200,0,0.2),0 20px 60px rgba(0,0,0,0.8);}
+    .ov-emoji{font-size:60px;margin-bottom:10px;}
+    .ov-title{font-size:24px;font-weight:900;color:#ffd700;margin-bottom:6px;text-shadow:0 0 14px rgba(255,215,0,0.5);}
+    .ov-score{font-size:48px;font-weight:900;color:#ff0080;margin:10px 0;text-shadow:0 0 20px rgba(255,0,128,0.5);}
+    .ov-rank{font-size:14px;color:#00d4ff;font-weight:700;margin-bottom:6px;}
+    .ov-msg{font-size:13px;color:#a78bfa;line-height:1.6;margin-bottom:18px;}
+
+    .mute-btn{position:fixed;bottom:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,200,0,0.3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:50;}
+    .back{text-align:center;padding:6px 0 14px;font-size:13px;color:#a78bfa;}
+    .back a{color:#00d4ff;text-decoration:none;font-weight:600;}
+  </style>
+</head>
+<body>
+
+<div class="bg" style="top:5%;left:5%;">🎰</div>
+<div class="bg" style="top:35%;right:6%;font-size:50px;animation-delay:5s;">🌺</div>
+<div class="bg" style="top:70%;left:4%;font-size:44px;animation-delay:10s;">🎲</div>
+
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="hdr-logo">🎰</div>
+    <div class="hdr-title">Aloha Letters</div>
+    <div class="hdr-sub">Vegas-style word game · Build words · Score big · Today in Hawaii 🌺</div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="neon-box lb">
+    <h3>🏆 High Rollers Leaderboard</h3>
+    <div id="lbList"><div class="lb-empty">Loading... 🎰</div></div>
+  </div>
+
+  <!-- Name Screen -->
+  <div id="nameScr" class="name-scr">
+    <div class="ns-title">🎰 Place Your Bets!</div>
+    <div class="ns-sub">Build words from your letter tiles — longer words score bigger! Hit the jackpot with rare letters!</div>
+    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLoc" class="ns-select">
+      <option value="">📍 Where are you from?</option>
+      <optgroup label="🌺 Hawaii">
+        <option value="Maui, Hawaii">🌺 Maui</option>
+        <option value="Oahu, Hawaii">🌊 Oahu</option>
+        <option value="Kauai, Hawaii">🌿 Kauai</option>
+        <option value="Big Island, Hawaii">🌋 Big Island</option>
+        <option value="Molokai, Hawaii">🌴 Molokai</option>
+        <option value="Lanai, Hawaii">🌸 Lanai</option>
+      </optgroup>
+      <optgroup label="🇺🇸 USA States">
+        <option value="Alabama, USA">Alabama</option><option value="Alaska, USA">Alaska</option>
+        <option value="Arizona, USA">Arizona</option><option value="California, USA">California</option>
+        <option value="Colorado, USA">Colorado</option><option value="Florida, USA">Florida</option>
+        <option value="Georgia, USA">Georgia</option><option value="Hawaii, USA">Hawaii</option>
+        <option value="Illinois, USA">Illinois</option><option value="New York, USA">New York</option>
+        <option value="Texas, USA">Texas</option><option value="Washington, USA">Washington</option>
+        <option value="Other USA State">Other USA State</option>
+      </optgroup>
+      <optgroup label="🌍 Countries">
+        <option value="Australia">🇦🇺 Australia</option><option value="Canada">🇨🇦 Canada</option>
+        <option value="France">🇫🇷 France</option><option value="Germany">🇩🇪 Germany</option>
+        <option value="Japan">🇯🇵 Japan</option><option value="United Kingdom">🇬🇧 UK</option>
+        <option value="Other">🌍 Other Country</option>
+      </optgroup>
+    </select>
+    <button class="vbtn vbtn-gold" id="startBtn" onclick="startGame()" disabled>
+      <div style="font-size:18px;font-weight:900;letter-spacing:2px;">🎰 LET'S PLAY!</div>
+      <div style="font-size:11px;opacity:0.8;margin-top:2px;">45 seconds per word · Score big!</div>
+    </button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="gameArea">
+
+    <!-- Player badge -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.4);border:1px solid rgba(255,200,0,0.2);border-radius:11px;padding:7px 12px;margin-bottom:10px;font-size:12px;">
+      <div>🎰 <span style="font-weight:700;color:#00d4ff;" id="badgeName"></span></div>
+      <div style="color:#ffd700;font-weight:700;" id="badgeRank">Roll the dice!</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="scoreVal">0</div><div class="stat-l">💰 Score</div></div>
+      <div class="stat"><div class="stat-v" id="wordsVal">0</div><div class="stat-l">📝 Words</div></div>
+      <div class="stat"><div class="stat-v" id="bestVal">0</div><div class="stat-l">⭐ Best</div></div>
+      <div class="stat"><div class="stat-v" id="roundVal">1</div><div class="stat-l">🎲 Round</div></div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#a78bfa;margin-bottom:4px;">
+        <span>⏱️ Time to build a word!</span>
+        <span id="timerText" style="font-weight:700;color:#ffd700;">45s</span>
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    </div>
+
+    <!-- Active bonus -->
+    <div class="active-bonus" id="activeBonusBar"></div>
+
+    <!-- Word building area -->
+    <div class="word-area" id="wordArea">
+      <span class="word-area-label">Your Word</span>
+      <span class="word-placeholder" id="wordPlaceholder">Tap tiles to build a word...</span>
+    </div>
+
+    <!-- Score preview -->
+    <div class="score-preview" id="scorePreview">Select letters to build a word</div>
+
+    <!-- Rack label -->
+    <div class="rack-label">🎰 Your Letter Tiles — Tap to Build!</div>
+
+    <!-- Tile rack -->
+    <div class="rack" id="rack"></div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="ctrl-btn vbtn-pink" onclick="submitWord()" id="submitBtn" style="font-size:13px;">
+        ✅ SUBMIT
+      </button>
+      <button class="ctrl-btn vbtn-cyan" onclick="clearWord()" style="font-size:12px;">
+        🔄 CLEAR
+      </button>
+      <button class="ctrl-btn vbtn-gold" onclick="shuffleTiles()" style="font-size:12px;">
+        🎲 SHUFFLE
+      </button>
+    </div>
+
+    <!-- Words found -->
+    <div class="words-found">
+      <div class="words-found-title">🏆 Words Found This Game</div>
+      <div id="foundWordsList"><span style="color:#a78bfa;font-size:12px;">No words yet — start building!</span></div>
+    </div>
+
+    <!-- End game -->
+    <button class="vbtn vbtn-red" onclick="endGame()">
+      🏁 END GAME & CASH OUT
+    </button>
+
+  </div>
+
+  <div class="back"><a href="/games">← Back to Hawaii Games Hub 🎮</a></div>
+</div>
+
+<!-- Result Overlay -->
+<div class="overlay" id="overlay">
+  <div class="ov">
+    <div class="ov-emoji" id="ovEmoji">🎰</div>
+    <div class="ov-title" id="ovTitle">Game Over!</div>
+    <div class="ov-score" id="ovScore">0</div>
+    <div class="ov-rank" id="ovRank"></div>
+    <div class="ov-msg" id="ovMsg"></div>
+    <button style="width:100%;padding:13px;background:linear-gradient(135deg,#1877f2,#0d65d9);border:none;border-radius:13px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;" onclick="shareScore()">📘 Brag on Facebook!</button>
+    <button class="vbtn vbtn-gold" onclick="playAgain()" style="margin-bottom:8px;">🎰 Play Again!</button>
+    <button style="width:100%;padding:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:13px;color:#e8f4f8;font-size:13px;cursor:pointer;font-family:inherit;" onclick="closeOverlay()">View Leaderboard</button>
+  </div>
+</div>
+
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+
+<script>
+const DICTIONARY = new Set(["ABACK", "ABASE", "ABASH", "ABATE", "ABBEY", "ABBOT", "ABHOR", "ABIDE", "ABLER", "ABODE", "ABORT", "ABOUT", "ABOVE", "ABUSE", "ABYSS", "ACE", "ACORN", "ACT", "ACTED", "ACUTE", "ADAGE", "ADAPT", "ADD", "ADDED", "ADEPT", "ADMIT", "ADOBE", "ADOPT", "ADORE", "ADORN", "ADULT", "AFTER", "AGAPE", "AGATE", "AGE", "AGILE", "AGING", "AGO", "AGONY", "AGREE", "AHEAD", "AID", "AIM", "AIR", "AISLE", "ALARM", "ALBUM", "ALERT", "ALGAE", "ALIBI", "ALIEN", "ALIGN", "ALIKE", "ALIVE", "ALL", "ALLAY", "ALLOT", "ALLOW", "ALM", "ALOE", "ALOFT", "ALOHA", "ALONE", "ALONG", "ALOOF", "ALOUD", "ALPHA", "ALSO", "ALTAR", "ALTER", "ALUM", "AMBER", "AMEND", "AMISS", "AMPLE", "AMUSE", "AND", "ANGEL", "ANGER", "ANGLE", "ANGRY", "ANGST", "ANKLE", "ANNEX", "ANNOY", "ANT", "ANY", "APE", "APPLE", "APPLY", "APTLY", "ARBOR", "ARC", "ARDOR", "ARE", "ARENA", "ARGUE", "ARISE", "ARK", "ARM", "ARMOR", "AROMA", "AROSE", "ARRAY", "ART", "ASH", "ASK", "ASS", "ATE", "AWE", "AXE", "AYE", "BAA", "BAD", "BAG", "BAKED", "BAKER", "BAN", "BANAL", "BANJO", "BAR", "BARGE", "BARON", "BASAL", "BASIC", "BASIL", "BASIS", "BASTE", "BAT", "BATCH", "BAY", "BAYOU", "BEADY", "BEARD", "BEAST", "BED", "BEGAN", "BEGIN", "BEGUN", "BEIGE", "BELOW", "BENCH", "BERRY", "BESET", "BEVEL", "BIBLE", "BIG", "BIRCH", "BIT", "BLADE", "BLAND", "BLARE", "BLAZE", "BLEAK", "BLEAT", "BLEND", "BLESS", "BLIGHT", "BLIMP", "BLINK", "BLISS", "BLOAT", "BLOCK", "BLOOD", "BLOOM", "BLOWN", "BLUISH", "BLUNT", "BLURT", "BLUSH", "BOARD", "BOAST", "BOG", "BOGUS", "BOLTS", "BONUS", "BOOBY", "BOOTH", "BORED", "BOUND", "BOW", "BOX", "BOXER", "BOY", "BRACE", "BRAID", "BRAKE", "BRAWL", "BRAWN", "BRAZE", "BREACH", "BREED", "BRIBE", "BRICK", "BRIDE", "BRIEF", "BRINE", "BRINY", "BRISK", "BRITTLE", "BROIL", "BROKE", "BROOD", "BROOK", "BROTH", "BROWN", "BRUSH", "BRUTE", "BUD", "BUG", "BULGE", "BUN", "BURLY", "BUS", "BUSHY", "BUT", "BUY", "BYLAW", "CAB", "CABIN", "CAGEY", "CAIRN", "CAMEL", "CAMEO", "CAN", "CANNY", "CANOE", "CAP", "CAPER", "CAR", "CARGO", "CAROL", "CARRY", "CARVE", "CASTE", "CAT", "CATCH", "CAVED", "CEDAR", "CHAFE", "CHAFF", "CHALK", "CHANT", "CHASM", "CHEAT", "CHEEK", "CHEER", "CHESS", "CHIDE", "CHIEF", "CHINK", "CHORE", "CHUNK", "CIVIC", "CLACK", "CLAIM", "CLASP", "CLEAT", "CLEFT", "CLERK", "CLICK", "CLIFF", "CLING", "CLINK", "CLOAK", "CLONE", "CLOSE", "CLOTH", "CLOUD", "CLOUT", "CLOWN", "CLUNG", "CLUNK", "COARSE", "COB", "COBRA", "COD", "CODEX", "COMET", "COMIC", "COMMA", "CONCH", "CONDO", "COP", "COPAL", "CORAL", "COT", "COUCH", "COUGH", "COURT", "COVEN", "COWED", "CRAMP", "CRANE", "CRANK", "CRAZE", "CREAK", "CREEP", "CREPT", "CREST", "CRISP", "CROSS", "CROUP", "CROWN", "CRUDE", "CRUEL", "CRUMB", "CRUSH", "CRUST", "CRYPT", "CUB", "CUBIC", "CUP", "CURVE", "CUT", "CYBER", "DAB", "DABBLE", "DAILY", "DAIRY", "DAISY", "DAM", "DANCE", "DARED", "DATES", "DAUNT", "DAZED", "DEALT", "DECOY", "DECRY", "DELTA", "DENSE", "DEPOT", "DERBY", "DEVIL", "DIARY", "DID", "DIG", "DIGIT", "DIM", "DIP", "DODGE", "DOE", "DOG", "DOGMA", "DOING", "DOLCE", "DOMAIN", "DON", "DOT", "DOUBT", "DOWDY", "DOWEL", "DOWRY", "DOZEN", "DRAFT", "DRAIN", "DRANK", "DRAPE", "DRAWL", "DRAWN", "DREAD", "DREAM", "DREGS", "DRIED", "DRIFT", "DRINK", "DROOP", "DROSS", "DROVE", "DUB", "DUCHY", "DUG", "DUNE", "DUO", "DYE", "EAGER", "EAR", "EARLY", "EARNS", "EARTH", "EAT", "EATEN", "EEL", "EERIE", "EFFECT", "EGG", "EGO", "EIGHT", "ELDER", "ELF", "ELITE", "ELM", "ELUDE", "EMOTE", "EMU", "ENAMEL", "END", "ENDOW", "ENJOY", "ENVOY", "EPOCH", "EQUIP", "ERA", "ESSAY", "ETUDE", "EVADE", "EVE", "EVENT", "EWE", "EXACT", "EXULT", "EYE", "EYRIE", "FABLE", "FAD", "FADED", "FAINT", "FAIRY", "FAITH", "FAN", "FANCY", "FAR", "FARCE", "FAT", "FAX", "FEAST", "FECUND", "FED", "FEIGN", "FEN", "FERRET", "FETCH", "FEVER", "FEW", "FIB", "FIELD", "FIERCE", "FIERY", "FIG", "FILED", "FILET", "FILTH", "FIN", "FINCH", "FIT", "FIX", "FLAIR", "FLAKE", "FLAME", "FLANK", "FLARE", "FLASK", "FLECK", "FLESH", "FLOCK", "FLOOD", "FLOOR", "FLORA", "FLOSS", "FLOUT", "FLUTE", "FOAMY", "FOCAL", "FOE", "FOG", "FOGGY", "FOLIO", "FOLLY", "FOND", "FONDLE", "FOR", "FORGE", "FOX", "FOYER", "FRAIL", "FRAME", "FRESH", "FRILL", "FRONT", "FROST", "FROZE", "FRUIT", "FRY", "FULLY", "FUN", "FUNGI", "FUR", "GAG", "GAL", "GAP", "GAS", "GAUZE", "GAUZY", "GAVEL", "GEL", "GEM", "GET", "GIDDY", "GIG", "GIN", "GIRDLE", "GIVEN", "GLAND", "GLARE", "GLEAM", "GLEAN", "GLIDE", "GLIMMER", "GLOBE", "GLOSS", "GLOVE", "GNU", "GOD", "GOT", "GRASP", "GRAZE", "GREED", "GREET", "GRIEF", "GRIME", "GRIMY", "GRIPE", "GROAN", "GROUT", "GROWN", "GRUEL", "GRUNT", "GUILE", "GUISE", "GULCH", "GUM", "GUN", "GUSTO", "GUT", "GUTSY", "GUY", "GYPSY", "HABIT", "HAD", "HAIRY", "HAM", "HAS", "HASTE", "HASTY", "HAT", "HATCH", "HAVEN", "HAY", "HAZEL", "HEADY", "HEARD", "HEART", "HEDGE", "HEIAU", "HELIX", "HEM", "HENCE", "HER", "HERON", "HEW", "HID", "HIM", "HIP", "HIS", "HIT", "HOARY", "HOE", "HOG", "HOLLY", "HONEY", "HOP", "HOT", "HOVEL", "HOVER", "HOW", "HOWL", "HUB", "HUG", "HULA", "HUM", "HUMAN", "HUMID", "HUMOR", "HUSKY", "HUT", "HUTCH", "HYDRA", "HYENA", "ICE", "ICY", "IDEAL", "IDIOM", "IDIOT", "IGLOO", "ILL", "IMAGE", "IMP", "IMPLY", "INANE", "INDIE", "INERT", "INGOT", "INK", "INN", "INNER", "INSET", "INTER", "ION", "IOTAS", "IRATE", "IRE", "IRONY", "IVY", "JAB", "JAG", "JAM", "JAR", "JAW", "JET", "JETTY", "JEWEL", "JIG", "JIMMY", "JOB", "JOKEY", "JOLLY", "JOT", "JOUST", "JOWLY", "JOY", "JUG", "JUMBO", "JUT", "KARMA", "KEBAB", "KEG", "KEY", "KID", "KIN", "KIT", "KNACK", "KNAVE", "KNEEL", "KNELT", "KNOLL", "KNOTS", "KNOWN", "KOKUA", "KUDOS", "LAB", "LAD", "LADEN", "LADLE", "LAG", "LANCE", "LAP", "LAPEL", "LAPSE", "LARCH", "LARVA", "LASER", "LATCH", "LATER", "LATIN", "LAUD", "LAW", "LAX", "LAY", "LAYER", "LEAKY", "LEAPT", "LEARN", "LEASH", "LEAST", "LED", "LEECH", "LEG", "LEGAL", "LEMON", "LEMUR", "LESSER", "LET", "LEVER", "LID", "LIEGE", "LIGHT", "LINER", "LINGO", "LIP", "LIT", "LIVID", "LLAMA", "LOAMY", "LOCAL", "LODGE", "LOFTY", "LOG", "LOGIC", "LOOSE", "LORRY", "LOUSY", "LOVER", "LOW", "LOWLY", "LUAU", "LUCID", "LUG", "LUSTRE", "LUSTY", "LYRIC", "MAD", "MAHALO", "MAIZE", "MAN", "MANA", "MANGE", "MANOR", "MAP", "MAPLE", "MAR", "MARCH", "MARSH", "MAT", "MATEY", "MAW", "MAYOR", "MEADOW", "MEALY", "MELD", "MELEE", "MEN", "MERCY", "MERGE", "MERIT", "MESSY", "MIMIC", "MINCE", "MISER", "MISTY", "MITRE", "MOB", "MOD", "MOLDY", "MOM", "MOO", "MOODY", "MOOSE", "MOP", "MORAL", "MOURN", "MUD", "MUG", "MURKY", "MUSTY", "MYRRH", "NAB", "NAG", "NAIVE", "NAP", "NARWHAL", "NAVEL", "NEE", "NEEDY", "NERVY", "NICER", "NIGHT", "NIP", "NIPPY", "NIT", "NOB", "NOBLE", "NOD", "NOISY", "NONCE", "NOR", "NOT", "NOTCH", "NOVEL", "NOVICE", "NOW", "NUN", "NUT", "NYMPH", "OAK", "OAR", "ODD", "ODE", "OFFAL", "OFFSET", "OHANA", "OIL", "OLD", "OMEGA", "ONE", "ONION", "ONSET", "OPT", "OPTIC", "OPULENT", "ORATE", "ORB", "ORBIT", "ORDER", "ORE", "ORGAN", "OTHER", "OTTER", "OUGHT", "OUR", "OUT", "OUTDO", "OUTER", "OVOID", "OWE", "OWL", "OWN", "PAD", "PADDY", "PAGAN", "PAL", "PALES", "PAN", "PAP", "PAR", "PARKA", "PARRY", "PARSE", "PAT", "PAUSE", "PAW", "PAWED", "PAY", "PEA", "PEAKY", "PEEVE", "PEG", "PEN", "PEP", "PER", "PERIL", "PERKY", "PET", "PETTY", "PICKY", "PIE", "PIG", "PIN", "PINEY", "PINTO", "PIPIT", "PIT", "PIXEL", "PIXIE", "PLAID", "PLAIN", "PLAIT", "PLANE", "PLANT", "PLATE", "PLAZA", "PLEAD", "PLEAT", "PLUCK", "PLUMB", "PLUME", "PLUMP", "PLUNGE", "PLY", "POD", "POI", "POISE", "POKE", "POLAR", "PONO", "POP", "PORCH", "POSE", "POT", "POUCH", "POW", "PREEN", "PRIVY", "PRO", "PRONE", "PRONG", "PROSE", "PROVE", "PROWL", "PROXY", "PRUDE", "PRY", "PSALM", "PUB", "PUN", "PUP", "PUS", "PUT", "QUAFF", "QUALM", "QUASI", "QUELL", "QUERY", "QUEST", "QUEUE", "QUIRK", "QUOTA", "QUOTE", "RABID", "RADAR", "RADIX", "RAG", "RAJAH", "RALLY", "RAM", "RAMP", "RAN", "RAP", "RAT", "RAW", "RAY", "REACT", "READY", "REALM", "RED", "REEDY", "REF", "REIGN", "RELAY", "REP", "REPAY", "REPEL", "RESIN", "REV", "RIB", "RID", "RIG", "RIM", "RIP", "RIPEN", "RISKY", "RIVET", "ROB", "ROD", "ROOMY", "ROSETTE", "ROT", "ROW", "ROWDY", "RUB", "RUDDY", "RUG", "RUGBY", "RULER", "RUM", "RUN", "RUT", "RYE", "SABLE", "SAD", "SAG", "SALAD", "SAP", "SAT", "SAUCE", "SAVOR", "SAW", "SAY", "SCALP", "SCAM", "SCAMP", "SCANT", "SCARF", "SCENT", "SCOPE", "SCORN", "SCOUR", "SCOUT", "SCOWL", "SCUFF", "SEA", "SEEDY", "SEIZE", "SERGE", "SERVO", "SET", "SEW", "SHALE", "SHAME", "SHARE", "SHARK", "SHE", "SHEEN", "SHEER", "SHEET", "SHELF", "SHELL", "SHIFT", "SHIRE", "SHIRK", "SHOAL", "SHORE", "SHOUT", "SHOVE", "SHOWY", "SHREW", "SHRUB", "SHRUG", "SHUDDER", "SHUN", "SHUNT", "SHY", "SIEGE", "SIGMA", "SILKY", "SILVER", "SIMMER", "SIN", "SINEW", "SIP", "SIR", "SIREN", "SIS", "SISSY", "SIT", "SKI", "SKIMP", "SKIRT", "SKY", "SLAIN", "SLANT", "SLASH", "SLEEK", "SLICK", "SLOPE", "SLOTH", "SLURP", "SLY", "SMEAR", "SMELT", "SMIRK", "SMOKY", "SMOTE", "SNARE", "SNEAK", "SNIDE", "SNIFF", "SNIPE", "SNOOP", "SNORE", "SNORT", "SNOUT", "SNOWY", "SNUFF", "SOB", "SOD", "SOGGY", "SOLAR", "SOMBER", "SON", "SONIC", "SOP", "SOPPY", "SORRY", "SOW", "SOY", "SPA", "SPADE", "SPANK", "SPARE", "SPARK", "SPAWN", "SPECK", "SPEND", "SPEW", "SPICY", "SPILL", "SPINE", "SPIRE", "SPITE", "SPOKE", "SPORE", "SPORT", "SPOUT", "SPREE", "SPRIG", "SPY", "SQUAD", "SQUAT", "SQUID", "STALE", "STAMP", "STAND", "STANK", "STARE", "STARK", "STASH", "STEAL", "STEAM", "STEEL", "STEEP", "STEER", "STERN", "STING", "STINK", "STIR", "STOKE", "STOMP", "STOOP", "STORY", "STOVE", "STRAP", "STRAW", "STRAY", "STRIFE", "STRIP", "STRUT", "STUDY", "STUMPED", "STUNT", "STY", "SUAVE", "SUB", "SUE", "SUEDE", "SUITE", "SULKY", "SULLY", "SUM", "SUMMON", "SUN", "SUNLIT", "SUP", "SUPER", "SURGE", "SWAMI", "SWAMP", "SWEAR", "SWIRL", "SWOOP", "SWORD", "SYRUP", "TAB", "TACIT", "TALON", "TAN", "TAP", "TAR", "TARO", "TAT", "TAUNT", "TAWNY", "TAX", "TEA", "TEN", "TESTY", "THANE", "THE", "THIEF", "THORN", "THORNY", "THREW", "THRILL", "THROB", "THROE", "THROW", "THUMP", "THY", "TIC", "TIE", "TIGER", "TILDE", "TIMID", "TIN", "TIP", "TIPSY", "TITAN", "TOE", "TOKEN", "TON", "TONAL", "TOO", "TOP", "TOPAZ", "TORQUE", "TOTAL", "TOUCH", "TOUGH", "TOWEL", "TOXIC", "TOY", "TRACE", "TRACK", "TRAMP", "TRASH", "TRAWL", "TREAD", "TREAT", "TREND", "TRIAD", "TRICE", "TRICK", "TRIPE", "TRITE", "TROTH", "TROUT", "TROVE", "TRUCE", "TRUMP", "TRY", "TRYST", "TUB", "TUG", "TULIP", "TUMOR", "TUNIC", "TUTOR", "TWIRL", "TWIST", "TWO", "TYING", "UDDER", "UGH", "UNDUE", "UNIFY", "UNION", "UNITE", "UNTIE", "UNWED", "UPPER", "UPSET", "URBAN", "URN", "USE", "USURP", "UTTER", "VAGUE", "VALID", "VALOR", "VALUE", "VALVE", "VAN", "VAPID", "VAT", "VAULT", "VIE", "VIGIL", "VIM", "VIOLA", "VIRAL", "VIRUS", "VISIT", "VISOR", "VISTA", "VITAL", "VIVID", "VOGUE", "VOMIT", "VOTER", "VOW", "WAD", "WAGER", "WALTZ", "WAR", "WARES", "WARY", "WAS", "WATCH", "WATER", "WAX", "WEARY", "WEAVE", "WEB", "WED", "WEDGE", "WEE", "WEEDY", "WEIGH", "WEIRD", "WHELP", "WHIFF", "WHILE", "WHIRL", "WHOLE", "WIDEN", "WIELD", "WIG", "WIMPY", "WIN", "WINDY", "WISPY", "WIT", "WITCH", "WITTY", "WIZEN", "WOE", "WOK", "WON", "WOO", "WOOLY", "WORST", "WRATH", "WRIST", "YAK", "YAM", "YAP", "YEARN", "YEW", "YIP", "YODEL", "YOKEL", "YOU", "YUMMY", "ZAP", "ZAPPY", "ZEBRA", "ZED", "ZEN", "ZESTY", "ZIG", "ZIP", "ZIPPY", "ZOO"]);
+
+
+// ════════════════════════════════════════════════
+// ALOHA LETTERS — Vegas Scrabble
+// Today in Hawaii © 2026
+// ════════════════════════════════════════════════
+
+// Letter values & frequencies
+const LETTER_DATA = {
+  A:{val:1,freq:9,cls:'tile-common'},  E:{val:1,freq:12,cls:'tile-common'},
+  I:{val:1,freq:9,cls:'tile-common'},  O:{val:1,freq:8,cls:'tile-common'},
+  U:{val:1,freq:4,cls:'tile-common'},  L:{val:1,freq:4,cls:'tile-common'},
+  N:{val:1,freq:6,cls:'tile-common'},  S:{val:1,freq:4,cls:'tile-common'},
+  T:{val:1,freq:6,cls:'tile-common'},  R:{val:1,freq:6,cls:'tile-common'},
+  D:{val:2,freq:4,cls:'tile-common'},  G:{val:2,freq:3,cls:'tile-common'},
+  B:{val:3,freq:2,cls:'tile-uncommon'},C:{val:3,freq:2,cls:'tile-uncommon'},
+  M:{val:3,freq:2,cls:'tile-uncommon'},P:{val:3,freq:2,cls:'tile-uncommon'},
+  F:{val:4,freq:2,cls:'tile-uncommon'},H:{val:4,freq:2,cls:'tile-uncommon'},
+  V:{val:4,freq:2,cls:'tile-uncommon'},W:{val:4,freq:2,cls:'tile-uncommon'},
+  Y:{val:4,freq:2,cls:'tile-uncommon'},K:{val:5,freq:1,cls:'tile-rare'},
+  J:{val:8,freq:1,cls:'tile-rare'},    X:{val:8,freq:1,cls:'tile-rare'},
+  Q:{val:10,freq:1,cls:'tile-epic'},   Z:{val:10,freq:1,cls:'tile-epic'},
+};
+
+// Bonus types for extra excitement
+const BONUSES = [
+  {type:'DW',label:'Double Word 🔴',mult:2,color:'#ff6464'},
+  {type:'TW',label:'Triple Word 🔥',mult:3,color:'#ff3232'},
+  {type:'DL',label:'Double Letter 🔵',mult:1,letterMult:2,color:'#64b4ff'},
+  {type:'TL',label:'Triple Letter ⚡',mult:1,letterMult:3,color:'#3296ff'},
+  {type:'JK',label:'Jackpot! 🎰',mult:5,color:'#ffd700'},
+];
+
+const TILE_COUNT = 7;
+const ROUND_TIME = 45;
+
+let playerName='', playerLoc='';
+let tiles=[];        // {letter, val, cls, id, used, inWord}
+let wordTiles=[];    // tiles currently in word area (in order)
+let score=0, wordsFound=[], bestWord='', bestWordScore=0;
+let roundNum=1;
+let timeLeft=ROUND_TIME;
+let timerInterval=null;
+let currentBonus=null;
+let muted=false, myRank=0;
+let tileIdCounter=0;
+
+// ── Name Entry ────────────────────────────────
+document.getElementById('pName').addEventListener('input',checkReady);
+document.getElementById('pLoc').addEventListener('change',checkReady);
+function checkReady(){
+  const ok=document.getElementById('pName').value.trim().length>=2&&document.getElementById('pLoc').value;
+  document.getElementById('startBtn').disabled=!ok;
+}
+
+function startGame(){
+  playerName=document.getElementById('pName').value.trim();
+  playerLoc=document.getElementById('pLoc').value;
+  if(!playerName||!playerLoc) return;
+  document.getElementById('nameScr').style.display='none';
+  document.getElementById('gameArea').style.display='block';
+  document.getElementById('badgeName').textContent=playerName+' · '+playerLoc;
+  newGame();
+}
+
+function newGame(){
+  score=0; wordsFound=[]; bestWord=''; bestWordScore=0; roundNum=1;
+  updateStats(); updateFoundList();
+  dealTiles();
+  assignBonus();
+  startTimer();
+  document.getElementById('submitBtn').classList.add('flash');
+}
+
+// ── Tile Dealing ──────────────────────────────
+function buildTileBag(){
+  const bag=[];
+  Object.entries(LETTER_DATA).forEach(([letter,data])=>{
+    for(let i=0;i<data.freq;i++) bag.push(letter);
+  });
+  // Shuffle
+  for(let i=bag.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [bag[i],bag[j]]=[bag[j],bag[i]];
+  }
+  return bag;
+}
+
+function dealTiles(){
+  const bag=buildTileBag();
+  tiles=[];
+  wordTiles=[];
+  for(let i=0;i<TILE_COUNT;i++){
+    const letter=bag[i];
+    const data=LETTER_DATA[letter];
+    tiles.push({letter,val:data.val,cls:data.cls,id:tileIdCounter++,used:false,inWord:false});
+  }
+  renderRack();
+  renderWordArea();
+  updateScorePreview();
+}
+
+function renderRack(){
+  const rack=document.getElementById('rack');
+  rack.innerHTML='';
+  tiles.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='tile '+t.cls+(t.used?' used':'');
+    btn.id='tile-'+t.id;
+    btn.innerHTML=t.letter+'<span class="tile-val">'+t.val+'</span>';
+    btn.onclick=()=>tapTile(t.id);
+    rack.appendChild(btn);
+    // Pop in animation
+    btn.style.animation='none';
+    btn.style.transform='scale(0)';
+    setTimeout(()=>{btn.style.transform='';btn.style.transition='transform 0.3s cubic-bezier(0.23,1,0.32,1)';},50*tiles.indexOf(t));
+  });
+}
+
+function tapTile(id){
+  const t=tiles.find(x=>x.id===id);
+  if(!t||t.used) return;
+
+  if(t.inWord){
+    // Remove from word
+    wordTiles=wordTiles.filter(x=>x.id!==id);
+    t.inWord=false;
+  } else {
+    // Add to word
+    wordTiles.push(t);
+    t.inWord=true;
+    playTileSound(t.val);
+    vibrate(10);
+    burstTile(id);
+  }
+
+  renderRack();
+  renderWordArea();
+  updateScorePreview();
+}
+
+function renderWordArea(){
+  const area=document.getElementById('wordArea');
+  const placeholder=document.getElementById('wordPlaceholder');
+
+  if(wordTiles.length===0){
+    placeholder.style.display='block';
+    // Remove any word tiles
+    area.querySelectorAll('.word-tile').forEach(el=>el.remove());
+    return;
+  }
+
+  placeholder.style.display='none';
+
+  // Clear and rebuild
+  area.querySelectorAll('.word-tile').forEach(el=>el.remove());
+
+  wordTiles.forEach(t=>{
+    const div=document.createElement('div');
+    div.className='word-tile '+t.cls;
+    div.innerHTML=t.letter+'<span style="font-size:9px;position:absolute;bottom:2px;right:4px;">'+t.val+'</span>';
+    div.style.position='relative';
+    div.onclick=()=>tapTile(t.id);
+    div.style.animation='wordTilePop 0.3s cubic-bezier(0.23,1,0.32,1)';
+    area.appendChild(div);
+  });
+}
+
+// ── Score Preview ─────────────────────────────
+function updateScorePreview(){
+  const el=document.getElementById('scorePreview');
+  if(wordTiles.length===0){
+    el.textContent='Select letters to build a word';
+    el.className='score-preview';
+    document.getElementById('submitBtn').style.opacity='0.6';
+    return;
+  }
+
+  const word=wordTiles.map(t=>t.letter).join('');
+  const isValid=DICTIONARY.has(word);
+  const pts=calcScore(word);
+
+  if(word.length<3){
+    el.textContent='Need at least 3 letters!';
+    el.className='score-preview invalid';
+    document.getElementById('submitBtn').style.opacity='0.6';
+  } else if(isValid){
+    el.textContent='✅ '+word+' = '+pts+' points! Submit it! 🎰';
+    el.className='score-preview valid';
+    document.getElementById('submitBtn').style.opacity='1';
+  } else {
+    el.textContent='❌ "'+word+'" — not a valid word. Keep building!';
+    el.className='score-preview invalid';
+    document.getElementById('submitBtn').style.opacity='0.6';
+  }
+}
+
+function calcScore(word){
+  let pts=0;
+  let wordMult=1;
+  word.split('').forEach((letter,i)=>{
+    const val=LETTER_DATA[letter]?LETTER_DATA[letter].val:0;
+    let lMult=1;
+    if(currentBonus&&currentBonus.type==='DL') lMult=2;
+    if(currentBonus&&currentBonus.type==='TL') lMult=3;
+    pts+=val*lMult;
+  });
+  if(currentBonus&&currentBonus.mult>1) wordMult=currentBonus.mult;
+  pts*=wordMult;
+  // Length bonus
+  if(word.length===7) pts*=2; // Bingo!
+  else if(word.length>=6) pts+=50;
+  else if(word.length>=5) pts+=20;
+  return pts;
+}
+
+// ── Submit Word ───────────────────────────────
+function submitWord(){
+  if(wordTiles.length<3) return;
+  const word=wordTiles.map(t=>t.letter).join('');
+  if(!DICTIONARY.has(word)){
+    // Shake the word area
+    const area=document.getElementById('wordArea');
+    area.style.animation='shake 0.4s ease';
+    setTimeout(()=>area.style.animation='',400);
+    playWrongSound();
+    return;
+  }
+
+  // Check not already found
+  if(wordsFound.some(w=>w.word===word)){
+    showToast('Already found '+word+'!');
+    return;
+  }
+
+  const pts=calcScore(word);
+  score+=pts;
+  wordsFound.push({word,pts});
+  if(pts>bestWordScore){bestWordScore=pts;bestWord=word;}
+
+  // Celebration!
+  bigCelebration(pts, word);
+  playWinSound(word.length);
+  vibrate([50,30,50,30,100]);
+
+  updateStats();
+  updateFoundList();
+  submitScore();
+
+  // Reset for next word
+  clearWord();
+  dealTiles();
+  roundNum++;
+  assignBonus();
+  startTimer();
+  showToast('+'+pts+' 🎰');
+}
+
+function clearWord(){
+  wordTiles.forEach(t=>{t.inWord=false;});
+  wordTiles=[];
+  renderRack();
+  renderWordArea();
+  updateScorePreview();
+}
+
+// ── Shuffle tiles (slot machine style!) ───────
+function shuffleTiles(){
+  clearWord();
+  const rack=document.getElementById('rack');
+  // Slot machine animation
+  tiles.forEach((t,i)=>{
+    const el=document.getElementById('tile-'+t.id);
+    if(el){
+      setTimeout(()=>{
+        el.classList.add('shuffling');
+        playTileSound(3);
+        vibrate(15);
+      },i*60);
+    }
+  });
+  setTimeout(()=>{
+    dealTiles();
+    playJackpotSound();
+  },tiles.length*60+300);
+}
+
+// ── Bonus System ──────────────────────────────
+function assignBonus(){
+  // Random chance of getting a bonus
+  if(Math.random()<0.6){
+    currentBonus=BONUSES[Math.floor(Math.random()*BONUSES.length)];
+  } else {
+    currentBonus=null;
+  }
+  showBonus();
+}
+
+function showBonus(){
+  const bar=document.getElementById('activeBonusBar');
+  if(currentBonus){
+    bar.style.display='block';
+    bar.style.background='rgba(0,0,0,0.4)';
+    bar.style.border='2px solid '+currentBonus.color;
+    bar.style.color=currentBonus.color;
+    bar.textContent='🎰 ACTIVE BONUS: '+currentBonus.label;
+    bar.style.textShadow='0 0 10px '+currentBonus.color;
+    bar.style.animation='bonusPulse 1.5s ease-in-out infinite';
+  } else {
+    bar.style.display='none';
+  }
+}
+
+// ── Timer ─────────────────────────────────────
+function startTimer(){
+  timeLeft=ROUND_TIME;
+  clearInterval(timerInterval);
+  updateTimerBar();
+  timerInterval=setInterval(()=>{
+    timeLeft-=0.1;
+    updateTimerBar();
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      timeUp();
+    }
+  },100);
+}
+
+function updateTimerBar(){
+  const pct=Math.max(0,(timeLeft/ROUND_TIME)*100);
+  const fill=document.getElementById('timerFill');
+  fill.style.width=pct+'%';
+  if(pct<30) fill.classList.add('urgent');
+  else fill.classList.remove('urgent');
+  document.getElementById('timerText').textContent=Math.ceil(timeLeft)+'s';
+  if(timeLeft<=10&&timeLeft>0) vibrate(5);
+}
+
+function timeUp(){
+  // Slot machine shuffle with fun sound!
+  playShuffleSound();
+  showToast('⏰ Time up! Shuffling... 🎰');
+  clearWord();
+  // Slot machine animation then new tiles
+  tiles.forEach((t,i)=>{
+    const el=document.getElementById('tile-'+t.id);
+    if(el) setTimeout(()=>{el.classList.add('shuffling');playTileSound(2);},i*80);
+  });
+  setTimeout(()=>{
+    dealTiles();
+    roundNum++;
+    assignBonus();
+    startTimer();
+    document.getElementById('roundVal').textContent=roundNum;
+  },tiles.length*80+400);
+}
+
+// ── UI ────────────────────────────────────────
+function updateStats(){
+  document.getElementById('scoreVal').textContent=score.toLocaleString();
+  document.getElementById('wordsVal').textContent=wordsFound.length;
+  document.getElementById('bestVal').textContent=bestWordScore;
+  document.getElementById('roundVal').textContent=roundNum;
+}
+
+function updateFoundList(){
+  const el=document.getElementById('foundWordsList');
+  if(wordsFound.length===0){
+    el.innerHTML='<span style="color:#a78bfa;font-size:12px;">No words yet — start building!</span>';
+    return;
+  }
+  el.innerHTML=wordsFound.slice().reverse().map(w=>
+    '<span class="found-word-chip">'+w.word+' <strong>'+w.pts+'pts</strong></span>'
+  ).join('');
+}
+
+function showToast(msg){
+  const el=document.createElement('div');
+  el.className='score-pop';
+  el.style.color='#ffd700';
+  el.textContent=msg;
+  el.style.left=(25+Math.random()*50)+'%';
+  el.style.top=(20+Math.random()*20)+'%';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+
+// ── End Game ──────────────────────────────────
+function endGame(){
+  clearInterval(timerInterval);
+  submitScore();
+  loadLeaderboard();
+
+  const msgs=[
+    'Big spender! The casino of words salutes you! 🎰',
+    'You played like a true Hawaii word wizard! 🌺',
+    'The tiles have spoken — mahalo for playing! 🤙',
+    'Come back and try to beat your high score! 🏆',
+  ];
+
+  document.getElementById('ovEmoji').textContent=score>1000?'🥇':score>500?'🎰':'🌺';
+  document.getElementById('ovTitle').textContent=score>1000?'HIGH ROLLER!!':score>500?'Nice Game!':'Good Effort!';
+  document.getElementById('ovScore').textContent=score.toLocaleString()+' pts';
+  document.getElementById('ovRank').textContent=myRank>0?'🏆 #'+myRank+' on the Leaderboard!':'';
+  document.getElementById('ovMsg').textContent=
+    'Found '+wordsFound.length+' words! Best word: '+(bestWord||'none')+' ('+bestWordScore+' pts)! '+
+    msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('overlay').classList.add('show');
+}
+
+function playAgain(){ closeOverlay(); newGame(); }
+function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); }
+
+function shareScore(){
+  const txt='🎰 I scored '+score.toLocaleString()+' pts on Aloha Letters from '+playerLoc+'! Found '+wordsFound.length+' words! Beat me! 🌺 todayinhawaii.com/scrabble';
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/scrabble')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Celebrations ──────────────────────────────
+function bigCelebration(pts, word){
+  const emojis=pts>=200?['🎰','💰','🌟','🏆','🎉','💎','🔥']:['🌺','⭐','✨','💫','🎊'];
+  const count=pts>=200?20:10;
+  for(let i=0;i<count;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.fontSize=(14+Math.random()*18)+'px';
+    p.style.left=(15+Math.random()*70)+'%';
+    p.style.top=(20+Math.random()*40)+'%';
+    const ang=Math.random()*Math.PI*2;
+    const d=50+Math.random()*100;
+    p.style.setProperty('--tx',Math.cos(ang)*d+'px');
+    p.style.setProperty('--ty',Math.sin(ang)*d+'px');
+    p.style.animationDuration=(0.6+Math.random()*0.5)+'s';
+    p.style.animationDelay=(Math.random()*0.3)+'s';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1200);
+  }
+
+  // Score popup
+  const pop=document.createElement('div');
+  pop.className='score-pop';
+  pop.style.color=pts>=200?'#ffd700':pts>=100?'#ff0080':'#00d4ff';
+  pop.textContent='+'+pts+(pts>=200?' 🎰 JACKPOT!':pts>=100?' 🔥 HOT!':'');
+  pop.style.fontSize=pts>=200?'28px':'20px';
+  pop.style.left='30%';
+  pop.style.top='35%';
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),1200);
+}
+
+function burstTile(id){
+  const el=document.getElementById('tile-'+id);
+  if(!el) return;
+  const rect=el.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  ['✨','⭐'].forEach(em=>{
+    const p=document.createElement('div');
+    p.style.cssText='position:fixed;font-size:12px;left:'+cx+'px;top:'+cy+'px;pointer-events:none;z-index:999;animation:pfly 0.5s ease forwards;';
+    const ang=Math.random()*Math.PI*2, d=20+Math.random()*20;
+    p.style.setProperty('--tx',Math.cos(ang)*d+'px');
+    p.style.setProperty('--ty',Math.sin(ang)*d+'px');
+    p.textContent=em;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),550);
+  });
+}
+
+// ── Sound ─────────────────────────────────────
+let audioCtx=null;
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(f,t,v,d,delay){
+  if(muted)return; delay=delay||0;
+  try{
+    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.01);
+  }catch(e){}
+}
+
+const TILE_NOTES={1:523,2:587,3:659,4:784,5:880,8:1047,10:1319};
+function playTileSound(val){
+  const f=TILE_NOTES[val]||523;
+  playTone(f,'sine',0.3,0.1);
+}
+
+function playWinSound(len){
+  if(len>=7){
+    // BINGO! Full fanfare!
+    [523,659,784,1047,1319,1568].forEach((f,i)=>playTone(f,'sine',0.6,0.25,i*0.07));
+    setTimeout(()=>playJackpotSound(),500);
+  } else if(len>=5){
+    [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.5,0.2,i*0.07));
+  } else {
+    [523,659,784].forEach((f,i)=>playTone(f,'sine',0.4,0.18,i*0.07));
+  }
+}
+
+function playJackpotSound(){
+  if(muted) return;
+  const notes=[523,784,1047,1319,1047,784,1047,1319,1568];
+  notes.forEach((f,i)=>playTone(f,'sine',0.6,0.15,i*0.06));
+}
+
+function playShuffleSound(){
+  for(let i=0;i<7;i++) playTone(200+Math.random()*600,'triangle',0.2,0.08,i*0.05);
+}
+
+function playWrongSound(){
+  [300,250,200].forEach((f,i)=>playTone(f,'sawtooth',0.3,0.15,i*0.08));
+}
+
+function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
+function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+
+// ── Leaderboard ───────────────────────────────
+async function loadLeaderboard(){
+  try{
+    const res=await fetch('/api/scrabble-scores');
+    const data=await res.json();
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
+    if(!data.length){document.getElementById('lbList').innerHTML='<div class="lb-empty">Be the first High Roller! 🎰</div>';return;}
+    document.getElementById('lbList').innerHTML=data.slice(0,8).map((s,i)=>{
+      const isMe=playerName&&s.name.toLowerCase()===playerName.toLowerCase();
+      const cls=i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
+      return '<div class="lb-row '+cls+'"><span class="lb-medal">'+(medals[i]||i+1)+'</span>'+
+        '<div style="flex:1"><div class="lb-name">'+s.name+(isMe?' ← You!':'')+'</div>'+
+        '<div class="lb-loc">📍 '+s.island+' · '+s.level+' words</div></div>'+
+        '<span class="lb-pts">'+Number(s.score).toLocaleString()+'</span></div>';
+    }).join('');
+    if(playerName){
+      const myIdx=data.findIndex(s=>s.name.toLowerCase()===playerName.toLowerCase());
+      if(myIdx>=0) document.getElementById('badgeRank').textContent='#'+(myIdx+1)+' 💰';
+    }
+  }catch(e){document.getElementById('lbList').innerHTML='<div class="lb-empty">Play to get on the board! 🎰</div>';}
+}
+
+async function submitScore(){
+  if(!playerName||score<=0) return;
+  try{
+    const res=await fetch('/api/scrabble-scores',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:playerName,score,island:playerLoc,level:wordsFound.length})
+    });
+    const data=await res.json();
+    if(data.ok){myRank=data.rank;document.getElementById('badgeRank').textContent='#'+myRank+' 💰';}
+  }catch(e){}
+}
+
+// CSS animation for word tile pop
+const styleEl=document.createElement('style');
+styleEl.textContent='@keyframes wordTilePop{0%{transform:scale(0) translateY(20px);opacity:0;}80%{transform:scale(1.1) translateY(-3px);}100%{transform:scale(1);opacity:1;}}@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}@keyframes bonusPulse{0%,100%{opacity:1;}50%{opacity:0.7;}}';
+document.head.appendChild(styleEl);
+
+// Init
+loadLeaderboard();
+setInterval(loadLeaderboard,20000);
+</script>
+</body>
+</html>
