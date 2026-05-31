@@ -359,8 +359,8 @@
       </optgroup>
     </select>
     <button class="vbtn vbtn-gold" id="startBtn" onclick="startGame()" disabled>
-      <div style="font-size:18px;font-weight:900;letter-spacing:2px;">🎰 LET'S PLAY!</div>
-      <div style="font-size:11px;opacity:0.8;margin-top:2px;">45 seconds per word · Score big!</div>
+      <div style="font-size:18px;font-weight:900;letter-spacing:2px;" id="startBtnText">⏳ Loading Dictionary...</div>
+      <div style="font-size:11px;opacity:0.8;margin-top:2px;">148,736 words · 2 minutes per round!</div>
     </button>
   </div>
 
@@ -464,6 +464,23 @@
 <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
 
 
+<script>
+function loadDictionary(callback){
+  if(typeof DICTIONARY !== 'undefined'){callback();return;}
+  const s=document.createElement('script');
+  s.src='/words.js';
+  s.onload=function(){
+    console.log('✅ Dictionary ready:',DICTIONARY.size,'words!');
+    callback();
+  };
+  s.onerror=function(){
+    console.warn('words.js failed - using fallback');
+    window.DICTIONARY=new Set(['NET','GEM','CAT','DOG','HAT','RUN','TOP','SET','WET','BET','GET','JET','LET','MET','PET','VET','TIN','TAN','TEN','TON','WIN','FIN','FAN','BIN','BAN','GIN','GEN','HEN','KIN','LEN','MAN','MEN','RAN','REN','VAN','YAN','LOVE','ROAD','LATE','LIVE','HAVE','MAKE','TAKE','LIFE','GOOD','WORD','COME','SOME','HOME','TIME','LOOK','KNOW','FEEL','OPEN','KEEP','BACK','ALSO','JUST','OVER','WELL','ALOHA','BEACH','OCEAN','CORAL','WAVE','PALM','FISH','TREE','SAND','STAR','MOON','RAIN','WIND','FIRE','PLAY','GAME','WORK','BOOK','HAND','FACE','HEAD','HEART','MIND','BODY']);
+    callback();
+  };
+  document.head.appendChild(s);
+}
+</script>
 <script>
 // Full English Scrabble Dictionary — 148,736 words
 // Words 3-8 letters, sourced from dwyl/english-words
@@ -738,7 +755,7 @@ function submitWord(){
   const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
 
   // Safety: DICTIONARY might still be loading - recheck
-  const isInDict = DICTIONARY.has(word) || DICTIONARY.has(word.toLowerCase());
+  const isInDict = (typeof DICTIONARY !== 'undefined') && (DICTIONARY.has(word) || DICTIONARY.has(word.toLowerCase()));
   if(!isInDict){
     const area=document.getElementById('wordArea');
     area.style.animation='shake 0.4s ease';
@@ -788,7 +805,7 @@ function updateScorePreview(){
     return;
   }
   const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
-  const isValid=DICTIONARY.has(word)||DICTIONARY.has(word.toLowerCase());
+  const isValid=(typeof DICTIONARY !== 'undefined') && (DICTIONARY.has(word)||DICTIONARY.has(word.toLowerCase()));
   const pts=calcScore(word);
   if(word.length<3){
     el.textContent='Need at least 3 letters!';
@@ -1032,6 +1049,16 @@ async function submitScore(){
 const styleEl=document.createElement('style');
 styleEl.textContent='@keyframes wordTilePop{0%{transform:scale(0) translateY(20px);opacity:0;}80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}@keyframes bonusPulse{0%,100%{opacity:1;}50%{opacity:0.7;}}';
 document.head.appendChild(styleEl);
+
+// Wait for dictionary to load before starting
+loadDictionary(function(){
+  console.log('Dictionary ready:', DICTIONARY.size, 'words!');
+  // Update button text
+  const btnText = document.getElementById('startBtnText');
+  if(btnText) btnText.textContent = '🎰 LET'S PLAY!';
+  // Re-run checkReady to enable button if name+location filled
+  checkReady();
+});
 
 loadLeaderboard();
 setInterval(loadLeaderboard,20000);
