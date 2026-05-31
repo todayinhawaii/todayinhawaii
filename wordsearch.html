@@ -115,7 +115,18 @@
     @keyframes fcPulse7{0%,100%{box-shadow:0 0 6px rgba(236,72,153,0.4);}50%{box-shadow:0 0 16px rgba(236,72,153,0.9),0 0 28px rgba(236,72,153,0.4);transform:scale(1.06);}}
     @keyframes fcPulse8{0%,100%{box-shadow:0 0 6px rgba(16,185,129,0.4);}50%{box-shadow:0 0 16px rgba(16,185,129,0.9),0 0 28px rgba(16,185,129,0.4);transform:scale(1.06);}}
     @keyframes fcPulse9{0%,100%{box-shadow:0 0 6px rgba(251,191,36,0.4);}50%{box-shadow:0 0 16px rgba(251,191,36,0.9),0 0 28px rgba(251,191,36,0.4);transform:scale(1.06);}}
-    .cell.revealed-cell{color:#fbbf24;font-weight:900;}
+    /* Each revealed word gets its own distinct color */
+    .cell.revealed-cell{font-weight:900;}
+    .rv-0{background:rgba(239,68,68,0.3)!important;color:#fca5a5!important;border:2px solid #ef4444!important;box-shadow:0 0 8px rgba(239,68,68,0.6)!important;}
+    .rv-1{background:rgba(249,115,22,0.3)!important;color:#fdba74!important;border:2px solid #f97316!important;box-shadow:0 0 8px rgba(249,115,22,0.6)!important;}
+    .rv-2{background:rgba(234,179,8,0.3)!important;color:#fde047!important;border:2px solid #eab308!important;box-shadow:0 0 8px rgba(234,179,8,0.6)!important;}
+    .rv-3{background:rgba(34,197,94,0.3)!important;color:#86efac!important;border:2px solid #22c55e!important;box-shadow:0 0 8px rgba(34,197,94,0.6)!important;}
+    .rv-4{background:rgba(59,130,246,0.3)!important;color:#93c5fd!important;border:2px solid #3b82f6!important;box-shadow:0 0 8px rgba(59,130,246,0.6)!important;}
+    .rv-5{background:rgba(168,85,247,0.3)!important;color:#d8b4fe!important;border:2px solid #a855f7!important;box-shadow:0 0 8px rgba(168,85,247,0.6)!important;}
+    .rv-6{background:rgba(34,211,238,0.3)!important;color:#67e8f9!important;border:2px solid #22d3ee!important;box-shadow:0 0 8px rgba(34,211,238,0.6)!important;}
+    .rv-7{background:rgba(236,72,153,0.3)!important;color:#f9a8d4!important;border:2px solid #ec4899!important;box-shadow:0 0 8px rgba(236,72,153,0.6)!important;}
+    .rv-8{background:rgba(16,185,129,0.3)!important;color:#6ee7b7!important;border:2px solid #10b981!important;box-shadow:0 0 8px rgba(16,185,129,0.6)!important;}
+    .rv-9{background:rgba(251,191,36,0.3)!important;color:#fde68a!important;border:2px solid #fbbf24!important;box-shadow:0 0 8px rgba(251,191,36,0.6)!important;}
     @keyframes foundPop{0%{transform:scale(1);}40%{transform:scale(1.2);}100%{transform:scale(1);}}
 
     /* Found colors - different color per word */
@@ -721,9 +732,11 @@ function tryMatchWord(word, cells){
   exactCells.forEach(({r,c})=>{
     const el=gCell(r,c);
     if(el){
-      // Clear any inline styles
       clearCellHighlight(el);
-      // Apply color class
+      // Remove any reveal classes
+      for(let i=0;i<10;i++) el.classList.remove('rv-'+i);
+      el.classList.remove('revealed-cell');
+      // Apply found color
       el.className='cell found-word fc-'+colorIdx;
     }
   });
@@ -756,25 +769,51 @@ function toggleReveal(){
   document.getElementById('revealBtn').style.opacity=revealed?'0.6':'1';
 
   if(revealed){
+    let colorIdx=0;
     placements.forEach(p=>{
       if(!foundWords.includes(p.word)){
-        // Get cells from scratch — exactly word.length cells
+        const rvClass='rv-'+(colorIdx%10);
+        // Each word gets its own unique color — visually distinct!
         placeCells(p).forEach(({r,c})=>{
           const el=gCell(r,c);
-          if(el&&!isCellFound(r,c)) el.classList.add('revealed-cell');
+          if(el){
+            // Remove any existing rv classes
+            for(let i=0;i<10;i++) el.classList.remove('rv-'+i);
+            el.classList.add('revealed-cell', rvClass);
+          }
         });
         const wIdx=currentWords.indexOf(p.word);
         const chip=document.getElementById('chip-'+wIdx);
-        if(chip) chip.className='word-chip revealed';
+        if(chip){
+          chip.className='word-chip revealed';
+          chip.style.borderColor=getRvColor(colorIdx%10);
+          chip.style.color=getRvColor(colorIdx%10);
+        }
+        colorIdx++;
       }
     });
   } else {
-    document.querySelectorAll('.cell.revealed-cell').forEach(el=>el.classList.remove('revealed-cell'));
+    // Clear ALL reveal classes
+    const el=document.querySelectorAll('.cell.revealed-cell');
+    el.forEach(e=>{
+      e.classList.remove('revealed-cell');
+      for(let i=0;i<10;i++) e.classList.remove('rv-'+i);
+    });
     currentWords.forEach((w,i)=>{
       const chip=document.getElementById('chip-'+i);
-      if(chip&&!foundWords.includes(w)) chip.className='word-chip';
+      if(chip&&!foundWords.includes(w)){
+        chip.className='word-chip';
+        chip.style.borderColor='';
+        chip.style.color='';
+      }
     });
   }
+}
+
+// Get color for reveal index
+function getRvColor(idx){
+  const colors=['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#22d3ee','#ec4899','#10b981','#fbbf24'];
+  return colors[idx%colors.length];
 }
 
 function reapplyFoundColors(){
@@ -783,7 +822,12 @@ function reapplyFoundColors(){
     const colorIdx=(foundWords.indexOf(p.word))%10;
     placeCells(p).forEach(({r,c})=>{
       const el=gCell(r,c);
-      if(el) el.className='cell found-word fc-'+colorIdx;
+      if(el){
+        // Clear all rv and revealed classes
+        for(let i=0;i<10;i++) el.classList.remove('rv-'+i);
+        el.classList.remove('revealed-cell');
+        el.className='cell found-word fc-'+colorIdx;
+      }
     });
   });
 }
