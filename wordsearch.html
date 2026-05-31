@@ -546,22 +546,21 @@ function onGridMouseDown(e){
   if(!cell||paused) return;
   isDragging=true;
   dragStartR=cell.r; dragStartC=cell.c;
-  // Clear tap mode when starting drag
-  clearTapMode();
-  setSelection([{r:cell.r,c:cell.c}]);
-  burstCell(cell.r,cell.c);
-  playTick();
-  vibrate(10);
+  // Don't clear or set selection yet — wait to see if drag or tap
 }
 
 function onGridMouseMove(e){
   if(!isDragging||paused) return;
   const cell=getCellFromEvent(e);
   if(!cell) return;
+  if(cell.r===dragStartR&&cell.c===dragStartC) return;
+  // Only enter drag mode if moved to a different cell
   const cells=getCellsInLine(dragStartR,dragStartC,cell.r,cell.c);
-  if(cells.length!==selectedCells.length){
-    setSelection(cells);
-    if(cells.length>1){
+  if(cells.length>1){
+    // Now in drag mode — clear tap highlights
+    if(tapCells.length>0) clearTapMode();
+    if(cells.length!==selectedCells.length){
+      setSelection(cells);
       const last=cells[cells.length-1];
       burstCell(last.r,last.c);
       playTick();
@@ -572,12 +571,15 @@ function onGridMouseMove(e){
 function onGridMouseUp(e){
   if(!isDragging) return;
   isDragging=false;
-  // If barely moved — treat as a tap
-  if(selectedCells.length<=1){
-    handleTap(dragStartR, dragStartC);
-  } else {
+  if(selectedCells.length>1){
+    // Was a drag — check the selection
     checkSelection();
+  } else {
+    // Was a tap — handle tap mode
+    if(dragStartR>=0) handleTap(dragStartR, dragStartC);
   }
+  // Clear drag selection visual
+  setSelection([]);
 }
 
 function onGridTouchStart(e){
@@ -586,11 +588,7 @@ function onGridTouchStart(e){
   if(!cell||paused) return;
   isDragging=true;
   dragStartR=cell.r; dragStartC=cell.c;
-  // Don't clear tap mode yet — wait to see if it's a tap or drag
-  setSelection([{r:cell.r,c:cell.c}]);
-  burstCell(cell.r,cell.c);
-  playTick();
-  vibrate(10);
+  // Don't clear or set selection yet — wait to see if drag or tap
 }
 
 function onGridTouchMove(e){
@@ -598,10 +596,13 @@ function onGridTouchMove(e){
   if(!isDragging||paused) return;
   const cell=getCellFromEvent(e);
   if(!cell) return;
+  if(cell.r===dragStartR&&cell.c===dragStartC) return;
   const cells=getCellsInLine(dragStartR,dragStartC,cell.r,cell.c);
-  if(cells.length!==selectedCells.length){
-    setSelection(cells);
-    if(cells.length>1){
+  if(cells.length>1){
+    // Now in drag mode — clear tap highlights
+    if(tapCells.length>0) clearTapMode();
+    if(cells.length!==selectedCells.length){
+      setSelection(cells);
       const last=cells[cells.length-1];
       burstCell(last.r,last.c);
       playTick();
@@ -612,12 +613,15 @@ function onGridTouchMove(e){
 function onGridTouchEnd(e){
   if(!isDragging) return;
   isDragging=false;
-  // If barely moved — treat as a tap
-  if(selectedCells.length<=1){
-    handleTap(dragStartR, dragStartC);
-  } else {
+  if(selectedCells.length>1){
+    // Was a drag — check the selection
     checkSelection();
+  } else {
+    // Was a tap — handle tap mode
+    if(dragStartR>=0) handleTap(dragStartR, dragStartC);
   }
+  // Clear drag selection visual
+  setSelection([]);
 }
 
 // Get a straight line of cells from (r1,c1) to (r2,c2)
@@ -657,9 +661,10 @@ function getCellsInLine(r1,c1,r2,c2){
 
 // ── Visual Selection ──────────────────────────
 function setSelection(cells){
-  // Clear old selection (only non-found cells)
+  // Clear old drag selection (only non-found, non-tap cells)
   selectedCells.forEach(({r,c})=>{
-    if(!isCellFound(r,c)){
+    const inTap=tapCells.some(t=>t.r===r&&t.c===c);
+    if(!isCellFound(r,c)&&!inTap){
       const el=gCell(r,c);
       if(el) clearCellHighlight(el);
     }
@@ -667,7 +672,7 @@ function setSelection(cells){
 
   selectedCells=cells;
 
-  // Apply new selection — GOLD highlight, stays until released
+  // Apply gold highlight to dragged cells
   cells.forEach(({r,c})=>{
     if(!isCellFound(r,c)){
       const el=gCell(r,c);
