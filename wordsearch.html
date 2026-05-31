@@ -380,6 +380,10 @@ let isDragging = false;
 let dragStartR = -1, dragStartC = -1;
 let selectedCells = []; // [{r,c}] currently highlighted
 
+// Tap-mode state — tap individual letters one by one
+let tapCells = [];      // Letters tapped so far [{r,c,letter}]
+let tapMatches = [];    // Words that still match the current tap sequence
+
 // ── Helpers ───────────────────────────────────
 function gCell(r,c){ return document.querySelector('[data-r="'+r+'"][data-c="'+c+'"]'); }
 
@@ -424,6 +428,7 @@ function startGame(){
 // ── Puzzle Loading ────────────────────────────
 function loadPuzzle(){
   foundWords=[]; revealed=false; selectedCells=[];
+  tapCells=[]; tapMatches=[];
   document.getElementById('revealBtn').style.opacity='1';
 
   const puzzle=WORD_PUZZLES[puzzleOrder[currentPuzzleIdx%puzzleOrder.length]];
@@ -541,6 +546,8 @@ function onGridMouseDown(e){
   if(!cell||paused) return;
   isDragging=true;
   dragStartR=cell.r; dragStartC=cell.c;
+  // Clear tap mode when starting drag
+  clearTapMode();
   setSelection([{r:cell.r,c:cell.c}]);
   burstCell(cell.r,cell.c);
   playTick();
@@ -565,7 +572,12 @@ function onGridMouseMove(e){
 function onGridMouseUp(e){
   if(!isDragging) return;
   isDragging=false;
-  checkSelection();
+  // If barely moved — treat as a tap
+  if(selectedCells.length<=1){
+    handleTap(dragStartR, dragStartC);
+  } else {
+    checkSelection();
+  }
 }
 
 function onGridTouchStart(e){
@@ -574,6 +586,7 @@ function onGridTouchStart(e){
   if(!cell||paused) return;
   isDragging=true;
   dragStartR=cell.r; dragStartC=cell.c;
+  // Don't clear tap mode yet — wait to see if it's a tap or drag
   setSelection([{r:cell.r,c:cell.c}]);
   burstCell(cell.r,cell.c);
   playTick();
@@ -599,7 +612,12 @@ function onGridTouchMove(e){
 function onGridTouchEnd(e){
   if(!isDragging) return;
   isDragging=false;
-  checkSelection();
+  // If barely moved — treat as a tap
+  if(selectedCells.length<=1){
+    handleTap(dragStartR, dragStartC);
+  } else {
+    checkSelection();
+  }
 }
 
 // Get a straight line of cells from (r1,c1) to (r2,c2)
@@ -676,6 +694,126 @@ function clearCellHighlight(el){
   el.style.transform='';
   el.style.zIndex='';
   el.style.fontWeight='';
+}
+
+// ── Tap Mode — tap letters one by one ────────
+function handleTap(r, c){
+  if(paused) return;
+
+  // If this cell is already tapped — deselect it and everything after
+  const existingIdx = tapCells.findIndex(t=>t.r===r&&t.c===c);
+  if(existingIdx >= 0){
+    // Deselect from this point onward
+    const removed = tapCells.splice(existingIdx);
+    removed.forEach(t=>{
+      if(!isCellFound(t.r,t.c)){
+        const el=gCell(t.r,t.c);
+        if(el) clearCellHighlight(el);
+      }
+    });
+    // Recheck which words still match
+    updateTapMatches();
+    return;
+  }
+
+  // Check if this letter could be next in ANY word
+  const letter = grid[r][c];
+  const nextIdx = tapCells.length;
+
+  // Find words where this letter matches position nextIdx
+  const candidates = currentWords.filter(w=>{
+    if(foundWords.includes(w)) return false;
+    if(nextIdx >= w.length) return false;
+    if(w[nextIdx] !== letter) return false;
+    // Check it follows the previous tap cell in a valid direction
+    if(nextIdx === 0) return true;
+    const prev = tapCells[nextIdx-1];
+    const dr = r - prev.r;
+    const dc = c - prev.c;
+    // Must be adjacent in one of 8 directions
+    return Math.abs(dr)<=1 && Math.abs(dc)<=1 && (dr!==0||dc!==0);
+  });
+
+  if(candidates.length === 0){
+    // Wrong letter — red flash and clear all taps
+    const el=gCell(r,c);
+    if(el){
+      el.style.background='rgba(239,68,68,0.35)';
+      el.style.borderColor='#ef4444';
+      el.style.color='#f87171';
+      el.style.boxShadow='0 0 8px rgba(239,68,68,0.6)';
+      el.style.transform='scale(1.1)';
+      setTimeout(()=>{if(!isCellFound(r,c))clearCellHighlight(el);},400);
+    }
+    // Clear all tap highlights
+    clearTapMode();
+    vibrate(30);
+    return;
+  }
+
+  // Valid letter! Add to tap sequence and highlight
+  tapCells.push({r, c, letter});
+  tapMatches = candidates;
+
+  const el=gCell(r,c);
+  if(el) applySelectStyle(el);
+  burstCell(r,c);
+  playTick();
+  vibrate(10);
+
+  // Check if any word is complete
+  const complete = candidates.find(w=>w.length===tapCells.length);
+  if(complete){
+    // Verify all cells form a valid line
+    const placement = placements.find(p=>p.word===complete);
+    if(placement){
+      const pCells = placeCells(placement);
+      const matches = tapCells.every((t,i)=>pCells[i]&&pCells[i].r===t.r&&pCells[i].c===t.c);
+      if(matches){
+        // Clear tap highlights first
+        tapCells.forEach(t=>{
+          const e=gCell(t.r,t.c);
+          if(e&&!isCellFound(t.r,t.c)) clearCellHighlight(e);
+        });
+        tapCells=[];
+        tapMatches=[];
+        // Found the word!
+        tryMatchWord(complete, pCells);
+        return;
+      }
+    }
+    // Try matching via selection check
+    const selWord = tapCells.map(t=>t.letter).join('');
+    const selCellsArr = tapCells.map(t=>({r:t.r,c:t.c}));
+    clearTapHighlights();
+    tapCells=[];
+    tapMatches=[];
+    tryMatchWord(selWord, selCellsArr);
+  }
+}
+
+function updateTapMatches(){
+  if(tapCells.length===0){tapMatches=[];return;}
+  const sofar=tapCells.map(t=>t.letter).join('');
+  tapMatches=currentWords.filter(w=>
+    !foundWords.includes(w)&&w.startsWith(sofar)
+  );
+  if(tapMatches.length===0) clearTapMode();
+}
+
+function clearTapHighlights(){
+  tapCells.forEach(t=>{
+    if(!isCellFound(t.r,t.c)){
+      const el=gCell(t.r,t.c);
+      if(el) clearCellHighlight(el);
+    }
+  });
+}
+
+function clearTapMode(){
+  clearTapHighlights();
+  tapCells=[];
+  tapMatches=[];
 }
 
 // ── Check Selection Against Words ─────────────
