@@ -682,22 +682,24 @@ function onDrop(e, targetZone){
   // Insert at correct position
   t.zone=targetZone;
 
-  // Find actual insertion index in full tiles array
-  if(idx>=zoneTiles.length){
-    // Insert after all zone tiles
-    const lastZoneTile=zoneTiles[zoneTiles.length-1];
-    if(lastZoneTile){
-      const pos=tiles.findLastIndex?tiles.findLastIndex(x=>x.zone===targetZone):
-        tiles.reduce((best,x,i)=>x.zone===targetZone?i:best,-1);
-      tiles.splice(pos+1,0,t);
-    } else {
-      tiles.push(t);
+  if(zoneTiles.length===0){
+    // No tiles in zone yet — just push
+    tiles.push(t);
+  } else if(idx>=zoneTiles.length){
+    // Insert AFTER last tile in this zone
+    // Find last tile of this zone in full array
+    let lastPos=-1;
+    for(let i=tiles.length-1;i>=0;i--){
+      if(tiles[i].zone===targetZone){lastPos=i;break;}
     }
+    if(lastPos>=0) tiles.splice(lastPos+1,0,t);
+    else tiles.push(t);
   } else {
-    // Insert before the tile at idx
+    // Insert BEFORE the tile at idx in this zone
     const targetTile=zoneTiles[idx];
     const pos=tiles.indexOf(targetTile);
-    tiles.splice(pos,0,t);
+    if(pos>=0) tiles.splice(pos,0,t);
+    else tiles.push(t);
   }
 
   // Celebration!
@@ -720,12 +722,14 @@ function submitWord(){
 
   const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
 
-  if(!DICTIONARY.has(word)){
+  // Safety: DICTIONARY might still be loading - recheck
+  const isInDict = DICTIONARY.has(word) || DICTIONARY.has(word.toLowerCase());
+  if(!isInDict){
     const area=document.getElementById('wordArea');
     area.style.animation='shake 0.4s ease';
     setTimeout(()=>area.style.animation='',400);
     playWrongSound();vibrate(100);
-    showToast('❌ "'+word+'" not a word — rearrange and try!');
+    showToast('❌ "'+word+'" — try rearranging!');
     return;
   }
 
@@ -769,7 +773,7 @@ function updateScorePreview(){
     return;
   }
   const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
-  const isValid=DICTIONARY.has(word);
+  const isValid=DICTIONARY.has(word)||DICTIONARY.has(word.toLowerCase());
   const pts=calcScore(word);
   if(word.length<3){
     el.textContent='Need at least 3 letters!';
@@ -808,21 +812,28 @@ function calcScore(word){
 
 // ── Shuffle ──────────────────────────────────
 function shuffleTiles(){
-  clearWord();
+  // Shuffle ONLY rack tiles — no penalty, no new tiles, word stays!
   const rackTiles=tiles.filter(t=>t.zone==='rack');
+  if(rackTiles.length===0){showToast('No tiles in rack to shuffle!');return;}
+
   rackTiles.forEach((t,i)=>{
     const el=document.getElementById('tile-'+t.id);
     if(el) setTimeout(()=>{el.classList.add('shuffling');playTileSound(2);vibrate(8);},i*60);
   });
+
   setTimeout(()=>{
-    // Reshuffle rack order
-    const word=tiles.filter(t=>t.zone==='word');
-    const rack=tiles.filter(t=>t.zone==='rack');
-    for(let i=rack.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rack[i],rack[j]]=[rack[j],rack[i]];}
-    tiles=[...word,...rack];
+    // Shuffle just the rack tiles in place — word area untouched!
+    const wordTiles=tiles.filter(t=>t.zone==='word');
+    const rack=[...rackTiles];
+    for(let i=rack.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [rack[i],rack[j]]=[rack[j],rack[i]];
+    }
+    // Rebuild tiles array preserving word order
+    tiles=[...wordTiles,...rack];
     render();
-    playJackpotSound();
-  },tiles.filter(t=>t.zone==='rack').length*60+300);
+    showToast('🎲 Rack shuffled — no points lost!');
+  },rackTiles.length*60+200);
 }
 
 // ── Bonus ─────────────────────────────────────
