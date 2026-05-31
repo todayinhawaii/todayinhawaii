@@ -560,14 +560,33 @@ function buildBag(){
 }
 
 function dealTiles(){
-  const bag=buildBag();
+  const VOWELS=['A','E','I','O','U','A','E','I','O','U','A','E'];
+  const CONS=['B','C','D','F','G','H','L','M','N','P','R','S','T','W','B','C','D','F','G','H','L','M','N','P','R','S','T'];
+  const RARE=['K','V','Y','J','X'];
   tiles=[];
-  for(let i=0;i<TILE_COUNT;i++){
-    const l=bag[i],d=LETTER_DATA[l];
+
+  // Always 2-3 vowels guaranteed!
+  const numV=2+Math.floor(Math.random()*2);
+  const shuffV=[...VOWELS].sort(()=>Math.random()-0.5);
+  for(let i=0;i<numV;i++){
+    const l=shuffV[i],d=LETTER_DATA[l];
     tiles.push({letter:l,val:d.val,cls:d.cls,id:tileIdCounter++,zone:'rack'});
   }
-  // Scramble rack order
-  for(let i=tiles.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
+
+  // Fill remaining with consonants + occasional rare tile
+  const shuffC=[...CONS].sort(()=>Math.random()-0.5);
+  let ci=0;
+  while(tiles.length<TILE_COUNT){
+    const l=Math.random()<0.12?RARE[Math.floor(Math.random()*RARE.length)]:shuffC[ci++%shuffC.length];
+    const d=LETTER_DATA[l];
+    tiles.push({letter:l,val:d.val,cls:d.cls,id:tileIdCounter++,zone:'rack'});
+  }
+
+  // Scramble final order
+  for(let i=tiles.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+  }
   render();
 }
 
