@@ -424,15 +424,13 @@
 
 
 <script>
-const DICTIONARY = new Set(["ABACK", "ABASE", "ABASH", "ABATE", "ABBEY", "ABBOT", "ABHOR", "ABIDE", "ABLER", "ABODE", "ABORT", "ABOUT", "ABOVE", "ABUSE", "ABYSS", "ACE", "ACORN", "ACT", "ACTED", "ACUTE", "ADAGE", "ADAPT", "ADD", "ADDED", "ADEPT", "ADMIT", "ADOBE", "ADOPT", "ADORE", "ADORN", "ADULT", "AFTER", "AGAPE", "AGATE", "AGE", "AGILE", "AGING", "AGO", "AGONY", "AGREE", "AHEAD", "AID", "AIM", "AIR", "AISLE", "ALARM", "ALBUM", "ALERT", "ALGAE", "ALIBI", "ALIEN", "ALIGN", "ALIKE", "ALIVE", "ALL", "ALLAY", "ALLOT", "ALLOW", "ALM", "ALOE", "ALOFT", "ALOHA", "ALONE", "ALONG", "ALOOF", "ALOUD", "ALPHA", "ALSO", "ALTAR", "ALTER", "ALUM", "AMBER", "AMEND", "AMISS", "AMPLE", "AMUSE", "AND", "ANGEL", "ANGER", "ANGLE", "ANGRY", "ANGST", "ANKLE", "ANNEX", "ANNOY", "ANT", "ANY", "APE", "APPLE", "APPLY", "APTLY", "ARBOR", "ARC", "ARDOR", "ARE", "ARENA", "ARGUE", "ARISE", "ARK", "ARM", "ARMOR", "AROMA", "AROSE", "ARRAY", "ART", "ASH", "ASK", "ASS", "ATE", "AWE", "AXE", "AYE", "BAA", "BAD", "BAG", "BAKED", "BAKER", "BAN", "BANAL", "BANJO", "BAR", "BARGE", "BARON", "BASAL", "BASIC", "BASIL", "BASIS", "BASTE", "BAT", "BATCH", "BAY", "BAYOU", "BEADY", "BEARD", "BEAST", "BED", "BEGAN", "BEGIN", "BEGUN", "BEIGE", "BELOW", "BENCH", "BERRY", "BESET", "BEVEL", "BIBLE", "BIG", "BIRCH", "BIT", "BLADE", "BLAND", "BLARE", "BLAZE", "BLEAK", "BLEAT", "BLEND", "BLESS", "BLIGHT", "BLIMP", "BLINK", "BLISS", "BLOAT", "BLOCK", "BLOOD", "BLOOM", "BLOWN", "BLUISH", "BLUNT", "BLURT", "BLUSH", "BOARD", "BOAST", "BOG", "BOGUS", "BOLTS", "BONUS", "BOOBY", "BOOTH", "BORED", "BOUND", "BOW", "BOX", "BOXER", "BOY", "BRACE", "BRAID", "BRAKE", "BRAWL", "BRAWN", "BRAZE", "BREACH", "BREED", "BRIBE", "BRICK", "BRIDE", "BRIEF", "BRINE", "BRINY", "BRISK", "BRITTLE", "BROIL", "BROKE", "BROOD", "BROOK", "BROTH", "BROWN", "BRUSH", "BRUTE", "BUD", "BUG", "BULGE", "BUN", "BURLY", "BUS", "BUSHY", "BUT", "BUY", "BYLAW", "CAB", "CABIN", "CAGEY", "CAIRN", "CAMEL", "CAMEO", "CAN", "CANNY", "CANOE", "CAP", "CAPER", "CAR", "CARGO", "CAROL", "CARRY", "CARVE", "CASTE", "CAT", "CATCH", "CAVED", "CEDAR", "CHAFE", "CHAFF", "CHALK", "CHANT", "CHASM", "CHEAT", "CHEEK", "CHEER", "CHESS", "CHIDE", "CHIEF", "CHINK", "CHORE", "CHUNK", "CIVIC", "CLACK", "CLAIM", "CLASP", "CLEAT", "CLEFT", "CLERK", "CLICK", "CLIFF", "CLING", "CLINK", "CLOAK", "CLONE", "CLOSE", "CLOTH", "CLOUD", "CLOUT", "CLOWN", "CLUNG", "CLUNK", "COARSE", "COB", "COBRA", "COD", "CODEX", "COMET", "COMIC", "COMMA", "CONCH", "CONDO", "COP", "COPAL", "CORAL", "COT", "COUCH", "COUGH", "COURT", "COVEN", "COWED", "CRAMP", "CRANE", "CRANK", "CRAZE", "CREAK", "CREEP", "CREPT", "CREST", "CRISP", "CROSS", "CROUP", "CROWN", "CRUDE", "CRUEL", "CRUMB", "CRUSH", "CRUST", "CRYPT", "CUB", "CUBIC", "CUP", "CURVE", "CUT", "CYBER", "DAB", "DABBLE", "DAILY", "DAIRY", "DAISY", "DAM", "DANCE", "DARED", "DATES", "DAUNT", "DAZED", "DEALT", "DECOY", "DECRY", "DELTA", "DENSE", "DEPOT", "DERBY", "DEVIL", "DIARY", "DID", "DIG", "DIGIT", "DIM", "DIP", "DODGE", "DOE", "DOG", "DOGMA", "DOING", "DOLCE", "DOMAIN", "DON", "DOT", "DOUBT", "DOWDY", "DOWEL", "DOWRY", "DOZEN", "DRAFT", "DRAIN", "DRANK", "DRAPE", "DRAWL", "DRAWN", "DREAD", "DREAM", "DREGS", "DRIED", "DRIFT", "DRINK", "DROOP", "DROSS", "DROVE", "DUB", "DUCHY", "DUG", "DUNE", "DUO", "DYE", "EAGER", "EAR", "EARLY", "EARNS", "EARTH", "EAT", "EATEN", "EEL", "EERIE", "EFFECT", "EGG", "EGO", "EIGHT", "ELDER", "ELF", "ELITE", "ELM", "ELUDE", "EMOTE", "EMU", "ENAMEL", "END", "ENDOW", "ENJOY", "ENVOY", "EPOCH", "EQUIP", "ERA", "ESSAY", "ETUDE", "EVADE", "EVE", "EVENT", "EWE", "EXACT", "EXULT", "EYE", "EYRIE", "FABLE", "FAD", "FADED", "FAINT", "FAIRY", "FAITH", "FAN", "FANCY", "FAR", "FARCE", "FAT", "FAX", "FEAST", "FECUND", "FED", "FEIGN", "FEN", "FERRET", "FETCH", "FEVER", "FEW", "FIB", "FIELD", "FIERCE", "FIERY", "FIG", "FILED", "FILET", "FILTH", "FIN", "FINCH", "FIT", "FIX", "FLAIR", "FLAKE", "FLAME", "FLANK", "FLARE", "FLASK", "FLECK", "FLESH", "FLOCK", "FLOOD", "FLOOR", "FLORA", "FLOSS", "FLOUT", "FLUTE", "FOAMY", "FOCAL", "FOE", "FOG", "FOGGY", "FOLIO", "FOLLY", "FOND", "FONDLE", "FOR", "FORGE", "FOX", "FOYER", "FRAIL", "FRAME", "FRESH", "FRILL", "FRONT", "FROST", "FROZE", "FRUIT", "FRY", "FULLY", "FUN", "FUNGI", "FUR", "GAG", "GAL", "GAP", "GAS", "GAUZE", "GAUZY", "GAVEL", "GEL", "GEM", "GET", "GIDDY", "GIG", "GIN", "GIRDLE", "GIVEN", "GLAND", "GLARE", "GLEAM", "GLEAN", "GLIDE", "GLIMMER", "GLOBE", "GLOSS", "GLOVE", "GNU", "GOD", "GOT", "GRASP", "GRAZE", "GREED", "GREET", "GRIEF", "GRIME", "GRIMY", "GRIPE", "GROAN", "GROUT", "GROWN", "GRUEL", "GRUNT", "GUILE", "GUISE", "GULCH", "GUM", "GUN", "GUSTO", "GUT", "GUTSY", "GUY", "GYPSY", "HABIT", "HAD", "HAIRY", "HAM", "HAS", "HASTE", "HASTY", "HAT", "HATCH", "HAVEN", "HAY", "HAZEL", "HEADY", "HEARD", "HEART", "HEDGE", "HEIAU", "HELIX", "HEM", "HENCE", "HER", "HERON", "HEW", "HID", "HIM", "HIP", "HIS", "HIT", "HOARY", "HOE", "HOG", "HOLLY", "HONEY", "HOP", "HOT", "HOVEL", "HOVER", "HOW", "HOWL", "HUB", "HUG", "HULA", "HUM", "HUMAN", "HUMID", "HUMOR", "HUSKY", "HUT", "HUTCH", "HYDRA", "HYENA", "ICE", "ICY", "IDEAL", "IDIOM", "IDIOT", "IGLOO", "ILL", "IMAGE", "IMP", "IMPLY", "INANE", "INDIE", "INERT", "INGOT", "INK", "INN", "INNER", "INSET", "INTER", "ION", "IOTAS", "IRATE", "IRE", "IRONY", "IVY", "JAB", "JAG", "JAM", "JAR", "JAW", "JET", "JETTY", "JEWEL", "JIG", "JIMMY", "JOB", "JOKEY", "JOLLY", "JOT", "JOUST", "JOWLY", "JOY", "JUG", "JUMBO", "JUT", "KARMA", "KEBAB", "KEG", "KEY", "KID", "KIN", "KIT", "KNACK", "KNAVE", "KNEEL", "KNELT", "KNOLL", "KNOTS", "KNOWN", "KOKUA", "KUDOS", "LAB", "LAD", "LADEN", "LADLE", "LAG", "LANCE", "LAP", "LAPEL", "LAPSE", "LARCH", "LARVA", "LASER", "LATCH", "LATER", "LATIN", "LAUD", "LAW", "LAX", "LAY", "LAYER", "LEAKY", "LEAPT", "LEARN", "LEASH", "LEAST", "LED", "LEECH", "LEG", "LEGAL", "LEMON", "LEMUR", "LESSER", "LET", "LEVER", "LID", "LIEGE", "LIGHT", "LINER", "LINGO", "LIP", "LIT", "LIVID", "LLAMA", "LOAMY", "LOCAL", "LODGE", "LOFTY", "LOG", "LOGIC", "LOOSE", "LORRY", "LOUSY", "LOVER", "LOW", "LOWLY", "LUAU", "LUCID", "LUG", "LUSTRE", "LUSTY", "LYRIC", "MAD", "MAHALO", "MAIZE", "MAN", "MANA", "MANGE", "MANOR", "MAP", "MAPLE", "MAR", "MARCH", "MARSH", "MAT", "MATEY", "MAW", "MAYOR", "MEADOW", "MEALY", "MELD", "MELEE", "MEN", "MERCY", "MERGE", "MERIT", "MESSY", "MIMIC", "MINCE", "MISER", "MISTY", "MITRE", "MOB", "MOD", "MOLDY", "MOM", "MOO", "MOODY", "MOOSE", "MOP", "MORAL", "MOURN", "MUD", "MUG", "MURKY", "MUSTY", "MYRRH", "NAB", "NAG", "NAIVE", "NAP", "NARWHAL", "NAVEL", "NEE", "NEEDY", "NERVY", "NICER", "NIGHT", "NIP", "NIPPY", "NIT", "NOB", "NOBLE", "NOD", "NOISY", "NONCE", "NOR", "NOT", "NOTCH", "NOVEL", "NOVICE", "NOW", "NUN", "NUT", "NYMPH", "OAK", "OAR", "ODD", "ODE", "OFFAL", "OFFSET", "OHANA", "OIL", "OLD", "OMEGA", "ONE", "ONION", "ONSET", "OPT", "OPTIC", "OPULENT", "ORATE", "ORB", "ORBIT", "ORDER", "ORE", "ORGAN", "OTHER", "OTTER", "OUGHT", "OUR", "OUT", "OUTDO", "OUTER", "OVOID", "OWE", "OWL", "OWN", "PAD", "PADDY", "PAGAN", "PAL", "PALES", "PAN", "PAP", "PAR", "PARKA", "PARRY", "PARSE", "PAT", "PAUSE", "PAW", "PAWED", "PAY", "PEA", "PEAKY", "PEEVE", "PEG", "PEN", "PEP", "PER", "PERIL", "PERKY", "PET", "PETTY", "PICKY", "PIE", "PIG", "PIN", "PINEY", "PINTO", "PIPIT", "PIT", "PIXEL", "PIXIE", "PLAID", "PLAIN", "PLAIT", "PLANE", "PLANT", "PLATE", "PLAZA", "PLEAD", "PLEAT", "PLUCK", "PLUMB", "PLUME", "PLUMP", "PLUNGE", "PLY", "POD", "POI", "POISE", "POKE", "POLAR", "PONO", "POP", "PORCH", "POSE", "POT", "POUCH", "POW", "PREEN", "PRIVY", "PRO", "PRONE", "PRONG", "PROSE", "PROVE", "PROWL", "PROXY", "PRUDE", "PRY", "PSALM", "PUB", "PUN", "PUP", "PUS", "PUT", "QUAFF", "QUALM", "QUASI", "QUELL", "QUERY", "QUEST", "QUEUE", "QUIRK", "QUOTA", "QUOTE", "RABID", "RADAR", "RADIX", "RAG", "RAJAH", "RALLY", "RAM", "RAMP", "RAN", "RAP", "RAT", "RAW", "RAY", "REACT", "READY", "REALM", "RED", "REEDY", "REF", "REIGN", "RELAY", "REP", "REPAY", "REPEL", "RESIN", "REV", "RIB", "RID", "RIG", "RIM", "RIP", "RIPEN", "RISKY", "RIVET", "ROB", "ROD", "ROOMY", "ROSETTE", "ROT", "ROW", "ROWDY", "RUB", "RUDDY", "RUG", "RUGBY", "RULER", "RUM", "RUN", "RUT", "RYE", "SABLE", "SAD", "SAG", "SALAD", "SAP", "SAT", "SAUCE", "SAVOR", "SAW", "SAY", "SCALP", "SCAM", "SCAMP", "SCANT", "SCARF", "SCENT", "SCOPE", "SCORN", "SCOUR", "SCOUT", "SCOWL", "SCUFF", "SEA", "SEEDY", "SEIZE", "SERGE", "SERVO", "SET", "SEW", "SHALE", "SHAME", "SHARE", "SHARK", "SHE", "SHEEN", "SHEER", "SHEET", "SHELF", "SHELL", "SHIFT", "SHIRE", "SHIRK", "SHOAL", "SHORE", "SHOUT", "SHOVE", "SHOWY", "SHREW", "SHRUB", "SHRUG", "SHUDDER", "SHUN", "SHUNT", "SHY", "SIEGE", "SIGMA", "SILKY", "SILVER", "SIMMER", "SIN", "SINEW", "SIP", "SIR", "SIREN", "SIS", "SISSY", "SIT", "SKI", "SKIMP", "SKIRT", "SKY", "SLAIN", "SLANT", "SLASH", "SLEEK", "SLICK", "SLOPE", "SLOTH", "SLURP", "SLY", "SMEAR", "SMELT", "SMIRK", "SMOKY", "SMOTE", "SNARE", "SNEAK", "SNIDE", "SNIFF", "SNIPE", "SNOOP", "SNORE", "SNORT", "SNOUT", "SNOWY", "SNUFF", "SOB", "SOD", "SOGGY", "SOLAR", "SOMBER", "SON", "SONIC", "SOP", "SOPPY", "SORRY", "SOW", "SOY", "SPA", "SPADE", "SPANK", "SPARE", "SPARK", "SPAWN", "SPECK", "SPEND", "SPEW", "SPICY", "SPILL", "SPINE", "SPIRE", "SPITE", "SPOKE", "SPORE", "SPORT", "SPOUT", "SPREE", "SPRIG", "SPY", "SQUAD", "SQUAT", "SQUID", "STALE", "STAMP", "STAND", "STANK", "STARE", "STARK", "STASH", "STEAL", "STEAM", "STEEL", "STEEP", "STEER", "STERN", "STING", "STINK", "STIR", "STOKE", "STOMP", "STOOP", "STORY", "STOVE", "STRAP", "STRAW", "STRAY", "STRIFE", "STRIP", "STRUT", "STUDY", "STUMPED", "STUNT", "STY", "SUAVE", "SUB", "SUE", "SUEDE", "SUITE", "SULKY", "SULLY", "SUM", "SUMMON", "SUN", "SUNLIT", "SUP", "SUPER", "SURGE", "SWAMI", "SWAMP", "SWEAR", "SWIRL", "SWOOP", "SWORD", "SYRUP", "TAB", "TACIT", "TALON", "TAN", "TAP", "TAR", "TARO", "TAT", "TAUNT", "TAWNY", "TAX", "TEA", "TEN", "TESTY", "THANE", "THE", "THIEF", "THORN", "THORNY", "THREW", "THRILL", "THROB", "THROE", "THROW", "THUMP", "THY", "TIC", "TIE", "TIGER", "TILDE", "TIMID", "TIN", "TIP", "TIPSY", "TITAN", "TOE", "TOKEN", "TON", "TONAL", "TOO", "TOP", "TOPAZ", "TORQUE", "TOTAL", "TOUCH", "TOUGH", "TOWEL", "TOXIC", "TOY", "TRACE", "TRACK", "TRAMP", "TRASH", "TRAWL", "TREAD", "TREAT", "TREND", "TRIAD", "TRICE", "TRICK", "TRIPE", "TRITE", "TROTH", "TROUT", "TROVE", "TRUCE", "TRUMP", "TRY", "TRYST", "TUB", "TUG", "TULIP", "TUMOR", "TUNIC", "TUTOR", "TWIRL", "TWIST", "TWO", "TYING", "UDDER", "UGH", "UNDUE", "UNIFY", "UNION", "UNITE", "UNTIE", "UNWED", "UPPER", "UPSET", "URBAN", "URN", "USE", "USURP", "UTTER", "VAGUE", "VALID", "VALOR", "VALUE", "VALVE", "VAN", "VAPID", "VAT", "VAULT", "VIE", "VIGIL", "VIM", "VIOLA", "VIRAL", "VIRUS", "VISIT", "VISOR", "VISTA", "VITAL", "VIVID", "VOGUE", "VOMIT", "VOTER", "VOW", "WAD", "WAGER", "WALTZ", "WAR", "WARES", "WARY", "WAS", "WATCH", "WATER", "WAX", "WEARY", "WEAVE", "WEB", "WED", "WEDGE", "WEE", "WEEDY", "WEIGH", "WEIRD", "WHELP", "WHIFF", "WHILE", "WHIRL", "WHOLE", "WIDEN", "WIELD", "WIG", "WIMPY", "WIN", "WINDY", "WISPY", "WIT", "WITCH", "WITTY", "WIZEN", "WOE", "WOK", "WON", "WOO", "WOOLY", "WORST", "WRATH", "WRIST", "YAK", "YAM", "YAP", "YEARN", "YEW", "YIP", "YODEL", "YOKEL", "YOU", "YUMMY", "ZAP", "ZAPPY", "ZEBRA", "ZED", "ZEN", "ZESTY", "ZIG", "ZIP", "ZIPPY", "ZOO"]);
-
+const DICTIONARY = new Set(["ABIDE", "ABLE", "ACID", "ACNE", "ACORN", "ACRE", "ACROBAT", "ACT", "ACTS", "ADD", "ADORE", "AGE", "AGED", "AGILE", "AGLOW", "AGO", "AGREE", "AHEAD", "AID", "AIDE", "AIM", "AIR", "AIRS", "AIRY", "AKIN", "ALARM", "ALAS", "ALBUM", "ALE", "ALERT", "ALIGN", "ALIVE", "ALL", "ALLOT", "ALLOW", "ALMS", "ALOE", "ALOHA", "ALOOF", "ALOUD", "ALPHA", "ALSO", "ALTER", "ALUM", "AMBER", "AMEN", "AMEND", "AMID", "AMISS", "AMP", "AMPLE", "AMUSE", "AND", "ANGEL", "ANGER", "ANGLE", "ANGRY", "ANKLE", "ANNEX", "ANNOY", "ANT", "ANTE", "ANTI", "ANTS", "ANY", "APE", "APEX", "APPLE", "APPLY", "ARC", "ARCH", "ARDOR", "ARE", "AREA", "ARENA", "ARGUE", "ARIA", "ARID", "ARISE", "ARK", "ARM", "ARMOR", "ARMY", "AROMA", "AROSE", "ARRAY", "ART", "ASH", "ASK", "ATE", "AURA", "AUTO", "AVID", "AWAY", "AWE", "AWED", "AWRY", "AXE", "AXES", "AYE", "BABE", "BACK", "BAD", "BAG", "BALD", "BALE", "BALL", "BALM", "BAN", "BAND", "BANE", "BANK", "BAR", "BARE", "BARK", "BARN", "BASTE", "BAT", "BATH", "BAY", "BEACH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BECK", "BED", "BEEF", "BEEN", "BEER", "BEES", "BEET", "BELOW", "BELT", "BENCH", "BEND", "BENT", "BERRY", "BESET", "BEST", "BEVEL", "BIG", "BIRCH", "BIRD", "BIT", "BITE", "BLADE", "BLAME", "BLAND", "BLARE", "BLAZE", "BLEAK", "BLEND", "BLESS", "BLEW", "BLOB", "BLOC", "BLOOM", "BLOW", "BLOWN", "BLUE", "BLUNT", "BLUR", "BOARD", "BOAST", "BOAT", "BODE", "BODY", "BOG", "BOIL", "BOLD", "BOLT", "BOND", "BONE", "BONUS", "BOOBY", "BOOK", "BOON", "BOOTH", "BORE", "BORN", "BOSS", "BOTH", "BOUND", "BOUT", "BOW", "BOWL", "BOX", "BOXER", "BOY", "BRACE", "BRAD", "BRAG", "BRAID", "BRAKE", "BRAN", "BRAT", "BRAWL", "BRAWN", "BREED", "BREW", "BRIDE", "BRIEF", "BRIM", "BRINE", "BRISK", "BROIL", "BROKE", "BROOD", "BROOK", "BROTH", "BROW", "BROWN", "BRUSH", "BRUTE", "BUD", "BUG", "BULGE", "BULL", "BUMP", "BUN", "BUS", "BUSHY", "BUT", "BUY", "CAB", "CABIN", "CAGE", "CAKE", "CALL", "CALM", "CAME", "CAN", "CANE", "CAP", "CAPE", "CAR", "CARD", "CARE", "CARGO", "CAROL", "CARRY", "CARVE", "CASE", "CASH", "CAST", "CAT", "CATCH", "CAVE", "CEDAR", "CEIL", "CELL", "CENT", "CHALK", "CHANT", "CHAP", "CHAT", "CHEF", "CHESS", "CHIDE", "CHIEF", "CHIN", "CHINK", "CHIP", "CHOP", "CHORE", "CHOW", "CIVIC", "CLACK", "CLAIM", "CLAM", "CLAP", "CLASP", "CLAW", "CLAY", "CLEAT", "CLIFF", "CLING", "CLOD", "CLOG", "CLOP", "CLOSE", "CLOT", "CLOTH", "CLOUD", "CLOUT", "CLOWN", "CLUB", "CLUE", "COAL", "COAT", "COB", "COD", "CODE", "COIL", "COIN", "COLD", "COME", "COMET", "COMIC", "CONE", "COOL", "COP", "COPE", "CORAL", "CORD", "CORE", "CORK", "CORN", "COST", "COT", "COUCH", "COURT", "COZY", "CRAFT", "CRAM", "CRANE", "CRANK", "CRAZE", "CREEK", "CREEP", "CREST", "CRIB", "CRIME", "CRISP", "CROP", "CROSS", "CROW", "CROWN", "CRUEL", "CRUMB", "CRUSH", "CRUST", "CUB", "CUBE", "CUBIC", "CUP", "CURB", "CURE", "CURL", "CURT", "CURVE", "CUT", "CUTE", "CYBER", "DAB", "DACE", "DAILY", "DAIRY", "DAISY", "DALE", "DAM", "DAME", "DANCE", "DARE", "DARK", "DART", "DATE", "DAWN", "DAYS", "DAZE", "DEAD", "DEAF", "DEAL", "DEALT", "DEAN", "DEAR", "DEBT", "DECK", "DEED", "DEEM", "DEER", "DEFT", "DELI", "DENSE", "DENT", "DEPOT", "DERBY", "DESK", "DEW", "DICE", "DID", "DIED", "DIES", "DIET", "DIG", "DIGIT", "DIKE", "DILL", "DIM", "DIME", "DINE", "DINGY", "DIP", "DIRE", "DIRT", "DISK", "DOCK", "DODGE", "DOE", "DOES", "DOG", "DOING", "DOLCE", "DOLE", "DOLL", "DOME", "DONE", "DOOM", "DOOR", "DOSE", "DOT", "DOTE", "DOUBT", "DOVE", "DOWDY", "DOWN", "DOWRY", "DRAB", "DRAFT", "DRAG", "DRAIN", "DRANK", "DRAPE", "DRAW", "DREAD", "DREAM", "DREGS", "DREW", "DRIED", "DRIFT", "DRINK", "DRIP", "DROOD", "DROP", "DROVE", "DRUG", "DRUM", "DUAL", "DUB", "DUCHY", "DUDE", "DUG", "DULL", "DULY", "DUNE", "DUO", "DUSK", "DUST", "DUTY", "DYE", "EACH", "EAGER", "EAR", "EARL", "EARLY", "EARTH", "EASE", "EAST", "EASY", "EAT", "EATEN", "EDGE", "EGAD", "EGG", "ELDER", "ELITE", "ELUDE", "EMIT", "EMOTE", "END", "ENJOY", "ENVOY", "EPIC", "EPOCH", "EQUIP", "ERA", "ESSAY", "EVADE", "EVE", "EVEN", "EVENT", "EVER", "EVIL", "EWIG", "EXACT", "EYE", "FABLE", "FACE", "FACT", "FAD", "FADE", "FAIL", "FAIN", "FAIR", "FAKE", "FALL", "FAME", "FAN", "FANCY", "FAR", "FARCE", "FARM", "FAST", "FAT", "FATE", "FAWN", "FAX", "FAZE", "FEAR", "FEAST", "FEAT", "FED", "FEED", "FEEL", "FEET", "FEIGN", "FELL", "FELT", "FEND", "FERN", "FEST", "FETCH", "FEUD", "FEVER", "FEW", "FIELD", "FIG", "FILE", "FILED", "FILET", "FILL", "FILM", "FILTH", "FIN", "FINCH", "FIND", "FINE", "FIRE", "FISH", "FIST", "FIT", "FIX", "FLAG", "FLAIR", "FLAKE", "FLAME", "FLANK", "FLARE", "FLASK", "FLAT", "FLAW", "FLEA", "FLECK", "FLESH", "FLEW", "FLIP", "FLIT", "FLOCK", "FLOG", "FLOOD", "FLOOR", "FLORA", "FLOSS", "FLOW", "FLUTE", "FOAM", "FOCAL", "FOG", "FOGGY", "FOIL", "FOLD", "FOLIO", "FOLK", "FOLLY", "FOND", "FONT", "FOR", "FORD", "FORE", "FORGE", "FORM", "FORT", "FOUL", "FOUR", "FOWL", "FOX", "FOYER", "FRAIL", "FRAME", "FRAY", "FREE", "FRESH", "FRET", "FRILL", "FRONT", "FROST", "FRUIT", "FUEL", "FULL", "FULLY", "FUME", "FUN", "FUND", "FUNGI", "FUR", "FURY", "FUSE", "FUSS", "GAG", "GAL", "GALE", "GALL", "GAME", "GAP", "GAPE", "GAS", "GASH", "GATE", "GAUGE", "GAUZY", "GAVE", "GAVEL", "GAZE", "GEAR", "GEL", "GELD", "GET", "GIDDY", "GILT", "GIN", "GIST", "GIVE", "GIVEN", "GLAD", "GLAND", "GLARE", "GLEAM", "GLEAN", "GLEE", "GLEN", "GLIB", "GLIDE", "GLOBE", "GLOSS", "GLOVE", "GLOW", "GLUE", "GOAD", "GOAT", "GOD", "GOLD", "GOLF", "GONE", "GOOD", "GOT", "GOWN", "GRAB", "GRACE", "GRASP", "GRAZE", "GREED", "GREET", "GRIEF", "GRIME", "GRIMY", "GRIPE", "GROAN", "GROUT", "GROWN", "GRUEL", "GRUNT", "GUIDE", "GUILE", "GUISE", "GULCH", "GUM", "GUN", "GUST", "GUSTO", "GUT", "GUTSY", "GUY", "HABIT", "HAD", "HAIL", "HAIRY", "HALE", "HALT", "HAM", "HAND", "HANG", "HARE", "HARM", "HARSH", "HAS", "HASH", "HASTE", "HASTY", "HAT", "HATCH", "HAUL", "HAVE", "HAVEN", "HAY", "HAZE", "HAZEL", "HEAD", "HEAL", "HEAP", "HEARD", "HEART", "HEAT", "HEDGE", "HEED", "HEIR", "HELIX", "HELM", "HEM", "HENCE", "HER", "HERB", "HERD", "HERO", "HERON", "HID", "HIDE", "HIGH", "HILL", "HIM", "HINT", "HIP", "HIRE", "HIS", "HIT", "HIVE", "HOAX", "HOE", "HOG", "HOLD", "HOLE", "HOLLY", "HOME", "HONE", "HOOD", "HOOP", "HOP", "HOSE", "HOST", "HOT", "HOVER", "HOW", "HUB", "HUG", "HULA", "HULL", "HUM", "HUMAN", "HUMID", "HUMOR", "HUMP", "HUNG", "HUNT", "HUSKY", "HUT", "HYMN", "ICE", "IDEA", "IDEAL", "IDIOM", "IDIOT", "IDLE", "IFFY", "ILL", "IMAGE", "IMAM", "IMPLY", "INANE", "INCH", "INDIE", "INERT", "INGOT", "INK", "INN", "INNER", "INSET", "INTER", "INTO", "ION", "IRATE", "IRE", "IRIS", "IRONY", "ISLE", "ITEM", "IVY", "JAB", "JABS", "JADE", "JAIL", "JAKE", "JAM", "JAR", "JAW", "JET", "JEWEL", "JIG", "JIMP", "JOB", "JOLT", "JOTS", "JOUST", "JOWLY", "JOY", "JUG", "JUMBO", "JUMP", "JUST", "JUT", "JUTS", "KALE", "KEEN", "KEEP", "KEG", "KEPT", "KEY", "KID", "KIN", "KIND", "KING", "KISS", "KIT", "KITE", "KNACK", "KNAVE", "KNEEL", "KNELT", "KNOB", "KNOLL", "KNOTS", "KNOW", "KNOWN", "KOKUA", "KUDOS", "LAB", "LACE", "LACK", "LAD", "LADEN", "LADLE", "LAG", "LAKE", "LAME", "LAMP", "LANCE", "LANE", "LAP", "LAPEL", "LAPSE", "LARCH", "LARD", "LARGE", "LARK", "LARVA", "LASER", "LASH", "LAST", "LATCH", "LATE", "LAW", "LAY", "LAYER", "LEAF", "LEAK", "LEAKY", "LEAN", "LEAP", "LEAPT", "LEARN", "LEASH", "LED", "LEFT", "LEG", "LEGAL", "LEGS", "LEMON", "LEND", "LENS", "LEST", "LET", "LEVY", "LICK", "LID", "LIEGE", "LIFE", "LIFT", "LIGHT", "LIKE", "LIME", "LIMP", "LINE", "LINER", "LINGO", "LINK", "LINT", "LION", "LIP", "LIST", "LIT", "LIVE", "LIVID", "LOAD", "LOAMY", "LOAN", "LOCAL", "LODE", "LODGE", "LOFT", "LOFTY", "LOG", "LOGIC", "LONE", "LONG", "LOOK", "LOOSE", "LORE", "LOSE", "LOST", "LOVE", "LOVER", "LOW", "LOWLY", "LUAU", "LUCID", "LUG", "LURE", "LURK", "LUST", "LUSTY", "LUTE", "LYRIC", "MACE", "MAD", "MAHALO", "MAID", "MAIZE", "MAKE", "MALE", "MAN", "MANA", "MANOR", "MAP", "MAPLE", "MARCH", "MARE", "MARK", "MARSH", "MART", "MAST", "MAT", "MATEY", "MAY", "MAYOR", "MAZE", "MEAD", "MEALY", "MELD", "MELT", "MEN", "MERCY", "MERE", "MERGE", "MERIT", "MESA", "MESSY", "MILD", "MILL", "MIME", "MIMIC", "MINCE", "MINE", "MINT", "MIRE", "MISER", "MIST", "MISTY", "MOAN", "MOAT", "MOB", "MODE", "MOLD", "MOLDY", "MOLE", "MOLT", "MOM", "MOODY", "MOON", "MOP", "MORAL", "MORE", "MOSS", "MOST", "MOURN", "MOVE", "MUCH", "MUD", "MUG", "MURKY", "MUST", "MUSTY", "MUTE", "MYRRH", "MYTH", "NAG", "NAIL", "NAIVE", "NAME", "NAP", "NAVEL", "NAVY", "NEAR", "NEED", "NEEDY", "NERVY", "NEST", "NEWS", "NEXT", "NICE", "NIGH", "NINE", "NIP", "NOBLE", "NOD", "NODE", "NOISY", "NONE", "NOOK", "NOR", "NORM", "NOSE", "NOT", "NOTE", "NOUN", "NOVEL", "NOW", "NUDE", "NUDGE", "NUMB", "NUN", "NUT", "NYMPH", "OAK", "OBOE", "ODD", "ODE", "OFFAL", "OFTEN", "OHANA", "OIL", "OLD", "OMEGA", "ONCE", "ONE", "ONION", "ONLY", "OPEN", "OPT", "OPTIC", "ORAL", "ORATE", "ORB", "ORBIT", "ORCA", "ORDER", "ORE", "ORGAN", "OTTER", "OUGHT", "OUR", "OUT", "OUTER", "OVER", "OVOID", "OWN", "OXIDE", "PACE", "PACT", "PAD", "PADDY", "PAGAN", "PAIN", "PAL", "PALE", "PALM", "PAN", "PANE", "PANG", "PAR", "PARK", "PARKA", "PARRY", "PARSE", "PART", "PAST", "PAT", "PATH", "PAUSE", "PAVE", "PAWN", "PAY", "PEA", "PEAKY", "PEEVE", "PEG", "PELT", "PEN", "PERIL", "PERK", "PERKY", "PET", "PETTY", "PICKY", "PIE", "PIER", "PIG", "PIKE", "PILL", "PIN", "PINE", "PINEY", "PINT", "PINTO", "PIPE", "PIT", "PITY", "PIXEL", "PIXIE", "PLACE", "PLAID", "PLAIN", "PLAIT", "PLANE", "PLANT", "PLATE", "PLAY", "PLAZA", "PLEAD", "PLOD", "PLOW", "PLUCK", "PLUM", "PLUMB", "PLUME", "PLUMP", "POD", "POISE", "POKE", "POLAR", "POLE", "POLL", "POND", "PONO", "POP", "POPE", "PORCH", "PORK", "POSE", "POT", "POUCH", "POUT", "PRAY", "PREEN", "PREY", "PRIDE", "PRIM", "PRIME", "PRIVY", "PROD", "PRONE", "PRONG", "PROP", "PROSE", "PROVE", "PROWL", "PROXY", "PSALM", "PUB", "PULL", "PUMP", "PUN", "PURE", "PUSH", "PUT", "QUEEN", "QUERY", "QUEST", "QUIRK", "QUOTA", "QUOTE", "RABID", "RACE", "RADAR", "RADIX", "RAG", "RAGE", "RAIN", "RALLY", "RAM", "RAMP", "RAN", "RANK", "RAP", "RARE", "RAT", "RATE", "RAY", "READY", "REAL", "REALM", "REAM", "RED", "REEDY", "REEF", "REEL", "REIGN", "REIN", "RELAY", "RELY", "REND", "REP", "REPAY", "REPEL", "RESIN", "RHYME", "RIB", "RICH", "RID", "RIDE", "RIG", "RIM", "RING", "RIP", "RIPEN", "RISE", "RISK", "RISKY", "RIVET", "ROAD", "ROB", "ROCK", "ROD", "RODE", "ROLE", "ROLL", "ROOF", "ROOM", "ROOMY", "ROPE", "ROSE", "ROT", "ROW", "ROWDY", "RUB", "RUBY", "RUDDY", "RUDE", "RUG", "RUGBY", "RULE", "RULER", "RUM", "RUN", "RUSH", "RUST", "RUT", "RYE", "SABLE", "SAD", "SAFE", "SAG", "SAID", "SAIL", "SAKE", "SALE", "SALT", "SAME", "SAND", "SANE", "SAUCE", "SAVE", "SAVOR", "SAY", "SCALP", "SCANT", "SCARF", "SCENT", "SCOPE", "SCORN", "SCOUT", "SEA", "SEAL", "SEAT", "SEED", "SEIZE", "SELF", "SELL", "SERGE", "SERVO", "SET", "SEW", "SHALE", "SHAME", "SHARE", "SHARK", "SHE", "SHED", "SHEEN", "SHEER", "SHELF", "SHELL", "SHIFT", "SHINE", "SHIP", "SHIRE", "SHOAL", "SHOOT", "SHOP", "SHORE", "SHOUT", "SHOVE", "SHOW", "SHREW", "SHRUB", "SHRUG", "SHUT", "SICK", "SIDE", "SIEGE", "SIGMA", "SIGN", "SILK", "SILKY", "SIMMER", "SIN", "SINEW", "SING", "SINK", "SIP", "SIREN", "SIT", "SITE", "SIZE", "SKI", "SKIMP", "SKIN", "SKIRT", "SKY", "SLAIN", "SLANT", "SLASH", "SLEEK", "SLICK", "SLIDE", "SLIP", "SLOPE", "SLOTH", "SLOW", "SMALL", "SMEAR", "SMELT", "SMIRK", "SMOKY", "SNARE", "SNEAK", "SNIDE", "SNIFF", "SNIPE", "SNOOP", "SNORE", "SNOUT", "SNOW", "SNOWY", "SOAP", "SOB", "SOD", "SOGGY", "SOLAR", "SOLD", "SOLE", "SOME", "SON", "SONG", "SONIC", "SOON", "SORT", "SOUL", "SOUP", "SOW", "SPA", "SPACE", "SPADE", "SPANK", "SPARE", "SPARK", "SPAWN", "SPECK", "SPEND", "SPICE", "SPILL", "SPIN", "SPINE", "SPIRE", "SPITE", "SPOKE", "SPORE", "SPORT", "SPOT", "SPOUT", "SQUAD", "STALE", "STAMP", "STAND", "STANK", "STAR", "STARE", "STARK", "STASH", "STAY", "STEAL", "STEAM", "STEEL", "STEEP", "STEER", "STEM", "STEP", "STERN", "STILL", "STING", "STINK", "STOKE", "STOMP", "STOOP", "STOP", "STORY", "STOVE", "STRAP", "STRAW", "STRAY", "STRIP", "STRUT", "STUMP", "STUNT", "SUB", "SUE", "SUEDE", "SUIT", "SUITE", "SULKY", "SULLY", "SUMMON", "SUN", "SUNLIT", "SUPER", "SURE", "SURF", "SURGE", "SWAMP", "SWEAR", "SWIRL", "SWOOP", "SWORD", "SYRUP", "TAB", "TACIT", "TAIL", "TAKE", "TALE", "TALL", "TALON", "TAME", "TAN", "TANK", "TAP", "TAPE", "TAR", "TARO", "TASK", "TAUNT", "TAWNY", "TAX", "TEA", "TEAK", "TEAM", "TELL", "TEN", "TESTY", "THAN", "THANE", "THAT", "THE", "THEM", "THEN", "THEY", "THIEF", "THIN", "THORN", "THREW", "THROB", "THROE", "THROW", "THUMP", "TIDE", "TIE", "TIGER", "TILDE", "TILL", "TIME", "TIMID", "TIN", "TINY", "TIP", "TIPSY", "TITAN", "TOE", "TOKEN", "TOLD", "TOLL", "TON", "TONAL", "TONE", "TOOL", "TOP", "TOPAZ", "TORE", "TORN", "TOTAL", "TOUCH", "TOUGH", "TOUR", "TOWN", "TOXIC", "TOY", "TRACE", "TRACK", "TRAMP", "TRASH", "TRAWL", "TREAD", "TREAT", "TREE", "TREND", "TRIAD", "TRICE", "TRICK", "TRIM", "TRIP", "TRIPE", "TRITE", "TROTH", "TROUT", "TROVE", "TRUCE", "TRUE", "TRUMP", "TRY", "TRYST", "TUB", "TUBE", "TUG", "TULIP", "TUMOR", "TUNE", "TUNIC", "TURN", "TUTOR", "TWIN", "TWIRL", "TWIST", "TWO", "TYPE", "UDDER", "UGLY", "UNDO", "UNDUE", "UNION", "UNIT", "UNITE", "UNTIE", "UNWED", "UPON", "UPPER", "UPSET", "URBAN", "USE", "USED", "USER", "USURP", "UTTER", "VAGUE", "VALE", "VALID", "VALOR", "VALUE", "VALVE", "VAN", "VANE", "VAPID", "VARY", "VAST", "VAT", "VAULT", "VEIL", "VEIN", "VENT", "VERY", "VEST", "VIAL", "VIE", "VIGIL", "VINE", "VIOLA", "VIRAL", "VIRUS", "VISOR", "VISTA", "VITAL", "VIVID", "VOGUE", "VOID", "VOTE", "VOTER", "VOW", "WAD", "WADE", "WAGE", "WAGER", "WAKE", "WALL", "WALTZ", "WANE", "WANT", "WAR", "WARD", "WARES", "WARN", "WARP", "WARY", "WAS", "WASH", "WATCH", "WAVE", "WAX", "WEAK", "WEAR", "WEARY", "WEAVE", "WEB", "WED", "WEDGE", "WEE", "WEED", "WEEDY", "WEEK", "WEIRD", "WELL", "WENT", "WERE", "WEST", "WHAT", "WHELP", "WHEN", "WHILE", "WHIRL", "WHOLE", "WHOM", "WIDE", "WIDEN", "WIELD", "WIFE", "WILD", "WILL", "WIN", "WIND", "WINDY", "WINE", "WING", "WIRE", "WISH", "WISPY", "WIT", "WITCH", "WITH", "WITTY", "WIZEN", "WOE", "WOLF", "WON", "WOO", "WOOD", "WOOLY", "WORD", "WORE", "WORK", "WORN", "WORST", "WRAP", "WRATH", "WREN", "WRIST", "YAM", "YAP", "YARD", "YEAR", "YEARN", "YEW", "YODEL", "YOGA", "YOKEL", "YOU", "YUMMY", "ZAP", "ZAPPY", "ZEBRA", "ZERO", "ZESTY", "ZIP", "ZIPPY", "ZONE", "ZOO", "ZOOM"]);
 
 // ════════════════════════════════════════════════
 // ALOHA LETTERS — Vegas Scrabble
 // Today in Hawaii © 2026
 // ════════════════════════════════════════════════
 
-// Letter values & frequencies
 const LETTER_DATA = {
   A:{val:1,freq:9,cls:'tile-common'},  E:{val:1,freq:12,cls:'tile-common'},
   I:{val:1,freq:9,cls:'tile-common'},  O:{val:1,freq:8,cls:'tile-common'},
@@ -449,7 +447,6 @@ const LETTER_DATA = {
   Q:{val:10,freq:1,cls:'tile-epic'},   Z:{val:10,freq:1,cls:'tile-epic'},
 };
 
-// Bonus types for extra excitement
 const BONUSES = [
   {type:'DW',label:'Double Word 🔴',mult:2,color:'#ff6464'},
   {type:'TW',label:'Triple Word 🔥',mult:3,color:'#ff3232'},
@@ -458,21 +455,14 @@ const BONUSES = [
   {type:'JK',label:'Jackpot! 🎰',mult:5,color:'#ffd700'},
 ];
 
-const TILE_COUNT = 7;
-const ROUND_TIME = 45;
+const TILE_COUNT=7, ROUND_TIME=45;
 
-let playerName='', playerLoc='';
-let tiles=[];        // {letter, val, cls, id, used, inWord}
-let wordTiles=[];    // tiles currently in word area (in order)
-let score=0, wordsFound=[], bestWord='', bestWordScore=0;
-let roundNum=1;
-let timeLeft=ROUND_TIME;
-let timerInterval=null;
-let currentBonus=null;
-let muted=false, myRank=0;
-let tileIdCounter=0;
+let playerName='',playerLoc='';
+let tiles=[],wordTiles=[];
+let score=0,wordsFound=[],bestWord='',bestWordScore=0;
+let roundNum=1,timeLeft=ROUND_TIME,timerInterval=null;
+let currentBonus=null,muted=false,myRank=0,tileIdCounter=0;
 
-// ── Name Entry ────────────────────────────────
 document.getElementById('pName').addEventListener('input',checkReady);
 document.getElementById('pLoc').addEventListener('change',checkReady);
 function checkReady(){
@@ -491,142 +481,116 @@ function startGame(){
 }
 
 function newGame(){
-  score=0; wordsFound=[]; bestWord=''; bestWordScore=0; roundNum=1;
-  updateStats(); updateFoundList();
-  dealTiles();
-  assignBonus();
-  startTimer();
-  document.getElementById('submitBtn').classList.add('flash');
+  score=0;wordsFound=[];bestWord='';bestWordScore=0;roundNum=1;
+  updateStats();updateFoundList();
+  dealTiles();assignBonus();startTimer();
 }
 
-// ── Tile Dealing ──────────────────────────────
 function buildTileBag(){
   const bag=[];
-  Object.entries(LETTER_DATA).forEach(([letter,data])=>{
-    for(let i=0;i<data.freq;i++) bag.push(letter);
-  });
-  // Shuffle
-  for(let i=bag.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [bag[i],bag[j]]=[bag[j],bag[i]];
-  }
+  Object.entries(LETTER_DATA).forEach(([l,d])=>{for(let i=0;i<d.freq;i++)bag.push(l);});
+  for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
   return bag;
 }
 
 function dealTiles(){
   const bag=buildTileBag();
-  tiles=[];
-  wordTiles=[];
+  tiles=[];wordTiles=[];
   for(let i=0;i<TILE_COUNT;i++){
-    const letter=bag[i];
-    const data=LETTER_DATA[letter];
-    tiles.push({letter,val:data.val,cls:data.cls,id:tileIdCounter++,used:false,inWord:false});
+    const l=bag[i],d=LETTER_DATA[l];
+    tiles.push({letter:l,val:d.val,cls:d.cls,id:tileIdCounter++,used:false,inWord:false});
   }
-  renderRack();
-  renderWordArea();
-  updateScorePreview();
+  // Scramble display order so tiles never look like a word!
+  for(let i=tiles.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));[tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+  }
+  renderRack();renderWordArea();updateScorePreview();
 }
 
 function renderRack(){
   const rack=document.getElementById('rack');
   rack.innerHTML='';
-  tiles.forEach(t=>{
+  tiles.forEach((t,idx)=>{
     const btn=document.createElement('button');
     btn.className='tile '+t.cls+(t.used?' used':'');
     btn.id='tile-'+t.id;
     btn.innerHTML=t.letter+'<span class="tile-val">'+t.val+'</span>';
     btn.onclick=()=>tapTile(t.id);
-    rack.appendChild(btn);
-    // Pop in animation
-    btn.style.animation='none';
     btn.style.transform='scale(0)';
-    setTimeout(()=>{btn.style.transform='';btn.style.transition='transform 0.3s cubic-bezier(0.23,1,0.32,1)';},50*tiles.indexOf(t));
+    btn.style.transition='none';
+    rack.appendChild(btn);
+    setTimeout(()=>{
+      btn.style.transition='transform 0.3s cubic-bezier(0.23,1,0.32,1)';
+      btn.style.transform='scale(1)';
+    },idx*50+20);
   });
 }
 
 function tapTile(id){
   const t=tiles.find(x=>x.id===id);
   if(!t||t.used) return;
-
   if(t.inWord){
-    // Remove from word
     wordTiles=wordTiles.filter(x=>x.id!==id);
     t.inWord=false;
   } else {
-    // Add to word
     wordTiles.push(t);
     t.inWord=true;
     playTileSound(t.val);
     vibrate(10);
     burstTile(id);
   }
-
-  renderRack();
-  renderWordArea();
-  updateScorePreview();
+  renderRack();renderWordArea();updateScorePreview();
 }
 
 function renderWordArea(){
   const area=document.getElementById('wordArea');
-  const placeholder=document.getElementById('wordPlaceholder');
-
-  if(wordTiles.length===0){
-    placeholder.style.display='block';
-    // Remove any word tiles
-    area.querySelectorAll('.word-tile').forEach(el=>el.remove());
-    return;
-  }
-
-  placeholder.style.display='none';
-
-  // Clear and rebuild
+  const ph=document.getElementById('wordPlaceholder');
   area.querySelectorAll('.word-tile').forEach(el=>el.remove());
-
+  if(wordTiles.length===0){ph.style.display='block';return;}
+  ph.style.display='none';
   wordTiles.forEach(t=>{
     const div=document.createElement('div');
     div.className='word-tile '+t.cls;
-    div.innerHTML=t.letter+'<span style="font-size:9px;position:absolute;bottom:2px;right:4px;">'+t.val+'</span>';
     div.style.position='relative';
+    div.innerHTML=t.letter+'<span style="font-size:9px;position:absolute;bottom:2px;right:4px;">'+t.val+'</span>';
     div.onclick=()=>tapTile(t.id);
     div.style.animation='wordTilePop 0.3s cubic-bezier(0.23,1,0.32,1)';
     area.appendChild(div);
   });
 }
 
-// ── Score Preview ─────────────────────────────
 function updateScorePreview(){
   const el=document.getElementById('scorePreview');
   if(wordTiles.length===0){
-    el.textContent='Select letters to build a word';
+    el.textContent='Tap tiles below to build a word!';
     el.className='score-preview';
     document.getElementById('submitBtn').style.opacity='0.6';
     return;
   }
-
-  const word=wordTiles.map(t=>t.letter).join('');
+  const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
   const isValid=DICTIONARY.has(word);
   const pts=calcScore(word);
-
   if(word.length<3){
     el.textContent='Need at least 3 letters!';
     el.className='score-preview invalid';
-    document.getElementById('submitBtn').style.opacity='0.6';
+    document.getElementById('submitBtn').style.opacity='0.5';
   } else if(isValid){
-    el.textContent='✅ '+word+' = '+pts+' points! Submit it! 🎰';
+    el.textContent='✅ '+word+' = '+pts+' pts! Hit SUBMIT! 🎰';
     el.className='score-preview valid';
     document.getElementById('submitBtn').style.opacity='1';
+    document.getElementById('submitBtn').classList.add('flash');
   } else {
-    el.textContent='❌ "'+word+'" — not a valid word. Keep building!';
+    el.textContent='❌ "'+word+'" — not a word yet. Keep going!';
     el.className='score-preview invalid';
-    document.getElementById('submitBtn').style.opacity='0.6';
+    document.getElementById('submitBtn').style.opacity='0.5';
+    document.getElementById('submitBtn').classList.remove('flash');
   }
 }
 
 function calcScore(word){
-  let pts=0;
-  let wordMult=1;
-  word.split('').forEach((letter,i)=>{
-    const val=LETTER_DATA[letter]?LETTER_DATA[letter].val:0;
+  let pts=0,wordMult=1;
+  word.toUpperCase().split('').forEach(l=>{
+    const val=(LETTER_DATA[l]?LETTER_DATA[l].val:0);
     let lMult=1;
     if(currentBonus&&currentBonus.type==='DL') lMult=2;
     if(currentBonus&&currentBonus.type==='TL') lMult=3;
@@ -634,96 +598,60 @@ function calcScore(word){
   });
   if(currentBonus&&currentBonus.mult>1) wordMult=currentBonus.mult;
   pts*=wordMult;
-  // Length bonus
-  if(word.length===7) pts*=2; // Bingo!
+  if(word.length===7){pts*=2;} // Bingo bonus!
   else if(word.length>=6) pts+=50;
   else if(word.length>=5) pts+=20;
   return pts;
 }
 
-// ── Submit Word ───────────────────────────────
 function submitWord(){
   if(wordTiles.length<3) return;
-  const word=wordTiles.map(t=>t.letter).join('');
+  const word=wordTiles.map(t=>t.letter).join('').toUpperCase();
   if(!DICTIONARY.has(word)){
-    // Shake the word area
     const area=document.getElementById('wordArea');
     area.style.animation='shake 0.4s ease';
     setTimeout(()=>area.style.animation='',400);
-    playWrongSound();
+    playWrongSound();vibrate(100);
+    showToast('❌ Not a valid word!');
     return;
   }
-
-  // Check not already found
-  if(wordsFound.some(w=>w.word===word)){
-    showToast('Already found '+word+'!');
-    return;
-  }
-
+  if(wordsFound.some(w=>w.word===word)){showToast('Already found '+word+'!');return;}
   const pts=calcScore(word);
   score+=pts;
   wordsFound.push({word,pts});
   if(pts>bestWordScore){bestWordScore=pts;bestWord=word;}
-
-  // Celebration!
-  bigCelebration(pts, word);
+  bigCelebration(pts,word);
   playWinSound(word.length);
   vibrate([50,30,50,30,100]);
-
-  updateStats();
-  updateFoundList();
+  updateStats();updateFoundList();
   submitScore();
-
-  // Reset for next word
   clearWord();
   dealTiles();
   roundNum++;
   assignBonus();
   startTimer();
-  showToast('+'+pts+' 🎰');
+  showToast('+'+pts+' pts! 🎰');
+  document.getElementById('submitBtn').classList.remove('flash');
 }
 
 function clearWord(){
   wordTiles.forEach(t=>{t.inWord=false;});
   wordTiles=[];
-  renderRack();
-  renderWordArea();
-  updateScorePreview();
+  renderRack();renderWordArea();updateScorePreview();
+  document.getElementById('submitBtn').classList.remove('flash');
 }
 
-// ── Shuffle tiles (slot machine style!) ───────
 function shuffleTiles(){
   clearWord();
-  const rack=document.getElementById('rack');
-  // Slot machine animation
   tiles.forEach((t,i)=>{
     const el=document.getElementById('tile-'+t.id);
-    if(el){
-      setTimeout(()=>{
-        el.classList.add('shuffling');
-        playTileSound(3);
-        vibrate(15);
-      },i*60);
-    }
+    if(el) setTimeout(()=>{el.classList.add('shuffling');playTileSound(2);vibrate(10);},i*60);
   });
-  setTimeout(()=>{
-    dealTiles();
-    playJackpotSound();
-  },tiles.length*60+300);
+  setTimeout(()=>{dealTiles();playJackpotSound();},tiles.length*60+300);
 }
 
-// ── Bonus System ──────────────────────────────
 function assignBonus(){
-  // Random chance of getting a bonus
-  if(Math.random()<0.6){
-    currentBonus=BONUSES[Math.floor(Math.random()*BONUSES.length)];
-  } else {
-    currentBonus=null;
-  }
-  showBonus();
-}
-
-function showBonus(){
+  currentBonus=Math.random()<0.55?BONUSES[Math.floor(Math.random()*BONUSES.length)]:null;
   const bar=document.getElementById('activeBonusBar');
   if(currentBonus){
     bar.style.display='block';
@@ -738,7 +666,6 @@ function showBonus(){
   }
 }
 
-// ── Timer ─────────────────────────────────────
 function startTimer(){
   timeLeft=ROUND_TIME;
   clearInterval(timerInterval);
@@ -746,10 +673,7 @@ function startTimer(){
   timerInterval=setInterval(()=>{
     timeLeft-=0.1;
     updateTimerBar();
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      timeUp();
-    }
+    if(timeLeft<=0){clearInterval(timerInterval);timeUp();}
   },100);
 }
 
@@ -757,32 +681,22 @@ function updateTimerBar(){
   const pct=Math.max(0,(timeLeft/ROUND_TIME)*100);
   const fill=document.getElementById('timerFill');
   fill.style.width=pct+'%';
-  if(pct<30) fill.classList.add('urgent');
-  else fill.classList.remove('urgent');
+  if(pct<30)fill.classList.add('urgent');else fill.classList.remove('urgent');
   document.getElementById('timerText').textContent=Math.ceil(timeLeft)+'s';
-  if(timeLeft<=10&&timeLeft>0) vibrate(5);
+  if(timeLeft<=5&&timeLeft>0) vibrate(5);
 }
 
 function timeUp(){
-  // Slot machine shuffle with fun sound!
   playShuffleSound();
-  showToast('⏰ Time up! Shuffling... 🎰');
+  showToast('⏰ Time up! New tiles! 🎰');
   clearWord();
-  // Slot machine animation then new tiles
   tiles.forEach((t,i)=>{
     const el=document.getElementById('tile-'+t.id);
     if(el) setTimeout(()=>{el.classList.add('shuffling');playTileSound(2);},i*80);
   });
-  setTimeout(()=>{
-    dealTiles();
-    roundNum++;
-    assignBonus();
-    startTimer();
-    document.getElementById('roundVal').textContent=roundNum;
-  },tiles.length*80+400);
+  setTimeout(()=>{dealTiles();roundNum++;assignBonus();startTimer();document.getElementById('roundVal').textContent=roundNum;},tiles.length*80+400);
 }
 
-// ── UI ────────────────────────────────────────
 function updateStats(){
   document.getElementById('scoreVal').textContent=score.toLocaleString();
   document.getElementById('wordsVal').textContent=wordsFound.length;
@@ -792,200 +706,118 @@ function updateStats(){
 
 function updateFoundList(){
   const el=document.getElementById('foundWordsList');
-  if(wordsFound.length===0){
-    el.innerHTML='<span style="color:#a78bfa;font-size:12px;">No words yet — start building!</span>';
-    return;
-  }
-  el.innerHTML=wordsFound.slice().reverse().map(w=>
-    '<span class="found-word-chip">'+w.word+' <strong>'+w.pts+'pts</strong></span>'
-  ).join('');
+  if(!wordsFound.length){el.innerHTML='<span style="color:#a78bfa;font-size:12px;">No words yet — start building!</span>';return;}
+  el.innerHTML=wordsFound.slice().reverse().map(w=>'<span class="found-word-chip">'+w.word+' <strong>'+w.pts+'</strong></span>').join('');
 }
 
 function showToast(msg){
   const el=document.createElement('div');
-  el.className='score-pop';
-  el.style.color='#ffd700';
-  el.textContent=msg;
-  el.style.left=(25+Math.random()*50)+'%';
-  el.style.top=(20+Math.random()*20)+'%';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1000);
+  el.className='score-pop';el.style.color='#ffd700';
+  el.textContent=msg;el.style.left=(25+Math.random()*50)+'%';el.style.top=(20+Math.random()*20)+'%';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1100);
 }
 
-// ── End Game ──────────────────────────────────
 function endGame(){
-  clearInterval(timerInterval);
-  submitScore();
-  loadLeaderboard();
-
-  const msgs=[
-    'Big spender! The casino of words salutes you! 🎰',
-    'You played like a true Hawaii word wizard! 🌺',
-    'The tiles have spoken — mahalo for playing! 🤙',
-    'Come back and try to beat your high score! 🏆',
-  ];
-
+  clearInterval(timerInterval);submitScore();loadLeaderboard();
+  const msgs=['Big spender! The casino of words salutes you! 🎰','You played like a true Hawaii word wizard! 🌺','The tiles have spoken — mahalo for playing! 🤙','Come back and beat your high score! 🏆'];
   document.getElementById('ovEmoji').textContent=score>1000?'🥇':score>500?'🎰':'🌺';
   document.getElementById('ovTitle').textContent=score>1000?'HIGH ROLLER!!':score>500?'Nice Game!':'Good Effort!';
   document.getElementById('ovScore').textContent=score.toLocaleString()+' pts';
   document.getElementById('ovRank').textContent=myRank>0?'🏆 #'+myRank+' on the Leaderboard!':'';
-  document.getElementById('ovMsg').textContent=
-    'Found '+wordsFound.length+' words! Best word: '+(bestWord||'none')+' ('+bestWordScore+' pts)! '+
-    msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('ovMsg').textContent='Found '+wordsFound.length+' words! Best: '+(bestWord||'none')+' ('+bestWordScore+' pts)! '+msgs[Math.floor(Math.random()*msgs.length)];
   document.getElementById('overlay').classList.add('show');
 }
 
-function playAgain(){ closeOverlay(); newGame(); }
-function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); }
+function playAgain(){closeOverlay();newGame();}
+function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
 
 function shareScore(){
   const txt='🎰 I scored '+score.toLocaleString()+' pts on Aloha Letters from '+playerLoc+'! Found '+wordsFound.length+' words! Beat me! 🌺 todayinhawaii.com/scrabble';
   window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/scrabble')+'&quote='+encodeURIComponent(txt),'_blank');
 }
 
-// ── Celebrations ──────────────────────────────
-function bigCelebration(pts, word){
-  const emojis=pts>=200?['🎰','💰','🌟','🏆','🎉','💎','🔥']:['🌺','⭐','✨','💫','🎊'];
-  const count=pts>=200?20:10;
-  for(let i=0;i<count;i++){
+function bigCelebration(pts,word){
+  const em=pts>=200?['🎰','💰','🌟','🏆','🎉','💎','🔥']:['🌺','⭐','✨','💫','🎊'];
+  for(let i=0;i<(pts>=200?20:10);i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.fontSize=(14+Math.random()*18)+'px';
-    p.style.left=(15+Math.random()*70)+'%';
-    p.style.top=(20+Math.random()*40)+'%';
-    const ang=Math.random()*Math.PI*2;
-    const d=50+Math.random()*100;
-    p.style.setProperty('--tx',Math.cos(ang)*d+'px');
-    p.style.setProperty('--ty',Math.sin(ang)*d+'px');
-    p.style.animationDuration=(0.6+Math.random()*0.5)+'s';
-    p.style.animationDelay=(Math.random()*0.3)+'s';
-    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),1200);
+    p.style.left=(15+Math.random()*70)+'%';p.style.top=(20+Math.random()*40)+'%';
+    const ang=Math.random()*Math.PI*2,d=50+Math.random()*100;
+    p.style.setProperty('--tx',Math.cos(ang)*d+'px');p.style.setProperty('--ty',Math.sin(ang)*d+'px');
+    p.style.animationDuration=(0.6+Math.random()*0.5)+'s';p.style.animationDelay=(Math.random()*0.3)+'s';
+    p.textContent=em[Math.floor(Math.random()*em.length)];
+    document.body.appendChild(p);setTimeout(()=>p.remove(),1200);
   }
-
-  // Score popup
-  const pop=document.createElement('div');
-  pop.className='score-pop';
+  const pop=document.createElement('div');pop.className='score-pop';
   pop.style.color=pts>=200?'#ffd700':pts>=100?'#ff0080':'#00d4ff';
-  pop.textContent='+'+pts+(pts>=200?' 🎰 JACKPOT!':pts>=100?' 🔥 HOT!':'');
-  pop.style.fontSize=pts>=200?'28px':'20px';
-  pop.style.left='30%';
-  pop.style.top='35%';
-  document.body.appendChild(pop);
-  setTimeout(()=>pop.remove(),1200);
+  pop.textContent='+'+pts+(pts>=200?' 🎰 JACKPOT!':pts>=100?' 🔥':' ✅');
+  pop.style.fontSize=pts>=200?'28px':'22px';pop.style.left='30%';pop.style.top='35%';
+  document.body.appendChild(pop);setTimeout(()=>pop.remove(),1200);
 }
 
 function burstTile(id){
   const el=document.getElementById('tile-'+id);
   if(!el) return;
-  const rect=el.getBoundingClientRect();
-  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-  ['✨','⭐'].forEach(em=>{
+  const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  ['✨','⭐','💫'].forEach(em=>{
     const p=document.createElement('div');
     p.style.cssText='position:fixed;font-size:12px;left:'+cx+'px;top:'+cy+'px;pointer-events:none;z-index:999;animation:pfly 0.5s ease forwards;';
-    const ang=Math.random()*Math.PI*2, d=20+Math.random()*20;
-    p.style.setProperty('--tx',Math.cos(ang)*d+'px');
-    p.style.setProperty('--ty',Math.sin(ang)*d+'px');
-    p.textContent=em;
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),550);
+    const ang=Math.random()*Math.PI*2,d=20+Math.random()*25;
+    p.style.setProperty('--tx',Math.cos(ang)*d+'px');p.style.setProperty('--ty',Math.sin(ang)*d+'px');
+    p.textContent=em;document.body.appendChild(p);setTimeout(()=>p.remove(),550);
   });
 }
 
-// ── Sound ─────────────────────────────────────
 let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(f,t,v,d,delay){
-  if(muted)return; delay=delay||0;
-  try{
-    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);
-    o.type=t;o.frequency.value=f;
-    g.gain.setValueAtTime(0,c.currentTime+delay);
-    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
-    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.01);
-  }catch(e){}
+  if(muted)return;delay=delay||0;
+  try{const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0,c.currentTime+delay);g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.01);}catch(e){}
 }
-
-const TILE_NOTES={1:523,2:587,3:659,4:784,5:880,8:1047,10:1319};
-function playTileSound(val){
-  const f=TILE_NOTES[val]||523;
-  playTone(f,'sine',0.3,0.1);
+const NOTES={1:523,2:587,3:659,4:784,5:880,8:1047,10:1319};
+function playTileSound(v){playTone(NOTES[v]||523,'sine',0.3,0.1);}
+function playWinSound(l){
+  if(l>=7){[523,659,784,1047,1319,1568].forEach((f,i)=>playTone(f,'sine',0.6,0.25,i*0.07));setTimeout(playJackpotSound,500);}
+  else if(l>=5){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.5,0.2,i*0.07));}
+  else{[523,659,784].forEach((f,i)=>playTone(f,'sine',0.4,0.18,i*0.07));}
 }
-
-function playWinSound(len){
-  if(len>=7){
-    // BINGO! Full fanfare!
-    [523,659,784,1047,1319,1568].forEach((f,i)=>playTone(f,'sine',0.6,0.25,i*0.07));
-    setTimeout(()=>playJackpotSound(),500);
-  } else if(len>=5){
-    [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.5,0.2,i*0.07));
-  } else {
-    [523,659,784].forEach((f,i)=>playTone(f,'sine',0.4,0.18,i*0.07));
-  }
-}
-
-function playJackpotSound(){
-  if(muted) return;
-  const notes=[523,784,1047,1319,1047,784,1047,1319,1568];
-  notes.forEach((f,i)=>playTone(f,'sine',0.6,0.15,i*0.06));
-}
-
-function playShuffleSound(){
-  for(let i=0;i<7;i++) playTone(200+Math.random()*600,'triangle',0.2,0.08,i*0.05);
-}
-
-function playWrongSound(){
-  [300,250,200].forEach((f,i)=>playTone(f,'sawtooth',0.3,0.15,i*0.08));
-}
-
+function playJackpotSound(){if(muted)return;[523,784,1047,1319,1047,784,1047,1319,1568].forEach((f,i)=>playTone(f,'sine',0.6,0.15,i*0.06));}
+function playShuffleSound(){for(let i=0;i<7;i++)playTone(200+Math.random()*600,'triangle',0.2,0.08,i*0.05);}
+function playWrongSound(){[300,250,200].forEach((f,i)=>playTone(f,'sawtooth',0.3,0.15,i*0.08));}
 function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
 function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
 
-// ── Leaderboard ───────────────────────────────
 async function loadLeaderboard(){
   try{
-    const res=await fetch('/api/scrabble-scores');
-    const data=await res.json();
+    const res=await fetch('/api/scrabble-scores'),data=await res.json();
     const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
     if(!data.length){document.getElementById('lbList').innerHTML='<div class="lb-empty">Be the first High Roller! 🎰</div>';return;}
     document.getElementById('lbList').innerHTML=data.slice(0,8).map((s,i)=>{
       const isMe=playerName&&s.name.toLowerCase()===playerName.toLowerCase();
       const cls=i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
-      return '<div class="lb-row '+cls+'"><span class="lb-medal">'+(medals[i]||i+1)+'</span>'+
-        '<div style="flex:1"><div class="lb-name">'+s.name+(isMe?' ← You!':'')+'</div>'+
-        '<div class="lb-loc">📍 '+s.island+' · '+s.level+' words</div></div>'+
-        '<span class="lb-pts">'+Number(s.score).toLocaleString()+'</span></div>';
+      return '<div class="lb-row '+cls+'"><span class="lb-medal">'+(medals[i]||i+1)+'</span><div style="flex:1"><div class="lb-name">'+s.name+(isMe?' ← You!':'')+'</div><div class="lb-loc">📍 '+s.island+' · '+s.level+' words</div></div><span class="lb-pts">'+Number(s.score).toLocaleString()+'</span></div>';
     }).join('');
-    if(playerName){
-      const myIdx=data.findIndex(s=>s.name.toLowerCase()===playerName.toLowerCase());
-      if(myIdx>=0) document.getElementById('badgeRank').textContent='#'+(myIdx+1)+' 💰';
-    }
+    if(playerName){const myIdx=data.findIndex(s=>s.name.toLowerCase()===playerName.toLowerCase());if(myIdx>=0)document.getElementById('badgeRank').textContent='#'+(myIdx+1)+' 💰';}
   }catch(e){document.getElementById('lbList').innerHTML='<div class="lb-empty">Play to get on the board! 🎰</div>';}
 }
 
 async function submitScore(){
   if(!playerName||score<=0) return;
   try{
-    const res=await fetch('/api/scrabble-scores',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:playerName,score,island:playerLoc,level:wordsFound.length})
-    });
+    const res=await fetch('/api/scrabble-scores',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:playerName,score,island:playerLoc,level:wordsFound.length})});
     const data=await res.json();
     if(data.ok){myRank=data.rank;document.getElementById('badgeRank').textContent='#'+myRank+' 💰';}
   }catch(e){}
 }
 
-// CSS animation for word tile pop
 const styleEl=document.createElement('style');
 styleEl.textContent='@keyframes wordTilePop{0%{transform:scale(0) translateY(20px);opacity:0;}80%{transform:scale(1.1) translateY(-3px);}100%{transform:scale(1);opacity:1;}}@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}@keyframes bonusPulse{0%,100%{opacity:1;}50%{opacity:0.7;}}';
 document.head.appendChild(styleEl);
 
-// Init
 loadLeaderboard();
 setInterval(loadLeaderboard,20000);
+
 </script>
 </body>
 </html>
