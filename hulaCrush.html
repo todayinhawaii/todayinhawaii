@@ -702,7 +702,8 @@ function roundComplete() {
   const pts = seqLen * 10;
   score += pts;
   totalScore += pts;
-  saveProgress();
+  saveProgress();     // Auto-save every round!
+  submitScore();      // Auto-submit to leaderboard every round!
   celebrate();
   playWin();
 
@@ -744,6 +745,7 @@ function roundFailed() {
   seqLen = 2;
   score = 0;
   busy = false;
+  saveProgress(); // Auto-save even on wrong!
   updateUI();
 
   setTimeout(() => {
@@ -938,6 +940,17 @@ async function submitScore() {
     loadLeaderboard();
   } catch(e) {}
 }
+
+// Auto-save when closing browser or tab
+window.addEventListener('beforeunload', function() {
+  if (playerName && totalScore > 0) {
+    saveProgress();
+    try {
+      const data = JSON.stringify({name:playerName,score:totalScore,island:playerLoc,level:roundNum});
+      navigator.sendBeacon('/api/hula-scores', new Blob([data],{type:'application/json'}));
+    } catch(e) {}
+  }
+});
 
 loadLeaderboard();
 setInterval(loadLeaderboard, 15000);
