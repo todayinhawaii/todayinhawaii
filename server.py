@@ -177,6 +177,10 @@ def wordsearch_game():
 def scrabble_game():
     return send_from_directory('.', 'scrabble.html')
 
+@app.route('/words.js')
+def words_js():
+    return send_from_directory('.', 'words.js')
+
 @app.route('/api/scrabble-scores', methods=['GET'])
 def get_scrabble_scores():
     import json as _j
