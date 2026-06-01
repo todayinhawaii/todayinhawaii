@@ -185,6 +185,14 @@ def balloons_game():
 def dolphins_game():
     return send_from_directory('.', 'dolphin.html')
 
+@app.route('/fortune')
+def fortune_game():
+    return send_from_directory('.', 'fortune.html')
+
+@app.route('/card_<name>.jpg')
+def card_image(name):
+    return send_from_directory('.', 'card_'+name+'.jpg')
+
 @app.route('/api/dolphin-scores', methods=['GET'])
 def get_dolphin_scores():
     import json as _j
