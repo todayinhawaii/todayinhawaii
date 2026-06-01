@@ -189,6 +189,10 @@ def dolphins_game():
 def fortune_game():
     return send_from_directory('.', 'fortune.html')
 
+@app.route('/humor')
+def humor_game():
+    return send_from_directory('.', 'humor.html')
+
 @app.route('/card_<name>.jpg')
 def card_image(name):
     return send_from_directory('.', 'card_'+name+'.jpg')
