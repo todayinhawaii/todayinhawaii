@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔮 Fortune Roulette — Today in Hawaii</title>
+  <meta name="description" content="Spin the Vegas Fortune Roulette wheel and discover your destiny! Gypsy wisdom meets Hawaiian aloha.">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+    body{
+      min-height:100vh;
+      font-family:system-ui,sans-serif;
+      background:#0a0010;
+      overflow-x:hidden;
+      overflow-y:auto;
+      color:#e8f4f8;
+    }
+
+    /* Mystical animated background */
+    #mysticBg{
+      position:fixed;inset:0;z-index:0;
+      background:radial-gradient(ellipse at 50% 0%,#2a0040 0%,#0a0010 60%);
+      overflow:hidden;
+    }
+
+    /* Stars */
+    .star{
+      position:absolute;background:white;border-radius:50%;
+      animation:twinkle ease-in-out infinite;
+    }
+    @keyframes twinkle{
+      0%,100%{opacity:0.1;transform:scale(1);}
+      50%{opacity:0.9;transform:scale(1.3);}
+    }
+
+    /* Floating mystic particles */
+    .mystic-particle{
+      position:absolute;
+      font-size:20px;
+      animation:mystFloat linear infinite;
+      opacity:0;
+    }
+    @keyframes mystFloat{
+      0%{transform:translateY(100vh) rotate(0deg);opacity:0;}
+      10%{opacity:0.6;}
+      90%{opacity:0.4;}
+      100%{transform:translateY(-100px) rotate(360deg);opacity:0;}
+    }
+
+    /* Vegas neon border effect */
+    .neon-border{
+      border:2px solid #9b59b6;
+      box-shadow:
+        0 0 8px #9b59b6,
+        0 0 20px rgba(155,89,182,0.4),
+        inset 0 0 12px rgba(155,89,182,0.1);
+    }
+
+    /* Main wrap */
+    .wrap{
+      position:relative;z-index:1;
+      max-width:480px;margin:0 auto;
+      padding:16px 16px 60px;
+      display:flex;flex-direction:column;
+      align-items:center;min-height:100vh;
+    }
+
+    /* Header */
+    .hdr{text-align:center;padding:10px 0 16px;}
+    .hdr-crystal{
+      font-size:56px;
+      animation:crystalGlow 2s ease-in-out infinite alternate;
+      filter:drop-shadow(0 0 16px rgba(155,89,182,0.8));
+      display:block;margin-bottom:6px;
+    }
+    @keyframes crystalGlow{
+      0%{filter:drop-shadow(0 0 10px rgba(155,89,182,0.6));}
+      100%{filter:drop-shadow(0 0 28px rgba(200,100,255,1)) drop-shadow(0 0 50px rgba(155,89,182,0.5));}
+    }
+    .hdr-title{
+      font-size:28px;font-weight:900;letter-spacing:-0.5px;
+      background:linear-gradient(135deg,#ffd700,#ff8c00,#ff0080,#9b59b6,#ffd700);
+      background-size:300% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:titleRainbow 4s linear infinite;
+    }
+    @keyframes titleRainbow{
+      0%{background-position:0% center;}
+      100%{background-position:300% center;}
+    }
+    .hdr-sub{
+      font-size:13px;color:#c39bd3;margin-top:4px;
+      font-style:italic;
+      text-shadow:0 0 10px rgba(155,89,182,0.5);
+    }
+
+    /* Roulette wheel container */
+    .wheel-wrap{
+      position:relative;
+      width:min(340px,90vw);
+      height:min(340px,90vw);
+      margin:10px auto 16px;
+    }
+
+    /* Outer ring glow */
+    .wheel-outer{
+      position:absolute;inset:-8px;
+      border-radius:50%;
+      background:conic-gradient(
+        #ffd700,#ff8c00,#ff0080,#9b59b6,#4fc3f7,
+        #22c55e,#ffd700,#ff8c00,#ff0080,#9b59b6,
+        #4fc3f7,#22c55e,#ffd700
+      );
+      animation:outerSpin 8s linear infinite;
+      filter:blur(4px);
+      opacity:0.6;
+    }
+    @keyframes outerSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+
+    /* The wheel itself */
+    #wheel{
+      position:absolute;inset:8px;
+      border-radius:50%;
+      border:4px solid rgba(255,215,0,0.6);
+      box-shadow:
+        0 0 20px rgba(155,89,182,0.6),
+        0 0 40px rgba(155,89,182,0.3),
+        inset 0 0 30px rgba(0,0,0,0.5);
+      overflow:hidden;
+      transform:rotate(0deg);
+      will-change:transform;
+      cursor:pointer;
+    }
+    #wheel canvas{
+      width:100%;height:100%;
+      display:block;
+    }
+
+    /* Center jewel */
+    .wheel-center{
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:48px;height:48px;
+      border-radius:50%;
+      background:radial-gradient(circle,#ffd700,#ff8c00,#8b4513);
+      border:3px solid #ffd700;
+      box-shadow:0 0 16px rgba(255,215,0,0.8),0 0 32px rgba(255,140,0,0.4);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;z-index:5;
+      animation:jewelPulse 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes jewelPulse{
+      0%{box-shadow:0 0 16px rgba(255,215,0,0.8),0 0 32px rgba(255,140,0,0.4);}
+      100%{box-shadow:0 0 28px rgba(255,215,0,1),0 0 56px rgba(255,140,0,0.7);}
+    }
+
+    /* Pointer / Arrow */
+    .wheel-pointer{
+      position:absolute;
+      top:-4px;left:50%;
+      transform:translateX(-50%);
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
+      border-top:40px solid #ffd700;
+      filter:drop-shadow(0 0 8px rgba(255,215,0,0.9));
+      z-index:10;
+    }
+
+    /* Spin button */
+    .spin-btn{
+      width:min(300px,85vw);
+      padding:18px;
+      border:none;border-radius:99px;
+      font-size:18px;font-weight:900;
+      cursor:pointer;font-family:inherit;
+      letter-spacing:1px;text-transform:uppercase;
+      position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#ffe566 0%,#f5c800 20%,#e6a800 50%,#c87800 80%,#f5c800 100%);
+      color:#3a1a00;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.5) inset,
+        0 -2px 0 rgba(0,0,0,0.25) inset,
+        0 8px 0 #8b5000,
+        0 10px 24px rgba(0,0,0,0.6),
+        0 0 30px rgba(255,200,0,0.4);
+      transition:all 0.1s;
+      text-shadow:0 1px 0 rgba(255,255,255,0.4);
+      margin-bottom:20px;
+    }
+    .spin-btn::after{
+      content:'';position:absolute;
+      top:4px;left:10px;right:10px;height:38%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.35),transparent);
+      border-radius:99px 99px 50% 50%;pointer-events:none;
+    }
+    .spin-btn:active:not(:disabled){
+      transform:translateY(6px);
+      box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 2px 0 #8b5000,0 4px 10px rgba(0,0,0,0.4);
+    }
+    .spin-btn:disabled{
+      opacity:0.6;cursor:not-allowed;transform:none;
+      box-shadow:0 4px 0 #8b5000,0 6px 14px rgba(0,0,0,0.4);
+    }
+    .spin-btn.glowing{
+      animation:spinBtnGlow 1s ease-in-out infinite;
+    }
+    @keyframes spinBtnGlow{
+      0%,100%{box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #8b5000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,200,0,0.4);}
+      50%{box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #8b5000,0 10px 24px rgba(0,0,0,0.6),0 0 60px rgba(255,200,0,1),0 0 100px rgba(255,150,0,0.5);}
+    }
+
+    /* Fortune display */
+    #fortuneBox{
+      width:min(400px,92vw);
+      min-height:140px;
+      border-radius:20px;
+      padding:20px 22px;
+      text-align:center;
+      position:relative;
+      margin-bottom:16px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      transition:all 0.5s;
+      background:rgba(0,0,0,0.5);
+      border:2px solid rgba(155,89,182,0.3);
+    }
+    #fortuneBox.revealed{
+      background:linear-gradient(135deg,rgba(42,0,64,0.9),rgba(20,0,40,0.95));
+      border:2px solid #9b59b6;
+      box-shadow:0 0 20px rgba(155,89,182,0.4),0 0 40px rgba(155,89,182,0.15);
+    }
+
+    .fortune-crystal{
+      font-size:32px;margin-bottom:8px;
+      animation:crystalSpin 3s linear infinite;
+      display:none;
+    }
+    @keyframes crystalSpin{
+      0%{transform:rotateY(0deg);}
+      100%{transform:rotateY(360deg);}
+    }
+    .fortune-crystal.show{display:block;}
+
+    #fortuneText{
+      font-size:17px;font-weight:700;
+      line-height:1.5;color:#e8d5f5;
+      text-shadow:0 0 12px rgba(155,89,182,0.6);
+      font-style:italic;
+      min-height:60px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .fortune-placeholder{
+      font-size:14px;color:#7d6b8a;
+      font-style:italic;
+    }
+
+    .fortune-color-bar{
+      width:60px;height:3px;
+      border-radius:99px;
+      margin:10px auto 0;
+      display:none;
+    }
+    .fortune-color-bar.show{display:block;}
+
+    /* Fortune category badge */
+    .fortune-cat{
+      font-size:11px;font-weight:700;
+      letter-spacing:0.15em;text-transform:uppercase;
+      padding:3px 12px;border-radius:99px;
+      margin-bottom:8px;
+      display:none;
+    }
+    .fortune-cat.show{display:inline-block;}
+
+    /* History of fortunes */
+    .history-wrap{
+      width:min(400px,92vw);
+      margin-bottom:16px;
+    }
+    .history-title{
+      font-size:11px;font-weight:700;
+      color:#9b59b6;text-transform:uppercase;
+      letter-spacing:0.12em;margin-bottom:8px;
+      text-align:center;
+      text-shadow:0 0 8px rgba(155,89,182,0.5);
+    }
+    .history-item{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(155,89,182,0.15);
+      border-radius:12px;padding:8px 14px;
+      margin-bottom:6px;
+      font-size:12px;color:#c39bd3;
+      font-style:italic;
+      display:flex;align-items:center;gap:8px;
+      animation:fadeSlideIn 0.4s ease;
+    }
+    @keyframes fadeSlideIn{
+      0%{opacity:0;transform:translateY(-10px);}
+      100%{opacity:1;transform:translateY(0);}
+    }
+    .history-dot{
+      width:8px;height:8px;border-radius:50%;flex-shrink:0;
+    }
+
+    /* Mystic decorations */
+    .mystic-divider{
+      width:100%;text-align:center;
+      font-size:16px;margin:6px 0;
+      color:#9b59b6;opacity:0.5;
+      letter-spacing:8px;
+    }
+
+    /* Share button */
+    .share-btn{
+      padding:11px 28px;border:none;border-radius:99px;
+      font-size:13px;font-weight:700;cursor:pointer;
+      font-family:inherit;
+      background:linear-gradient(135deg,#1877f2,#0d65d9);
+      color:#fff;
+      box-shadow:0 4px 14px rgba(24,119,242,0.4);
+      display:none;
+      transition:all 0.15s;
+    }
+    .share-btn.show{display:inline-block;}
+    .share-btn:active{transform:scale(0.97);}
+
+    /* Confetti */
+    .confetti{position:fixed;pointer-events:none;z-index:999;}
+
+    /* Back link */
+    .back{
+      text-align:center;margin-top:16px;
+      font-size:13px;color:#7d6b8a;
+    }
+    .back a{color:#9b59b6;text-decoration:none;font-weight:600;}
+
+    /* Spin counter */
+    .spin-count{
+      font-size:11px;color:#7d6b8a;
+      text-align:center;margin-bottom:10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mystic background -->
+<div id="mysticBg"></div>
+
+<div class="wrap">
+  <!-- Header -->
+  <div class="hdr">
+    <span class="hdr-crystal">🔮</span>
+    <div class="hdr-title">Fortune Roulette</div>
+    <div class="hdr-sub">✨ The stars know your destiny · Spin to reveal ✨</div>
+  </div>
+
+  <!-- Wheel -->
+  <div class="wheel-wrap">
+    <div class="wheel-outer"></div>
+    <div id="wheel">
+      <canvas id="wheelCanvas"></canvas>
+    </div>
+    <div class="wheel-center">🔮</div>
+    <div class="wheel-pointer"></div>
+  </div>
+
+  <!-- Spin count -->
+  <div class="spin-count" id="spinCount">🌟 Your destiny awaits...</div>
+
+  <!-- Spin button -->
+  <button class="spin-btn glowing" id="spinBtn" onclick="spinWheel()">
+    🔮 SPIN YOUR FORTUNE!
+  </button>
+
+  <!-- Fortune display -->
+  <div id="fortuneBox">
+    <div class="fortune-cat" id="fortuneCat"></div>
+    <div class="fortune-crystal" id="fortuneCrystal">🔮</div>
+    <div id="fortuneText">
+      <span class="fortune-placeholder">✨ Spin the wheel to reveal your fortune... ✨</span>
+    </div>
+    <div class="fortune-color-bar" id="fortuneBar"></div>
+  </div>
+
+  <!-- Share -->
+  <button class="share-btn" id="shareBtn" onclick="shareFortune()">
+    📘 Share My Fortune!
+  </button>
+
+  <div class="mystic-divider">· · · ✦ · · ·</div>
+
+  <!-- History -->
+  <div class="history-wrap">
+    <div class="history-title" id="historyTitle" style="display:none;">📜 Your Recent Fortunes</div>
+    <div id="historyList"></div>
+  </div>
+
+  <div class="back"><a href="/games">← Back to Games Hub 🎮</a></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// FORTUNE ROULETTE — Vegas Gypsy Destiny Spinner
+// Today in Hawaii © 2026
+// ══════════════════════════════════════════════════
+
+// Fortune categories with colors and fortunes
+const FORTUNES = [
+  // 💛 LOVE & RELATIONSHIPS
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'A beautiful soul is thinking of you right now'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'Love will find you when you stop searching'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'Someone special is closer than you think'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'Your heart will lead you to exactly where you belong'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'A chance encounter will change everything'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'Old love may find its way back to you'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'Your kindness attracts beautiful souls'},
+  {cat:'Love',color:'#FF69B4',icon:'💕',text:'The universe is arranging a perfect meeting'},
+
+  // 💰 WEALTH & FORTUNE
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Unexpected money is on its way to you'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'A golden opportunity knocks very soon'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Your hard work is about to pay off greatly'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Abundance flows naturally to generous hearts'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'A surprise financial blessing approaches'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Say yes to the next opportunity you receive'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Fortune favors the bold — be bold today'},
+  {cat:'Wealth',color:'#FFD700',icon:'💰',text:'Your creative talents will bring great reward'},
+
+  // 🌟 SUCCESS & CAREER
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Your greatest achievement is just ahead'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'A door will open that changes everything'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Trust your instincts — they are spot on'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Something you built will make you very proud'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Recognition is coming from unexpected places'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Your unique gift is needed by the world'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'A big change at work brings great news'},
+  {cat:'Success',color:'#22d3ee',icon:'⭐',text:'Leadership suits you better than you know'},
+
+  // 🌺 HAWAII & ALOHA
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'The ocean carries a message just for you'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'Aloha spirit will guide your next step'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'A journey to paradise awaits you soon'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'The honu turtle brings you good fortune'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'Mahalo — your gratitude opens new doors'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'The islands are calling your name soon'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'Ohana you haven\'t met yet will enrich you'},
+  {cat:'Aloha',color:'#22c55e',icon:'🌺',text:'A sunset will bring you perfect clarity'},
+
+  // 🔮 MYSTERY & WISDOM
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'What you seek is already inside you'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'The answer will come to you in a dream'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'A stranger\'s words will change your path'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'Ancient wisdom speaks through your intuition'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'The moon has a special message for you tonight'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'Pay attention to what repeats in your life'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'A coincidence is actually no coincidence'},
+  {cat:'Mystery',color:'#9b59b6',icon:'🔮',text:'Your ancestors are proud of who you are'},
+
+  // 🌈 JOY & ADVENTURE
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Laughter is your superpower — use it today'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'An adventure is about to find you'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Pure joy is 24 hours away from you'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Dance like nobody is watching — they are'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Spontaneity today will lead to magic'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Your smile has more power than you realize'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'Say yes to the next fun invitation you get'},
+  {cat:'Joy',color:'#f97316',icon:'🌈',text:'A childhood dream is not lost — revisit it'},
+
+  // ⚡ POWER & COURAGE
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'You are stronger than any challenge ahead'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'The lion within you is ready to roar'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'Speak your truth — the world needs to hear it'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'Fear is just excitement needing direction'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'Take the leap — the net will appear'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'Your courage today inspires others tomorrow'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'The risk you\'re considering is worth it'},
+  {cat:'Power',color:'#ef4444',icon:'⚡',text:'Stand tall — greatness lives in your bones'},
+];
+
+// Unique segment colors for wheel
+const SEGMENT_COLORS = [
+  '#FF69B4','#FF8C00','#FFD700','#22c55e',
+  '#22d3ee','#9b59b6','#ef4444','#f97316',
+  '#a78bfa','#4ade80','#fb923c','#60a5fa',
+  '#f472b6','#34d399','#fbbf24','#c084fc',
+];
+
+const NUM_SEGMENTS = FORTUNES.length;
+let currentAngle = 0;
+let spinning = false;
+let spinCount = 0;
+let currentFortune = null;
+let fortuneHistory = [];
+
+// ── Build Background ──────────────────────────
+function buildBackground(){
+  const bg = document.getElementById('mysticBg');
+
+  // Stars
+  for(let i=0;i<80;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = 1 + Math.random() * 2.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${1.5+Math.random()*4}s;animation-delay:${Math.random()*5}s;`;
+    bg.appendChild(s);
+  }
+
+  // Floating mystic particles
+  const particles = ['✨','⭐','🌟','💫','✦','·','*'];
+  for(let i=0;i<12;i++){
+    const p = document.createElement('div');
+    p.className = 'mystic-particle';
+    p.textContent = particles[Math.floor(Math.random()*particles.length)];
+    p.style.cssText = `left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*10}s;font-size:${14+Math.random()*16}px;`;
+    bg.appendChild(p);
+  }
+}
+
+// ── Draw Wheel ────────────────────────────────
+function drawWheel(){
+  const canvas = document.getElementById('wheelCanvas');
+  const size = canvas.parentElement.offsetWidth;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const cx = size/2, cy = size/2, r = size/2 - 2;
+  const slice = (Math.PI*2) / NUM_SEGMENTS;
+
+  FORTUNES.forEach((f, i) => {
+    const startAngle = i * slice - Math.PI/2;
+    const endAngle = startAngle + slice;
+
+    // Segment
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.closePath();
+
+    // Alternating shades within category
+    const baseColor = f.color;
+    ctx.fillStyle = i%2===0 ? baseColor : adjustColor(baseColor, -20);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Icon label on wheel
+    const midAngle = startAngle + slice/2;
+    const labelR = r * 0.72;
+    const lx = cx + Math.cos(midAngle) * labelR;
+    const ly = cy + Math.sin(midAngle) * labelR;
+
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.rotate(midAngle + Math.PI/2);
+    ctx.font = `${Math.max(10,size*0.028)}px system-ui`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(f.icon, 0, 0);
+    ctx.restore();
+  });
+
+  // Inner circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, r*0.18, 0, Math.PI*2);
+  ctx.fillStyle = '#0a0010';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,215,0,0.5)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function adjustColor(hex, amount){
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num>>16) + amount));
+  const g = Math.min(255, Math.max(0, ((num>>8)&0xff) + amount));
+  const b = Math.min(255, Math.max(0, (num&0xff) + amount));
+  return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Spin Wheel ────────────────────────────────
+function spinWheel(){
+  if(spinning) return;
+  spinning = true;
+  spinCount++;
+
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('spinBtn').classList.remove('glowing');
+  document.getElementById('shareBtn').classList.remove('show');
+
+  // Clear current fortune
+  document.getElementById('fortuneText').innerHTML = '<span style="color:#9b59b6;font-size:24px;animation:crystalGlow 0.5s ease-in-out infinite alternate;">🔮</span>';
+  document.getElementById('fortuneBox').classList.remove('revealed');
+  document.getElementById('fortuneCat').classList.remove('show');
+  document.getElementById('fortuneCrystal').classList.remove('show');
+  document.getElementById('fortuneBar').classList.remove('show');
+
+  playSpinSound();
+
+  // Random spin — 5-10 full rotations plus random stop
+  const extraSpins = 5 + Math.random() * 5;
+  const targetRotation = currentAngle + extraSpins * 360 + Math.random() * 360;
+
+  // Determine which fortune we'll land on
+  const slice = 360 / NUM_SEGMENTS;
+  const normalizedAngle = ((targetRotation % 360) + 360) % 360;
+  // Pointer is at top (0°) — calculate which segment is at top
+  const fortuneIdx = Math.floor(((360 - normalizedAngle) % 360) / slice) % NUM_SEGMENTS;
+
+  // Animate spin
+  const duration = 4000 + Math.random() * 2000;
+  const startTime = Date.now();
+  const startAngle = currentAngle;
+
+  function animSpin(){
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(1, elapsed / duration);
+
+    // Ease out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const angle = startAngle + (targetRotation - startAngle) * ease;
+
+    document.getElementById('wheel').style.transform = `rotate(${angle}deg)`;
+
+    // Tick sounds during spin
+    const prevSegment = Math.floor(((currentAngle % 360) / slice));
+    const currSegment = Math.floor(((angle % 360) / slice));
+    if(prevSegment !== currSegment) playTickSound();
+
+    currentAngle = angle;
+
+    if(progress < 1){
+      requestAnimationFrame(animSpin);
+    } else {
+      currentAngle = targetRotation;
+      spinning = false;
+      revealFortune(fortuneIdx);
+    }
+  }
+  requestAnimationFrame(animSpin);
+}
+
+// ── Reveal Fortune ────────────────────────────
+function revealFortune(idx){
+  const fortune = FORTUNES[idx];
+  currentFortune = fortune;
+
+  // Dramatic pause then reveal
+  setTimeout(()=>{
+    const box = document.getElementById('fortuneBox');
+    box.classList.add('revealed');
+    box.style.borderColor = fortune.color;
+    box.style.boxShadow = `0 0 20px ${fortune.color}40,0 0 40px ${fortune.color}20`;
+
+    // Category badge
+    const cat = document.getElementById('fortuneCat');
+    cat.textContent = fortune.icon + ' ' + fortune.cat;
+    cat.style.background = fortune.color + '22';
+    cat.style.border = `1px solid ${fortune.color}66`;
+    cat.style.color = fortune.color;
+    cat.classList.add('show');
+
+    // Crystal
+    document.getElementById('fortuneCrystal').textContent = fortune.icon;
+    document.getElementById('fortuneCrystal').classList.add('show');
+
+    // Fortune text — typewriter effect!
+    const textEl = document.getElementById('fortuneText');
+    textEl.innerHTML = '';
+    textEl.style.color = '#e8d5f5';
+    let i = 0;
+    const txt = fortune.text;
+    function typeNext(){
+      if(i < txt.length){
+        textEl.innerHTML = '"' + txt.slice(0,i+1) + (i<txt.length-1?'|':'') + '"';
+        i++;
+        setTimeout(typeNext, 35);
+      } else {
+        textEl.innerHTML = '"' + txt + '"';
+        // Color bar
+        const bar = document.getElementById('fortuneBar');
+        bar.style.background = fortune.color;
+        bar.style.boxShadow = `0 0 8px ${fortune.color}`;
+        bar.classList.add('show');
+        // Show share button
+        document.getElementById('shareBtn').classList.add('show');
+        // Re-enable spin
+        document.getElementById('spinBtn').disabled = false;
+        document.getElementById('spinBtn').classList.add('glowing');
+        // Celebrate!
+        celebrate(fortune.color);
+        playRevealSound();
+      }
+    }
+    setTimeout(typeNext, 200);
+
+    // Add to history
+    fortuneHistory.unshift(fortune);
+    if(fortuneHistory.length > 5) fortuneHistory.pop();
+    updateHistory();
+
+    // Update spin count
+    document.getElementById('spinCount').textContent =
+      '🔮 Spin ' + spinCount + ' · ' + (spinCount === 1 ? 'Your first fortune!' : 'Keep spinning for more!');
+
+  }, 600);
+}
+
+function updateHistory(){
+  const list = document.getElementById('historyList');
+  const title = document.getElementById('historyTitle');
+  title.style.display = fortuneHistory.length > 1 ? 'block' : 'none';
+
+  list.innerHTML = fortuneHistory.slice(1).map(f=>`
+    <div class="history-item">
+      <div class="history-dot" style="background:${f.color};box-shadow:0 0 4px ${f.color};"></div>
+      <span>${f.icon} ${f.text}</span>
+    </div>
+  `).join('');
+}
+
+// ── Share ──────────────────────────────────────
+function shareFortune(){
+  if(!currentFortune) return;
+  const txt = `🔮 My Fortune Roulette reading: "${currentFortune.text}" ✨ What does YOUR fortune say? todayinhawaii.com/fortune`;
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/fortune')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Celebration ───────────────────────────────
+function celebrate(color){
+  const emojis = ['✨','⭐','💫','🌟','✦'];
+  for(let i=0;i<16;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti';
+    p.style.cssText = `
+      background:${color};
+      width:${5+Math.random()*8}px;
+      height:${5+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'3px'};
+      left:${20+Math.random()*60}%;
+      top:${20+Math.random()*30}%;
+      box-shadow:0 0 6px ${color};
+    `;
+    document.body.appendChild(p);
+    const ang = Math.random()*Math.PI*2;
+    const dist = 50+Math.random()*100;
+    const tx = Math.cos(ang)*dist, ty = Math.sin(ang)*dist;
+    const dur = 600+Math.random()*600;
+    const start = Date.now();
+    function animC(){
+      const p2 = Math.min(1,(Date.now()-start)/dur);
+      const e = 1-Math.pow(1-p2,2);
+      p.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+80*p2*p2}px)) rotate(${p2*540}deg)`;
+      p.style.opacity=1-p2;
+      if(p2<1) requestAnimationFrame(animC);
+      else p.remove();
+    }
+    requestAnimationFrame(animC);
+  }
+}
+
+// ── Sound ─────────────────────────────────────
+let audioCtx = null;
+function getAudio(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(f,t,v,d,delay){
+  try{
+    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=t;o.frequency.value=f;delay=delay||0;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.05);
+  }catch(e){}
+}
+function playTickSound(){
+  playTone(800+Math.random()*400,'sine',0.08,0.04);
+}
+function playSpinSound(){
+  playTone(200,'sawtooth',0.1,0.3);
+  playTone(300,'sine',0.08,0.2,0.1);
+}
+function playRevealSound(){
+  [392,523,659,784,1047].forEach((f,i)=>
+    playTone(f,'sine',0.4,0.3,i*0.1)
+  );
+}
+
+// ── Init ──────────────────────────────────────
+buildBackground();
+drawWheel();
+window.addEventListener('resize', drawWheel);
+</script>
+</body>
+</html>
