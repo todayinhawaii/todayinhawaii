@@ -69,11 +69,12 @@
     /* HUD */
     #hud{
       position:fixed;top:0;left:0;right:0;
-      padding:10px 16px;z-index:50;
+      padding:8px 16px 10px;z-index:50;
       display:flex;align-items:center;justify-content:space-between;
       background:rgba(0,0,0,0.5);
       backdrop-filter:blur(10px);
       border-bottom:1px solid rgba(255,255,255,0.08);
+      min-height:70px;
     }
     /* Vegas Slot Machine Score */
     #slotScore{
@@ -90,7 +91,7 @@
       background:linear-gradient(180deg,#1a0030,#0a0015,#1a0030);
       border:2px solid #ffd700;
       border-radius:8px;
-      padding:3px 10px;
+      padding:0 10px;
       min-width:100px;
       box-shadow:
         0 0 12px rgba(255,215,0,0.5),
@@ -100,8 +101,11 @@
       overflow:hidden;
     }
     .slot-window{
-      overflow:hidden;height:38px;
-      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+      height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
     .slot-reel{
       display:flex;flex-direction:column;align-items:center;
@@ -116,15 +120,20 @@
       100%{transform:translateY(0);}
     }
     .slot-digit{
-      font-size:28px;font-weight:900;
+      font-size:26px;font-weight:900;
       font-family:'Courier New',monospace;
       background:linear-gradient(180deg,#ffe566,#ffd700,#ff8c00);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
       text-shadow:none;
-      line-height:38px;height:38px;
+      line-height:1;
+      height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       letter-spacing:2px;
       min-width:90px;text-align:center;
       filter:drop-shadow(0 0 6px rgba(255,215,0,0.8));
+      padding:0;margin:0;
     }
     /* Shine overlay on slot machine */
     .slot-shine{
@@ -156,7 +165,7 @@
 
     /* Timer bar */
     #timerBar{
-      position:fixed;top:52px;left:0;right:0;
+      position:fixed;top:70px;left:0;right:0;
       height:5px;background:rgba(255,255,255,0.06);z-index:50;
     }
     #timerFill{
@@ -170,7 +179,7 @@
 
     /* Score legend */
     #legend{
-      position:fixed;right:8px;top:62px;
+      position:fixed;right:8px;top:82px;
       z-index:50;
       background:rgba(0,0,0,0.6);
       border:1px solid rgba(255,255,255,0.1);
