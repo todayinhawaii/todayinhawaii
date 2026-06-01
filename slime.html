@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🟢 The Slime Factory — Today in Hawaii</title>
+  <meta name="description" content="Make your own slime! Add colors glitter candy and mix! Satisfying ASMR slime for kids!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:none;}
+    body{
+      background:linear-gradient(160deg,#0d1117 0%,#1a0a2e 50%,#0d1117 100%);
+      min-height:100vh;font-family:system-ui,sans-serif;
+      overflow:hidden;user-select:none;-webkit-user-select:none;
+    }
+
+    /* Stars bg */
+    .star{position:fixed;background:white;border-radius:50%;
+      animation:twinkle ease-in-out infinite;pointer-events:none;z-index:0;}
+    @keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:0.5;}}
+
+    /* Header */
+    #hdr{
+      position:fixed;top:0;left:0;right:0;
+      padding:10px 14px 8px;z-index:50;
+      background:rgba(13,17,23,0.85);backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .hdr-title{
+      font-size:16px;font-weight:900;
+      background:linear-gradient(135deg,#00ff88,#00ccff,#ff00ff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hdr-sub{font-size:10px;color:#666;margin-top:1px;}
+
+    /* SLIME CANVAS AREA */
+    #slimeWrap{
+      position:fixed;
+      top:64px;left:0;right:0;bottom:200px;
+      display:flex;align-items:center;justify-content:center;
+      z-index:10;
+    }
+    #slimeCanvas{
+      border-radius:50%;
+      cursor:crosshair;
+      touch-action:none;
+    }
+
+    /* Ingredient shelf */
+    #shelf{
+      position:fixed;bottom:0;left:0;right:0;
+      height:198px;
+      background:rgba(13,17,23,0.95);
+      border-top:2px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      z-index:50;
+      padding:8px 10px 10px;
+    }
+
+    .shelf-row{
+      display:flex;gap:6px;margin-bottom:6px;
+      overflow-x:auto;
+      scrollbar-width:none;padding-bottom:2px;
+    }
+    .shelf-row::-webkit-scrollbar{display:none;}
+
+    .shelf-label{
+      font-size:9px;font-weight:700;color:#555;
+      text-transform:uppercase;letter-spacing:0.1em;
+      margin-bottom:4px;padding-left:2px;
+    }
+
+    /* Ingredient button */
+    .ing-btn{
+      flex-shrink:0;
+      width:52px;height:52px;
+      border-radius:14px;border:2px solid rgba(255,255,255,0.1);
+      cursor:pointer;font-size:22px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:1px;transition:all 0.15s;
+      background:rgba(255,255,255,0.06);
+      position:relative;overflow:hidden;
+    }
+    .ing-btn:active{transform:scale(0.88);}
+    .ing-btn.active{
+      border-color:rgba(255,255,255,0.5);
+      box-shadow:0 0 14px rgba(255,255,255,0.3);
+      transform:scale(1.05);
+    }
+    .ing-name{font-size:7px;color:rgba(255,255,255,0.6);font-weight:700;letter-spacing:0.05em;}
+
+    /* Action buttons */
+    .action-row{display:flex;gap:8px;margin-top:4px;}
+    .act-btn{
+      flex:1;padding:9px 6px;border:none;border-radius:12px;
+      font-size:12px;font-weight:800;cursor:pointer;
+      font-family:inherit;transition:all 0.15s;color:#fff;
+    }
+    .act-btn:active{transform:scale(0.96);}
+    .btn-mix{background:linear-gradient(135deg,#7c3aed,#4f46e5);}
+    .btn-squish{background:linear-gradient(135deg,#059669,#0891b2);}
+    .btn-reset{background:rgba(255,255,255,0.08);color:#aaa;}
+    .btn-save{background:linear-gradient(135deg,#d97706,#dc2626);}
+
+    /* Particle effects */
+    .particle{position:fixed;pointer-events:none;z-index:20;border-radius:50%;}
+
+    /* Mute */
+    .mute-btn{
+      width:32px;height:32px;border-radius:50%;
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+      font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;top:80px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.8);color:white;
+      padding:8px 18px;border-radius:99px;
+      font-size:13px;font-weight:700;
+      z-index:999;animation:toastPop 2s ease forwards;
+      white-space:nowrap;
+    }
+    @keyframes toastPop{0%{opacity:0;transform:translate(-50%,-10px);}15%{opacity:1;transform:translate(-50%,0);}75%{opacity:1;}100%{opacity:0;transform:translate(-50%,-10px);}}
+  </style>
+</head>
+<body>
+
+<!-- Stars -->
+<script>
+for(let i=0;i<30;i++){
+  const s=document.createElement('div');s.className='star';
+  s.style.cssText=`width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- Header -->
+<div id="hdr">
+  <div>
+    <div class="hdr-title">🧪 THE SLIME FACTORY</div>
+    <div class="hdr-sub">Touch & squish your slime! Add ingredients!</div>
+  </div>
+  <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+</div>
+
+<!-- Slime Canvas -->
+<div id="slimeWrap">
+  <canvas id="slimeCanvas"></canvas>
+</div>
+
+<!-- Ingredient Shelf -->
+<div id="shelf">
+
+  <div class="shelf-label">🎨 Colors</div>
+  <div class="shelf-row" id="colorRow"></div>
+
+  <div class="shelf-label">✨ Add-ins</div>
+  <div class="shelf-row" id="addinsRow"></div>
+
+  <div class="action-row">
+    <button class="act-btn btn-squish" onclick="squishSlime()">👆 SQUISH!</button>
+    <button class="act-btn btn-mix" onclick="mixSlime()">🌀 MIX!</button>
+    <button class="act-btn btn-save" onclick="saveSlime()">📸 SAVE!</button>
+    <button class="act-btn btn-reset" onclick="resetSlime()">🗑️ RESET</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// THE SLIME FACTORY — ASMR Slime Maker
+// Today in Hawaii © 2026
+// ══════════════════════════════════════════════════
+
+// ── Ingredients ────────────────────────────────
+const COLORS = [
+  {name:'Green',   icon:'🟢', r:0,   g:220, b:80,  label:'Slime'},
+  {name:'Purple',  icon:'🟣', r:160, g:32,  b:240, label:'Purple'},
+  {name:'Pink',    icon:'🩷', r:255, g:100, b:180, label:'Pink'},
+  {name:'Blue',    icon:'🔵', r:30,  g:144, b:255, label:'Blue'},
+  {name:'Orange',  icon:'🟠', r:255, g:140, b:0,   label:'Orange'},
+  {name:'Red',     icon:'🔴', r:220, g:40,  b:40,  label:'Red'},
+  {name:'Yellow',  icon:'🟡', r:255, g:220, b:0,   label:'Yellow'},
+  {name:'White',   icon:'⚪', r:240, g:240, b:240, label:'White'},
+  {name:'Black',   icon:'⚫', r:30,  g:30,  b:40,  label:'Black'},
+  {name:'Teal',    icon:'🫐', r:0,   g:200, b:180, label:'Teal'},
+  {name:'Gold',    icon:'🌕', r:255, g:200, b:50,  label:'Gold'},
+  {name:'Rainbow', icon:'🌈', r:-1,  g:-1,  b:-1,  label:'Rainbow'},
+];
+
+const ADDINS = [
+  {name:'Glitter',   icon:'✨', effect:'glitter'},
+  {name:'Stars',     icon:'⭐', effect:'stars'},
+  {name:'Sprinkles', icon:'🎊', effect:'sprinkles'},
+  {name:'Sparkles',  icon:'💫', effect:'sparkles'},
+  {name:'Foam',      icon:'🫧', effect:'foam'},
+  {name:'Beads',     icon:'🫧', effect:'beads'},
+  {name:'Confetti',  icon:'🎉', effect:'confetti'},
+  {name:'Hearts',    icon:'💕', effect:'hearts'},
+  {name:'Candy',     icon:'🍬', effect:'candy'},
+  {name:'Pearls',    icon:'🫧', effect:'pearls'},
+  {name:'Ice',       icon:'❄️',  effect:'ice'},
+  {name:'Glow',      icon:'🌟', effect:'glow'},
+];
+
+// ── State ──────────────────────────────────────
+let slimeColor = {r:0, g:220, b:80};
+let slimeColor2 = null; // for mixing
+let particles = []; // decorative bits inside slime
+let slimeBlobs = []; // physics blobs
+let isRainbow = false;
+let activeAddins = new Set();
+let muted = false;
+let animId = null;
+let glowAmount = 0;
+
+// Canvas setup
+const canvas = document.getElementById('slimeCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, CX, CY, RADIUS;
+
+function resize(){
+  const wrap = document.getElementById('slimeWrap');
+  const available = Math.min(wrap.clientWidth, wrap.clientHeight) * 0.92;
+  W = canvas.width = available;
+  H = canvas.height = available;
+  CX = W/2; CY = H/2;
+  RADIUS = W * 0.44;
+}
+resize();
+window.addEventListener('resize', ()=>{resize();initBlobs();});
+
+// ── Blob Physics ──────────────────────────────
+const NUM_BLOBS = 18;
+
+function initBlobs(){
+  slimeBlobs = [];
+  for(let i=0;i<NUM_BLOBS;i++){
+    const angle = (i/NUM_BLOBS) * Math.PI*2;
+    const r = RADIUS * (0.85 + Math.random()*0.12);
+    slimeBlobs.push({
+      angle,
+      baseR: r,
+      currentR: r,
+      vr: 0,
+      wobble: Math.random()*Math.PI*2,
+      wobbleSpeed: 0.02 + Math.random()*0.02,
+    });
+  }
+}
+initBlobs();
+
+// ── Particle System ────────────────────────────
+function addParticles(type, x, y, count){
+  for(let i=0;i<count;i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = 0.5 + Math.random()*2;
+    let color, size, emoji, shape;
+
+    switch(type){
+      case 'glitter':
+        color = `hsl(${Math.random()*360},100%,70%)`;
+        size = 2+Math.random()*3; shape='circle'; break;
+      case 'stars': emoji='⭐'; size=10+Math.random()*8; break;
+      case 'sprinkles':
+        color = `hsl(${Math.random()*360},90%,60%)`;
+        size = 3+Math.random()*2; shape='rect'; break;
+      case 'sparkles': emoji='✨'; size=12+Math.random()*8; break;
+      case 'foam':
+        color = `rgba(255,255,255,${0.4+Math.random()*0.4})`;
+        size = 6+Math.random()*10; shape='circle'; break;
+      case 'beads':
+        color = `hsl(${Math.random()*360},80%,65%)`;
+        size = 5+Math.random()*4; shape='circle'; break;
+      case 'confetti':
+        color = `hsl(${Math.random()*360},95%,60%)`;
+        size = 5+Math.random()*5; shape='rect'; break;
+      case 'hearts': emoji='💕'; size=10+Math.random()*8; break;
+      case 'candy':
+        color = `hsl(${Math.random()*360},90%,65%)`;
+        size = 6+Math.random()*5; shape='circle'; break;
+      case 'pearls':
+        color = `rgba(240,240,255,${0.7+Math.random()*0.3})`;
+        size = 7+Math.random()*5; shape='circle'; break;
+      case 'ice':
+        color = `rgba(180,220,255,${0.5+Math.random()*0.4})`;
+        size = 5+Math.random()*7; shape='circle'; break;
+      case 'glow':
+        color = `hsl(${180+Math.random()*60},100%,70%)`;
+        size = 4+Math.random()*4; shape='circle'; break;
+      default:
+        color='white'; size=3; shape='circle';
+    }
+
+    // Keep within slime circle
+    const dist = RADIUS * (0.1 + Math.random()*0.75);
+    const px = CX + Math.cos(angle)*dist;
+    const py = CY + Math.sin(angle)*dist;
+
+    particles.push({
+      x: px, y: py,
+      vx: (Math.random()-0.5)*speed,
+      vy: (Math.random()-0.5)*speed,
+      color, emoji, size, shape,
+      life: 1,
+      decay: 0.002 + Math.random()*0.003,
+      rot: Math.random()*Math.PI*2,
+      rotSpeed: (Math.random()-0.5)*0.05,
+      permanent: true,
+    });
+  }
+}
+
+// ── Pointer/Touch ─────────────────────────────
+let pointers = {};
+let lastPointerPos = null;
+
+function getPointerPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return {
+    x: (t.clientX - rect.left) * (canvas.width/rect.width),
+    y: (t.clientY - rect.top) * (canvas.height/rect.height),
+  };
+}
+
+canvas.addEventListener('pointerdown', e=>{
+  e.preventDefault();
+  pointers[e.pointerId] = getPointerPos(e);
+  lastPointerPos = pointers[e.pointerId];
+  playTouch();
+  pushBlobs(lastPointerPos.x, lastPointerPos.y, 30);
+});
+canvas.addEventListener('pointermove', e=>{
+  e.preventDefault();
+  if(!pointers[e.pointerId]) return;
+  const pos = getPointerPos(e);
+  const prev = pointers[e.pointerId];
+  const dx = pos.x-prev.x, dy = pos.y-prev.y;
+  const speed = Math.sqrt(dx*dx+dy*dy);
+  if(speed>3){
+    playStretch(speed);
+    pushBlobs(pos.x, pos.y, speed*1.5);
+    // Add squish marks
+    if(activeAddins.size>0){
+      activeAddins.forEach(addin=>{
+        if(Math.random()<0.3) addParticles(addin, pos.x, pos.y, 1);
+      });
+    }
+  }
+  pointers[e.pointerId] = pos;
+  lastPointerPos = pos;
+});
+canvas.addEventListener('pointerup', e=>{delete pointers[e.pointerId];playRelease();});
+canvas.addEventListener('pointerleave', e=>{delete pointers[e.pointerId];});
+canvas.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
+
+function pushBlobs(px, py, force){
+  slimeBlobs.forEach(b=>{
+    const bx = CX + Math.cos(b.angle)*b.currentR;
+    const by = CY + Math.sin(b.angle)*b.currentR;
+    const dx = bx-px, dy = by-py;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    if(dist<RADIUS*0.8){
+      const push = (force/dist) * 0.3;
+      b.vr += push * (dist/RADIUS);
+    }
+  });
+}
+
+// ── Physics Update ─────────────────────────────
+function updateBlobs(){
+  slimeBlobs.forEach(b=>{
+    b.wobble += b.wobbleSpeed;
+    const wobbleForce = Math.sin(b.wobble)*0.3;
+    const springForce = (b.baseR - b.currentR) * 0.08;
+    b.vr += springForce + wobbleForce;
+    b.vr *= 0.92; // damping
+    b.currentR += b.vr;
+    b.currentR = Math.max(RADIUS*0.5, Math.min(RADIUS*1.25, b.currentR));
+  });
+}
+
+// ── Drawing ────────────────────────────────────
+let rainbowHue = 0;
+
+function getSlimeColor(alpha){
+  if(isRainbow){
+    const h = (rainbowHue) % 360;
+    return `hsla(${h},100%,55%,${alpha})`;
+  }
+  if(slimeColor2){
+    // Mixed color
+    return `rgba(${Math.round((slimeColor.r+slimeColor2.r)/2)},${Math.round((slimeColor.g+slimeColor2.g)/2)},${Math.round((slimeColor.b+slimeColor2.b)/2)},${alpha})`;
+  }
+  return `rgba(${slimeColor.r},${slimeColor.g},${slimeColor.b},${alpha})`;
+}
+
+function getSlimeColorArr(){
+  if(isRainbow) return [150,100,255];
+  if(slimeColor2) return [Math.round((slimeColor.r+slimeColor2.r)/2),Math.round((slimeColor.g+slimeColor2.g)/2),Math.round((slimeColor.b+slimeColor2.b)/2)];
+  return [slimeColor.r,slimeColor.g,slimeColor.b];
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  rainbowHue += 0.8;
+
+  updateBlobs();
+
+  // Build slime path from blobs
+  ctx.beginPath();
+  const n = slimeBlobs.length;
+  for(let i=0;i<n;i++){
+    const curr = slimeBlobs[i];
+    const next = slimeBlobs[(i+1)%n];
+    const cx1 = CX + Math.cos(curr.angle)*curr.currentR;
+    const cy1 = CY + Math.sin(curr.angle)*curr.currentR;
+    const cx2 = CX + Math.cos(next.angle)*next.currentR;
+    const cy2 = CY + Math.sin(next.angle)*next.currentR;
+    const mx = (cx1+cx2)/2, my = (cy1+cy2)/2;
+    if(i===0) ctx.moveTo(mx,my);
+    else ctx.quadraticCurveTo(cx1,cy1,mx,my);
+  }
+  ctx.closePath();
+
+  // Shadow
+  ctx.shadowColor = getSlimeColor(0.5);
+  ctx.shadowBlur = 24;
+
+  // Gradient fill
+  const [sr,sg,sb] = getSlimeColorArr();
+  const grad = ctx.createRadialGradient(CX-RADIUS*0.2, CY-RADIUS*0.2, 0, CX, CY, RADIUS*1.1);
+  if(isRainbow){
+    const h = rainbowHue%360;
+    grad.addColorStop(0, `hsla(${h},100%,80%,0.95)`);
+    grad.addColorStop(0.4, `hsla(${(h+60)%360},100%,55%,0.92)`);
+    grad.addColorStop(0.8, `hsla(${(h+120)%360},100%,45%,0.95)`);
+    grad.addColorStop(1, `hsla(${(h+180)%360},100%,30%,0.98)`);
+  } else {
+    grad.addColorStop(0, `rgba(${Math.min(255,sr+80)},${Math.min(255,sg+80)},${Math.min(255,sb+80)},0.92)`);
+    grad.addColorStop(0.5, `rgba(${sr},${sg},${sb},0.94)`);
+    grad.addColorStop(1, `rgba(${Math.max(0,sr-60)},${Math.max(0,sg-60)},${Math.max(0,sb-60)},0.98)`);
+  }
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Shiny highlight
+  ctx.shadowBlur = 0;
+  ctx.save();
+  ctx.clip();
+  const shine = ctx.createRadialGradient(CX-RADIUS*0.3, CY-RADIUS*0.35, 0, CX-RADIUS*0.3, CY-RADIUS*0.3, RADIUS*0.55);
+  shine.addColorStop(0,'rgba(255,255,255,0.35)');
+  shine.addColorStop(0.5,'rgba(255,255,255,0.12)');
+  shine.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle = shine;
+  ctx.fillRect(0,0,W,H);
+
+  // Second smaller highlight
+  const shine2 = ctx.createRadialGradient(CX+RADIUS*0.25, CY+RADIUS*0.2, 0, CX+RADIUS*0.25, CY+RADIUS*0.2, RADIUS*0.2);
+  shine2.addColorStop(0,'rgba(255,255,255,0.15)');
+  shine2.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle = shine2;
+  ctx.fillRect(0,0,W,H);
+
+  // Glow effect
+  if(glowAmount>0 || activeAddins.has('glow')){
+    const glowR = ctx.createRadialGradient(CX,CY,RADIUS*0.3,CX,CY,RADIUS*1.1);
+    const glowColor = isRainbow ? `hsla(${rainbowHue%360},100%,70%,0.2)` : `rgba(${sr},${sg},${sb},0.18)`;
+    glowR.addColorStop(0,glowColor);
+    glowR.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = glowR;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  ctx.restore();
+
+  // Draw particles
+  ctx.save();
+  ctx.beginPath();
+  for(let i=0;i<n;i++){
+    const curr = slimeBlobs[i];
+    const next = slimeBlobs[(i+1)%n];
+    const cx1 = CX + Math.cos(curr.angle)*curr.currentR;
+    const cy1 = CY + Math.sin(curr.angle)*curr.currentR;
+    const cx2 = CX + Math.cos(next.angle)*next.currentR;
+    const cy2 = CY + Math.sin(next.angle)*next.currentR;
+    const mx = (cx1+cx2)/2, my = (cy1+cy2)/2;
+    if(i===0) ctx.moveTo(mx,my);
+    else ctx.quadraticCurveTo(cx1,cy1,mx,my);
+  }
+  ctx.closePath();
+  ctx.clip();
+
+  particles.forEach(p=>{
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    if(p.emoji){
+      ctx.font = `${p.size}px system-ui`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(p.emoji, 0, 0);
+    } else if(p.shape==='rect'){
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size*0.3, p.size, p.size*0.6);
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = p.size*0.5;
+      ctx.beginPath();ctx.arc(0,0,p.size/2,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Move
+    p.x += p.vx;p.y += p.vy;
+    p.vx *= 0.99;p.vy *= 0.99;
+    p.rot += p.rotSpeed;
+    if(!p.permanent) p.life -= p.decay;
+    // Bounce inside circle
+    const dx=p.x-CX,dy=p.y-CY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist>RADIUS*0.85){
+      const nx=dx/dist,ny=dy/dist;
+      p.vx -= nx*0.5;p.vy -= ny*0.5;
+      p.x=CX+nx*RADIUS*0.82;p.y=CY+ny*RADIUS*0.82;
+    }
+  });
+  particles = particles.filter(p=>p.life>0.01);
+  ctx.restore();
+
+  animId = requestAnimationFrame(draw);
+}
+
+// ── Build UI ───────────────────────────────────
+function buildColorRow(){
+  const row = document.getElementById('colorRow');
+  COLORS.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className='ing-btn';
+    btn.innerHTML = `<span>${c.icon}</span><span class="ing-name">${c.label}</span>`;
+    if(c.r===-1) btn.style.background='linear-gradient(135deg,#ff0080,#ffcc00,#00ff88,#00ccff,#ff00ff)';
+    else btn.style.background=`rgba(${c.r},${c.g},${c.b},0.3)`;
+    btn.style.borderColor=c.r===-1?'rgba(255,255,255,0.4)':`rgba(${c.r},${c.g},${c.b},0.6)`;
+    btn.onclick=()=>applyColor(c, btn);
+    row.appendChild(btn);
+  });
+}
+
+function buildAddinsRow(){
+  const row = document.getElementById('addinsRow');
+  ADDINS.forEach(a=>{
+    const btn = document.createElement('button');
+    btn.className='ing-btn';
+    btn.innerHTML = `<span>${a.icon}</span><span class="ing-name">${a.name}</span>`;
+    btn.onclick=()=>applyAddin(a, btn);
+    row.appendChild(btn);
+  });
+}
+
+function applyColor(c, btn){
+  document.querySelectorAll('#colorRow .ing-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if(c.r===-1){
+    isRainbow=true;
+    slimeColor2=null;
+    showToast('🌈 Rainbow Slime activated!!');
+    playPop(900);
+  } else {
+    if(!isRainbow && slimeColor){
+      slimeColor2 = {r:slimeColor.r, g:slimeColor.g, b:slimeColor.b};
+    }
+    isRainbow=false;
+    slimeColor = {r:c.r, g:c.g, b:c.b};
+    showToast(`${c.icon} ${c.name} slime! Beautiful!`);
+    playPop(600);
+    // Splat effect
+    for(let i=0;i<12;i++){
+      const angle=Math.random()*Math.PI*2;
+      const dist=RADIUS*(0.1+Math.random()*0.7);
+      particles.push({
+        x:CX+Math.cos(angle)*dist, y:CY+Math.sin(angle)*dist,
+        vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3,
+        color:`rgba(${c.r},${c.g},${c.b},0.8)`,
+        size:8+Math.random()*12, shape:'circle',
+        life:1, decay:0.008, rot:0, rotSpeed:0.05, permanent:false,
+      });
+    }
+  }
+  slimeColor2=null;
+}
+
+function applyAddin(a, btn){
+  btn.classList.toggle('active');
+  if(activeAddins.has(a.effect)){
+    activeAddins.delete(a.effect);
+    showToast(`Removed ${a.icon} ${a.name}`);
+  } else {
+    activeAddins.add(a.effect);
+    addParticles(a.effect, CX, CY, 25);
+    showToast(`${a.icon} ${a.name} added!`);
+    playPop(700+Math.random()*200);
+    vibrate(15);
+    // Burst
+    for(let i=0;i<8;i++){
+      setTimeout(()=>addParticles(a.effect, CX+(Math.random()-0.5)*RADIUS, CY+(Math.random()-0.5)*RADIUS, 3),i*80);
+    }
+  }
+}
+
+function squishSlime(){
+  playSquish();vibrate([20,10,20]);
+  // Big push all blobs outward
+  slimeBlobs.forEach(b=>{ b.vr += 15+Math.random()*10; });
+  setTimeout(()=>slimeBlobs.forEach(b=>{ b.vr -= 8; }), 150);
+  // Splat particles
+  activeAddins.forEach(a=>addParticles(a, CX, CY, 10));
+  showToast('💦 SQUISH!!');
+}
+
+function mixSlime(){
+  playMix();vibrate([10,5,10,5,20]);
+  // Spin blobs
+  slimeBlobs.forEach((b,i)=>{
+    b.vr += (i%2===0?1:-1) * (8+Math.random()*8);
+    b.wobble += Math.PI;
+  });
+  activeAddins.forEach(a=>{
+    for(let i=0;i<4;i++) setTimeout(()=>addParticles(a,CX+(Math.random()-0.5)*RADIUS,CY+(Math.random()-0.5)*RADIUS,5),i*100);
+  });
+  showToast('🌀 Mixing slime!!');
+}
+
+function resetSlime(){
+  particles=[];
+  activeAddins.clear();
+  document.querySelectorAll('.ing-btn').forEach(b=>b.classList.remove('active'));
+  slimeColor={r:0,g:220,b:80};slimeColor2=null;isRainbow=false;
+  initBlobs();
+  showToast('🗑️ Fresh slime! Start over!');
+  playPop(400);
+}
+
+function saveSlime(){
+  // Download canvas as image
+  const link=document.createElement('a');
+  link.download='my-slime.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+  showToast('📸 Slime saved! Show your friends!');
+  playPop(1000);vibrate([30,20,30]);
+}
+
+// ── Toast ──────────────────────────────────────
+function showToast(msg){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2100);
+}
+
+// ── ASMR Sounds ────────────────────────────────
+let ac=null;
+function ga(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();return ac;}
+
+function playTouch(){
+  if(muted)return;
+  try{
+    const c=ga();
+    const buf=c.createBuffer(1,c.sampleRate*0.15,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){
+      const t=i/c.sampleRate;
+      const env=Math.exp(-t*25);
+      d[i]=env*(Math.sin(2*Math.PI*80*t)*0.5+(Math.random()*2-1)*0.3*Math.exp(-t*60));
+    }
+    const s=c.createBufferSource(),g=c.createGain();
+    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.4;s.start();
+  }catch(e){}
+}
+
+function playStretch(speed){
+  if(muted)return;
+  try{
+    const c=ga(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type='sine';
+    o.frequency.setValueAtTime(60+speed*2,c.currentTime);
+    o.frequency.linearRampToValueAtTime(40+speed,c.currentTime+0.08);
+    g.gain.setValueAtTime(0,c.currentTime);
+    g.gain.linearRampToValueAtTime(0.15,c.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.1);
+    o.start(c.currentTime);o.stop(c.currentTime+0.12);
+  }catch(e){}
+}
+
+function playRelease(){
+  if(muted)return;
+  try{
+    const c=ga();
+    const buf=c.createBuffer(1,c.sampleRate*0.2,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){
+      const t=i/c.sampleRate;
+      const env=Math.exp(-t*18);
+      d[i]=env*(Math.sin(2*Math.PI*(120-t*200)*t)*0.4+(Math.random()*2-1)*0.2);
+    }
+    const s=c.createBufferSource(),g=c.createGain();
+    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.35;s.start();
+  }catch(e){}
+}
+
+function playSquish(){
+  if(muted)return;
+  try{
+    const c=ga();
+    const buf=c.createBuffer(1,c.sampleRate*0.3,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){
+      const t=i/c.sampleRate;
+      const env=Math.exp(-t*12);
+      const low=Math.sin(2*Math.PI*40*t)*0.6;
+      const noise=(Math.random()*2-1)*0.4*Math.exp(-t*20);
+      d[i]=env*(low+noise);
+    }
+    const s=c.createBufferSource(),g=c.createGain();
+    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.6;s.start();
+  }catch(e){}
+}
+
+function playMix(){
+  if(muted)return;
+  try{
+    const c=ga();
+    [80,100,120,90,110].forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;
+      const t=i*0.06;
+      g.gain.setValueAtTime(0,c.currentTime+t);
+      g.gain.linearRampToValueAtTime(0.2,c.currentTime+t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+t+0.15);
+      o.start(c.currentTime+t);o.stop(c.currentTime+t+0.18);
+    });
+  }catch(e){}
+}
+
+function playPop(freq){
+  if(muted)return;
+  try{
+    const c=ga(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=freq||600;
+    g.gain.setValueAtTime(0,c.currentTime);
+    g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.12);
+    o.start(c.currentTime);o.stop(c.currentTime+0.15);
+  }catch(e){}
+}
+
+function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
+function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+
+// ── Init ──────────────────────────────────────
+buildColorRow();
+buildAddinsRow();
+draw();
+showToast('🧪 Welcome to The Slime Factory! Touch to squish!');
+</script>
+</body>
+</html>
