@@ -10,7 +10,7 @@
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
     body{
-      background:linear-gradient(180deg,#87CEEB 0%,#b8e4f7 40%,#d4f1c0 70%,#90EE90 100%);
+      background:linear-gradient(160deg,#061d2c 0%,#0a2e44 60%,#061d2c 100%);
       min-height:100vh;
       font-family:system-ui,sans-serif;
       overflow:hidden;
@@ -21,13 +21,13 @@
     /* Clouds */
     .cloud{
       position:fixed;
-      background:white;
+      background:rgba(255,255,255,0.08);
       border-radius:50px;
-      opacity:0.85;
+      opacity:1;
       animation:cloudDrift linear infinite;
     }
     .cloud::before,.cloud::after{
-      content:'';position:absolute;background:white;border-radius:50%;
+      content:'';position:absolute;background:rgba(255,255,255,0.08);border-radius:50%;
     }
     @keyframes cloudDrift{
       0%{transform:translateX(-200px);}
@@ -106,18 +106,18 @@
       align-items:center;
       justify-content:space-between;
       z-index:100;
-      background:rgba(255,255,255,0.3);
+      background:rgba(6,29,44,0.7);
       backdrop-filter:blur(8px);
-      border-bottom:2px solid rgba(255,255,255,0.5);
+      border-bottom:2px solid rgba(255,255,255,0.1);
     }
     .hud-score{
       font-size:22px;font-weight:900;
-      color:#2d4a1e;
+      color:#fbbf24;
       text-shadow:0 1px 3px rgba(255,255,255,0.8);
     }
     .hud-round{
       font-size:13px;font-weight:700;
-      color:#1a3a6e;
+      color:#e8f4f8;
       text-align:center;
     }
     .hud-timer{
@@ -159,7 +159,7 @@
       align-items:center;
       justify-content:center;
       z-index:200;
-      background:rgba(255,255,255,0.15);
+      background:rgba(6,29,44,0.85);
       backdrop-filter:blur(4px);
     }
     #roundAnnounce.hidden{display:none;}
@@ -206,11 +206,12 @@
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
       z-index:300;
-      background:linear-gradient(180deg,rgba(135,206,235,0.9),rgba(144,238,144,0.9));
+      background:linear-gradient(160deg,rgba(6,29,44,0.97),rgba(10,46,68,0.97));
       backdrop-filter:blur(4px);
     }
     .ns-card{
-      background:rgba(255,255,255,0.9);
+      background:rgba(10,46,68,0.95);
+      border:1.5px solid rgba(255,255,255,0.1);
       border-radius:28px;
       padding:28px 24px;
       max-width:360px;
@@ -223,18 +224,20 @@
     .ns-sub{font-size:13px;color:#666;margin-bottom:20px;line-height:1.5;}
     .ns-input{
       width:100%;padding:12px;
-      border:2px solid #ddd;border-radius:12px;
-      font-size:15px;font-family:inherit;
+      border:2px solid rgba(255,255,255,0.15);border-radius:12px;
+      font-size:15px;font-family:inherit;color:#e8f4f8;
+      background:rgba(255,255,255,0.07);
       outline:none;margin-bottom:10px;text-align:center;
       transition:border-color 0.2s;
     }
-    .ns-input:focus{border-color:#87CEEB;}
+    .ns-input:focus{border-color:rgba(34,211,238,0.5);}
+    .ns-input::placeholder{color:#7fb3c8;}
     .ns-select{
       width:100%;padding:12px;
-      border:2px solid #ddd;border-radius:12px;
-      font-size:14px;font-family:inherit;
-      outline:none;margin-bottom:16px;
-      background:white;cursor:pointer;
+      border:2px solid rgba(255,255,255,0.15);border-radius:12px;
+      font-size:14px;font-family:inherit;color:#e8f4f8;
+      background:rgba(6,29,44,0.8);
+      outline:none;margin-bottom:16px;cursor:pointer;
     }
     .ns-btn{
       width:100%;padding:15px;
@@ -261,7 +264,8 @@
     }
     #lbOverlay.show{display:flex;}
     .lb-card{
-      background:linear-gradient(160deg,#e8f8ff,#f0ffe8);
+      background:linear-gradient(160deg,#0a2e44,#061d2c);
+      border:1.5px solid rgba(255,255,255,0.1);
       border-radius:28px;
       padding:24px 20px;
       max-width:360px;width:90%;
@@ -345,16 +349,16 @@
 
 <!-- Clouds -->
 <div class="cloud" style="width:120px;height:40px;top:8%;animation-duration:28s;animation-delay:-5s;">
-  <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:white;top:-25px;left:15px;"></div>
-  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:white;top:-18px;left:45px;"></div>
+  <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.08);top:-25px;left:15px;"></div>
+  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:rgba(255,255,255,0.08);top:-18px;left:45px;"></div>
 </div>
 <div class="cloud" style="width:90px;height:30px;top:18%;animation-duration:22s;animation-delay:-12s;">
-  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:white;top:-20px;left:10px;"></div>
-  <div style="position:absolute;width:35px;height:35px;border-radius:50%;background:white;top:-14px;left:35px;"></div>
+  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:rgba(255,255,255,0.08);top:-20px;left:10px;"></div>
+  <div style="position:absolute;width:35px;height:35px;border-radius:50%;background:rgba(255,255,255,0.08);top:-14px;left:35px;"></div>
 </div>
 <div class="cloud" style="width:140px;height:45px;top:5%;animation-duration:35s;animation-delay:-18s;">
-  <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:white;top:-30px;left:20px;"></div>
-  <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:white;top:-22px;left:60px;"></div>
+  <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.08);top:-30px;left:20px;"></div>
+  <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.08);top:-22px;left:60px;"></div>
 </div>
 
 <!-- HUD -->
@@ -516,19 +520,19 @@ function startSpawning(){
   balloonInterval=setInterval(()=>{
     if(!gameActive) return;
     const count=activeBalloons.length;
-    if(count<12) spawnBalloon();
-    if(count<6)  spawnBalloon(); // Extra when screen is empty
-  },600);
+    if(count<8) spawnBalloon();
+    if(count<3) spawnBalloon(); // Extra when screen is sparse
+  },900);
 }
 
 function spawnBalloon(){
   const r=ROUNDS[currentRound];
   const canvas=document.getElementById('gameCanvas');
-  const size=50+Math.random()*35; // 50-85px
+  const size=90+Math.random()*60; // 90-150px — MUCH BIGGER!
   const x=Math.random()*(window.innerWidth-size);
   const startY=window.innerHeight+size;
   const dist=window.innerHeight+size*3;
-  const dur=4+Math.random()*4; // 4-8 seconds to float up
+  const dur=9+Math.random()*7; // 9-16 seconds — MUCH SLOWER!
   const wobble=(Math.random()-0.5)*12; // wobble angle
 
   const div=document.createElement('div');
