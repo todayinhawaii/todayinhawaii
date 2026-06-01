@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>🎈 Aloha Balloons — Today in Hawaii</title>
-  <meta name="description" content="Pop colorful Hawaii balloons! Satisfying ASMR balloon popping game — relaxing fun for all ages!">
+  <meta name="description" content="Pop colorful Hawaii balloons! Satisfying ASMR balloon popping game for all ages!">
   <link rel="icon" href="/icon-192.png">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -18,28 +18,61 @@
       -webkit-user-select:none;
     }
 
-    /* Clouds */
-    .cloud{
+    /* Stars */
+    .star{
       position:fixed;
-      background:rgba(255,255,255,0.08);
-      border-radius:50px;
-      opacity:1;
-      animation:cloudDrift linear infinite;
+      background:white;
+      border-radius:50%;
+      opacity:0;
+      animation:twinkle ease-in-out infinite;
     }
-    .cloud::before,.cloud::after{
-      content:'';position:absolute;background:rgba(255,255,255,0.08);border-radius:50%;
-    }
-    @keyframes cloudDrift{
-      0%{transform:translateX(-200px);}
-      100%{transform:translateX(110vw);}
+    @keyframes twinkle{
+      0%,100%{opacity:0.1;}
+      50%{opacity:0.6;}
     }
 
-    /* Game canvas area */
+    /* HUD */
+    #hud{
+      position:fixed;top:0;left:0;right:0;
+      padding:10px 16px;
+      display:flex;align-items:center;justify-content:space-between;
+      z-index:100;
+      background:rgba(6,29,44,0.8);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    .hud-score{font-size:22px;font-weight:900;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,0.4);}
+    .hud-mid{font-size:12px;font-weight:700;color:#e8f4f8;text-align:center;}
+    .hud-timer{
+      font-size:24px;font-weight:900;color:#22d3ee;
+      min-width:44px;text-align:right;
+    }
+    .hud-timer.urgent{
+      color:#ff4444!important;
+      animation:timerPanic 0.5s ease-in-out infinite;
+    }
+    @keyframes timerPanic{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.5);text-shadow:0 0 16px rgba(255,0,0,0.9);}
+    }
+
+    /* Timer bar */
+    #timerBar{
+      position:fixed;top:52px;left:0;right:0;
+      height:5px;background:rgba(255,255,255,0.08);z-index:100;
+    }
+    #timerFill{
+      height:100%;
+      background:linear-gradient(90deg,#22d3ee,#a78bfa);
+      transition:width 0.1s linear;
+      box-shadow:0 0 8px rgba(34,211,238,0.5);
+    }
+
+    /* Game canvas */
     #gameCanvas{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
+      position:fixed;inset:0;
       pointer-events:none;
+      overflow:hidden;
     }
     #gameCanvas.active{pointer-events:all;}
 
@@ -47,157 +80,98 @@
     .balloon{
       position:absolute;
       cursor:pointer;
-      animation:floatUp linear forwards;
-      transform-origin:center bottom;
       pointer-events:all;
-      filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+      filter:drop-shadow(2px 6px 10px rgba(0,0,0,0.4));
+      transition:transform 0.08s;
+      display:flex;flex-direction:column;align-items:center;
     }
-    @keyframes floatUp{
-      0%{transform:translateY(0) rotate(var(--wobble));}
-      25%{transform:translateY(calc(var(--dist)*-0.25)) rotate(calc(var(--wobble)*-1));}
-      50%{transform:translateY(calc(var(--dist)*-0.5)) rotate(var(--wobble));}
-      75%{transform:translateY(calc(var(--dist)*-0.75)) rotate(calc(var(--wobble)*-1));}
-      100%{transform:translateY(var(--dist)) rotate(var(--wobble));}
-    }
+    .balloon:active{transform:scale(0.88)!important;}
 
-    .balloon svg{
-      width:100%;height:100%;
-      transition:transform 0.05s;
-    }
-    .balloon:active svg{transform:scale(0.85);}
-
-    /* Pop animation */
-    .balloon.popping{
-      animation:none!important;
-      pointer-events:none;
-    }
-    .pop-burst{
+    /* Points label ON balloon */
+    .balloon-pts{
       position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-55%);
+      font-size:clamp(12px,3vw,18px);
+      font-weight:900;
+      color:white;
+      text-shadow:0 1px 4px rgba(0,0,0,0.6);
+      pointer-events:none;
+      z-index:2;
+      white-space:nowrap;
+    }
+
+    /* Pop burst */
+    .pop-ring{
+      position:fixed;
+      border-radius:50%;
+      border:4px solid currentColor;
       pointer-events:none;
       z-index:999;
-      animation:burstOut 0.5s ease forwards;
+      animation:popRing 0.4s ease forwards;
     }
-    @keyframes burstOut{
-      0%{transform:scale(0);opacity:1;}
-      100%{transform:scale(3);opacity:0;}
+    @keyframes popRing{
+      0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+      100%{transform:translate(-50%,-50%) scale(2.5);opacity:0;}
     }
 
     /* Score popup */
     .score-pop{
       position:fixed;
-      font-size:22px;
-      font-weight:900;
-      pointer-events:none;
-      z-index:9999;
+      font-size:24px;font-weight:900;
+      pointer-events:none;z-index:9999;
       animation:scoreFly 0.9s ease forwards;
-      text-shadow:0 2px 6px rgba(0,0,0,0.3);
+      text-shadow:0 2px 8px rgba(0,0,0,0.5);
+      transform:translate(-50%,-50%);
     }
     @keyframes scoreFly{
-      0%{opacity:1;transform:translateY(0) scale(1);}
-      100%{opacity:0;transform:translateY(-80px) scale(1.4);}
-    }
-
-    /* HUD */
-    #hud{
-      position:fixed;
-      top:0;left:0;right:0;
-      padding:10px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      z-index:100;
-      background:rgba(6,29,44,0.7);
-      backdrop-filter:blur(8px);
-      border-bottom:2px solid rgba(255,255,255,0.1);
-    }
-    .hud-score{
-      font-size:22px;font-weight:900;
-      color:#fbbf24;
-      text-shadow:0 1px 3px rgba(255,255,255,0.8);
-    }
-    .hud-round{
-      font-size:13px;font-weight:700;
-      color:#e8f4f8;
-      text-align:center;
-    }
-    .hud-timer{
-      font-size:22px;font-weight:900;
-      color:#cc2200;
-      text-shadow:0 1px 3px rgba(255,255,255,0.8);
-      min-width:40px;text-align:right;
-    }
-    .hud-timer.urgent{
-      animation:timerPop 0.5s ease-in-out infinite;
-      color:#ff0000;
-    }
-    @keyframes timerPop{
-      0%,100%{transform:scale(1);}
-      50%{transform:scale(1.4);text-shadow:0 0 12px rgba(255,0,0,0.8);}
-    }
-
-    /* Timer bar */
-    #timerBar{
-      position:fixed;
-      top:54px;left:0;right:0;
-      height:6px;
-      background:rgba(255,255,255,0.4);
-      z-index:100;
-    }
-    #timerFill{
-      height:100%;
-      background:linear-gradient(90deg,#ff6b35,#ffd700);
-      transition:width 0.1s linear;
-      box-shadow:0 0 6px rgba(255,107,53,0.6);
+      0%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+      100%{opacity:0;transform:translate(-50%,-120%) scale(1.5);}
     }
 
     /* Round announcement */
     #roundAnnounce{
-      position:fixed;
-      inset:0;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
+      position:fixed;inset:0;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
       z-index:200;
-      background:rgba(6,29,44,0.85);
-      backdrop-filter:blur(4px);
+      background:rgba(6,29,44,0.92);
+      backdrop-filter:blur(6px);
     }
     #roundAnnounce.hidden{display:none;}
     .announce-emoji{
-      font-size:80px;
-      margin-bottom:10px;
-      animation:announceBob 0.6s ease-in-out infinite alternate;
+      font-size:90px;margin-bottom:12px;
+      animation:announceBob 0.7s ease-in-out infinite alternate;
     }
     @keyframes announceBob{
       0%{transform:scale(1) translateY(0);}
-      100%{transform:scale(1.1) translateY(-10px);}
+      100%{transform:scale(1.12) translateY(-12px);}
     }
     .announce-title{
-      font-size:28px;font-weight:900;
-      color:#fff;
-      text-shadow:0 3px 10px rgba(0,0,0,0.4);
+      font-size:clamp(22px,6vw,32px);font-weight:900;
+      color:#e8f4f8;
+      text-shadow:0 3px 12px rgba(0,0,0,0.5);
       margin-bottom:8px;text-align:center;padding:0 20px;
     }
+    .announce-pts{
+      font-size:18px;font-weight:700;
+      margin-bottom:6px;text-align:center;
+    }
     .announce-sub{
-      font-size:16px;font-weight:700;
-      color:rgba(255,255,255,0.9);
-      text-shadow:0 2px 6px rgba(0,0,0,0.3);
-      margin-bottom:30px;text-align:center;
+      font-size:15px;color:#7fb3c8;
+      margin-bottom:28px;text-align:center;
     }
     .announce-btn{
-      padding:16px 40px;
-      border:none;border-radius:99px;
-      font-size:16px;font-weight:900;
-      cursor:pointer;font-family:inherit;
-      letter-spacing:1px;text-transform:uppercase;
-      background:linear-gradient(135deg,#ffd700,#ff8c00);
+      padding:16px 44px;border:none;border-radius:99px;
+      font-size:17px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:1px;
       color:#fff;
-      box-shadow:0 6px 20px rgba(255,140,0,0.5);
+      box-shadow:0 8px 24px rgba(0,0,0,0.4);
       animation:btnPulse 1.2s ease-in-out infinite;
     }
     @keyframes btnPulse{
-      0%,100%{box-shadow:0 6px 20px rgba(255,140,0,0.5);transform:scale(1);}
-      50%{box-shadow:0 6px 30px rgba(255,140,0,0.9),0 0 40px rgba(255,215,0,0.4);transform:scale(1.04);}
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.05);box-shadow:0 8px 32px rgba(0,0,0,0.5);}
     }
 
     /* Name screen */
@@ -206,171 +180,133 @@
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
       z-index:300;
-      background:linear-gradient(160deg,rgba(6,29,44,0.97),rgba(10,46,68,0.97));
-      backdrop-filter:blur(4px);
+      background:linear-gradient(160deg,#061d2c,#0a2e44);
     }
     .ns-card{
-      background:rgba(10,46,68,0.95);
+      background:rgba(10,46,68,0.9);
       border:1.5px solid rgba(255,255,255,0.1);
-      border-radius:28px;
-      padding:28px 24px;
-      max-width:360px;
-      width:90%;
-      box-shadow:0 20px 60px rgba(0,0,0,0.15);
+      border-radius:28px;padding:28px 24px;
+      max-width:360px;width:90%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);
       text-align:center;
     }
     .ns-logo{font-size:64px;margin-bottom:8px;}
-    .ns-title{font-size:24px;font-weight:900;color:#1a3a6e;margin-bottom:4px;}
-    .ns-sub{font-size:13px;color:#666;margin-bottom:20px;line-height:1.5;}
+    .ns-title{font-size:24px;font-weight:900;color:#e8f4f8;margin-bottom:4px;}
+    .ns-sub{font-size:13px;color:#7fb3c8;margin-bottom:20px;line-height:1.5;}
     .ns-input{
       width:100%;padding:12px;
-      border:2px solid rgba(255,255,255,0.15);border-radius:12px;
-      font-size:15px;font-family:inherit;color:#e8f4f8;
       background:rgba(255,255,255,0.07);
+      border:1.5px solid rgba(255,255,255,0.15);
+      border-radius:12px;color:#e8f4f8;
+      font-size:15px;font-family:inherit;
       outline:none;margin-bottom:10px;text-align:center;
-      transition:border-color 0.2s;
     }
-    .ns-input:focus{border-color:rgba(34,211,238,0.5);}
     .ns-input::placeholder{color:#7fb3c8;}
     .ns-select{
       width:100%;padding:12px;
-      border:2px solid rgba(255,255,255,0.15);border-radius:12px;
-      font-size:14px;font-family:inherit;color:#e8f4f8;
       background:rgba(6,29,44,0.8);
+      border:1.5px solid rgba(255,255,255,0.15);
+      border-radius:12px;color:#e8f4f8;
+      font-size:14px;font-family:inherit;
       outline:none;margin-bottom:16px;cursor:pointer;
     }
     .ns-btn{
-      width:100%;padding:15px;
-      border:none;border-radius:14px;
-      font-size:16px;font-weight:900;
-      cursor:pointer;font-family:inherit;
-      background:linear-gradient(135deg,#87CEEB,#4CAF50);
-      color:white;
-      box-shadow:0 6px 20px rgba(76,175,80,0.4);
+      width:100%;padding:15px;border:none;border-radius:14px;
+      font-size:16px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:0.5px;color:white;
+      background:linear-gradient(135deg,#22d3ee,#a78bfa);
+      box-shadow:0 6px 20px rgba(34,211,238,0.3);
       transition:all 0.15s;
-      letter-spacing:0.5px;
     }
-    .ns-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .ns-btn:disabled{opacity:0.35;cursor:not-allowed;}
     .ns-btn:active:not(:disabled){transform:scale(0.97);}
 
-    /* Leaderboard overlay */
-    #lbOverlay{
-      position:fixed;inset:0;
-      display:none;
+    /* Results overlay */
+    #resultsOverlay{
+      position:fixed;inset:0;display:none;
       align-items:center;justify-content:center;
       z-index:400;
-      background:rgba(0,0,0,0.5);
-      backdrop-filter:blur(8px);
+      background:rgba(6,29,44,0.93);
+      backdrop-filter:blur(10px);
     }
-    #lbOverlay.show{display:flex;}
-    .lb-card{
-      background:linear-gradient(160deg,#0a2e44,#061d2c);
-      border:1.5px solid rgba(255,255,255,0.1);
-      border-radius:28px;
-      padding:24px 20px;
+    #resultsOverlay.show{display:flex;}
+    .res-card{
+      background:linear-gradient(135deg,#0a2e44,#061d2c);
+      border:2px solid rgba(255,255,255,0.1);
+      border-radius:28px;padding:24px 20px;
       max-width:360px;width:90%;
-      box-shadow:0 20px 60px rgba(0,0,0,0.3);
-      text-align:center;
-      max-height:90vh;overflow-y:auto;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      text-align:center;max-height:90vh;overflow-y:auto;
     }
-    .lb-emoji{font-size:56px;margin-bottom:8px;}
-    .lb-title{font-size:22px;font-weight:900;color:#1a3a6e;margin-bottom:4px;}
-    .lb-score{font-size:44px;font-weight:900;color:#ff6b35;margin:8px 0;}
-    .lb-msg{font-size:13px;color:#555;margin-bottom:16px;line-height:1.5;}
+    .res-emoji{font-size:60px;margin-bottom:8px;}
+    .res-title{font-size:22px;font-weight:900;color:#fbbf24;margin-bottom:6px;}
+    .res-score{font-size:48px;font-weight:900;color:#22d3ee;margin:8px 0;text-shadow:0 0 20px rgba(34,211,238,0.4);}
+    .res-msg{font-size:13px;color:#7fb3c8;line-height:1.6;margin-bottom:16px;}
     .lb-row{
       display:flex;align-items:center;gap:8px;
       padding:7px 10px;border-radius:10px;
-      font-size:13px;margin-bottom:4px;
-      background:rgba(255,255,255,0.7);
+      font-size:12px;margin-bottom:4px;
+      background:rgba(255,255,255,0.05);color:#e8f4f8;
     }
-    .lb-row.r1{background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.4);}
-    .lb-row.r2{background:rgba(192,192,192,0.2);}
-    .lb-row.r3{background:rgba(205,127,50,0.15);}
-    .lb-row.me{background:rgba(135,206,235,0.3);border:1px solid rgba(135,206,235,0.5);}
+    .lb-row.r1{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.2);}
+    .lb-row.r2{background:rgba(192,192,192,0.08);}
+    .lb-row.r3{background:rgba(205,127,50,0.08);}
+    .lb-row.me{background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);}
     .lb-medal{font-size:16px;width:22px;}
-    .lb-name{flex:1;font-weight:700;text-align:left;}
-    .lb-pts{font-weight:900;color:#ff6b35;}
-    .lb-btn{
-      width:100%;padding:13px;
-      border:none;border-radius:13px;
-      font-size:14px;font-weight:800;
-      cursor:pointer;font-family:inherit;
-      margin-bottom:8px;
-      transition:all 0.15s;
+    .lb-name{flex:1;font-weight:700;text-align:left;font-size:12px;}
+    .lb-pts{font-weight:900;color:#fbbf24;}
+    .res-btn{
+      width:100%;padding:13px;border:none;border-radius:13px;
+      font-size:14px;font-weight:800;cursor:pointer;
+      font-family:inherit;margin-bottom:8px;color:white;
     }
-    .lb-btn:active{transform:scale(0.97);}
-    .lb-btn-play{background:linear-gradient(135deg,#87CEEB,#4CAF50);color:white;}
-    .lb-btn-share{background:linear-gradient(135deg,#1877f2,#0d65d9);color:white;}
-    .lb-btn-home{background:rgba(0,0,0,0.07);color:#333;}
+    .res-btn-play{background:linear-gradient(135deg,#22d3ee,#a78bfa);}
+    .res-btn-share{background:linear-gradient(135deg,#1877f2,#0d65d9);}
+    .res-btn-home{background:rgba(255,255,255,0.08);color:#e8f4f8;}
 
-    /* Popped count */
-    #poppedCount{
-      position:fixed;
-      bottom:20px;
-      left:50%;
-      transform:translateX(-50%);
-      font-size:16px;font-weight:800;
-      color:white;
-      text-shadow:0 2px 8px rgba(0,0,0,0.4);
-      background:rgba(0,0,0,0.2);
-      padding:8px 20px;
-      border-radius:99px;
-      z-index:100;
-      backdrop-filter:blur(4px);
-    }
-
-    /* Mute */
-    .mute-btn{
-      position:fixed;bottom:16px;right:16px;
-      width:40px;height:40px;border-radius:50%;
-      background:rgba(255,255,255,0.6);
-      border:2px solid rgba(255,255,255,0.8);
-      font-size:18px;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      z-index:100;backdrop-filter:blur(4px);
-    }
-
-    /* Confetti piece */
+    /* Confetti */
     .confetti{
-      position:fixed;
-      width:10px;height:10px;
-      border-radius:2px;
-      pointer-events:none;
-      z-index:9998;
+      position:fixed;pointer-events:none;z-index:9998;
       animation:confettiFall linear forwards;
     }
     @keyframes confettiFall{
-      0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
-      100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+      0%{opacity:1;}
+      100%{opacity:0;}
+    }
+
+    .mute-btn{
+      position:fixed;bottom:16px;right:16px;
+      width:42px;height:42px;border-radius:50%;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.15);
+      font-size:18px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      z-index:100;color:white;
     }
   </style>
 </head>
 <body>
 
-<!-- Clouds -->
-<div class="cloud" style="width:120px;height:40px;top:8%;animation-duration:28s;animation-delay:-5s;">
-  <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.08);top:-25px;left:15px;"></div>
-  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:rgba(255,255,255,0.08);top:-18px;left:45px;"></div>
-</div>
-<div class="cloud" style="width:90px;height:30px;top:18%;animation-duration:22s;animation-delay:-12s;">
-  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:rgba(255,255,255,0.08);top:-20px;left:10px;"></div>
-  <div style="position:absolute;width:35px;height:35px;border-radius:50%;background:rgba(255,255,255,0.08);top:-14px;left:35px;"></div>
-</div>
-<div class="cloud" style="width:140px;height:45px;top:5%;animation-duration:35s;animation-delay:-18s;">
-  <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.08);top:-30px;left:20px;"></div>
-  <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.08);top:-22px;left:60px;"></div>
-</div>
+<!-- Stars background -->
+<script>
+for(let i=0;i<40;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.cssText=`width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+  document.body.appendChild(s);
+}
+</script>
 
 <!-- HUD -->
 <div id="hud" style="display:none;">
   <div class="hud-score">🎈 <span id="scoreDisplay">0</span></div>
-  <div class="hud-round">
-    <div id="roundTitle" style="font-size:14px;font-weight:900;"></div>
-    <div id="poppedDisplay" style="font-size:12px;color:#555;"></div>
+  <div class="hud-mid">
+    <div id="roundTitle" style="font-weight:900;color:#e8f4f8;"></div>
+    <div id="poppedDisplay" style="font-size:11px;color:#7fb3c8;"></div>
   </div>
   <div class="hud-timer" id="timerDisplay">30</div>
 </div>
-<div id="timerBar" style="display:none;"><div id="timerFill"></div></div>
+<div id="timerBar" style="display:none;"><div id="timerFill" style="width:100%"></div></div>
 
 <!-- Game Canvas -->
 <div id="gameCanvas"></div>
@@ -380,7 +316,7 @@
   <div class="ns-card">
     <div class="ns-logo">🎈</div>
     <div class="ns-title">Aloha Balloons!</div>
-    <div class="ns-sub">Pop the colored balloons before time runs out! Satisfying ASMR fun for all ages! 🌺</div>
+    <div class="ns-sub">Pop the balloons floating across the screen! 9 colorful rounds — satisfying ASMR pops for all ages! 🌺</div>
     <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
     <select id="pLoc" class="ns-select">
       <option value="">📍 Where are you from?</option>
@@ -407,7 +343,7 @@
         <option value="Other">🌍 Other Country</option>
       </optgroup>
     </select>
-    <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🎈 Pop Some Balloons!</button>
+    <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🎈 Let's Pop!</button>
   </div>
 </div>
 
@@ -415,59 +351,55 @@
 <div id="roundAnnounce" class="hidden">
   <div class="announce-emoji" id="announceEmoji">🎈</div>
   <div class="announce-title" id="announceTitle">Pop the Pink Balloons!</div>
-  <div class="announce-sub" id="announceSub">You have 30 seconds — GO!</div>
+  <div class="announce-pts" id="announcePts"></div>
+  <div class="announce-sub">30 seconds — how many can you pop?</div>
   <button class="announce-btn" id="announceBtn" onclick="startRound()">🎈 LET'S POP!</button>
 </div>
 
-<!-- Leaderboard / Results -->
-<div id="lbOverlay">
-  <div class="lb-card">
-    <div class="lb-emoji" id="lbEmoji">🎈</div>
-    <div class="lb-title" id="lbTitle">Game Over!</div>
-    <div class="lb-score" id="lbScore">0</div>
-    <div class="lb-msg" id="lbMsg"></div>
+<!-- Results -->
+<div id="resultsOverlay">
+  <div class="res-card">
+    <div class="res-emoji" id="resEmoji">🎈</div>
+    <div class="res-title" id="resTitle">Game Over!</div>
+    <div class="res-score" id="resScore">0</div>
+    <div class="res-msg" id="resMsg"></div>
     <div id="lbList" style="margin-bottom:14px;"></div>
-    <button class="lb-btn lb-btn-share" onclick="shareScore()">📘 Challenge Friends!</button>
-    <button class="lb-btn lb-btn-play" onclick="playAgain()">🎈 Play Again!</button>
-    <button class="lb-btn lb-btn-home" onclick="window.location='/games'">← Games Hub</button>
+    <button class="res-btn res-btn-share" onclick="shareScore()">📘 Challenge Friends!</button>
+    <button class="res-btn res-btn-play" onclick="playAgain()">🎈 Play Again!</button>
+    <button class="res-btn res-btn-home" onclick="window.location='/games'">← Games Hub</button>
   </div>
 </div>
 
 <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
 
 <script>
-// ════════════════════════════════════════════════
-// ALOHA BALLOONS — ASMR Balloon Popping Game
-// Today in Hawaii © 2026
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// ALOHA BALLOONS — Today in Hawaii © 2026
+// ══════════════════════════════════════════
 
 const ROUNDS = [
-  {color:'pink',   hex:'#FF69B4', dark:'#C2185B', emoji:'🎀', label:'Pink',   pts:10},
-  {color:'blue',   hex:'#4FC3F7', dark:'#0277BD', emoji:'💙', label:'Blue',   pts:15},
-  {color:'yellow', hex:'#FFD54F', dark:'#F57F17', emoji:'💛', label:'Yellow', pts:12},
-  {color:'green',  hex:'#66BB6A', dark:'#2E7D32', emoji:'💚', label:'Green',  pts:15},
-  {color:'orange', hex:'#FFA726', dark:'#E65100', emoji:'🧡', label:'Orange', pts:18},
-  {color:'purple', hex:'#AB47BC', dark:'#6A1B9A', emoji:'💜', label:'Purple', pts:20},
-  {color:'red',    hex:'#EF5350', dark:'#B71C1C', emoji:'❤️',  label:'Red',    pts:22},
-  {color:'white',  hex:'#F5F5F5', dark:'#9E9E9E', emoji:'🤍', label:'White',  pts:25},
-  {color:'rainbow',hex:'#FF69B4', dark:'#C2185B', emoji:'🌈', label:'Rainbow',pts:30},
+  {label:'Pink',   hex:'#FF69B4',shine:'#FFB6C1',dark:'#C2185B',emoji:'🎀',pts:10},
+  {label:'Blue',   hex:'#4FC3F7',shine:'#B3E5FC',dark:'#0277BD',emoji:'💙',pts:15},
+  {label:'Yellow', hex:'#FFD54F',shine:'#FFF9C4',dark:'#F57F17',emoji:'💛',pts:12},
+  {label:'Green',  hex:'#66BB6A',shine:'#C8E6C9',dark:'#2E7D32',emoji:'💚',pts:15},
+  {label:'Orange', hex:'#FFA726',shine:'#FFE0B2',dark:'#E65100',emoji:'🧡',pts:18},
+  {label:'Purple', hex:'#AB47BC',shine:'#E1BEE7',dark:'#6A1B9A',emoji:'💜',pts:20},
+  {label:'Red',    hex:'#EF5350',shine:'#FFCDD2',dark:'#B71C1C',emoji:'❤️', pts:22},
+  {label:'Gold',   hex:'#FFD700',shine:'#FFFDE7',dark:'#F57F00',emoji:'⭐',pts:25},
+  {label:'Rainbow',hex:'#FF69B4',shine:'#fff',   dark:'#9C27B0',emoji:'🌈',pts:30},
 ];
 
-const ROUND_TIME = 30;
+const ROUND_TIME=30;
+let playerName='',playerLoc='';
+let currentRound=0,score=0,totalPopped=0,roundPopped=0;
+let timeLeft=ROUND_TIME,timerInterval=null,spawnInterval=null;
+let activeBalloons=[],gameActive=false,muted=false,myRank=0;
 
-let playerName='', playerLoc='';
-let currentRound=0, score=0, totalPopped=0, roundPopped=0;
-let timeLeft=ROUND_TIME, timerInterval=null;
-let balloonInterval=null, activeBalloons=[];
-let muted=false, myRank=0;
-let gameActive=false;
-
-// ── Name Entry ────────────────────────────────
-document.getElementById('pName').addEventListener('input', checkReady);
-document.getElementById('pLoc').addEventListener('change', checkReady);
+// ── Name Entry ──────────────────────────
+document.getElementById('pName').addEventListener('input',checkReady);
+document.getElementById('pLoc').addEventListener('change',checkReady);
 function checkReady(){
-  const ok=document.getElementById('pName').value.trim().length>=2
-         && document.getElementById('pLoc').value;
+  const ok=document.getElementById('pName').value.trim().length>=2&&document.getElementById('pLoc').value;
   document.getElementById('startBtn').disabled=!ok;
 }
 
@@ -477,23 +409,22 @@ function startGame(){
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('hud').style.display='flex';
   document.getElementById('timerBar').style.display='block';
-  currentRound=0; score=0; totalPopped=0;
+  currentRound=0;score=0;totalPopped=0;
   updateHUD();
   loadLeaderboard();
   showRoundAnnounce();
 }
 
-// ── Round Announcement ────────────────────────
+// ── Round Announce ──────────────────────
 function showRoundAnnounce(){
-  const r=ROUNDS[currentRound];
   clearBalloons();
   document.getElementById('gameCanvas').classList.remove('active');
+  const r=ROUNDS[currentRound];
   document.getElementById('roundAnnounce').classList.remove('hidden');
   document.getElementById('announceEmoji').textContent=r.emoji;
-  document.getElementById('announceTitle').textContent=
-    '🎈 Pop the '+r.label+' Balloons!';
-  document.getElementById('announceSub').textContent=
-    'You have '+ROUND_TIME+' seconds — how many can you pop?';
+  document.getElementById('announceTitle').textContent='Pop the '+r.label+' Balloons!';
+  document.getElementById('announcePts').textContent='Each balloon = '+r.pts+' points!';
+  document.getElementById('announcePts').style.color=r.hex;
   document.getElementById('announceBtn').style.background=
     'linear-gradient(135deg,'+r.hex+','+r.dark+')';
 }
@@ -501,286 +432,300 @@ function showRoundAnnounce(){
 function startRound(){
   document.getElementById('roundAnnounce').classList.add('hidden');
   document.getElementById('gameCanvas').classList.add('active');
-  roundPopped=0;
-  timeLeft=ROUND_TIME;
-  gameActive=true;
-  updateHUD();
-  startTimer();
-  startSpawning();
-}
-
-// ── Balloon Spawning ──────────────────────────
-function startSpawning(){
-  // Spawn immediately
-  spawnBalloon();
-  spawnBalloon();
-  spawnBalloon();
-
-  // Then keep spawning
-  balloonInterval=setInterval(()=>{
+  roundPopped=0;timeLeft=ROUND_TIME;gameActive=true;
+  updateHUD();updateTimerBar();
+  // Spawn initial balloons
+  for(let i=0;i<4;i++) setTimeout(()=>spawnBalloon(),i*300);
+  // Keep spawning
+  spawnInterval=setInterval(()=>{
     if(!gameActive) return;
-    const count=activeBalloons.length;
-    if(count<8) spawnBalloon();
-    if(count<3) spawnBalloon(); // Extra when screen is sparse
-  },900);
+    if(activeBalloons.length<10) spawnBalloon();
+  },1200);
+  // Start timer
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft-=0.1;
+    updateTimerBar();
+    if(timeLeft<=0){clearInterval(timerInterval);roundOver();}
+  },100);
 }
 
+// ── Balloon Spawning ────────────────────
 function spawnBalloon(){
+  if(!gameActive) return;
   const r=ROUNDS[currentRound];
   const canvas=document.getElementById('gameCanvas');
-  const size=90+Math.random()*60; // 90-150px — MUCH BIGGER!
-  const x=Math.random()*(window.innerWidth-size);
-  const startY=window.innerHeight+size;
-  const dist=window.innerHeight+size*3;
-  const dur=9+Math.random()*7; // 9-16 seconds — MUCH SLOWER!
-  const wobble=(Math.random()-0.5)*12; // wobble angle
+  const W=window.innerWidth, H=window.innerHeight;
+  const size=110+Math.random()*70; // 110-180px — BIG!
+
+  // Pick entry direction: top, left, right, bottom
+  const side=Math.floor(Math.random()*4); // 0=top 1=right 2=bottom 3=left
+  let startX,startY,endX,endY;
+  const pad=size;
+
+  if(side===0){ // from top — float DOWN
+    startX=Math.random()*(W-size);
+    startY=-size;
+    endX=startX+(Math.random()-0.5)*200;
+    endY=H+size;
+  } else if(side===1){ // from right — float LEFT
+    startX=W+size;
+    startY=Math.random()*(H*0.8)+H*0.1;
+    endX=-size;
+    endY=startY+(Math.random()-0.5)*200;
+  } else if(side===2){ // from bottom — float UP
+    startX=Math.random()*(W-size);
+    startY=H+size;
+    endX=startX+(Math.random()-0.5)*200;
+    endY=-size;
+  } else { // from left — float RIGHT
+    startX=-size;
+    startY=Math.random()*(H*0.8)+H*0.1;
+    endX=W+size;
+    endY=startY+(Math.random()-0.5)*200;
+  }
+
+  const dur=12+Math.random()*10; // 12-22 seconds — VERY SLOW
+  const wobbleAmt=(Math.random()-0.5)*30;
 
   const div=document.createElement('div');
   div.className='balloon';
-  div.style.cssText=`
-    left:${x}px;
-    top:${startY}px;
-    width:${size}px;
-    height:${size*1.3}px;
-    --dist:-${dist}px;
-    --wobble:${wobble}deg;
-    animation-duration:${dur}s;
-    animation-timing-function:linear;
-  `;
+  div.style.cssText=`left:${startX}px;top:${startY}px;width:${size}px;height:${size*1.25}px;`;
 
-  // Build balloon SVG
-  const isRainbow=r.color==='rainbow';
-  div.innerHTML=buildBalloonSVG(size, r.hex, r.dark, isRainbow);
+  // Balloon SVG
+  const isRainbow=r.label==='Rainbow';
+  div.innerHTML=buildBalloon(size,r,isRainbow);
 
-  div.addEventListener('click', e=>{e.stopPropagation();popBalloon(div,x,startY,r,size);});
-  div.addEventListener('touchstart', e=>{e.preventDefault();e.stopPropagation();popBalloon(div,x,startY,r,size);},{passive:false});
+  // Points label on balloon
+  const ptsEl=document.createElement('div');
+  ptsEl.className='balloon-pts';
+  ptsEl.textContent=r.pts+' pts';
+  ptsEl.style.fontSize=Math.max(12,size*0.14)+'px';
+  div.appendChild(ptsEl);
 
-  // Remove when floated off screen
-  div.addEventListener('animationend',()=>{
-    div.remove();
-    activeBalloons=activeBalloons.filter(b=>b!==div);
-  });
+  // Pop on click/touch
+  div.addEventListener('click',e=>{e.stopPropagation();popBalloon(div,r,size);});
+  div.addEventListener('touchstart',e=>{
+    e.preventDefault();e.stopPropagation();
+    popBalloon(div,r,size);
+  },{passive:false});
 
   canvas.appendChild(div);
   activeBalloons.push(div);
+
+  // Animate with JS for smooth cross-browser
+  const start=Date.now();
+  const totalDur=dur*1000;
+
+  function animBalloon(){
+    if(!div.isConnected){return;}
+    const elapsed=Date.now()-start;
+    const progress=elapsed/totalDur;
+    if(progress>=1){
+      div.remove();
+      activeBalloons=activeBalloons.filter(b=>b!==div);
+      return;
+    }
+    // Ease: linear with slight wobble
+    const wobble=Math.sin(progress*Math.PI*6)*wobbleAmt;
+    const x=startX+(endX-startX)*progress+wobble;
+    const y=startY+(endY-startY)*progress;
+    // Gentle breathing scale
+    const breathe=1+Math.sin(progress*Math.PI*8)*0.03;
+    div.style.left=x+'px';
+    div.style.top=y+'px';
+    div.style.transform=`scale(${breathe})`;
+    requestAnimationFrame(animBalloon);
+  }
+  requestAnimationFrame(animBalloon);
 }
 
-function buildBalloonSVG(size, hex, dark, rainbow){
-  const w=size, h=size*1.3;
-  const cx=w/2, cy=h*0.42;
-  const rx=w*0.42, ry=h*0.42;
+// ── Build Balloon SVG ───────────────────
+function buildBalloon(size,r,rainbow){
+  const w=size,h=size;
+  const cx=w/2,cy=h*0.45;
+  const rx=w*0.42,ry=h*0.44;
+  const id='g'+Math.random().toString(36).substr(2,6);
 
-  let fill, gradient;
+  let gradDef;
   if(rainbow){
-    gradient=`<defs>
-      <radialGradient id="bg${Date.now()}" cx="35%" cy="35%">
-        <stop offset="0%" stop-color="#ff9999"/>
-        <stop offset="30%" stop-color="#ffcc66"/>
-        <stop offset="60%" stop-color="#99ff99"/>
-        <stop offset="100%" stop-color="#9999ff"/>
-      </radialGradient>
-    </defs>`;
-    fill=`url(#bg${Date.now()})`;
+    gradDef=`<radialGradient id="${id}" cx="38%" cy="32%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="25%" stop-color="#FF69B4"/>
+      <stop offset="50%" stop-color="#FFD700"/>
+      <stop offset="75%" stop-color="#66BB6A"/>
+      <stop offset="100%" stop-color="#AB47BC"/>
+    </radialGradient>`;
   } else {
-    const id='bg'+Math.random().toString(36).substr(2,8);
-    gradient=`<defs>
-      <radialGradient id="${id}" cx="35%" cy="30%">
-        <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
-        <stop offset="40%" stop-color="${hex}" stop-opacity="0.9"/>
-        <stop offset="100%" stop-color="${dark}" stop-opacity="1"/>
-      </radialGradient>
-    </defs>`;
-    fill=`url(#${id})`;
+    gradDef=`<radialGradient id="${id}" cx="35%" cy="28%">
+      <stop offset="0%" stop-color="${r.shine}" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="${r.hex}"/>
+      <stop offset="100%" stop-color="${r.dark}"/>
+    </radialGradient>`;
   }
 
-  // Knot position
-  const kx=cx, ky=cy+ry+2;
-  // String
-  const str=`M${kx},${ky+6} Q${kx-8},${ky+15} ${kx},${ky+25} Q${kx+8},${ky+35} ${kx},${ky+45}`;
+  const knotY=cy+ry;
+  const strPath=`M${cx},${knotY+6} Q${cx-10},${knotY+20} ${cx+5},${knotY+35} Q${cx-5},${knotY+50} ${cx},${knotY+65}`;
 
-  return `<svg viewBox="0 0 ${w} ${h*1.4}" xmlns="http://www.w3.org/2000/svg">
-    ${gradient}
-    <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"/>
-    <ellipse cx="${cx-rx*0.25}" cy="${cy-ry*0.25}" rx="${rx*0.15}" ry="${ry*0.12}" fill="white" opacity="0.5"/>
-    <polygon points="${kx-4},${ky} ${kx+4},${ky} ${kx},${ky+8}" fill="${dark}"/>
-    <path d="${str}" stroke="${dark}" stroke-width="1.5" fill="none" opacity="0.6"/>
+  return `<svg viewBox="0 0 ${w} ${h+70}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+    <defs>${gradDef}</defs>
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id})"/>
+    <ellipse cx="${cx-rx*0.22}" cy="${cy-ry*0.22}" rx="${rx*0.16}" ry="${ry*0.13}" fill="white" opacity="0.45"/>
+    <ellipse cx="${cx+rx*0.15}" cy="${cy-ry*0.35}" rx="${rx*0.07}" ry="${ry*0.06}" fill="white" opacity="0.3"/>
+    <polygon points="${cx-5},${knotY} ${cx+5},${knotY} ${cx},${knotY+9}" fill="${r.dark}"/>
+    <path d="${strPath}" stroke="${r.dark}" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
   </svg>`;
 }
 
-// ── Pop Balloon ───────────────────────────────
-function popBalloon(div, x, y, round, size){
-  if(!gameActive||div.classList.contains('popping')) return;
-  div.classList.add('popping');
+// ── Pop Balloon ──────────────────────────
+function popBalloon(div,r,size){
+  if(!gameActive||!div.isConnected) return;
   activeBalloons=activeBalloons.filter(b=>b!==div);
-
-  // Get actual current position
   const rect=div.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
   const cy=rect.top+rect.height/2;
+  div.remove();
 
-  // POP sound!
-  playPop(round.pts);
-  vibrate(20);
+  // Pop sound!
+  playPop(r.pts);
+  vibrate(25);
 
-  // Burst effect
-  burst(cx, cy, round.hex, round.dark);
+  // Pop ring
+  const ring=document.createElement('div');
+  ring.className='pop-ring';
+  ring.style.cssText=`left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;color:${r.hex};`;
+  document.body.appendChild(ring);
+  setTimeout(()=>ring.remove(),450);
+
+  // Confetti!
+  burst(cx,cy,r.hex,r.dark,r.shine);
 
   // Score popup
   const pop=document.createElement('div');
   pop.className='score-pop';
-  pop.textContent='+'+round.pts;
-  pop.style.color=round.dark;
-  pop.style.left=cx+'px';
-  pop.style.top=cy+'px';
-  pop.style.transform='translate(-50%,-50%)';
+  pop.textContent='+'+r.pts+'!';
+  pop.style.cssText=`left:${cx}px;top:${cy}px;color:${r.hex};font-size:${Math.max(20,size*0.2)}px;`;
   document.body.appendChild(pop);
-  setTimeout(()=>pop.remove(),1000);
+  setTimeout(()=>pop.remove(),950);
 
   // Update score
-  score+=round.pts;
+  score+=r.pts;
   roundPopped++;
   totalPopped++;
   updateHUD();
-
-  // Remove balloon
-  div.remove();
 }
 
-function burst(cx, cy, hex, dark){
-  // Confetti burst
-  const colors=[hex, dark, '#fff', '#ffd700', '#ff6b35'];
-  for(let i=0;i<12;i++){
+// ── Confetti Burst ───────────────────────
+function burst(cx,cy,hex,dark,shine){
+  const colors=[hex,dark,shine,'#ffd700','#fff','#ff6b35'];
+  for(let i=0;i<16;i++){
     const c=document.createElement('div');
     c.className='confetti';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.left=cx+'px';
-    c.style.top=cy+'px';
-    c.style.width=(6+Math.random()*8)+'px';
-    c.style.height=(6+Math.random()*8)+'px';
-    c.style.borderRadius=Math.random()>0.5?'50%':'2px';
-    const angle=Math.random()*360;
-    const dist=40+Math.random()*80;
-    const tx=Math.cos(angle*Math.PI/180)*dist;
-    const ty=Math.sin(angle*Math.PI/180)*dist-30;
-    c.style.setProperty('--tx',tx+'px');
-    c.style.transform=`translate(-50%,-50%)`;
-    c.style.animation=`none`;
+    const sz=5+Math.random()*9;
+    c.style.cssText=`
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${sz}px;height:${sz}px;
+      border-radius:${Math.random()>0.5?'50%':'3px'};
+      left:${cx}px;top:${cy}px;
+    `;
     document.body.appendChild(c);
-
-    // Animate manually
-    const start=Date.now();
+    const ang=Math.random()*Math.PI*2;
+    const dist=50+Math.random()*100;
+    const tx=Math.cos(ang)*dist;
+    const ty=Math.sin(ang)*dist;
     const dur=400+Math.random()*400;
-    function animStep(){
+    const start=Date.now();
+    function animC(){
       const p=Math.min(1,(Date.now()-start)/dur);
-      const ease=1-Math.pow(1-p,3);
-      c.style.transform=`translate(calc(-50% + ${tx*ease}px), calc(-50% + ${ty*ease + 40*p*p}px)) rotate(${p*360}deg)`;
+      const e=1-Math.pow(1-p,2);
+      c.style.transform=`translate(calc(-50% + ${tx*e}px), calc(-50% + ${ty*e + 60*p*p}px)) rotate(${p*540}deg)`;
       c.style.opacity=1-p;
-      if(p<1) requestAnimationFrame(animStep);
+      if(p<1) requestAnimationFrame(animC);
       else c.remove();
     }
-    requestAnimationFrame(animStep);
+    requestAnimationFrame(animC);
   }
 }
 
 function clearBalloons(){
   gameActive=false;
-  clearInterval(balloonInterval);
+  clearInterval(spawnInterval);
   clearInterval(timerInterval);
-  const canvas=document.getElementById('gameCanvas');
-  activeBalloons.forEach(b=>b.remove());
+  activeBalloons.forEach(b=>{if(b.isConnected)b.remove();});
   activeBalloons=[];
+  document.getElementById('gameCanvas').innerHTML='';
 }
 
-// ── Timer ─────────────────────────────────────
-function startTimer(){
-  timeLeft=ROUND_TIME;
-  updateTimerBar();
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timeLeft-=0.1;
-    updateTimerBar();
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      roundOver();
-    }
-  },100);
-}
-
+// ── Timer ────────────────────────────────
 function updateTimerBar(){
   const pct=Math.max(0,(timeLeft/ROUND_TIME)*100);
   document.getElementById('timerFill').style.width=pct+'%';
   const t=Math.ceil(timeLeft);
   const el=document.getElementById('timerDisplay');
   el.textContent=t;
+  el.style.color=t<=10?'#ff4444':'#22d3ee';
   if(t<=10) el.classList.add('urgent');
   else el.classList.remove('urgent');
+  if(t<=10&&t>0) vibrate(5);
 }
 
 function roundOver(){
   gameActive=false;
-  clearInterval(balloonInterval);
-  clearBalloons();
-
-  // Big celebration if they popped lots!
-  if(roundPopped>=10) bigCelebration();
-
+  clearInterval(spawnInterval);
+  // Pop remaining balloons with celebration
+  [...activeBalloons].forEach((b,i)=>{
+    setTimeout(()=>{
+      if(b.isConnected){
+        const rect=b.getBoundingClientRect();
+        burst(rect.left+rect.width/2,rect.top+rect.height/2,
+          ROUNDS[currentRound].hex,ROUNDS[currentRound].dark,ROUNDS[currentRound].shine);
+        b.remove();
+      }
+    },i*80);
+  });
+  activeBalloons=[];
   currentRound++;
   if(currentRound>=ROUNDS.length){
-    // Game over!
-    setTimeout(()=>showResults(),800);
+    setTimeout(()=>showResults(),1000);
   } else {
-    // Next round!
-    setTimeout(()=>showRoundAnnounce(),600);
+    setTimeout(()=>showRoundAnnounce(),900);
   }
 }
 
-// ── HUD ───────────────────────────────────────
+// ── HUD ───────────────────────────────────
 function updateHUD(){
   document.getElementById('scoreDisplay').textContent=score.toLocaleString();
-  const r=ROUNDS[currentRound]||ROUNDS[0];
+  const r=ROUNDS[Math.min(currentRound,ROUNDS.length-1)];
   document.getElementById('roundTitle').textContent=
     r.emoji+' '+r.label+' Balloons — Round '+(currentRound+1)+'/'+ROUNDS.length;
   document.getElementById('poppedDisplay').textContent=
-    '💥 Popped: '+roundPopped+' this round · '+totalPopped+' total';
+    '💥 '+roundPopped+' this round · '+totalPopped+' total popped';
 }
 
-// ── Celebrations ──────────────────────────────
-function bigCelebration(){
-  for(let i=0;i<30;i++){
-    setTimeout(()=>{
-      const x=Math.random()*window.innerWidth;
-      const y=Math.random()*window.innerHeight*0.5;
-      burst(x,y,ROUNDS[Math.floor(Math.random()*ROUNDS.length)].hex,'#ffd700');
-    },i*60);
-  }
-}
-
-// ── Results ───────────────────────────────────
+// ── Results ───────────────────────────────
 async function showResults(){
+  clearBalloons();
   await submitScore();
   await loadLeaderboard();
-
   const msgs=[
     'You\'re a balloon popping legend!! 🎈',
-    'So satisfying!! Come back and beat your score! 🌺',
-    'Mahalo for playing — aloha vibes all day! 🤙',
-    'That was SO relaxing!! Play again! 😊',
+    'So satisfying!! Come back tomorrow! 🌺',
+    'Mahalo for playing — so relaxing! 🤙',
+    'The grandkids won\'t beat THAT score! 😄',
   ];
-
-  document.getElementById('lbEmoji').textContent=score>1000?'🏆':score>500?'🎈':'🌺';
-  document.getElementById('lbTitle').textContent=score>1000?'BALLOON CHAMPION!!':'Great Popping!!';
-  document.getElementById('lbScore').textContent=score.toLocaleString()+' pts';
-  document.getElementById('lbMsg').textContent=
-    '💥 Popped '+totalPopped+' balloons across all '+ROUNDS.length+' rounds! '+
+  document.getElementById('resEmoji').textContent=score>1000?'🏆':score>500?'🎈':'🌺';
+  document.getElementById('resTitle').textContent=score>1000?'BALLOON CHAMPION!!':'Great Popping!!';
+  document.getElementById('resScore').textContent=score.toLocaleString()+' pts';
+  document.getElementById('resMsg').textContent=
+    '💥 Popped '+totalPopped+' balloons across all 9 rounds! '+
     msgs[Math.floor(Math.random()*msgs.length)];
-  document.getElementById('lbOverlay').classList.add('show');
+  document.getElementById('resultsOverlay').classList.add('show');
 }
 
 function playAgain(){
-  document.getElementById('lbOverlay').classList.remove('show');
-  currentRound=0; score=0; totalPopped=0; roundPopped=0;
-  updateHUD();
-  showRoundAnnounce();
+  document.getElementById('resultsOverlay').classList.remove('show');
+  currentRound=0;score=0;totalPopped=0;roundPopped=0;
+  updateHUD();showRoundAnnounce();
 }
 
 function shareScore(){
@@ -788,55 +733,45 @@ function shareScore(){
   window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/balloons')+'&quote='+encodeURIComponent(txt),'_blank');
 }
 
-// ── Sound — ASMR balloon pops! ────────────────
+// ── ASMR Pop Sound ────────────────────────
 let audioCtx=null;
-function getAudio(){
-  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  return audioCtx;
-}
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 
 function playPop(pts){
   if(muted) return;
   try{
     const c=getAudio();
-    const buf=c.createBuffer(1,c.sampleRate*0.15,c.sampleRate);
-    const data=buf.getChannelData(0);
-
-    // Generate satisfying pop sound!
-    for(let i=0;i<data.length;i++){
+    const buf=c.createBuffer(1,c.sampleRate*0.18,c.sampleRate);
+    const d=buf.getChannelData(0);
+    // Satisfying balloon pop — sharp attack, quick airy decay
+    for(let i=0;i<d.length;i++){
       const t=i/c.sampleRate;
-      // Sharp transient + quick decay
-      const env=Math.exp(-t*40);
-      const freq=200+pts*3+(Math.random()*50);
-      data[i]=env*(Math.sin(2*Math.PI*freq*t)*0.8 +
-                   (Math.random()*2-1)*0.3*Math.exp(-t*80));
+      const env=Math.exp(-t*35);
+      const env2=Math.exp(-t*120);
+      const freq=180+pts*4+Math.random()*40;
+      d[i]=env*(Math.sin(2*Math.PI*freq*t)*0.7+
+                Math.sin(2*Math.PI*freq*2.1*t)*0.2)+
+           env2*(Math.random()*2-1)*0.5;
     }
-
     const src=c.createBufferSource();
     const gain=c.createGain();
-    src.connect(gain);
-    gain.connect(c.destination);
-    src.buffer=buf;
-    gain.gain.value=0.6;
+    src.connect(gain);gain.connect(c.destination);
+    src.buffer=buf;gain.gain.value=0.7;
     src.start();
   }catch(e){}
 }
 
-function toggleMute(){
-  muted=!muted;
-  document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
-}
-
+function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
 function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
 
-// ── Leaderboard ───────────────────────────────
+// ── Leaderboard ───────────────────────────
 async function loadLeaderboard(){
   try{
     const res=await fetch('/api/balloon-scores');
     const data=await res.json();
-    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
     if(!data.length){
-      document.getElementById('lbList').innerHTML='<div style="text-align:center;color:#999;font-size:13px;padding:10px;">Be the first balloon champion! 🎈</div>';
+      document.getElementById('lbList').innerHTML='<div style="text-align:center;color:#7fb3c8;font-size:13px;padding:10px;">Be the first balloon champion! 🎈</div>';
       return;
     }
     document.getElementById('lbList').innerHTML=data.slice(0,6).map((s,i)=>{
@@ -846,22 +781,19 @@ async function loadLeaderboard(){
         <span class="lb-medal">${medals[i]||i+1}</span>
         <div style="flex:1">
           <div class="lb-name">${s.name}${isMe?' ← You!':''}</div>
-          <div style="font-size:10px;color:#888;">📍 ${s.island} · 💥 ${s.level} popped</div>
+          <div style="font-size:10px;color:#7fb3c8;">📍 ${s.island} · 💥 ${s.level} popped</div>
         </div>
         <span class="lb-pts">${Number(s.score).toLocaleString()}</span>
       </div>`;
     }).join('');
-  }catch(e){
-    document.getElementById('lbList').innerHTML='';
-  }
+  }catch(e){}
 }
 
 async function submitScore(){
   if(!playerName||score<=0) return;
   try{
     const res=await fetch('/api/balloon-scores',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({name:playerName,score,island:playerLoc,level:totalPopped})
     });
     const data=await res.json();
