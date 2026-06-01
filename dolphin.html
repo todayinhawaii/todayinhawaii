@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🐬 Dolphin Card Game — Today in Hawaii</title>
+  <meta name="description" content="Flip and match all 52 playing cards! Classic memory game with Vegas flair — fastest time wins!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{
+      background:linear-gradient(160deg,#061d2c 0%,#0a2e44 60%,#061d2c 100%);
+      min-height:100vh;font-family:system-ui,sans-serif;
+      color:#e8f4f8;overflow-x:hidden;
+    }
+
+    /* Stars */
+    .star{position:fixed;background:white;border-radius:50%;
+      animation:twinkle ease-in-out infinite;pointer-events:none;z-index:0;}
+    @keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:0.5;}}
+
+    /* HUD */
+    #hud{
+      position:sticky;top:0;
+      padding:10px 14px;z-index:50;
+      display:none;
+      background:rgba(6,29,44,0.95);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .hud-inner{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+
+    /* Slot machine timer */
+    .slot-box{
+      background:linear-gradient(180deg,#0a0020,#050010);
+      border:2px solid #22d3ee;border-radius:8px;
+      padding:4px 12px;
+      box-shadow:0 0 12px rgba(34,211,238,0.4),inset 0 2px 4px rgba(0,0,0,0.8);
+      position:relative;overflow:hidden;
+    }
+    .slot-box::before,.slot-box::after{
+      content:'●';position:absolute;font-size:6px;
+      color:#22d3ee;top:50%;transform:translateY(-50%);opacity:0.6;
+    }
+    .slot-box::before{left:3px;}
+    .slot-box::after{right:3px;}
+    .slot-label{font-size:8px;font-weight:900;letter-spacing:0.15em;
+      color:#22d3ee;text-transform:uppercase;text-align:center;
+      text-shadow:0 0 6px rgba(34,211,238,0.6);}
+    .slot-val{
+      font-size:22px;font-weight:900;font-family:'Courier New',monospace;
+      background:linear-gradient(180deg,#88ffee,#22d3ee,#0099bb);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      text-align:center;letter-spacing:2px;line-height:1.2;
+    }
+    .slot-val.flash{animation:slotFlash 0.12s ease-in-out;}
+    @keyframes slotFlash{0%,100%{transform:scaleY(1);}50%{transform:scaleY(0.1);opacity:0.3;}}
+
+    /* Score slot */
+    .slot-box.gold{border-color:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.4),inset 0 2px 4px rgba(0,0,0,0.8);}
+    .slot-box.gold .slot-label{color:#ffd700;text-shadow:0 0 6px rgba(255,215,0,0.6);}
+    .slot-box.gold .slot-val{background:linear-gradient(180deg,#ffe566,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .slot-box.gold .slot-box::before,.slot-box.gold .slot-box::after{color:#ffd700;}
+
+    .hud-pairs{text-align:center;}
+    .hud-pairs-num{font-size:22px;font-weight:900;color:#a78bfa;}
+    .hud-pairs-lbl{font-size:9px;color:#7fb3c8;text-transform:uppercase;letter-spacing:0.1em;}
+
+    /* Game area */
+    #gameWrap{position:relative;z-index:1;padding:10px 8px 40px;}
+
+    /* Card grid */
+    #cardGrid{
+      display:grid;
+      gap:5px;
+      max-width:520px;
+      margin:0 auto;
+    }
+
+    /* Card */
+    .card{
+      aspect-ratio:0.69;
+      cursor:pointer;
+      perspective:600px;
+      position:relative;
+    }
+    .card-inner{
+      width:100%;height:100%;
+      position:relative;
+      transform-style:preserve-3d;
+      transition:transform 0.45s cubic-bezier(0.23,1,0.32,1);
+      transform:rotateY(0deg);
+    }
+    .card.flipped .card-inner{transform:rotateY(180deg);}
+    .card.matched .card-inner{transform:rotateY(180deg);}
+
+    /* Card faces */
+    .card-back,.card-front{
+      position:absolute;inset:0;
+      border-radius:8px;
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 3px 10px rgba(0,0,0,0.4);
+    }
+
+    /* Back — Dolphin */
+    .card-back{
+      background:linear-gradient(135deg,#0a2e44,#1a5276,#0a2e44);
+      border:2px solid rgba(34,211,238,0.3);
+      flex-direction:column;gap:2px;
+      overflow:hidden;
+    }
+    .card-back::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 60% 40%,rgba(34,211,238,0.12),transparent 60%);
+    }
+    .dolphin-emoji{font-size:clamp(22px,5vw,32px);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));}
+    .dolphin-sub{font-size:clamp(6px,1.5vw,9px);color:rgba(34,211,238,0.6);font-weight:700;letter-spacing:0.05em;}
+
+    /* Front — Playing card */
+    .card-front{
+      background:white;
+      transform:rotateY(180deg);
+      padding:3px;
+      border:2px solid rgba(0,0,0,0.1);
+      flex-direction:column;justify-content:space-between;
+    }
+    .card-front.red{color:#cc0000;}
+    .card-front.black{color:#111;}
+
+    .card-corner{
+      display:flex;flex-direction:column;align-items:center;
+      line-height:1;
+    }
+    .card-corner.br{transform:rotate(180deg);}
+    .card-val{font-size:clamp(8px,2.2vw,14px);font-weight:900;line-height:1;}
+    .card-suit-sm{font-size:clamp(7px,1.8vw,12px);line-height:1;}
+    .card-suit-big{
+      font-size:clamp(16px,4.5vw,30px);
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%);
+    }
+
+    /* Matched — fade out */
+    .card.matched .card-front{
+      opacity:0.35;
+    }
+    .card.matched{pointer-events:none;}
+
+    /* Wrong flash */
+    .card.wrong .card-back{
+      animation:wrongFlash 0.4s ease;
+    }
+    @keyframes wrongFlash{
+      0%,100%{border-color:rgba(34,211,238,0.3);}
+      50%{border-color:#ef4444;box-shadow:0 0 12px rgba(239,68,68,0.6);}
+    }
+
+    /* Match celebration */
+    .card.matched .card-front{
+      animation:matchGlow 0.5s ease;
+    }
+    @keyframes matchGlow{
+      0%{box-shadow:0 0 0 rgba(34,197,94,0);}
+      50%{box-shadow:0 0 20px rgba(34,197,94,0.8),0 0 40px rgba(34,197,94,0.4);}
+      100%{box-shadow:none;}
+    }
+
+    /* Score popup */
+    .score-pop{
+      position:fixed;font-size:20px;font-weight:900;
+      pointer-events:none;z-index:9999;
+      animation:scoreFly 1s ease forwards;
+      text-shadow:0 2px 8px rgba(0,0,0,0.5);
+      transform:translate(-50%,-50%);
+    }
+    @keyframes scoreFly{
+      0%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+      100%{opacity:0;transform:translate(-50%,-130%) scale(1.5);}
+    }
+
+    /* Confetti */
+    .confetti{position:fixed;pointer-events:none;z-index:9998;}
+
+    /* Name screen */
+    #nameScreen{
+      position:fixed;inset:0;z-index:200;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(160deg,#061d2c,#0a2e44);
+    }
+    .ns-card{
+      background:rgba(10,46,68,0.95);
+      border:1.5px solid rgba(34,211,238,0.2);
+      border-radius:28px;padding:28px 22px;
+      max-width:360px;width:92%;
+      box-shadow:0 0 40px rgba(34,211,238,0.1),0 20px 60px rgba(0,0,0,0.5);
+      text-align:center;
+    }
+    .ns-logo{font-size:64px;margin-bottom:6px;animation:logoBob 2s ease-in-out infinite;}
+    @keyframes logoBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    .ns-title{
+      font-size:26px;font-weight:900;
+      background:linear-gradient(135deg,#22d3ee,#a78bfa);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      margin-bottom:4px;
+    }
+    .ns-sub{font-size:13px;color:#7fb3c8;margin-bottom:20px;line-height:1.5;}
+    .ns-stats{
+      display:flex;gap:10px;justify-content:center;margin-bottom:18px;
+    }
+    .ns-stat{
+      background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;padding:8px 14px;text-align:center;
+    }
+    .ns-stat-v{font-size:18px;font-weight:900;color:#22d3ee;}
+    .ns-stat-l{font-size:10px;color:#7fb3c8;}
+    .ns-input{
+      width:100%;padding:12px;background:rgba(255,255,255,0.07);
+      border:1.5px solid rgba(34,211,238,0.2);border-radius:12px;
+      color:#e8f4f8;font-size:15px;font-family:inherit;
+      outline:none;margin-bottom:10px;text-align:center;
+    }
+    .ns-input::placeholder{color:#7fb3c8;}
+    .ns-input:focus{border-color:rgba(34,211,238,0.5);}
+    .ns-select{
+      width:100%;padding:12px;background:rgba(6,29,44,0.8);
+      border:1.5px solid rgba(34,211,238,0.2);border-radius:12px;
+      color:#e8f4f8;font-size:14px;font-family:inherit;
+      outline:none;margin-bottom:14px;cursor:pointer;
+    }
+    .ns-btn{
+      width:100%;padding:16px;border:none;border-radius:14px;
+      font-size:16px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:1px;color:#003344;
+      background:linear-gradient(180deg,#88ffee,#22d3ee,#0099bb);
+      box-shadow:0 6px 0 #006688,0 8px 20px rgba(34,211,238,0.4);
+      transition:all 0.1s;
+    }
+    .ns-btn:disabled{opacity:0.35;cursor:not-allowed;}
+    .ns-btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 2px 0 #006688,0 3px 8px rgba(34,211,238,0.3);}
+
+    /* Leaderboard in name screen */
+    .ns-lb{margin-top:16px;text-align:left;}
+    .ns-lb-title{font-size:12px;font-weight:800;color:#fbbf24;text-transform:uppercase;
+      letter-spacing:0.1em;margin-bottom:8px;text-align:center;}
+    .lb-row{display:flex;align-items:center;gap:8px;padding:6px 8px;
+      border-radius:8px;font-size:12px;margin-bottom:3px;
+      background:rgba(255,255,255,0.04);}
+    .lb-row.r1{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);}
+    .lb-row.r2{background:rgba(192,192,192,0.07);}
+    .lb-row.r3{background:rgba(205,127,50,0.07);}
+    .lb-medal{font-size:14px;width:20px;}
+    .lb-name{flex:1;font-weight:700;}
+    .lb-time{color:#22d3ee;font-weight:700;font-size:11px;}
+    .lb-pts{color:#fbbf24;font-weight:900;}
+
+    /* Win overlay */
+    #winOverlay{
+      position:fixed;inset:0;display:none;
+      align-items:center;justify-content:center;
+      z-index:300;background:rgba(6,29,44,0.93);backdrop-filter:blur(12px);
+    }
+    #winOverlay.show{display:flex;}
+    .win-card{
+      background:linear-gradient(135deg,#0a2e44,#061d2c);
+      border:2px solid rgba(34,211,238,0.3);
+      border-radius:28px;padding:28px 22px;
+      max-width:360px;width:92%;
+      box-shadow:0 0 40px rgba(34,211,238,0.2),0 20px 60px rgba(0,0,0,0.7);
+      text-align:center;max-height:90vh;overflow-y:auto;
+    }
+    .win-emoji{font-size:70px;margin-bottom:10px;}
+    .win-title{font-size:26px;font-weight:900;color:#22d3ee;margin-bottom:8px;
+      text-shadow:0 0 20px rgba(34,211,238,0.5);}
+    .win-time{font-size:48px;font-weight:900;color:#ffd700;
+      font-family:'Courier New',monospace;letter-spacing:3px;
+      text-shadow:0 0 20px rgba(255,215,0,0.5);}
+    .win-score{font-size:22px;font-weight:900;color:#a78bfa;margin:4px 0;}
+    .win-stats{
+      display:flex;gap:10px;justify-content:center;
+      margin:14px 0;flex-wrap:wrap;
+    }
+    .win-stat{
+      background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;padding:8px 14px;text-align:center;
+    }
+    .win-stat-v{font-size:18px;font-weight:900;color:#22d3ee;}
+    .win-stat-l{font-size:10px;color:#7fb3c8;}
+    .win-msg{font-size:13px;color:#7fb3c8;line-height:1.6;margin-bottom:16px;}
+    .win-btn{
+      width:100%;padding:13px;border:none;border-radius:13px;
+      font-size:14px;font-weight:800;cursor:pointer;
+      font-family:inherit;margin-bottom:8px;color:#fff;
+      transition:transform 0.1s;
+    }
+    .win-btn:active{transform:scale(0.97);}
+    .win-btn-play{
+      background:linear-gradient(180deg,#88ffee,#22d3ee,#0099bb);
+      color:#003344;
+    }
+    .win-btn-share{background:linear-gradient(135deg,#1877f2,#0d65d9);}
+    .win-btn-home{background:rgba(255,255,255,0.07);color:#e8f4f8;}
+
+    .mute-btn{
+      position:fixed;bottom:16px;right:16px;
+      width:42px;height:42px;border-radius:50%;
+      background:rgba(6,29,44,0.8);
+      border:1px solid rgba(255,255,255,0.12);
+      font-size:18px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      z-index:100;color:white;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Stars -->
+<script>
+for(let i=0;i<30;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.cssText=`width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-inner">
+    <div class="slot-box">
+      <div class="slot-label">⏱️ TIME</div>
+      <div class="slot-val" id="timerDisplay">0:00</div>
+    </div>
+    <div class="hud-pairs">
+      <div class="hud-pairs-num"><span id="pairsLeft">26</span> / 26</div>
+      <div class="hud-pairs-lbl">pairs left 🐬</div>
+    </div>
+    <div class="slot-box gold">
+      <div class="slot-label">🎰 SCORE</div>
+      <div class="slot-val" id="scoreDisplay">0</div>
+    </div>
+  </div>
+</div>
+
+<!-- Game area -->
+<div id="gameWrap" style="display:none;">
+  <div id="cardGrid"></div>
+</div>
+
+<!-- Name Screen -->
+<div id="nameScreen">
+  <div class="ns-card">
+    <div class="ns-logo">🐬</div>
+    <div class="ns-title">Dolphin Card Game</div>
+    <div class="ns-sub">Flip and match all 52 cards! Fastest time wins — the dolphin is watching! 🐬🌺</div>
+    <div class="ns-stats">
+      <div class="ns-stat"><div class="ns-stat-v">52</div><div class="ns-stat-l">Cards</div></div>
+      <div class="ns-stat"><div class="ns-stat-v">26</div><div class="ns-stat-l">Pairs</div></div>
+      <div class="ns-stat"><div class="ns-stat-v">⏱️</div><div class="ns-stat-l">Timed</div></div>
+    </div>
+    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLoc" class="ns-select">
+      <option value="">📍 Where are you from?</option>
+      <optgroup label="🌺 Hawaii">
+        <option value="Maui, Hawaii">🌺 Maui</option>
+        <option value="Oahu, Hawaii">🌊 Oahu</option>
+        <option value="Kauai, Hawaii">🌿 Kauai</option>
+        <option value="Big Island, Hawaii">🌋 Big Island</option>
+        <option value="Molokai, Hawaii">🌴 Molokai</option>
+      </optgroup>
+      <optgroup label="🇺🇸 USA">
+        <option value="California, USA">California</option>
+        <option value="New York, USA">New York</option>
+        <option value="Texas, USA">Texas</option>
+        <option value="Florida, USA">Florida</option>
+        <option value="Washington, USA">Washington</option>
+        <option value="Other USA">Other USA State</option>
+      </optgroup>
+      <optgroup label="🌍 World">
+        <option value="Australia">🇦🇺 Australia</option>
+        <option value="Canada">🇨🇦 Canada</option>
+        <option value="Japan">🇯🇵 Japan</option>
+        <option value="United Kingdom">🇬🇧 UK</option>
+        <option value="Other">🌍 Other Country</option>
+      </optgroup>
+    </select>
+    <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🐬 Deal the Cards!</button>
+    <div class="ns-lb">
+      <div class="ns-lb-title">🏆 Fastest Players</div>
+      <div id="lbList"><div style="text-align:center;color:#7fb3c8;font-size:12px;padding:8px;">Loading... 🐬</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Win Overlay -->
+<div id="winOverlay">
+  <div class="win-card">
+    <div class="win-emoji">🐬</div>
+    <div class="win-title">All Pairs Found!!</div>
+    <div class="win-time" id="winTime">0:00</div>
+    <div class="win-score" id="winScore">0 pts</div>
+    <div class="win-stats">
+      <div class="win-stat"><div class="win-stat-v" id="winFlips">0</div><div class="win-stat-l">Flips</div></div>
+      <div class="win-stat"><div class="win-stat-v" id="winMatches">26</div><div class="win-stat-l">Matches</div></div>
+      <div class="win-stat"><div class="win-stat-v" id="winBonus">0</div><div class="win-stat-l">Bonus pts</div></div>
+    </div>
+    <div class="win-msg" id="winMsg"></div>
+    <div id="winLbList" style="margin-bottom:14px;"></div>
+    <button class="win-btn win-btn-share" onclick="shareScore()">📘 Show off on Facebook!</button>
+    <button class="win-btn win-btn-play" onclick="playAgain()">🐬 Play Again!</button>
+    <button class="win-btn win-btn-home" onclick="window.location='/games'">← Games Hub</button>
+  </div>
+</div>
+
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+<script>
+// ══════════════════════════════════════════════════
+// DOLPHIN CARD GAME — Classic Memory Match
+// Today in Hawaii © 2026
+// 52 cards · 26 pairs · Fastest time wins!
+// ══════════════════════════════════════════════════
+
+const SUITS = [
+  {sym:'♠',name:'spades',  color:'black'},
+  {sym:'♥',name:'hearts',  color:'red'},
+  {sym:'♦',name:'diamonds',color:'red'},
+  {sym:'♣',name:'clubs',   color:'black'},
+];
+const VALUES = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+let playerName='',playerLoc='';
+let cards=[];          // [{id,val,suit,flipped,matched}]
+let flippedCards=[];   // max 2 at a time
+let canFlip=true;
+let matchesFound=0,totalFlips=0;
+let timerSecs=0,timerInterval=null;
+let gameStarted=false,gameOver=false;
+let muted=false,myRank=0;
+let displayScore=0;
+
+// ── Name Entry ─────────────────────────────────
+document.getElementById('pName').addEventListener('input',checkReady);
+document.getElementById('pLoc').addEventListener('change',checkReady);
+function checkReady(){
+  const ok=document.getElementById('pName').value.trim().length>=2&&document.getElementById('pLoc').value;
+  document.getElementById('startBtn').disabled=!ok;
+}
+
+function startGame(){
+  playerName=document.getElementById('pName').value.trim();
+  playerLoc=document.getElementById('pLoc').value;
+  document.getElementById('nameScreen').style.display='none';
+  document.getElementById('hud').style.display='block';
+  document.getElementById('gameWrap').style.display='block';
+  buildDeck();
+  renderGrid();
+}
+
+// ── Build & Shuffle Deck ──────────────────────
+function buildDeck(){
+  const deck=[];
+  SUITS.forEach(suit=>{
+    VALUES.forEach(val=>{
+      deck.push({id:suit.sym+val+'_1',val,suit,flipped:false,matched:false});
+      deck.push({id:suit.sym+val+'_2',val,suit,flipped:false,matched:false});
+    });
+  });
+  // Fisher-Yates shuffle
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+  cards=deck;
+}
+
+// ── Render Grid ────────────────────────────────
+function renderGrid(){
+  const grid=document.getElementById('cardGrid');
+  grid.innerHTML='';
+
+  // 13 cols on desktop, 7-8 on mobile
+  const w=window.innerWidth;
+  const cols=w>=500?13:w>=380?8:7;
+  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+
+  cards.forEach((card,idx)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.id='card-'+idx;
+    div.innerHTML=buildCardHTML(card);
+    div.addEventListener('click',()=>flipCard(idx));
+    grid.appendChild(div);
+  });
+}
+
+function buildCardHTML(card){
+  const colorClass=card.suit.color;
+  return `
+    <div class="card-inner">
+      <div class="card-back">
+        <div class="dolphin-emoji">🐬</div>
+        <div class="dolphin-sub">DOLPHIN</div>
+      </div>
+      <div class="card-front ${colorClass}">
+        <div class="card-corner tl">
+          <div class="card-val">${card.val}</div>
+          <div class="card-suit-sm">${card.suit.sym}</div>
+        </div>
+        <div class="card-suit-big">${card.suit.sym}</div>
+        <div class="card-corner br">
+          <div class="card-val">${card.val}</div>
+          <div class="card-suit-sm">${card.suit.sym}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Flip Card ──────────────────────────────────
+function flipCard(idx){
+  if(!canFlip) return;
+  if(gameOver) return;
+  const card=cards[idx];
+  if(card.flipped||card.matched) return;
+  if(flippedCards.length>=2) return;
+
+  // Start timer on first flip
+  if(!gameStarted){
+    gameStarted=true;
+    timerInterval=setInterval(()=>{
+      timerSecs++;
+      updateTimer();
+    },1000);
+  }
+
+  // Flip!
+  card.flipped=true;
+  totalFlips++;
+  const el=document.getElementById('card-'+idx);
+  el.classList.add('flipped');
+  playFlipSound();
+  vibrate(8);
+
+  flippedCards.push(idx);
+
+  if(flippedCards.length===2){
+    canFlip=false;
+    checkMatch();
+  }
+}
+
+// ── Check Match ────────────────────────────────
+function checkMatch(){
+  const [i1,i2]=flippedCards;
+  const c1=cards[i1],c2=cards[i2];
+
+  // Match if same value AND same suit!
+  const isMatch=(c1.val===c2.val && c1.suit.sym===c2.suit.sym);
+
+  if(isMatch){
+    // MATCH!
+    setTimeout(()=>{
+      const el1=document.getElementById('card-'+i1);
+      const el2=document.getElementById('card-'+i2);
+      el1.classList.add('matched');
+      el2.classList.add('matched');
+      c1.matched=true;c2.matched=true;
+      matchesFound++;
+
+      // Score — faster = more points per match
+      const pts=Math.max(50,500-Math.floor(timerSecs/2));
+      displayScore+=pts;
+      updateScoreSlot(displayScore);
+
+      // Effects
+      celebrateMatch(el1,el2,c1.suit.color==='red'?'#ff4444':'#444');
+      playMatchSound();
+      vibrate([30,20,60]);
+
+      // Score popup
+      showScorePop('+'+pts,el1);
+
+      document.getElementById('pairsLeft').textContent=26-matchesFound;
+
+      flippedCards=[];
+      canFlip=true;
+
+      // Check win!
+      if(matchesFound===26) setTimeout(()=>winGame(),600);
+    },400);
+  } else {
+    // No match — flip back
+    setTimeout(()=>{
+      const el1=document.getElementById('card-'+i1);
+      const el2=document.getElementById('card-'+i2);
+      el1.classList.add('wrong');el2.classList.add('wrong');
+      setTimeout(()=>{
+        el1.classList.remove('wrong');el2.classList.remove('wrong');
+      },400);
+      el1.classList.remove('flipped');el2.classList.remove('flipped');
+      c1.flipped=false;c2.flipped=false;
+      playNoMatchSound();
+      flippedCards=[];
+      canFlip=true;
+    },900);
+  }
+}
+
+// ── Win! ────────────────────────────────────────
+async function winGame(){
+  gameOver=true;
+  clearInterval(timerInterval);
+
+  // Calculate final score — time bonus!
+  const timeBonus=Math.max(0,10000-timerSecs*20);
+  const flipBonus=Math.max(0,5000-totalFlips*50);
+  const finalScore=displayScore+timeBonus+flipBonus;
+  displayScore=finalScore;
+
+  // Mega celebration!
+  for(let i=0;i<5;i++){
+    setTimeout(()=>{
+      const x=Math.random()*window.innerWidth;
+      const y=Math.random()*window.innerHeight*0.5;
+      bigBurst(x,y);
+    },i*200);
+  }
+  playWinSound();
+  vibrate([100,50,100,50,200]);
+
+  await submitScore(finalScore);
+  await loadLeaderboard(true);
+
+  const timeStr=formatTime(timerSecs);
+  const msgs=[
+    'The dolphin is SO proud of you!! 🐬💙',
+    'Incredible memory!! Are you a card shark? 🦈',
+    'Mahalo for playing — the ocean cheers for you! 🌊',
+    'The cards have spoken — you\'re a legend!! 🃏🏆',
+  ];
+
+  document.getElementById('winTime').textContent=timeStr;
+  document.getElementById('winScore').textContent=finalScore.toLocaleString()+' pts';
+  document.getElementById('winFlips').textContent=totalFlips;
+  document.getElementById('winMatches').textContent=26;
+  document.getElementById('winBonus').textContent=(timeBonus+flipBonus).toLocaleString();
+  document.getElementById('winMsg').textContent=
+    'Time: '+timeStr+' · '+totalFlips+' flips · '+
+    msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('winOverlay').classList.add('show');
+}
+
+function playAgain(){
+  document.getElementById('winOverlay').classList.remove('show');
+  cards=[];flippedCards=[];canFlip=true;
+  matchesFound=0;totalFlips=0;timerSecs=0;
+  gameStarted=false;gameOver=false;displayScore=0;
+  clearInterval(timerInterval);
+  document.getElementById('timerDisplay').textContent='0:00';
+  document.getElementById('scoreDisplay').textContent='0';
+  document.getElementById('pairsLeft').textContent='26';
+  buildDeck();renderGrid();
+}
+
+function shareScore(){
+  const txt='🐬 I found all 26 pairs in '+formatTime(timerSecs)+' on the Dolphin Card Game from '+playerLoc+'! Can you beat me? 🌺 todayinhawaii.com/dolphins';
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/dolphins')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Timer & Score ──────────────────────────────
+function formatTime(s){
+  const m=Math.floor(s/60);
+  const sec=s%60;
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+function updateTimer(){
+  const el=document.getElementById('timerDisplay');
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+  setTimeout(()=>el.classList.remove('flash'),120);
+  el.textContent=formatTime(timerSecs);
+}
+
+let scoreAnimating=false;
+function updateScoreSlot(newScore){
+  const el=document.getElementById('scoreDisplay');
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+  setTimeout(()=>{
+    el.textContent=newScore.toLocaleString();
+    el.classList.remove('flash');
+  },60);
+}
+
+// ── Effects ────────────────────────────────────
+function celebrateMatch(el1,el2,color){
+  [el1,el2].forEach(el=>{
+    const rect=el.getBoundingClientRect();
+    const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+    for(let i=0;i<8;i++){
+      const p=document.createElement('div');
+      p.className='confetti';
+      const sz=4+Math.random()*6;
+      p.style.cssText=`background:${['#22d3ee','#ffd700','#a78bfa','#22c55e',color][Math.floor(Math.random()*5)]};width:${sz}px;height:${sz}px;border-radius:50%;left:${cx}px;top:${cy}px;`;
+      document.body.appendChild(p);
+      const ang=Math.random()*Math.PI*2,dist=30+Math.random()*50;
+      const tx=Math.cos(ang)*dist,ty=Math.sin(ang)*dist;
+      const dur=400+Math.random()*300,start=Date.now();
+      function animC(){
+        const progress=Math.min(1,(Date.now()-start)/dur);
+        const e=1-Math.pow(1-progress,2);
+        p.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+40*progress*progress}px)) rotate(${progress*360}deg)`;
+        p.style.opacity=1-progress;
+        if(progress<1) requestAnimationFrame(animC);
+        else p.remove();
+      }
+      requestAnimationFrame(animC);
+    }
+  });
+}
+
+function bigBurst(cx,cy){
+  const colors=['#22d3ee','#ffd700','#a78bfa','#ff4444','#22c55e','#ff8c00'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='confetti';
+    const sz=6+Math.random()*10;
+    p.style.cssText=`background:${colors[Math.floor(Math.random()*colors.length)]};width:${sz}px;height:${sz}px;border-radius:${Math.random()>0.5?'50%':'3px'};left:${cx}px;top:${cy}px;`;
+    document.body.appendChild(p);
+    const ang=Math.random()*Math.PI*2,dist=60+Math.random()*120;
+    const tx=Math.cos(ang)*dist,ty=Math.sin(ang)*dist;
+    const dur=600+Math.random()*600,start=Date.now();
+    function animC(){
+      const progress=Math.min(1,(Date.now()-start)/dur);
+      const e=1-Math.pow(1-progress,2);
+      p.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+80*progress*progress}px)) rotate(${progress*540}deg)`;
+      p.style.opacity=1-progress;
+      if(progress<1) requestAnimationFrame(animC);
+      else p.remove();
+    }
+    requestAnimationFrame(animC);
+  }
+}
+
+function showScorePop(txt,el){
+  const rect=el.getBoundingClientRect();
+  const pop=document.createElement('div');
+  pop.className='score-pop';
+  pop.style.cssText=`left:${rect.left+rect.width/2}px;top:${rect.top}px;color:#22d3ee;`;
+  pop.textContent=txt;
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),1000);
+}
+
+// ── Sound ──────────────────────────────────────
+let audioCtx=null;
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(f,t,v,d,delay){
+  if(muted)return;delay=delay||0;
+  try{
+    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.05);
+  }catch(e){}
+}
+function playFlipSound(){playTone(600,'sine',0.2,0.08);}
+function playMatchSound(){
+  [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.4,0.18,i*0.06));
+}
+function playNoMatchSound(){playTone(220,'sawtooth',0.25,0.2);}
+function playWinSound(){
+  const notes=[523,659,784,1047,1319,1047,784,1047,1319,1568];
+  notes.forEach((f,i)=>playTone(f,'sine',0.5,0.2,i*0.08));
+}
+function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
+function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+
+// ── Leaderboard ────────────────────────────────
+async function loadLeaderboard(forWin=false){
+  try{
+    const res=await fetch('/api/dolphin-scores');
+    const data=await res.json();
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
+    if(!data.length){
+      const html='<div style="text-align:center;color:#7fb3c8;font-size:12px;padding:8px;">Be the first Dolphin Champion! 🐬</div>';
+      document.getElementById('lbList').innerHTML=html;
+      if(forWin) document.getElementById('winLbList').innerHTML=html;
+      return;
+    }
+    const html=data.slice(0,6).map((s,i)=>{
+      const isMe=playerName&&s.name.toLowerCase()===playerName.toLowerCase();
+      const cls=i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
+      return `<div class="lb-row ${cls}">
+        <span class="lb-medal">${medals[i]||i+1}</span>
+        <div style="flex:1">
+          <div class="lb-name">${s.name}${isMe?' ← You!':''}</div>
+          <div style="font-size:10px;color:#7fb3c8;">📍 ${s.island}</div>
+        </div>
+        <span class="lb-time">${s.timeStr||'?'}</span>
+        <span class="lb-pts" style="margin-left:6px;">${Number(s.score).toLocaleString()}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('lbList').innerHTML=html;
+    if(forWin) document.getElementById('winLbList').innerHTML=html;
+  }catch(e){
+    document.getElementById('lbList').innerHTML='<div style="text-align:center;color:#7fb3c8;font-size:12px;padding:8px;">Play to get on the board! 🐬</div>';
+  }
+}
+
+async function submitScore(finalScore){
+  if(!playerName||finalScore<=0) return;
+  try{
+    const res=await fetch('/api/dolphin-scores',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:playerName,score:finalScore,
+        island:playerLoc,level:totalFlips,
+        timeStr:formatTime(timerSecs),timeSecs:timerSecs
+      })
+    });
+    const data=await res.json();
+    if(data.ok) myRank=data.rank;
+  }catch(e){}
+}
+
+loadLeaderboard();
+</script>
+</body>
+</html>
