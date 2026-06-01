@@ -167,23 +167,7 @@
     }
     @keyframes rainbowShift{0%{background-position:0% center;}100%{background-position:200% center;}}
 
-    /* Score legend */
-    #legend{
-      position:fixed;right:8px;top:82px;
-      z-index:50;
-      background:rgba(0,0,0,0.6);
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:12px;
-      padding:8px 10px;
-      backdrop-filter:blur(8px);
-    }
-    .leg-row{
-      display:flex;align-items:center;gap:6px;
-      font-size:10px;font-weight:700;
-      color:#e8f4f8;margin-bottom:4px;
-    }
-    .leg-row:last-child{margin:0;}
-    .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
 
     /* Balloon */
     .balloon{
@@ -393,8 +377,7 @@
 </div>
 <div id="timerBar" style="display:none;"><div id="timerFill" style="width:100%"></div></div>
 
-<!-- Score legend -->
-<div id="legend" style="display:none;"></div>
+
 
 <!-- Game Canvas -->
 <div id="gameCanvas"></div>
@@ -504,16 +487,7 @@ function buildPreview(){
 buildPreview();
 
 // ── Legend ──────────────────────────────────────
-function buildLegend(){
-  const el=document.getElementById('legend');
-  el.innerHTML=BALLOONS.map(b=>`
-    <div class="leg-row">
-      <div class="leg-dot" style="background:${b.hex};box-shadow:0 0 4px ${b.hex};"></div>
-      <span style="color:${b.hex};font-weight:900;">${b.pts}pts</span>
-      <span style="color:#7fb3c8;font-size:9px;">${b.label}</span>
-    </div>`).join('');
-}
-buildLegend();
+
 
 // ── Name Entry ─────────────────────────────────
 document.getElementById('pName').addEventListener('input',checkReady);
@@ -529,7 +503,7 @@ function startGame(){
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('hud').style.display='flex';
   document.getElementById('timerBar').style.display='block';
-  document.getElementById('legend').style.display='block';
+
   score=0;totalPopped=0;bestPop=0;timeLeft=GAME_TIME;
   updateHUD();
   loadLeaderboard();
