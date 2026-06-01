@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>😂 Humour Roulette — Today in Hawaii</title>
+  <meta name="description" content="Spin the Humour Roulette for a hilarious roast! Vegas comedy wheel — Today in Hawaii!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{
+      min-height:100vh;font-family:system-ui,sans-serif;
+      background:#0a0a00;overflow-x:hidden;overflow-y:auto;color:#e8f4f8;
+    }
+
+    #funBg{
+      position:fixed;inset:0;z-index:0;
+      background:radial-gradient(ellipse at 50% 0%,#1a1a00 0%,#0a0a00 70%);
+      overflow:hidden;
+    }
+    .confetti-bg{
+      position:absolute;font-size:20px;
+      animation:confettiBob ease-in-out infinite;
+      opacity:0.15;
+    }
+    @keyframes confettiBob{
+      0%,100%{transform:translateY(0) rotate(0deg);}
+      50%{transform:translateY(-15px) rotate(15deg);}
+    }
+
+    .wrap{
+      position:relative;z-index:1;
+      max-width:480px;margin:0 auto;
+      padding:16px 16px 60px;
+      display:flex;flex-direction:column;align-items:center;
+    }
+
+    /* Header */
+    .hdr{text-align:center;padding:10px 0 14px;}
+    .hdr-emoji{
+      font-size:60px;display:block;margin-bottom:6px;
+      animation:laughBob 1s ease-in-out infinite alternate;
+    }
+    @keyframes laughBob{
+      0%{transform:scale(1) rotate(-5deg);}
+      100%{transform:scale(1.12) rotate(5deg);}
+    }
+    .hdr-title{
+      font-size:28px;font-weight:900;letter-spacing:-0.5px;
+      background:linear-gradient(135deg,#ff0080,#ff8c00,#ffd700,#00ff80,#ff0080);
+      background-size:300% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:titleRainbow 3s linear infinite;
+    }
+    @keyframes titleRainbow{
+      0%{background-position:0% center;}100%{background-position:300% center;}
+    }
+    .hdr-sub{font-size:13px;color:#a0a000;margin-top:4px;font-style:italic;}
+
+    /* Wheel */
+    .wheel-wrap{
+      position:relative;
+      width:min(340px,90vw);height:min(340px,90vw);
+      margin:10px auto 14px;
+    }
+    .wheel-outer{
+      position:absolute;inset:-8px;border-radius:50%;
+      background:conic-gradient(#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080);
+      animation:outerSpin 6s linear infinite;filter:blur(5px);opacity:0.7;
+    }
+    @keyframes outerSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    #wheel{
+      position:absolute;inset:8px;border-radius:50%;
+      border:4px solid rgba(255,215,0,0.7);
+      box-shadow:0 0 24px rgba(255,140,0,0.5),0 0 50px rgba(255,0,128,0.2),inset 0 0 30px rgba(0,0,0,0.5);
+      overflow:hidden;cursor:pointer;will-change:transform;
+    }
+    #wheel canvas{width:100%;height:100%;display:block;}
+    .wheel-center{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:52px;height:52px;border-radius:50%;
+      background:radial-gradient(circle,#ffd700,#ff8c00,#ff0000);
+      border:3px solid #ffd700;
+      box-shadow:0 0 18px rgba(255,215,0,0.9),0 0 36px rgba(255,140,0,0.5);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;z-index:5;
+      animation:jokePulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes jokePulse{
+      0%{transform:translate(-50%,-50%) scale(1);}
+      100%{transform:translate(-50%,-50%) scale(1.15);}
+    }
+    .wheel-pointer{
+      position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
+      border-top:40px solid #ffd700;
+      filter:drop-shadow(0 0 8px rgba(255,215,0,0.9));
+      z-index:10;
+    }
+
+    /* Spin button */
+    .spin-btn{
+      width:min(300px,85vw);padding:18px;
+      border:none;border-radius:99px;
+      font-size:18px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:1px;
+      text-transform:uppercase;position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#ff6666 0%,#ee2222 20%,#cc0000 50%,#990000 80%,#ee2222 100%);
+      color:#fff;
+      box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,
+        0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,0,0,0.3);
+      text-shadow:0 1px 2px rgba(0,0,0,0.4);
+      transition:all 0.1s;margin-bottom:18px;
+    }
+    .spin-btn::after{content:'';position:absolute;top:4px;left:10px;right:10px;height:38%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.25),transparent);
+      border-radius:99px 99px 50% 50%;pointer-events:none;}
+    .spin-btn:active:not(:disabled){transform:translateY(6px);
+      box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 2px 0 #660000,0 4px 10px rgba(0,0,0,0.4);}
+    .spin-btn:disabled{opacity:0.6;cursor:not-allowed;}
+    .spin-btn.glowing{animation:redGlow 1s ease-in-out infinite;}
+    @keyframes redGlow{
+      0%,100%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,0,0,0.3);}
+      50%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 60px rgba(255,0,0,1),0 0 100px rgba(255,100,0,0.5);}
+    }
+
+    /* Joke scroll box */
+    #jokeBox{
+      width:min(400px,92vw);
+      min-height:160px;
+      position:relative;
+      margin-bottom:16px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;
+      padding:30px 28px 26px;
+      transition:all 0.4s;
+
+      /* Torn yellow comedy paper */
+      background:linear-gradient(180deg,
+        rgba(80,60,0,0.97) 0%,
+        rgba(60,40,0,0.99) 30%,
+        rgba(55,35,0,0.99) 70%,
+        rgba(80,60,0,0.97) 100%
+      );
+      border-top:3px solid rgba(255,200,0,0.5);
+      border-bottom:3px solid rgba(255,200,0,0.5);
+      border-left:1px solid rgba(200,150,0,0.2);
+      border-right:1px solid rgba(200,150,0,0.2);
+      box-shadow:0 -8px 0 rgba(150,100,0,0.4),0 8px 0 rgba(150,100,0,0.4),
+        inset 0 0 40px rgba(0,0,0,0.4);
+    }
+    #jokeBox::before,#jokeBox::after{
+      content:'';position:absolute;left:-8px;right:-8px;height:22px;border-radius:11px;
+      background:linear-gradient(180deg,#cc6600 0%,#ff9900 25%,#ffd700 50%,#ff9900 75%,#cc6600 100%);
+      box-shadow:0 0 10px rgba(255,150,0,0.5),0 3px 6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.3);
+      z-index:2;
+    }
+    #jokeBox::before{top:-11px;}
+    #jokeBox::after{bottom:-11px;}
+
+    .joke-knob-left,.joke-knob-right{
+      position:absolute;width:16px;height:28px;border-radius:8px;
+      background:linear-gradient(90deg,#993300,#ff9900,#ffd700,#ff9900,#993300);
+      box-shadow:0 0 8px rgba(255,150,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+      z-index:3;top:50%;transform:translateY(-50%);
+    }
+    .joke-knob-left{left:-12px;}
+    .joke-knob-right{right:-12px;}
+    .joke-edge-top,.joke-edge-bottom{
+      position:absolute;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,rgba(255,150,0,0.4),rgba(255,200,0,0.6),rgba(255,150,0,0.4),transparent);
+      z-index:1;
+    }
+    .joke-edge-top{top:14px;}
+    .joke-edge-bottom{bottom:14px;}
+    .joke-rune-left,.joke-rune-right{
+      position:absolute;font-size:16px;opacity:0.35;
+      top:50%;transform:translateY(-50%);color:#ffd700;
+    }
+    .joke-rune-left{left:8px;}
+    .joke-rune-right{right:8px;}
+
+    #jokeBox.revealed{
+      border-top-color:rgba(255,220,0,0.9);
+      border-bottom-color:rgba(255,220,0,0.9);
+      box-shadow:0 -8px 0 rgba(200,120,0,0.6),0 8px 0 rgba(200,120,0,0.6),
+        0 0 40px rgba(255,200,0,0.25),inset 0 0 40px rgba(0,0,0,0.4);
+      animation:jokeReveal 0.5s ease;
+    }
+    @keyframes jokeReveal{
+      0%{transform:scaleY(0.3);opacity:0;}
+      60%{transform:scaleY(1.06);}
+      100%{transform:scaleY(1);opacity:1;}
+    }
+
+    /* Joke emoji */
+    .joke-emoji{
+      font-size:36px;margin-bottom:8px;display:none;
+      animation:emojiWiggle 0.4s ease-in-out infinite alternate;
+    }
+    @keyframes emojiWiggle{
+      0%{transform:rotate(-8deg) scale(1);}
+      100%{transform:rotate(8deg) scale(1.12);}
+    }
+    .joke-emoji.show{display:block;}
+
+    /* Category badge */
+    .joke-cat{
+      font-size:10px;font-weight:700;letter-spacing:0.2em;
+      text-transform:uppercase;padding:3px 14px;border-radius:99px;
+      margin-bottom:10px;display:none;
+    }
+    .joke-cat.show{display:inline-block;}
+
+    #jokeText{
+      font-size:17px;font-weight:700;line-height:1.6;
+      color:#ffe066;
+      text-shadow:0 0 8px rgba(255,200,0,0.3),0 1px 2px rgba(0,0,0,0.8);
+      font-style:italic;min-height:60px;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;z-index:1;
+      font-family:Georgia,serif;letter-spacing:0.3px;
+    }
+    .joke-placeholder{font-size:13px;color:rgba(200,150,0,0.5);font-style:italic;font-family:Georgia,serif;}
+
+    .joke-color-bar{width:60px;height:3px;border-radius:99px;margin:10px auto 0;display:none;}
+    .joke-color-bar.show{display:block;}
+
+    /* Warning label */
+    .warning-label{
+      font-size:10px;color:#666;text-align:center;
+      margin-bottom:10px;font-style:italic;
+    }
+
+    /* History */
+    .history-wrap{width:min(400px,92vw);margin-bottom:16px;}
+    .history-title{font-size:11px;font-weight:700;color:#ff8c00;text-transform:uppercase;
+      letter-spacing:0.12em;margin-bottom:8px;text-align:center;}
+    .history-item{
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,150,0,0.15);
+      border-radius:12px;padding:8px 14px;margin-bottom:6px;
+      font-size:12px;color:#cc9900;font-style:italic;
+      display:flex;align-items:center;gap:8px;
+      animation:fadeSlideIn 0.4s ease;
+    }
+    @keyframes fadeSlideIn{0%{opacity:0;transform:translateY(-10px);}100%{opacity:1;transform:translateY(0);}}
+    .history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+    .mystic-divider{width:100%;text-align:center;font-size:16px;margin:6px 0;color:#ff8c00;opacity:0.4;letter-spacing:8px;}
+
+    .share-btn{padding:11px 28px;border:none;border-radius:99px;
+      font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+      background:linear-gradient(135deg,#1877f2,#0d65d9);color:#fff;
+      box-shadow:0 4px 14px rgba(24,119,242,0.4);display:none;transition:all 0.15s;}
+    .share-btn.show{display:inline-block;}
+    .share-btn:active{transform:scale(0.97);}
+
+    .spin-count{font-size:11px;color:#666;text-align:center;margin-bottom:10px;}
+    .confetti{position:fixed;pointer-events:none;z-index:999;}
+    .back{text-align:center;margin-top:16px;font-size:13px;color:#666;}
+    .back a{color:#ff8c00;text-decoration:none;font-weight:600;}
+  </style>
+</head>
+<body>
+
+<div id="funBg"></div>
+
+<div class="wrap">
+  <div class="hdr">
+    <span class="hdr-emoji">😂</span>
+    <div class="hdr-title">Humour Roulette</div>
+    <div class="hdr-sub">🎰 Spin for a laugh · No feelings guaranteed! 😂</div>
+  </div>
+
+  <div class="wheel-wrap">
+    <div class="wheel-outer"></div>
+    <div id="wheel"><canvas id="wheelCanvas"></canvas></div>
+    <div class="wheel-center">😂</div>
+    <div class="wheel-pointer"></div>
+  </div>
+
+  <div class="spin-count" id="spinCount">😂 Go on then... spin it!</div>
+
+  <button class="spin-btn glowing" id="spinBtn" onclick="spinWheel()">
+    😂 SPIN THE ROAST!
+  </button>
+
+  <div class="warning-label">⚠️ All in good fun — no offence intended! 😂</div>
+
+  <!-- Joke scroll -->
+  <div id="jokeBox">
+    <div class="joke-knob-left"></div>
+    <div class="joke-knob-right"></div>
+    <div class="joke-edge-top"></div>
+    <div class="joke-edge-bottom"></div>
+    <div class="joke-rune-left">😜</div>
+    <div class="joke-rune-right">😜</div>
+    <div class="joke-cat" id="jokeCat"></div>
+    <div class="joke-emoji" id="jokeEmoji">😂</div>
+    <div id="jokeText">
+      <span class="joke-placeholder">😂 Spin the wheel if you dare... 😂</span>
+    </div>
+    <div class="joke-color-bar" id="jokeBar"></div>
+  </div>
+
+  <button class="share-btn" id="shareBtn" onclick="shareJoke()">
+    📘 Share This Roast!
+  </button>
+
+  <div class="mystic-divider">· · · 😂 · · ·</div>
+
+  <div class="history-wrap">
+    <div class="history-title" id="historyTitle" style="display:none;">💀 Your Recent Roastings</div>
+    <div id="historyList"></div>
+  </div>
+
+  <div class="back"><a href="/games">← Back to Games Hub 🎮</a></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// HUMOUR ROULETTE — Vegas Comedy Roast Wheel
+// Today in Hawaii © 2026
+// ══════════════════════════════════════════════════
+
+const JOKES = [
+  // 😤 PERSONAL ROASTS
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'Your breath needs an urgent mint intervention'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'Your snoring is the loudest in all the lands'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'You have increasing tendencies to be an idiot'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'You are SO naughty and you know it'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'Your selfie game is a danger to others'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'You talk in your sleep — and it\'s embarrassing'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'Your singing voice scares small animals'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'You are the reason warning labels exist'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'You\'ve been wearing that outfit for 3 days now'},
+  {cat:'Personal',color:'#ff6b6b',icon:'😤',text:'Your dance moves have been reported to the UN'},
+
+  // 😴 LAZY & SLEEPY
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'You could sleep through a Hawaiian volcano'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'Your nap is longer than some marriages'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'You think exercise is walking to the fridge'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'Your couch has a permanent you-shaped dent'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'Even your shadow needs a rest'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'You call takeout a home-cooked meal'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'Your alarm clock has given up on you'},
+  {cat:'Lazy Bones',color:'#a0a000',icon:'😴',text:'You\'ve mastered the art of doing absolutely nothing'},
+
+  // 🍕 FOOD LOVER
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'You ate the last slice and blamed the dog'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'Your fridge has better lighting than your bathroom'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'You consider dessert a separate stomach'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'Your life motto is: one more bite'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'You hid snacks from yourself and forgot where'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'You\'ve ordered food while already eating food'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'Your Google history is 90% recipes and 10% regret'},
+  {cat:'Foodie',color:'#ff8c00',icon:'🍕',text:'You eat your feelings and they are delicious'},
+
+  // 📱 PHONE ADDICT
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'Your phone battery is more important than yours'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'You\'ve texted someone in the same room'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'You panic without WiFi like it\'s oxygen'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'Your thumb has more exercise than your legs'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'You checked your phone reading this'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'Your phone knows your secrets better than your mother'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'You took a photo of your food before eating it cold'},
+  {cat:'Phone Addict',color:'#4fc3f7',icon:'📱',text:'Your screen time report made you cry'},
+
+  // 🧠 INTELLIGENCE
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You locked your keys inside your own brain'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You once googled how to use Google'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'Your common sense took a day off'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You push doors that clearly say pull'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You\'ve introduced yourself to someone you know'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You forgot what you walked into a room for'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You\'re proof that smart is a spectrum'},
+  {cat:'Big Brain',color:'#ce93d8',icon:'🧠',text:'You set a reminder to remember things'},
+
+  // 😎 TOO COOL
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You practise cool faces in the mirror. Daily.'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You think everyone secretly admires you. They do.'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'Your ego arrived five minutes before you did'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You narrate your own life like a movie trailer'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You wear sunglasses indoors. At night.'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You walk in slow motion for dramatic effect'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'Your hair took longer to do than your commute'},
+  {cat:'Too Cool',color:'#22d3ee',icon:'😎',text:'You gave yourself a nickname. Nobody uses it.'},
+
+  // 🌺 HAWAII ROASTS
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'Even the dolphins avoid you at the beach'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'Your tan is more orange than Hawaiian sunset'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You mispronounce Humuhumunukunukuapuaa. Always.'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You wore socks with flip flops in Hawaii'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You called it a pineapple pizza. In Hawaii.'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You sunburned in five minutes flat'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You complained the ocean was too salty'},
+  {cat:'Aloha Roast',color:'#22c55e',icon:'🌺',text:'You brought an umbrella to Hawaii in June'},
+
+  // 💪 GYM & FITNESS
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'Your gym membership is a monthly donation'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'You call lifting a fork exercise. Valid.'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'Your running shoes have never seen pavement'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'You joined the gym in January. Went twice.'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'Your idea of cardio is scrolling fast'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'You breathe heavily climbing stairs. All three of them.'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'Your stretching routine is reaching for the remote'},
+  {cat:'Fitness',color:'#ef4444',icon:'💪',text:'You sweated at the gym selfie. Not the gym.'},
+];
+
+const NUM_SEGMENTS = JOKES.length;
+let currentAngle = 0;
+let spinning = false;
+let spinCount = 0;
+let currentJoke = null;
+let jokeHistory = [];
+
+// Build funny background
+function buildBackground(){
+  const bg = document.getElementById('funBg');
+  const emojis = ['😂','🤣','😆','😜','🎰','🎪','😎','💀','😤','🤪'];
+  for(let i=0;i<20;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-bg';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*5}s;font-size:${18+Math.random()*20}px;`;
+    bg.appendChild(p);
+  }
+}
+
+// Draw wheel
+function drawWheel(){
+  const canvas = document.getElementById('wheelCanvas');
+  const size = canvas.parentElement.offsetWidth;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const cx = size/2, cy = size/2, r = size/2 - 2;
+  const slice = (Math.PI*2) / NUM_SEGMENTS;
+
+  JOKES.forEach((j, i) => {
+    const startAngle = i * slice - Math.PI/2;
+    const endAngle = startAngle + slice;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = i%2===0 ? j.color : adjustColor(j.color,-25);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Icon
+    const midAngle = startAngle + slice/2;
+    const lx = cx + Math.cos(midAngle) * r * 0.72;
+    const ly = cy + Math.sin(midAngle) * r * 0.72;
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.rotate(midAngle + Math.PI/2);
+    ctx.font = `${Math.max(9,size*0.026)}px system-ui`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(j.icon, 0, 0);
+    ctx.restore();
+  });
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, r*0.18, 0, Math.PI*2);
+  ctx.fillStyle = '#0a0a00';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,200,0,0.6)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function adjustColor(hex, amount){
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num>>16) + amount));
+  const g = Math.min(255, Math.max(0, ((num>>8)&0xff) + amount));
+  const b = Math.min(255, Math.max(0, (num&0xff) + amount));
+  return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+function spinWheel(){
+  if(spinning) return;
+  spinning = true;
+  spinCount++;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('spinBtn').classList.remove('glowing');
+  document.getElementById('shareBtn').classList.remove('show');
+  document.getElementById('jokeText').innerHTML = '<span style="font-size:28px;animation:emojiWiggle 0.3s ease-in-out infinite alternate;">🎰</span>';
+  document.getElementById('jokeBox').classList.remove('revealed');
+  document.getElementById('jokeCat').classList.remove('show');
+  document.getElementById('jokeEmoji').classList.remove('show');
+  document.getElementById('jokeBar').classList.remove('show');
+
+  playSpinSound();
+
+  const extraSpins = 5 + Math.random() * 5;
+  const targetRotation = currentAngle + extraSpins * 360 + Math.random() * 360;
+  const slice = 360 / NUM_SEGMENTS;
+  const normalizedAngle = ((targetRotation % 360) + 360) % 360;
+  const jokeIdx = Math.floor(((360 - normalizedAngle) % 360) / slice) % NUM_SEGMENTS;
+
+  const duration = 4000 + Math.random() * 2000;
+  const startTime = Date.now();
+  const startAngle = currentAngle;
+
+  function animSpin(){
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(1, elapsed/duration);
+    const ease = 1 - Math.pow(1-progress, 3);
+    const angle = startAngle + (targetRotation-startAngle)*ease;
+
+    const prev = Math.floor((currentAngle%360)/slice);
+    const curr = Math.floor((angle%360)/slice);
+    if(prev!==curr) playTickSound();
+
+    document.getElementById('wheel').style.transform = `rotate(${angle}deg)`;
+    currentAngle = angle;
+
+    if(progress < 1){
+      requestAnimationFrame(animSpin);
+    } else {
+      currentAngle = targetRotation;
+      spinning = false;
+      revealJoke(jokeIdx);
+    }
+  }
+  requestAnimationFrame(animSpin);
+}
+
+function revealJoke(idx){
+  const joke = JOKES[idx];
+  currentJoke = joke;
+
+  setTimeout(()=>{
+    const box = document.getElementById('jokeBox');
+    box.classList.add('revealed');
+    box.style.borderTopColor = joke.color;
+    box.style.borderBottomColor = joke.color;
+    box.style.boxShadow = `0 -8px 0 rgba(150,100,0,0.6),0 8px 0 rgba(150,100,0,0.6),0 0 40px ${joke.color}33,inset 0 0 40px rgba(0,0,0,0.4)`;
+
+    // Category
+    const cat = document.getElementById('jokeCat');
+    cat.textContent = joke.icon + ' ' + joke.cat;
+    cat.style.background = joke.color + '22';
+    cat.style.border = `1px solid ${joke.color}66`;
+    cat.style.color = joke.color;
+    cat.classList.add('show');
+
+    // Emoji
+    const emojiEl = document.getElementById('jokeEmoji');
+    emojiEl.textContent = joke.icon;
+    emojiEl.classList.add('show');
+
+    // Typewriter
+    const textEl = document.getElementById('jokeText');
+    textEl.innerHTML = '';
+    textEl.style.color = '#ffe066';
+    let i = 0;
+    const txt = joke.text;
+    function typeNext(){
+      if(i < txt.length){
+        textEl.innerHTML = '"' + txt.slice(0,i+1) + (i<txt.length-1?'|':'') + '"';
+        i++;
+        setTimeout(typeNext, 35);
+      } else {
+        textEl.innerHTML = '"' + txt + '"';
+        const bar = document.getElementById('jokeBar');
+        bar.style.background = joke.color;
+        bar.style.boxShadow = `0 0 8px ${joke.color}`;
+        bar.classList.add('show');
+        document.getElementById('shareBtn').classList.add('show');
+        document.getElementById('spinBtn').disabled = false;
+        document.getElementById('spinBtn').classList.add('glowing');
+        laughCelebrate(joke.color);
+        playRevealSound();
+      }
+    }
+    setTimeout(typeNext, 200);
+
+    jokeHistory.unshift(joke);
+    if(jokeHistory.length > 5) jokeHistory.pop();
+    updateHistory();
+
+    const msgs = [
+      '😂 Getting warmed up!',
+      '🔥 The roast continues!',
+      '💀 You asked for it!',
+      '😂 Spin again for more!',
+      '🎰 The wheel never lies!',
+    ];
+    document.getElementById('spinCount').textContent =
+      'Roast #' + spinCount + ' · ' + msgs[Math.min(spinCount-1, msgs.length-1)];
+  }, 500);
+}
+
+function updateHistory(){
+  const list = document.getElementById('historyList');
+  const title = document.getElementById('historyTitle');
+  title.style.display = jokeHistory.length > 1 ? 'block' : 'none';
+  list.innerHTML = jokeHistory.slice(1).map(j=>`
+    <div class="history-item">
+      <div class="history-dot" style="background:${j.color};box-shadow:0 0 4px ${j.color};"></div>
+      <span>${j.icon} ${j.text}</span>
+    </div>
+  `).join('');
+}
+
+function shareJoke(){
+  if(!currentJoke) return;
+  const txt = `😂 My Humour Roulette reading: "${currentJoke.text}" 🎰 What does YOUR wheel say? todayinhawaii.com/humor`;
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/humor')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// Laugh celebration
+function laughCelebrate(color){
+  const emojis = ['😂','🤣','😆','💀','😜','🎉','🔥'];
+  for(let i=0;i<20;i++){
+    const p = document.createElement('div');
+    p.className='confetti';
+    const isEmoji = Math.random()>0.5;
+    if(isEmoji){
+      p.style.cssText=`font-size:${16+Math.random()*16}px;left:${10+Math.random()*80}%;top:${15+Math.random()*35}%;`;
+      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    } else {
+      p.style.cssText=`background:${color};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'3px'};left:${10+Math.random()*80}%;top:${15+Math.random()*35}%;`;
+    }
+    document.body.appendChild(p);
+    const ang=Math.random()*Math.PI*2, dist=50+Math.random()*120;
+    const tx=Math.cos(ang)*dist, ty=Math.sin(ang)*dist;
+    const dur=500+Math.random()*700, start=Date.now();
+    function animC(){
+      const pr=Math.min(1,(Date.now()-start)/dur);
+      const e=1-Math.pow(1-pr,2);
+      p.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+100*pr*pr}px)) rotate(${pr*720}deg)`;
+      p.style.opacity=1-pr;
+      if(pr<1) requestAnimationFrame(animC);
+      else p.remove();
+    }
+    requestAnimationFrame(animC);
+  }
+}
+
+// Sounds
+let audioCtx=null;
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(f,t,v,d,delay){
+  try{
+    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=t;o.frequency.value=f;delay=delay||0;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.05);
+  }catch(e){}
+}
+function playTickSound(){playTone(600+Math.random()*300,'square',0.06,0.03);}
+function playSpinSound(){playTone(150,'sawtooth',0.1,0.3);}
+function playRevealSound(){
+  // Wah wah wah — comedy trombone!
+  [466,440,415,392].forEach((f,i)=>playTone(f,'sawtooth',0.35,0.25,i*0.12));
+  setTimeout(()=>{
+    [523,659,784].forEach((f,i)=>playTone(f,'sine',0.3,0.2,i*0.08));
+  },600);
+}
+
+buildBackground();
+drawWheel();
+window.addEventListener('resize', drawWheel);
+</script>
+</body>
+</html>
