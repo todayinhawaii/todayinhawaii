@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎈 Aloha Balloons — Today in Hawaii</title>
+  <meta name="description" content="Pop colorful Hawaii balloons! Satisfying ASMR balloon popping game — relaxing fun for all ages!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+    body{
+      background:linear-gradient(180deg,#87CEEB 0%,#b8e4f7 40%,#d4f1c0 70%,#90EE90 100%);
+      min-height:100vh;
+      font-family:system-ui,sans-serif;
+      overflow:hidden;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+
+    /* Clouds */
+    .cloud{
+      position:fixed;
+      background:white;
+      border-radius:50px;
+      opacity:0.85;
+      animation:cloudDrift linear infinite;
+    }
+    .cloud::before,.cloud::after{
+      content:'';position:absolute;background:white;border-radius:50%;
+    }
+    @keyframes cloudDrift{
+      0%{transform:translateX(-200px);}
+      100%{transform:translateX(110vw);}
+    }
+
+    /* Game canvas area */
+    #gameCanvas{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+    }
+    #gameCanvas.active{pointer-events:all;}
+
+    /* Balloon */
+    .balloon{
+      position:absolute;
+      cursor:pointer;
+      animation:floatUp linear forwards;
+      transform-origin:center bottom;
+      pointer-events:all;
+      filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+    }
+    @keyframes floatUp{
+      0%{transform:translateY(0) rotate(var(--wobble));}
+      25%{transform:translateY(calc(var(--dist)*-0.25)) rotate(calc(var(--wobble)*-1));}
+      50%{transform:translateY(calc(var(--dist)*-0.5)) rotate(var(--wobble));}
+      75%{transform:translateY(calc(var(--dist)*-0.75)) rotate(calc(var(--wobble)*-1));}
+      100%{transform:translateY(var(--dist)) rotate(var(--wobble));}
+    }
+
+    .balloon svg{
+      width:100%;height:100%;
+      transition:transform 0.05s;
+    }
+    .balloon:active svg{transform:scale(0.85);}
+
+    /* Pop animation */
+    .balloon.popping{
+      animation:none!important;
+      pointer-events:none;
+    }
+    .pop-burst{
+      position:absolute;
+      pointer-events:none;
+      z-index:999;
+      animation:burstOut 0.5s ease forwards;
+    }
+    @keyframes burstOut{
+      0%{transform:scale(0);opacity:1;}
+      100%{transform:scale(3);opacity:0;}
+    }
+
+    /* Score popup */
+    .score-pop{
+      position:fixed;
+      font-size:22px;
+      font-weight:900;
+      pointer-events:none;
+      z-index:9999;
+      animation:scoreFly 0.9s ease forwards;
+      text-shadow:0 2px 6px rgba(0,0,0,0.3);
+    }
+    @keyframes scoreFly{
+      0%{opacity:1;transform:translateY(0) scale(1);}
+      100%{opacity:0;transform:translateY(-80px) scale(1.4);}
+    }
+
+    /* HUD */
+    #hud{
+      position:fixed;
+      top:0;left:0;right:0;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      z-index:100;
+      background:rgba(255,255,255,0.3);
+      backdrop-filter:blur(8px);
+      border-bottom:2px solid rgba(255,255,255,0.5);
+    }
+    .hud-score{
+      font-size:22px;font-weight:900;
+      color:#2d4a1e;
+      text-shadow:0 1px 3px rgba(255,255,255,0.8);
+    }
+    .hud-round{
+      font-size:13px;font-weight:700;
+      color:#1a3a6e;
+      text-align:center;
+    }
+    .hud-timer{
+      font-size:22px;font-weight:900;
+      color:#cc2200;
+      text-shadow:0 1px 3px rgba(255,255,255,0.8);
+      min-width:40px;text-align:right;
+    }
+    .hud-timer.urgent{
+      animation:timerPop 0.5s ease-in-out infinite;
+      color:#ff0000;
+    }
+    @keyframes timerPop{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.4);text-shadow:0 0 12px rgba(255,0,0,0.8);}
+    }
+
+    /* Timer bar */
+    #timerBar{
+      position:fixed;
+      top:54px;left:0;right:0;
+      height:6px;
+      background:rgba(255,255,255,0.4);
+      z-index:100;
+    }
+    #timerFill{
+      height:100%;
+      background:linear-gradient(90deg,#ff6b35,#ffd700);
+      transition:width 0.1s linear;
+      box-shadow:0 0 6px rgba(255,107,53,0.6);
+    }
+
+    /* Round announcement */
+    #roundAnnounce{
+      position:fixed;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      z-index:200;
+      background:rgba(255,255,255,0.15);
+      backdrop-filter:blur(4px);
+    }
+    #roundAnnounce.hidden{display:none;}
+    .announce-emoji{
+      font-size:80px;
+      margin-bottom:10px;
+      animation:announceBob 0.6s ease-in-out infinite alternate;
+    }
+    @keyframes announceBob{
+      0%{transform:scale(1) translateY(0);}
+      100%{transform:scale(1.1) translateY(-10px);}
+    }
+    .announce-title{
+      font-size:28px;font-weight:900;
+      color:#fff;
+      text-shadow:0 3px 10px rgba(0,0,0,0.4);
+      margin-bottom:8px;text-align:center;padding:0 20px;
+    }
+    .announce-sub{
+      font-size:16px;font-weight:700;
+      color:rgba(255,255,255,0.9);
+      text-shadow:0 2px 6px rgba(0,0,0,0.3);
+      margin-bottom:30px;text-align:center;
+    }
+    .announce-btn{
+      padding:16px 40px;
+      border:none;border-radius:99px;
+      font-size:16px;font-weight:900;
+      cursor:pointer;font-family:inherit;
+      letter-spacing:1px;text-transform:uppercase;
+      background:linear-gradient(135deg,#ffd700,#ff8c00);
+      color:#fff;
+      box-shadow:0 6px 20px rgba(255,140,0,0.5);
+      animation:btnPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes btnPulse{
+      0%,100%{box-shadow:0 6px 20px rgba(255,140,0,0.5);transform:scale(1);}
+      50%{box-shadow:0 6px 30px rgba(255,140,0,0.9),0 0 40px rgba(255,215,0,0.4);transform:scale(1.04);}
+    }
+
+    /* Name screen */
+    #nameScreen{
+      position:fixed;inset:0;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      z-index:300;
+      background:linear-gradient(180deg,rgba(135,206,235,0.9),rgba(144,238,144,0.9));
+      backdrop-filter:blur(4px);
+    }
+    .ns-card{
+      background:rgba(255,255,255,0.9);
+      border-radius:28px;
+      padding:28px 24px;
+      max-width:360px;
+      width:90%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.15);
+      text-align:center;
+    }
+    .ns-logo{font-size:64px;margin-bottom:8px;}
+    .ns-title{font-size:24px;font-weight:900;color:#1a3a6e;margin-bottom:4px;}
+    .ns-sub{font-size:13px;color:#666;margin-bottom:20px;line-height:1.5;}
+    .ns-input{
+      width:100%;padding:12px;
+      border:2px solid #ddd;border-radius:12px;
+      font-size:15px;font-family:inherit;
+      outline:none;margin-bottom:10px;text-align:center;
+      transition:border-color 0.2s;
+    }
+    .ns-input:focus{border-color:#87CEEB;}
+    .ns-select{
+      width:100%;padding:12px;
+      border:2px solid #ddd;border-radius:12px;
+      font-size:14px;font-family:inherit;
+      outline:none;margin-bottom:16px;
+      background:white;cursor:pointer;
+    }
+    .ns-btn{
+      width:100%;padding:15px;
+      border:none;border-radius:14px;
+      font-size:16px;font-weight:900;
+      cursor:pointer;font-family:inherit;
+      background:linear-gradient(135deg,#87CEEB,#4CAF50);
+      color:white;
+      box-shadow:0 6px 20px rgba(76,175,80,0.4);
+      transition:all 0.15s;
+      letter-spacing:0.5px;
+    }
+    .ns-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .ns-btn:active:not(:disabled){transform:scale(0.97);}
+
+    /* Leaderboard overlay */
+    #lbOverlay{
+      position:fixed;inset:0;
+      display:none;
+      align-items:center;justify-content:center;
+      z-index:400;
+      background:rgba(0,0,0,0.5);
+      backdrop-filter:blur(8px);
+    }
+    #lbOverlay.show{display:flex;}
+    .lb-card{
+      background:linear-gradient(160deg,#e8f8ff,#f0ffe8);
+      border-radius:28px;
+      padding:24px 20px;
+      max-width:360px;width:90%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+      text-align:center;
+      max-height:90vh;overflow-y:auto;
+    }
+    .lb-emoji{font-size:56px;margin-bottom:8px;}
+    .lb-title{font-size:22px;font-weight:900;color:#1a3a6e;margin-bottom:4px;}
+    .lb-score{font-size:44px;font-weight:900;color:#ff6b35;margin:8px 0;}
+    .lb-msg{font-size:13px;color:#555;margin-bottom:16px;line-height:1.5;}
+    .lb-row{
+      display:flex;align-items:center;gap:8px;
+      padding:7px 10px;border-radius:10px;
+      font-size:13px;margin-bottom:4px;
+      background:rgba(255,255,255,0.7);
+    }
+    .lb-row.r1{background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.4);}
+    .lb-row.r2{background:rgba(192,192,192,0.2);}
+    .lb-row.r3{background:rgba(205,127,50,0.15);}
+    .lb-row.me{background:rgba(135,206,235,0.3);border:1px solid rgba(135,206,235,0.5);}
+    .lb-medal{font-size:16px;width:22px;}
+    .lb-name{flex:1;font-weight:700;text-align:left;}
+    .lb-pts{font-weight:900;color:#ff6b35;}
+    .lb-btn{
+      width:100%;padding:13px;
+      border:none;border-radius:13px;
+      font-size:14px;font-weight:800;
+      cursor:pointer;font-family:inherit;
+      margin-bottom:8px;
+      transition:all 0.15s;
+    }
+    .lb-btn:active{transform:scale(0.97);}
+    .lb-btn-play{background:linear-gradient(135deg,#87CEEB,#4CAF50);color:white;}
+    .lb-btn-share{background:linear-gradient(135deg,#1877f2,#0d65d9);color:white;}
+    .lb-btn-home{background:rgba(0,0,0,0.07);color:#333;}
+
+    /* Popped count */
+    #poppedCount{
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:16px;font-weight:800;
+      color:white;
+      text-shadow:0 2px 8px rgba(0,0,0,0.4);
+      background:rgba(0,0,0,0.2);
+      padding:8px 20px;
+      border-radius:99px;
+      z-index:100;
+      backdrop-filter:blur(4px);
+    }
+
+    /* Mute */
+    .mute-btn{
+      position:fixed;bottom:16px;right:16px;
+      width:40px;height:40px;border-radius:50%;
+      background:rgba(255,255,255,0.6);
+      border:2px solid rgba(255,255,255,0.8);
+      font-size:18px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      z-index:100;backdrop-filter:blur(4px);
+    }
+
+    /* Confetti piece */
+    .confetti{
+      position:fixed;
+      width:10px;height:10px;
+      border-radius:2px;
+      pointer-events:none;
+      z-index:9998;
+      animation:confettiFall linear forwards;
+    }
+    @keyframes confettiFall{
+      0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+      100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Clouds -->
+<div class="cloud" style="width:120px;height:40px;top:8%;animation-duration:28s;animation-delay:-5s;">
+  <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:white;top:-25px;left:15px;"></div>
+  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:white;top:-18px;left:45px;"></div>
+</div>
+<div class="cloud" style="width:90px;height:30px;top:18%;animation-duration:22s;animation-delay:-12s;">
+  <div style="position:absolute;width:45px;height:45px;border-radius:50%;background:white;top:-20px;left:10px;"></div>
+  <div style="position:absolute;width:35px;height:35px;border-radius:50%;background:white;top:-14px;left:35px;"></div>
+</div>
+<div class="cloud" style="width:140px;height:45px;top:5%;animation-duration:35s;animation-delay:-18s;">
+  <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:white;top:-30px;left:20px;"></div>
+  <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:white;top:-22px;left:60px;"></div>
+</div>
+
+<!-- HUD -->
+<div id="hud" style="display:none;">
+  <div class="hud-score">🎈 <span id="scoreDisplay">0</span></div>
+  <div class="hud-round">
+    <div id="roundTitle" style="font-size:14px;font-weight:900;"></div>
+    <div id="poppedDisplay" style="font-size:12px;color:#555;"></div>
+  </div>
+  <div class="hud-timer" id="timerDisplay">30</div>
+</div>
+<div id="timerBar" style="display:none;"><div id="timerFill"></div></div>
+
+<!-- Game Canvas -->
+<div id="gameCanvas"></div>
+
+<!-- Name Screen -->
+<div id="nameScreen">
+  <div class="ns-card">
+    <div class="ns-logo">🎈</div>
+    <div class="ns-title">Aloha Balloons!</div>
+    <div class="ns-sub">Pop the colored balloons before time runs out! Satisfying ASMR fun for all ages! 🌺</div>
+    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
+    <select id="pLoc" class="ns-select">
+      <option value="">📍 Where are you from?</option>
+      <optgroup label="🌺 Hawaii">
+        <option value="Maui, Hawaii">🌺 Maui</option>
+        <option value="Oahu, Hawaii">🌊 Oahu</option>
+        <option value="Kauai, Hawaii">🌿 Kauai</option>
+        <option value="Big Island, Hawaii">🌋 Big Island</option>
+        <option value="Molokai, Hawaii">🌴 Molokai</option>
+      </optgroup>
+      <optgroup label="🇺🇸 USA">
+        <option value="California, USA">California</option>
+        <option value="New York, USA">New York</option>
+        <option value="Texas, USA">Texas</option>
+        <option value="Florida, USA">Florida</option>
+        <option value="Washington, USA">Washington</option>
+        <option value="Other USA">Other USA State</option>
+      </optgroup>
+      <optgroup label="🌍 World">
+        <option value="Australia">🇦🇺 Australia</option>
+        <option value="Canada">🇨🇦 Canada</option>
+        <option value="Japan">🇯🇵 Japan</option>
+        <option value="United Kingdom">🇬🇧 UK</option>
+        <option value="Other">🌍 Other Country</option>
+      </optgroup>
+    </select>
+    <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🎈 Pop Some Balloons!</button>
+  </div>
+</div>
+
+<!-- Round Announcement -->
+<div id="roundAnnounce" class="hidden">
+  <div class="announce-emoji" id="announceEmoji">🎈</div>
+  <div class="announce-title" id="announceTitle">Pop the Pink Balloons!</div>
+  <div class="announce-sub" id="announceSub">You have 30 seconds — GO!</div>
+  <button class="announce-btn" id="announceBtn" onclick="startRound()">🎈 LET'S POP!</button>
+</div>
+
+<!-- Leaderboard / Results -->
+<div id="lbOverlay">
+  <div class="lb-card">
+    <div class="lb-emoji" id="lbEmoji">🎈</div>
+    <div class="lb-title" id="lbTitle">Game Over!</div>
+    <div class="lb-score" id="lbScore">0</div>
+    <div class="lb-msg" id="lbMsg"></div>
+    <div id="lbList" style="margin-bottom:14px;"></div>
+    <button class="lb-btn lb-btn-share" onclick="shareScore()">📘 Challenge Friends!</button>
+    <button class="lb-btn lb-btn-play" onclick="playAgain()">🎈 Play Again!</button>
+    <button class="lb-btn lb-btn-home" onclick="window.location='/games'">← Games Hub</button>
+  </div>
+</div>
+
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+<script>
+// ════════════════════════════════════════════════
+// ALOHA BALLOONS — ASMR Balloon Popping Game
+// Today in Hawaii © 2026
+// ════════════════════════════════════════════════
+
+const ROUNDS = [
+  {color:'pink',   hex:'#FF69B4', dark:'#C2185B', emoji:'🎀', label:'Pink',   pts:10},
+  {color:'blue',   hex:'#4FC3F7', dark:'#0277BD', emoji:'💙', label:'Blue',   pts:15},
+  {color:'yellow', hex:'#FFD54F', dark:'#F57F17', emoji:'💛', label:'Yellow', pts:12},
+  {color:'green',  hex:'#66BB6A', dark:'#2E7D32', emoji:'💚', label:'Green',  pts:15},
+  {color:'orange', hex:'#FFA726', dark:'#E65100', emoji:'🧡', label:'Orange', pts:18},
+  {color:'purple', hex:'#AB47BC', dark:'#6A1B9A', emoji:'💜', label:'Purple', pts:20},
+  {color:'red',    hex:'#EF5350', dark:'#B71C1C', emoji:'❤️',  label:'Red',    pts:22},
+  {color:'white',  hex:'#F5F5F5', dark:'#9E9E9E', emoji:'🤍', label:'White',  pts:25},
+  {color:'rainbow',hex:'#FF69B4', dark:'#C2185B', emoji:'🌈', label:'Rainbow',pts:30},
+];
+
+const ROUND_TIME = 30;
+
+let playerName='', playerLoc='';
+let currentRound=0, score=0, totalPopped=0, roundPopped=0;
+let timeLeft=ROUND_TIME, timerInterval=null;
+let balloonInterval=null, activeBalloons=[];
+let muted=false, myRank=0;
+let gameActive=false;
+
+// ── Name Entry ────────────────────────────────
+document.getElementById('pName').addEventListener('input', checkReady);
+document.getElementById('pLoc').addEventListener('change', checkReady);
+function checkReady(){
+  const ok=document.getElementById('pName').value.trim().length>=2
+         && document.getElementById('pLoc').value;
+  document.getElementById('startBtn').disabled=!ok;
+}
+
+function startGame(){
+  playerName=document.getElementById('pName').value.trim();
+  playerLoc=document.getElementById('pLoc').value;
+  document.getElementById('nameScreen').style.display='none';
+  document.getElementById('hud').style.display='flex';
+  document.getElementById('timerBar').style.display='block';
+  currentRound=0; score=0; totalPopped=0;
+  updateHUD();
+  loadLeaderboard();
+  showRoundAnnounce();
+}
+
+// ── Round Announcement ────────────────────────
+function showRoundAnnounce(){
+  const r=ROUNDS[currentRound];
+  clearBalloons();
+  document.getElementById('gameCanvas').classList.remove('active');
+  document.getElementById('roundAnnounce').classList.remove('hidden');
+  document.getElementById('announceEmoji').textContent=r.emoji;
+  document.getElementById('announceTitle').textContent=
+    '🎈 Pop the '+r.label+' Balloons!';
+  document.getElementById('announceSub').textContent=
+    'You have '+ROUND_TIME+' seconds — how many can you pop?';
+  document.getElementById('announceBtn').style.background=
+    'linear-gradient(135deg,'+r.hex+','+r.dark+')';
+}
+
+function startRound(){
+  document.getElementById('roundAnnounce').classList.add('hidden');
+  document.getElementById('gameCanvas').classList.add('active');
+  roundPopped=0;
+  timeLeft=ROUND_TIME;
+  gameActive=true;
+  updateHUD();
+  startTimer();
+  startSpawning();
+}
+
+// ── Balloon Spawning ──────────────────────────
+function startSpawning(){
+  // Spawn immediately
+  spawnBalloon();
+  spawnBalloon();
+  spawnBalloon();
+
+  // Then keep spawning
+  balloonInterval=setInterval(()=>{
+    if(!gameActive) return;
+    const count=activeBalloons.length;
+    if(count<12) spawnBalloon();
+    if(count<6)  spawnBalloon(); // Extra when screen is empty
+  },600);
+}
+
+function spawnBalloon(){
+  const r=ROUNDS[currentRound];
+  const canvas=document.getElementById('gameCanvas');
+  const size=50+Math.random()*35; // 50-85px
+  const x=Math.random()*(window.innerWidth-size);
+  const startY=window.innerHeight+size;
+  const dist=window.innerHeight+size*3;
+  const dur=4+Math.random()*4; // 4-8 seconds to float up
+  const wobble=(Math.random()-0.5)*12; // wobble angle
+
+  const div=document.createElement('div');
+  div.className='balloon';
+  div.style.cssText=`
+    left:${x}px;
+    top:${startY}px;
+    width:${size}px;
+    height:${size*1.3}px;
+    --dist:-${dist}px;
+    --wobble:${wobble}deg;
+    animation-duration:${dur}s;
+    animation-timing-function:linear;
+  `;
+
+  // Build balloon SVG
+  const isRainbow=r.color==='rainbow';
+  div.innerHTML=buildBalloonSVG(size, r.hex, r.dark, isRainbow);
+
+  div.addEventListener('click', e=>{e.stopPropagation();popBalloon(div,x,startY,r,size);});
+  div.addEventListener('touchstart', e=>{e.preventDefault();e.stopPropagation();popBalloon(div,x,startY,r,size);},{passive:false});
+
+  // Remove when floated off screen
+  div.addEventListener('animationend',()=>{
+    div.remove();
+    activeBalloons=activeBalloons.filter(b=>b!==div);
+  });
+
+  canvas.appendChild(div);
+  activeBalloons.push(div);
+}
+
+function buildBalloonSVG(size, hex, dark, rainbow){
+  const w=size, h=size*1.3;
+  const cx=w/2, cy=h*0.42;
+  const rx=w*0.42, ry=h*0.42;
+
+  let fill, gradient;
+  if(rainbow){
+    gradient=`<defs>
+      <radialGradient id="bg${Date.now()}" cx="35%" cy="35%">
+        <stop offset="0%" stop-color="#ff9999"/>
+        <stop offset="30%" stop-color="#ffcc66"/>
+        <stop offset="60%" stop-color="#99ff99"/>
+        <stop offset="100%" stop-color="#9999ff"/>
+      </radialGradient>
+    </defs>`;
+    fill=`url(#bg${Date.now()})`;
+  } else {
+    const id='bg'+Math.random().toString(36).substr(2,8);
+    gradient=`<defs>
+      <radialGradient id="${id}" cx="35%" cy="30%">
+        <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
+        <stop offset="40%" stop-color="${hex}" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="${dark}" stop-opacity="1"/>
+      </radialGradient>
+    </defs>`;
+    fill=`url(#${id})`;
+  }
+
+  // Knot position
+  const kx=cx, ky=cy+ry+2;
+  // String
+  const str=`M${kx},${ky+6} Q${kx-8},${ky+15} ${kx},${ky+25} Q${kx+8},${ky+35} ${kx},${ky+45}`;
+
+  return `<svg viewBox="0 0 ${w} ${h*1.4}" xmlns="http://www.w3.org/2000/svg">
+    ${gradient}
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"/>
+    <ellipse cx="${cx-rx*0.25}" cy="${cy-ry*0.25}" rx="${rx*0.15}" ry="${ry*0.12}" fill="white" opacity="0.5"/>
+    <polygon points="${kx-4},${ky} ${kx+4},${ky} ${kx},${ky+8}" fill="${dark}"/>
+    <path d="${str}" stroke="${dark}" stroke-width="1.5" fill="none" opacity="0.6"/>
+  </svg>`;
+}
+
+// ── Pop Balloon ───────────────────────────────
+function popBalloon(div, x, y, round, size){
+  if(!gameActive||div.classList.contains('popping')) return;
+  div.classList.add('popping');
+  activeBalloons=activeBalloons.filter(b=>b!==div);
+
+  // Get actual current position
+  const rect=div.getBoundingClientRect();
+  const cx=rect.left+rect.width/2;
+  const cy=rect.top+rect.height/2;
+
+  // POP sound!
+  playPop(round.pts);
+  vibrate(20);
+
+  // Burst effect
+  burst(cx, cy, round.hex, round.dark);
+
+  // Score popup
+  const pop=document.createElement('div');
+  pop.className='score-pop';
+  pop.textContent='+'+round.pts;
+  pop.style.color=round.dark;
+  pop.style.left=cx+'px';
+  pop.style.top=cy+'px';
+  pop.style.transform='translate(-50%,-50%)';
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),1000);
+
+  // Update score
+  score+=round.pts;
+  roundPopped++;
+  totalPopped++;
+  updateHUD();
+
+  // Remove balloon
+  div.remove();
+}
+
+function burst(cx, cy, hex, dark){
+  // Confetti burst
+  const colors=[hex, dark, '#fff', '#ffd700', '#ff6b35'];
+  for(let i=0;i<12;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.left=cx+'px';
+    c.style.top=cy+'px';
+    c.style.width=(6+Math.random()*8)+'px';
+    c.style.height=(6+Math.random()*8)+'px';
+    c.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    const angle=Math.random()*360;
+    const dist=40+Math.random()*80;
+    const tx=Math.cos(angle*Math.PI/180)*dist;
+    const ty=Math.sin(angle*Math.PI/180)*dist-30;
+    c.style.setProperty('--tx',tx+'px');
+    c.style.transform=`translate(-50%,-50%)`;
+    c.style.animation=`none`;
+    document.body.appendChild(c);
+
+    // Animate manually
+    const start=Date.now();
+    const dur=400+Math.random()*400;
+    function animStep(){
+      const p=Math.min(1,(Date.now()-start)/dur);
+      const ease=1-Math.pow(1-p,3);
+      c.style.transform=`translate(calc(-50% + ${tx*ease}px), calc(-50% + ${ty*ease + 40*p*p}px)) rotate(${p*360}deg)`;
+      c.style.opacity=1-p;
+      if(p<1) requestAnimationFrame(animStep);
+      else c.remove();
+    }
+    requestAnimationFrame(animStep);
+  }
+}
+
+function clearBalloons(){
+  gameActive=false;
+  clearInterval(balloonInterval);
+  clearInterval(timerInterval);
+  const canvas=document.getElementById('gameCanvas');
+  activeBalloons.forEach(b=>b.remove());
+  activeBalloons=[];
+}
+
+// ── Timer ─────────────────────────────────────
+function startTimer(){
+  timeLeft=ROUND_TIME;
+  updateTimerBar();
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft-=0.1;
+    updateTimerBar();
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      roundOver();
+    }
+  },100);
+}
+
+function updateTimerBar(){
+  const pct=Math.max(0,(timeLeft/ROUND_TIME)*100);
+  document.getElementById('timerFill').style.width=pct+'%';
+  const t=Math.ceil(timeLeft);
+  const el=document.getElementById('timerDisplay');
+  el.textContent=t;
+  if(t<=10) el.classList.add('urgent');
+  else el.classList.remove('urgent');
+}
+
+function roundOver(){
+  gameActive=false;
+  clearInterval(balloonInterval);
+  clearBalloons();
+
+  // Big celebration if they popped lots!
+  if(roundPopped>=10) bigCelebration();
+
+  currentRound++;
+  if(currentRound>=ROUNDS.length){
+    // Game over!
+    setTimeout(()=>showResults(),800);
+  } else {
+    // Next round!
+    setTimeout(()=>showRoundAnnounce(),600);
+  }
+}
+
+// ── HUD ───────────────────────────────────────
+function updateHUD(){
+  document.getElementById('scoreDisplay').textContent=score.toLocaleString();
+  const r=ROUNDS[currentRound]||ROUNDS[0];
+  document.getElementById('roundTitle').textContent=
+    r.emoji+' '+r.label+' Balloons — Round '+(currentRound+1)+'/'+ROUNDS.length;
+  document.getElementById('poppedDisplay').textContent=
+    '💥 Popped: '+roundPopped+' this round · '+totalPopped+' total';
+}
+
+// ── Celebrations ──────────────────────────────
+function bigCelebration(){
+  for(let i=0;i<30;i++){
+    setTimeout(()=>{
+      const x=Math.random()*window.innerWidth;
+      const y=Math.random()*window.innerHeight*0.5;
+      burst(x,y,ROUNDS[Math.floor(Math.random()*ROUNDS.length)].hex,'#ffd700');
+    },i*60);
+  }
+}
+
+// ── Results ───────────────────────────────────
+async function showResults(){
+  await submitScore();
+  await loadLeaderboard();
+
+  const msgs=[
+    'You\'re a balloon popping legend!! 🎈',
+    'So satisfying!! Come back and beat your score! 🌺',
+    'Mahalo for playing — aloha vibes all day! 🤙',
+    'That was SO relaxing!! Play again! 😊',
+  ];
+
+  document.getElementById('lbEmoji').textContent=score>1000?'🏆':score>500?'🎈':'🌺';
+  document.getElementById('lbTitle').textContent=score>1000?'BALLOON CHAMPION!!':'Great Popping!!';
+  document.getElementById('lbScore').textContent=score.toLocaleString()+' pts';
+  document.getElementById('lbMsg').textContent=
+    '💥 Popped '+totalPopped+' balloons across all '+ROUNDS.length+' rounds! '+
+    msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('lbOverlay').classList.add('show');
+}
+
+function playAgain(){
+  document.getElementById('lbOverlay').classList.remove('show');
+  currentRound=0; score=0; totalPopped=0; roundPopped=0;
+  updateHUD();
+  showRoundAnnounce();
+}
+
+function shareScore(){
+  const txt='🎈 I popped '+totalPopped+' balloons and scored '+score.toLocaleString()+' pts on Aloha Balloons from '+playerLoc+'! Can you beat me? 🌺 todayinhawaii.com/balloons';
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/balloons')+'&quote='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Sound — ASMR balloon pops! ────────────────
+let audioCtx=null;
+function getAudio(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playPop(pts){
+  if(muted) return;
+  try{
+    const c=getAudio();
+    const buf=c.createBuffer(1,c.sampleRate*0.15,c.sampleRate);
+    const data=buf.getChannelData(0);
+
+    // Generate satisfying pop sound!
+    for(let i=0;i<data.length;i++){
+      const t=i/c.sampleRate;
+      // Sharp transient + quick decay
+      const env=Math.exp(-t*40);
+      const freq=200+pts*3+(Math.random()*50);
+      data[i]=env*(Math.sin(2*Math.PI*freq*t)*0.8 +
+                   (Math.random()*2-1)*0.3*Math.exp(-t*80));
+    }
+
+    const src=c.createBufferSource();
+    const gain=c.createGain();
+    src.connect(gain);
+    gain.connect(c.destination);
+    src.buffer=buf;
+    gain.gain.value=0.6;
+    src.start();
+  }catch(e){}
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
+}
+
+function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
+
+// ── Leaderboard ───────────────────────────────
+async function loadLeaderboard(){
+  try{
+    const res=await fetch('/api/balloon-scores');
+    const data=await res.json();
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
+    if(!data.length){
+      document.getElementById('lbList').innerHTML='<div style="text-align:center;color:#999;font-size:13px;padding:10px;">Be the first balloon champion! 🎈</div>';
+      return;
+    }
+    document.getElementById('lbList').innerHTML=data.slice(0,6).map((s,i)=>{
+      const isMe=playerName&&s.name.toLowerCase()===playerName.toLowerCase();
+      const cls=i===0?'r1':i===1?'r2':i===2?'r3':isMe?'me':'';
+      return `<div class="lb-row ${cls}">
+        <span class="lb-medal">${medals[i]||i+1}</span>
+        <div style="flex:1">
+          <div class="lb-name">${s.name}${isMe?' ← You!':''}</div>
+          <div style="font-size:10px;color:#888;">📍 ${s.island} · 💥 ${s.level} popped</div>
+        </div>
+        <span class="lb-pts">${Number(s.score).toLocaleString()}</span>
+      </div>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('lbList').innerHTML='';
+  }
+}
+
+async function submitScore(){
+  if(!playerName||score<=0) return;
+  try{
+    const res=await fetch('/api/balloon-scores',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:playerName,score,island:playerLoc,level:totalPopped})
+    });
+    const data=await res.json();
+    if(data.ok) myRank=data.rank;
+  }catch(e){}
+}
+
+loadLeaderboard();
+</script>
+</body>
+</html>
