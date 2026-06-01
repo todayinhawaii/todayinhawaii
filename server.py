@@ -193,6 +193,10 @@ def fortune_game():
 def humor_game():
     return send_from_directory('.', 'humor.html')
 
+@app.route('/slime')
+def slime_game():
+    return send_from_directory('.', 'slime.html')
+
 @app.route('/card_<name>.jpg')
 def card_image(name):
     return send_from_directory('.', 'card_'+name+'.jpg')
