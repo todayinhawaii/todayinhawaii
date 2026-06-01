@@ -181,6 +181,49 @@ def scrabble_game():
 def balloons_game():
     return send_from_directory('.', 'balloons.html')
 
+@app.route('/dolphins')
+def dolphins_game():
+    return send_from_directory('.', 'dolphin.html')
+
+@app.route('/api/dolphin-scores', methods=['GET'])
+def get_dolphin_scores():
+    import json as _j
+    try:
+        scores=_j.load(open('dolphin_scores.json')) if os.path.exists('dolphin_scores.json') else []
+        scores.sort(key=lambda x:x.get('timeSecs',99999))
+        return app.response_class(_j.dumps(scores[:20]),mimetype='application/json')
+    except:
+        return app.response_class('[]',mimetype='application/json')
+
+@app.route('/api/dolphin-scores', methods=['POST'])
+def post_dolphin_score():
+    import json as _j
+    try:
+        data=request.get_json()
+        name=str(data.get('name',''))[:20].strip()
+        score=int(data.get('score',0))
+        island=str(data.get('island',''))[:30]
+        level=int(data.get('level',0))
+        timeSecs=int(data.get('timeSecs',99999))
+        timeStr=str(data.get('timeStr','?'))[:10]
+        if score<=0: return app.response_class(_j.dumps({'ok':False}),mimetype='application/json')
+        scores=[]
+        if os.path.exists('dolphin_scores.json'):
+            with open('dolphin_scores.json') as f: scores=_j.load(f)
+        existing=next((s for s in scores if s.get('name','').lower()==name.lower()),None)
+        if existing:
+            if timeSecs < existing.get('timeSecs',99999):
+                existing.update({'score':score,'island':island,'level':level,'timeSecs':timeSecs,'timeStr':timeStr,'date':datetime.now().strftime('%b %d, %Y')})
+        else:
+            scores.append({'name':name,'score':score,'island':island,'level':level,'timeSecs':timeSecs,'timeStr':timeStr,'date':datetime.now().strftime('%b %d, %Y')})
+        scores.sort(key=lambda x:x.get('timeSecs',99999))
+        scores=scores[:100]
+        with open('dolphin_scores.json','w') as f: _j.dump(scores,f)
+        rank=next((i+1 for i,s in enumerate(scores) if s.get('name','').lower()==name.lower()),0)
+        return app.response_class(_j.dumps({'ok':True,'rank':rank}),mimetype='application/json')
+    except:
+        return app.response_class(_j.dumps({'ok':False}),status=500,mimetype='application/json')
+
 @app.route('/api/balloon-scores', methods=['GET'])
 def get_balloon_scores():
     import json as _j
