@@ -79,6 +79,19 @@
       0%{filter:drop-shadow(0 0 10px rgba(155,89,182,0.6));}
       100%{filter:drop-shadow(0 0 28px rgba(200,100,255,1)) drop-shadow(0 0 50px rgba(155,89,182,0.5));}
     }
+    /* Slow 3D crystal rotation */
+    .hdr-crystal{
+      animation:crystalGlow 2s ease-in-out infinite alternate,
+                crystalRotate3D 6s ease-in-out infinite!important;
+      transform-style:preserve-3d;
+    }
+    @keyframes crystalRotate3D{
+      0%  {transform:rotateY(0deg)   rotateZ(0deg)   scale(1);}
+      25% {transform:rotateY(90deg)  rotateZ(5deg)   scale(1.05);}
+      50% {transform:rotateY(180deg) rotateZ(0deg)   scale(1);}
+      75% {transform:rotateY(270deg) rotateZ(-5deg)  scale(1.05);}
+      100%{transform:rotateY(360deg) rotateZ(0deg)   scale(1);}
+    }
     .hdr-title{
       font-size:28px;font-weight:900;letter-spacing:-0.5px;
       background:linear-gradient(135deg,#ffd700,#ff8c00,#ff0080,#9b59b6,#ffd700);
@@ -213,49 +226,155 @@
       50%{box-shadow:0 1px 0 rgba(255,255,255,0.5) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #8b5000,0 10px 24px rgba(0,0,0,0.6),0 0 60px rgba(255,200,0,1),0 0 100px rgba(255,150,0,0.5);}
     }
 
-    /* Fortune display */
+    /* Ancient Scroll Fortune Box */
     #fortuneBox{
       width:min(400px,92vw);
-      min-height:140px;
-      border-radius:20px;
-      padding:20px 22px;
-      text-align:center;
+      min-height:160px;
       position:relative;
       margin-bottom:16px;
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
+      text-align:center;
       transition:all 0.5s;
-      background:rgba(0,0,0,0.5);
-      border:2px solid rgba(155,89,182,0.3);
+      padding:28px 28px 24px;
+
+      /* Parchment scroll background */
+      background:
+        radial-gradient(ellipse at 50% 0%,rgba(255,230,150,0.12) 0%,transparent 60%),
+        radial-gradient(ellipse at 50% 100%,rgba(255,200,100,0.08) 0%,transparent 60%),
+        linear-gradient(180deg,
+          rgba(60,30,10,0.95) 0%,
+          rgba(40,15,5,0.98) 20%,
+          rgba(35,12,3,0.99) 50%,
+          rgba(40,15,5,0.98) 80%,
+          rgba(60,30,10,0.95) 100%
+        );
+
+      /* Aged paper texture via border */
+      border-top:3px solid rgba(180,120,40,0.6);
+      border-bottom:3px solid rgba(180,120,40,0.6);
+      border-left:1px solid rgba(140,90,30,0.3);
+      border-right:1px solid rgba(140,90,30,0.3);
+
+      box-shadow:
+        0 -8px 0 rgba(100,60,20,0.4),
+        0 8px 0 rgba(100,60,20,0.4),
+        0 0 30px rgba(155,89,182,0.15),
+        inset 0 0 40px rgba(0,0,0,0.4);
     }
+
+    /* Scroll rollers — top and bottom */
+    #fortuneBox::before,
+    #fortuneBox::after{
+      content:'';
+      position:absolute;
+      left:-8px;right:-8px;
+      height:22px;
+      border-radius:11px;
+      background:linear-gradient(180deg,
+        #8B5E3C 0%,#C8912A 25%,#FFD700 50%,#C8912A 75%,#8B5E3C 100%
+      );
+      box-shadow:
+        0 0 10px rgba(255,215,0,0.4),
+        0 3px 6px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      z-index:2;
+    }
+    #fortuneBox::before{top:-11px;}
+    #fortuneBox::after{bottom:-11px;}
+
+    /* Scroll roller end knobs */
+    .scroll-knob-left,.scroll-knob-right{
+      position:absolute;
+      width:16px;height:28px;
+      border-radius:8px;
+      background:linear-gradient(90deg,#6B3A1F,#C8912A,#FFD700,#C8912A,#6B3A1F);
+      box-shadow:0 0 8px rgba(255,215,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+      z-index:3;top:50%;transform:translateY(-50%);
+    }
+    .scroll-knob-left{left:-12px;}
+    .scroll-knob-right{right:-12px;}
+
+    /* Aged scroll edge lines */
+    .scroll-edge-top,.scroll-edge-bottom{
+      position:absolute;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,rgba(180,120,40,0.4),rgba(200,140,50,0.6),rgba(180,120,40,0.4),transparent);
+      z-index:1;
+    }
+    .scroll-edge-top{top:14px;}
+    .scroll-edge-bottom{bottom:14px;}
+
+    /* Mystic rune decorations */
+    .scroll-rune-left,.scroll-rune-right{
+      position:absolute;
+      font-size:14px;opacity:0.3;
+      top:50%;transform:translateY(-50%);
+      color:#ffd700;
+    }
+    .scroll-rune-left{left:8px;}
+    .scroll-rune-right{right:8px;}
+
     #fortuneBox.revealed{
-      background:linear-gradient(135deg,rgba(42,0,64,0.9),rgba(20,0,40,0.95));
-      border:2px solid #9b59b6;
-      box-shadow:0 0 20px rgba(155,89,182,0.4),0 0 40px rgba(155,89,182,0.15);
+      background:
+        radial-gradient(ellipse at 50% 0%,rgba(255,230,150,0.15) 0%,transparent 60%),
+        radial-gradient(ellipse at 50% 100%,rgba(200,150,80,0.1) 0%,transparent 60%),
+        linear-gradient(180deg,
+          rgba(60,30,10,0.95) 0%,
+          rgba(40,15,5,0.98) 20%,
+          rgba(35,12,3,0.99) 50%,
+          rgba(40,15,5,0.98) 80%,
+          rgba(60,30,10,0.95) 100%
+        );
+      border-top-color:rgba(255,215,0,0.8);
+      border-bottom-color:rgba(255,215,0,0.8);
+      box-shadow:
+        0 -8px 0 rgba(180,100,20,0.5),
+        0 8px 0 rgba(180,100,20,0.5),
+        0 0 40px rgba(155,89,182,0.3),
+        0 0 80px rgba(255,215,0,0.1),
+        inset 0 0 40px rgba(0,0,0,0.4);
+      animation:scrollReveal 0.6s ease;
+    }
+    @keyframes scrollReveal{
+      0%{transform:scaleY(0.3);opacity:0;}
+      60%{transform:scaleY(1.05);}
+      100%{transform:scaleY(1);opacity:1;}
     }
 
     .fortune-crystal{
       font-size:32px;margin-bottom:8px;
-      animation:crystalSpin 3s linear infinite;
+      animation:innerCrystalSpin 4s ease-in-out infinite;
       display:none;
+      filter:drop-shadow(0 0 8px currentColor);
     }
-    @keyframes crystalSpin{
-      0%{transform:rotateY(0deg);}
-      100%{transform:rotateY(360deg);}
+    @keyframes innerCrystalSpin{
+      0%  {transform:rotateY(0deg)   scale(1);}
+      25% {transform:rotateY(90deg)  scale(1.1);}
+      50% {transform:rotateY(180deg) scale(1);}
+      75% {transform:rotateY(270deg) scale(1.1);}
+      100%{transform:rotateY(360deg) scale(1);}
     }
     .fortune-crystal.show{display:block;}
 
     #fortuneText{
       font-size:17px;font-weight:700;
-      line-height:1.5;color:#e8d5f5;
-      text-shadow:0 0 12px rgba(155,89,182,0.6);
+      line-height:1.6;
+      color:#f5deb3;
+      text-shadow:
+        0 0 8px rgba(255,215,0,0.3),
+        0 1px 2px rgba(0,0,0,0.8);
       font-style:italic;
       min-height:60px;
       display:flex;align-items:center;justify-content:center;
+      position:relative;z-index:1;
+      font-family:Georgia,serif;
+      letter-spacing:0.3px;
     }
     .fortune-placeholder{
-      font-size:14px;color:#7d6b8a;
+      font-size:13px;
+      color:rgba(180,140,80,0.6);
       font-style:italic;
+      font-family:Georgia,serif;
     }
 
     .fortune-color-bar{
@@ -268,11 +387,13 @@
 
     /* Fortune category badge */
     .fortune-cat{
-      font-size:11px;font-weight:700;
-      letter-spacing:0.15em;text-transform:uppercase;
-      padding:3px 12px;border-radius:99px;
-      margin-bottom:8px;
+      font-size:10px;font-weight:700;
+      letter-spacing:0.2em;text-transform:uppercase;
+      padding:3px 14px;
+      border-radius:99px;
+      margin-bottom:10px;
       display:none;
+      font-family:Georgia,serif;
     }
     .fortune-cat.show{display:inline-block;}
 
@@ -376,8 +497,16 @@
     🔮 SPIN YOUR FORTUNE!
   </button>
 
-  <!-- Fortune display -->
+  <!-- Ancient Scroll Fortune Display -->
   <div id="fortuneBox">
+    <!-- Scroll decorations -->
+    <div class="scroll-knob-left"></div>
+    <div class="scroll-knob-right"></div>
+    <div class="scroll-edge-top"></div>
+    <div class="scroll-edge-bottom"></div>
+    <div class="scroll-rune-left">⚜</div>
+    <div class="scroll-rune-right">⚜</div>
+    <!-- Content -->
     <div class="fortune-cat" id="fortuneCat"></div>
     <div class="fortune-crystal" id="fortuneCrystal">🔮</div>
     <div id="fortuneText">
