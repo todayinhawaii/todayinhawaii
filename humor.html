@@ -3,595 +3,484 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>😂 Humour Roulette — Today in Hawaii</title>
-  <meta name="description" content="Spin the Humour Roulette for a hilarious roast! Vegas comedy wheel — Today in Hawaii!">
+  <title>😂 Who Are You? — Today in Hawaii</title>
+  <meta name="description" content="Spin the wheel and find out WHO YOU ARE! 222 hilarious personalities — Today in Hawaii!">
   <link rel="icon" href="/icon-192.png">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     body{
       min-height:100vh;font-family:system-ui,sans-serif;
-      background:#0a0a00;overflow-x:hidden;overflow-y:auto;color:#e8f4f8;
+      background:#080800;overflow-x:hidden;overflow-y:auto;color:#e8f4f8;
     }
-
     #funBg{
       position:fixed;inset:0;z-index:0;
-      background:radial-gradient(ellipse at 50% 0%,#1a1a00 0%,#0a0a00 70%);
+      background:radial-gradient(ellipse at 50% 0%,#1a1400 0%,#080800 70%);
       overflow:hidden;
     }
-    .confetti-bg{
-      position:absolute;font-size:20px;
-      animation:confettiBob ease-in-out infinite;
-      opacity:0.15;
+    .bg-emoji{
+      position:absolute;font-size:22px;
+      animation:bgBob ease-in-out infinite;opacity:0.12;
     }
-    @keyframes confettiBob{
-      0%,100%{transform:translateY(0) rotate(0deg);}
-      50%{transform:translateY(-15px) rotate(15deg);}
-    }
+    @keyframes bgBob{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-20px) rotate(5deg);}}
 
     .wrap{
-      position:relative;z-index:1;
-      max-width:480px;margin:0 auto;
-      padding:16px 16px 60px;
+      position:relative;z-index:1;max-width:480px;
+      margin:0 auto;padding:14px 14px 60px;
       display:flex;flex-direction:column;align-items:center;
     }
 
     /* Header */
-    .hdr{text-align:center;padding:10px 0 14px;}
+    .hdr{text-align:center;padding:8px 0 12px;}
     .hdr-emoji{
-      font-size:60px;display:block;margin-bottom:6px;
-      animation:laughBob 1s ease-in-out infinite alternate;
+      font-size:62px;display:block;margin-bottom:4px;
+      animation:headBob 1s ease-in-out infinite alternate;
     }
-    @keyframes laughBob{
-      0%{transform:scale(1) rotate(-5deg);}
-      100%{transform:scale(1.12) rotate(5deg);}
-    }
+    @keyframes headBob{0%{transform:scale(1) rotate(-6deg);}100%{transform:scale(1.1) rotate(6deg);}}
     .hdr-title{
-      font-size:28px;font-weight:900;letter-spacing:-0.5px;
-      background:linear-gradient(135deg,#ff0080,#ff8c00,#ffd700,#00ff80,#ff0080);
+      font-size:30px;font-weight:900;letter-spacing:-0.5px;
+      background:linear-gradient(135deg,#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080);
       background-size:300% auto;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      animation:titleRainbow 3s linear infinite;
+      animation:rainbow 3s linear infinite;
     }
-    @keyframes titleRainbow{
-      0%{background-position:0% center;}100%{background-position:300% center;}
-    }
-    .hdr-sub{font-size:13px;color:#a0a000;margin-top:4px;font-style:italic;}
+    @keyframes rainbow{0%{background-position:0% center;}100%{background-position:300% center;}}
+    .hdr-sub{font-size:13px;color:#888800;margin-top:3px;font-style:italic;}
 
     /* Wheel */
     .wheel-wrap{
       position:relative;
-      width:min(340px,90vw);height:min(340px,90vw);
-      margin:10px auto 14px;
+      width:min(330px,88vw);height:min(330px,88vw);
+      margin:8px auto 12px;
     }
     .wheel-outer{
       position:absolute;inset:-8px;border-radius:50%;
       background:conic-gradient(#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080,#ff8c00,#ffd700,#00ff80,#00d4ff,#ff0080);
-      animation:outerSpin 6s linear infinite;filter:blur(5px);opacity:0.7;
+      animation:outerSpin 5s linear infinite;filter:blur(5px);opacity:0.75;
     }
     @keyframes outerSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
     #wheel{
       position:absolute;inset:8px;border-radius:50%;
-      border:4px solid rgba(255,215,0,0.7);
-      box-shadow:0 0 24px rgba(255,140,0,0.5),0 0 50px rgba(255,0,128,0.2),inset 0 0 30px rgba(0,0,0,0.5);
+      border:4px solid rgba(255,215,0,0.8);
+      box-shadow:0 0 28px rgba(255,200,0,0.5),0 0 60px rgba(255,100,0,0.2),inset 0 0 30px rgba(0,0,0,0.5);
       overflow:hidden;cursor:pointer;will-change:transform;
     }
     #wheel canvas{width:100%;height:100%;display:block;}
     .wheel-center{
-      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:52px;height:52px;border-radius:50%;
-      background:radial-gradient(circle,#ffd700,#ff8c00,#ff0000);
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:54px;height:54px;border-radius:50%;
+      background:radial-gradient(circle,#ffd700,#ff8c00,#cc0000);
       border:3px solid #ffd700;
-      box-shadow:0 0 18px rgba(255,215,0,0.9),0 0 36px rgba(255,140,0,0.5);
+      box-shadow:0 0 20px rgba(255,215,0,1),0 0 40px rgba(255,140,0,0.6);
       display:flex;align-items:center;justify-content:center;
-      font-size:22px;z-index:5;
-      animation:jokePulse 0.8s ease-in-out infinite alternate;
+      font-size:24px;z-index:5;
+      animation:centerPulse 0.7s ease-in-out infinite alternate;
     }
-    @keyframes jokePulse{
-      0%{transform:translate(-50%,-50%) scale(1);}
-      100%{transform:translate(-50%,-50%) scale(1.15);}
-    }
+    @keyframes centerPulse{0%{transform:translate(-50%,-50%) scale(1);}100%{transform:translate(-50%,-50%) scale(1.18);}}
     .wheel-pointer{
       position:absolute;top:-4px;left:50%;transform:translateX(-50%);
       width:0;height:0;
-      border-left:14px solid transparent;
-      border-right:14px solid transparent;
-      border-top:40px solid #ffd700;
-      filter:drop-shadow(0 0 8px rgba(255,215,0,0.9));
-      z-index:10;
+      border-left:14px solid transparent;border-right:14px solid transparent;
+      border-top:42px solid #ffd700;
+      filter:drop-shadow(0 0 10px rgba(255,215,0,1));z-index:10;
     }
 
     /* Spin button */
     .spin-btn{
-      width:min(300px,85vw);padding:18px;
-      border:none;border-radius:99px;
+      width:min(290px,84vw);padding:17px;border:none;border-radius:99px;
       font-size:18px;font-weight:900;cursor:pointer;
-      font-family:inherit;letter-spacing:1px;
-      text-transform:uppercase;position:relative;overflow:hidden;
-      background:linear-gradient(180deg,#ff6666 0%,#ee2222 20%,#cc0000 50%,#990000 80%,#ee2222 100%);
+      font-family:inherit;letter-spacing:1px;text-transform:uppercase;
+      position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#ff6666,#ee1111,#cc0000,#990000,#ee1111);
       color:#fff;
-      box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,
-        0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,0,0,0.3);
-      text-shadow:0 1px 2px rgba(0,0,0,0.4);
-      transition:all 0.1s;margin-bottom:18px;
+      box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 -2px 0 rgba(0,0,0,0.3) inset,
+        0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,50,50,0.3);
+      text-shadow:0 1px 2px rgba(0,0,0,0.5);transition:all 0.1s;margin-bottom:14px;
     }
-    .spin-btn::after{content:'';position:absolute;top:4px;left:10px;right:10px;height:38%;
-      background:linear-gradient(180deg,rgba(255,255,255,0.25),transparent);
+    .spin-btn::after{content:'';position:absolute;top:4px;left:12px;right:12px;height:40%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);
       border-radius:99px 99px 50% 50%;pointer-events:none;}
     .spin-btn:active:not(:disabled){transform:translateY(6px);
-      box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 2px 0 #660000,0 4px 10px rgba(0,0,0,0.4);}
-    .spin-btn:disabled{opacity:0.6;cursor:not-allowed;}
-    .spin-btn.glowing{animation:redGlow 1s ease-in-out infinite;}
-    @keyframes redGlow{
-      0%,100%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,0,0,0.3);}
-      50%{box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 -2px 0 rgba(0,0,0,0.25) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 60px rgba(255,0,0,1),0 0 100px rgba(255,100,0,0.5);}
+      box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 2px 0 #660000,0 3px 8px rgba(0,0,0,0.4);}
+    .spin-btn:disabled{opacity:0.55;cursor:not-allowed;}
+    .spin-btn.glowing{animation:btnGlow 1s ease-in-out infinite;}
+    @keyframes btnGlow{
+      0%,100%{box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 -2px 0 rgba(0,0,0,0.3) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 30px rgba(255,50,50,0.3);}
+      50%{box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 -2px 0 rgba(0,0,0,0.3) inset,0 8px 0 #660000,0 10px 24px rgba(0,0,0,0.6),0 0 70px rgba(255,100,0,1),0 0 120px rgba(255,50,0,0.4);}
     }
 
-    /* Joke scroll box */
-    #jokeBox{
-      width:min(400px,92vw);
-      min-height:160px;
-      position:relative;
-      margin-bottom:16px;
-      display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      text-align:center;
-      padding:30px 28px 26px;
-      transition:all 0.4s;
-
-      /* Torn yellow comedy paper */
-      background:linear-gradient(180deg,
-        rgba(80,60,0,0.97) 0%,
-        rgba(60,40,0,0.99) 30%,
-        rgba(55,35,0,0.99) 70%,
-        rgba(80,60,0,0.97) 100%
-      );
-      border-top:3px solid rgba(255,200,0,0.5);
-      border-bottom:3px solid rgba(255,200,0,0.5);
-      border-left:1px solid rgba(200,150,0,0.2);
-      border-right:1px solid rgba(200,150,0,0.2);
-      box-shadow:0 -8px 0 rgba(150,100,0,0.4),0 8px 0 rgba(150,100,0,0.4),
-        inset 0 0 40px rgba(0,0,0,0.4);
+    /* Result scroll box */
+    #resultBox{
+      width:min(400px,93vw);min-height:180px;
+      position:relative;margin-bottom:14px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:32px 30px 28px;transition:all 0.4s;
+      background:linear-gradient(180deg,rgba(40,30,0,0.97),rgba(28,18,0,0.99),rgba(24,14,0,0.99),rgba(28,18,0,0.99),rgba(40,30,0,0.97));
+      border-top:3px solid rgba(255,180,0,0.4);border-bottom:3px solid rgba(255,180,0,0.4);
+      border-left:1px solid rgba(180,120,0,0.2);border-right:1px solid rgba(180,120,0,0.2);
+      box-shadow:0 -8px 0 rgba(120,80,0,0.4),0 8px 0 rgba(120,80,0,0.4),inset 0 0 40px rgba(0,0,0,0.5);
     }
-    #jokeBox::before,#jokeBox::after{
+    #resultBox::before,#resultBox::after{
       content:'';position:absolute;left:-8px;right:-8px;height:22px;border-radius:11px;
-      background:linear-gradient(180deg,#cc6600 0%,#ff9900 25%,#ffd700 50%,#ff9900 75%,#cc6600 100%);
-      box-shadow:0 0 10px rgba(255,150,0,0.5),0 3px 6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.3);
+      background:linear-gradient(180deg,#aa5500,#ee8800,#ffcc00,#ee8800,#aa5500);
+      box-shadow:0 0 12px rgba(255,180,0,0.5),0 3px 6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.3);
       z-index:2;
     }
-    #jokeBox::before{top:-11px;}
-    #jokeBox::after{bottom:-11px;}
-
-    .joke-knob-left,.joke-knob-right{
+    #resultBox::before{top:-11px;}#resultBox::after{bottom:-11px;}
+    .scroll-knob{
       position:absolute;width:16px;height:28px;border-radius:8px;
-      background:linear-gradient(90deg,#993300,#ff9900,#ffd700,#ff9900,#993300);
-      box-shadow:0 0 8px rgba(255,150,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+      background:linear-gradient(90deg,#773300,#ee8800,#ffcc00,#ee8800,#773300);
+      box-shadow:0 0 8px rgba(255,180,0,0.5),0 2px 4px rgba(0,0,0,0.5);
       z-index:3;top:50%;transform:translateY(-50%);
     }
-    .joke-knob-left{left:-12px;}
-    .joke-knob-right{right:-12px;}
-    .joke-edge-top,.joke-edge-bottom{
+    .scroll-knob.l{left:-12px;}.scroll-knob.r{right:-12px;}
+    .scroll-edge{
       position:absolute;left:0;right:0;height:2px;
-      background:linear-gradient(90deg,transparent,rgba(255,150,0,0.4),rgba(255,200,0,0.6),rgba(255,150,0,0.4),transparent);
+      background:linear-gradient(90deg,transparent,rgba(255,160,0,0.4),rgba(255,200,0,0.6),rgba(255,160,0,0.4),transparent);
       z-index:1;
     }
-    .joke-edge-top{top:14px;}
-    .joke-edge-bottom{bottom:14px;}
-    .joke-rune-left,.joke-rune-right{
-      position:absolute;font-size:16px;opacity:0.35;
-      top:50%;transform:translateY(-50%);color:#ffd700;
+    .scroll-edge.t{top:14px;}.scroll-edge.b{bottom:14px;}
+    .scroll-rune{position:absolute;font-size:18px;opacity:0.3;top:50%;transform:translateY(-50%);color:#ffd700;}
+    .scroll-rune.l{left:8px;}.scroll-rune.r{right:8px;}
+    #resultBox.revealed{
+      border-top-color:rgba(255,215,0,0.9);border-bottom-color:rgba(255,215,0,0.9);
+      box-shadow:0 -8px 0 rgba(180,110,0,0.6),0 8px 0 rgba(180,110,0,0.6),
+        0 0 50px rgba(255,200,0,0.2),inset 0 0 40px rgba(0,0,0,0.5);
+      animation:scrollPop 0.5s ease;
     }
-    .joke-rune-left{left:8px;}
-    .joke-rune-right{right:8px;}
+    @keyframes scrollPop{0%{transform:scaleY(0.2);opacity:0;}60%{transform:scaleY(1.06);}100%{transform:scaleY(1);opacity:1;}}
 
-    #jokeBox.revealed{
-      border-top-color:rgba(255,220,0,0.9);
-      border-bottom-color:rgba(255,220,0,0.9);
-      box-shadow:0 -8px 0 rgba(200,120,0,0.6),0 8px 0 rgba(200,120,0,0.6),
-        0 0 40px rgba(255,200,0,0.25),inset 0 0 40px rgba(0,0,0,0.4);
-      animation:jokeReveal 0.5s ease;
+    /* WHO ARE YOU text */
+    .you-are{
+      font-size:11px;font-weight:900;letter-spacing:0.25em;text-transform:uppercase;
+      color:rgba(200,150,50,0.6);font-family:Georgia,serif;margin-bottom:6px;
+      display:none;
     }
-    @keyframes jokeReveal{
-      0%{transform:scaleY(0.3);opacity:0;}
-      60%{transform:scaleY(1.06);}
-      100%{transform:scaleY(1);opacity:1;}
-    }
+    .you-are.show{display:block;}
 
-    /* Joke emoji */
-    .joke-emoji{
-      font-size:36px;margin-bottom:8px;display:none;
-      animation:emojiWiggle 0.4s ease-in-out infinite alternate;
+    /* The BIG WORD */
+    #bigWord{
+      font-size:clamp(32px,10vw,52px);font-weight:900;
+      font-family:Georgia,serif;letter-spacing:2px;
+      line-height:1;margin-bottom:8px;
+      display:none;
+      animation:wordPop 0.4s cubic-bezier(0.23,1,0.32,1);
     }
-    @keyframes emojiWiggle{
-      0%{transform:rotate(-8deg) scale(1);}
-      100%{transform:rotate(8deg) scale(1.12);}
-    }
-    .joke-emoji.show{display:block;}
+    @keyframes wordPop{0%{transform:scale(0.3);opacity:0;}80%{transform:scale(1.08);}100%{transform:scale(1);opacity:1;}}
+    #bigWord.show{display:block;}
 
-    /* Category badge */
-    .joke-cat{
-      font-size:10px;font-weight:700;letter-spacing:0.2em;
-      text-transform:uppercase;padding:3px 14px;border-radius:99px;
-      margin-bottom:10px;display:none;
-    }
-    .joke-cat.show{display:inline-block;}
-
-    #jokeText{
-      font-size:17px;font-weight:700;line-height:1.6;
-      color:#ffe066;
-      text-shadow:0 0 8px rgba(255,200,0,0.3),0 1px 2px rgba(0,0,0,0.8);
-      font-style:italic;min-height:60px;
-      display:flex;align-items:center;justify-content:center;
+    /* Description */
+    #descText{
+      font-size:15px;font-weight:600;line-height:1.6;
+      color:#ffe066;font-style:italic;font-family:Georgia,serif;
+      min-height:48px;display:flex;align-items:center;justify-content:center;
       position:relative;z-index:1;
-      font-family:Georgia,serif;letter-spacing:0.3px;
     }
-    .joke-placeholder{font-size:13px;color:rgba(200,150,0,0.5);font-style:italic;font-family:Georgia,serif;}
+    .result-placeholder{font-size:13px;color:rgba(180,140,50,0.45);font-style:italic;font-family:Georgia,serif;}
 
-    .joke-color-bar{width:60px;height:3px;border-radius:99px;margin:10px auto 0;display:none;}
-    .joke-color-bar.show{display:block;}
+    /* Category */
+    .result-emoji{font-size:34px;margin-bottom:6px;display:none;
+      animation:emojiWiggle 0.5s ease-in-out infinite alternate;}
+    @keyframes emojiWiggle{0%{transform:rotate(-10deg) scale(1);}100%{transform:rotate(10deg) scale(1.15);}}
+    .result-emoji.show{display:block;}
 
-    /* Warning label */
-    .warning-label{
-      font-size:10px;color:#666;text-align:center;
-      margin-bottom:10px;font-style:italic;
-    }
+    /* Spin counter */
+    .spin-count{font-size:11px;color:#666600;text-align:center;margin-bottom:8px;}
 
     /* History */
-    .history-wrap{width:min(400px,92vw);margin-bottom:16px;}
+    .history-wrap{width:min(400px,93vw);margin-bottom:14px;}
     .history-title{font-size:11px;font-weight:700;color:#ff8c00;text-transform:uppercase;
       letter-spacing:0.12em;margin-bottom:8px;text-align:center;}
     .history-item{
-      background:rgba(255,255,255,0.04);border:1px solid rgba(255,150,0,0.15);
-      border-radius:12px;padding:8px 14px;margin-bottom:6px;
-      font-size:12px;color:#cc9900;font-style:italic;
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,150,0,0.12);
+      border-radius:12px;padding:7px 14px;margin-bottom:5px;
+      font-size:12px;color:#cc9900;
       display:flex;align-items:center;gap:8px;
-      animation:fadeSlideIn 0.4s ease;
+      animation:fadeIn 0.4s ease;
     }
-    @keyframes fadeSlideIn{0%{opacity:0;transform:translateY(-10px);}100%{opacity:1;transform:translateY(0);}}
-    .history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-
-    .mystic-divider{width:100%;text-align:center;font-size:16px;margin:6px 0;color:#ff8c00;opacity:0.4;letter-spacing:8px;}
+    @keyframes fadeIn{0%{opacity:0;transform:translateY(-8px);}100%{opacity:1;transform:translateY(0);}}
+    .history-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .history-word{font-weight:900;font-size:13px;}
+    .history-desc{font-size:11px;color:#886600;font-style:italic;}
 
     .share-btn{padding:11px 28px;border:none;border-radius:99px;
       font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
       background:linear-gradient(135deg,#1877f2,#0d65d9);color:#fff;
-      box-shadow:0 4px 14px rgba(24,119,242,0.4);display:none;transition:all 0.15s;}
+      box-shadow:0 4px 14px rgba(24,119,242,0.4);display:none;transition:all 0.15s;margin-bottom:4px;}
     .share-btn.show{display:inline-block;}
     .share-btn:active{transform:scale(0.97);}
 
-    .spin-count{font-size:11px;color:#666;text-align:center;margin-bottom:10px;}
-    .confetti{position:fixed;pointer-events:none;z-index:999;}
-    .back{text-align:center;margin-top:16px;font-size:13px;color:#666;}
+    .divider{width:100%;text-align:center;font-size:16px;margin:8px 0;color:#888800;opacity:0.4;letter-spacing:8px;}
+    .confetti{position:fixed;pointer-events:none;z-index:9999;}
+    .back{text-align:center;margin-top:14px;font-size:13px;color:#666600;}
     .back a{color:#ff8c00;text-decoration:none;font-weight:600;}
   </style>
 </head>
 <body>
-
 <div id="funBg"></div>
-
 <div class="wrap">
   <div class="hdr">
-    <span class="hdr-emoji">😂</span>
-    <div class="hdr-title">Humour Roulette</div>
-    <div class="hdr-sub">🎰 Spin for a laugh · No feelings guaranteed! 😂</div>
+    <span class="hdr-emoji">🎭</span>
+    <div class="hdr-title">WHO ARE YOU?</div>
+    <div class="hdr-sub">🎰 Spin the wheel and find out! 222 personalities! 😂</div>
   </div>
 
   <div class="wheel-wrap">
     <div class="wheel-outer"></div>
     <div id="wheel"><canvas id="wheelCanvas"></canvas></div>
-    <div class="wheel-center">😂</div>
+    <div class="wheel-center">🎭</div>
     <div class="wheel-pointer"></div>
   </div>
 
-  <div class="spin-count" id="spinCount">😂 Go on then... spin it!</div>
+  <div class="spin-count" id="spinCount">😂 Who are you TODAY? Spin and find out!</div>
 
   <button class="spin-btn glowing" id="spinBtn" onclick="spinWheel()">
-    😂 SPIN THE ROAST!
+    🎰 SPIN TO FIND OUT!
   </button>
 
-  <div class="warning-label">⚠️ All in good fun — no offence intended! 😂</div>
-
-  <!-- Joke scroll -->
-  <div id="jokeBox">
-    <div class="joke-knob-left"></div>
-    <div class="joke-knob-right"></div>
-    <div class="joke-edge-top"></div>
-    <div class="joke-edge-bottom"></div>
-    <div class="joke-rune-left">😜</div>
-    <div class="joke-rune-right">😜</div>
-    <div class="joke-cat" id="jokeCat"></div>
-    <div class="joke-emoji" id="jokeEmoji">😂</div>
-    <div id="jokeText">
-      <span class="joke-placeholder">😂 Spin the wheel if you dare... 😂</span>
-    </div>
-    <div class="joke-color-bar" id="jokeBar"></div>
+  <!-- Result scroll -->
+  <div id="resultBox">
+    <div class="scroll-knob l"></div><div class="scroll-knob r"></div>
+    <div class="scroll-edge t"></div><div class="scroll-edge b"></div>
+    <div class="scroll-rune l">😜</div><div class="scroll-rune r">😜</div>
+    <div class="you-are" id="youAre">🎭 TODAY YOU ARE...</div>
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div id="bigWord"></div>
+    <div id="descText"><span class="result-placeholder">😂 Spin the wheel to reveal who you are today! 😂</span></div>
   </div>
 
-  <button class="share-btn" id="shareBtn" onclick="shareJoke()">
-    📘 Share This Roast!
-  </button>
+  <button class="share-btn" id="shareBtn" onclick="shareResult()">📘 Share Who I Am!</button>
 
-  <div class="mystic-divider">· · · 😂 · · ·</div>
+  <div class="divider">· · · 😂 · · ·</div>
 
   <div class="history-wrap">
-    <div class="history-title" id="historyTitle" style="display:none;">💀 Your Recent Roastings</div>
-    <div id="historyList"></div>
+    <div class="history-title" id="histTitle" style="display:none;">🎭 Your Recent Personalities</div>
+    <div id="histList"></div>
   </div>
 
   <div class="back"><a href="/games">← Back to Games Hub 🎮</a></div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
-// HUMOUR ROULETTE — Vegas Comedy Roast Wheel
-// Today in Hawaii © 2026
-// ══════════════════════════════════════════════════
+const PERSONALITIES = [{"word": "SMELLY", "emoji": "🦨", "color": "#6B8E23", "desc": "The room knows you arrived before they see you. Own it!"}, {"word": "DIRTY", "emoji": "🌪️", "color": "#8B4513", "desc": "Your fingernails have their own postcode. Respect."}, {"word": "CUTE", "emoji": "🐣", "color": "#FF69B4", "desc": "Disgustingly adorable. People let you get away with everything."}, {"word": "FAT", "emoji": "🍩", "color": "#FF8C00", "desc": "Built for comfort not speed. Best hugs come from you. Fact."}, {"word": "HUGE", "emoji": "🐘", "color": "#708090", "desc": "Large and in charge. You take up space beautifully. Good."}, {"word": "ADORABLE", "emoji": "🧸", "color": "#FFB6C1", "desc": "Criminally sweet. Animals and babies trust you immediately."}, {"word": "LIAR", "emoji": "🤥", "color": "#DC143C", "desc": "Your nose should be longer. You know exactly what you did."}, {"word": "POPULAR", "emoji": "👑", "color": "#FFD700", "desc": "Everyone wants to sit next to you. You are that person."}, {"word": "DIFFERENT", "emoji": "🦄", "color": "#9B59B6", "desc": "They broke the mould after making you. Weirdly perfect."}, {"word": "STUPID", "emoji": "🤪", "color": "#FF6347", "desc": "Bless your heart. You try so hard and we love you for it."}, {"word": "BOUNCY", "emoji": "🏀", "color": "#FF8C00", "desc": "Cannot sit still more than four seconds. Full of life!"}, {"word": "LOUD", "emoji": "📣", "color": "#FF4500", "desc": "The neighbours know your business. So does the next street."}, {"word": "QUIET", "emoji": "🤫", "color": "#4682B4", "desc": "Says nothing but sees everything. Dangerous and wise."}, {"word": "SLEEPY", "emoji": "😴", "color": "#6A5ACD", "desc": "Could fall asleep mid-sentence. Naps are your superpower."}, {"word": "HUNGRY", "emoji": "🍔", "color": "#FF8C00", "desc": "Always thinking about the next meal. Deeply relatable."}, {"word": "GRUMPY", "emoji": "😠", "color": "#8B0000", "desc": "Do not talk to you before coffee. Or after coffee. Or at all."}, {"word": "LAZY", "emoji": "🛋️", "color": "#808080", "desc": "Why stand when you can sit. Why sit when you can lie down."}, {"word": "SHINY", "emoji": "✨", "color": "#FFD700", "desc": "You sparkle in any lighting. People squint when you enter."}, {"word": "CLUMSY", "emoji": "🤸", "color": "#FF6347", "desc": "You trip over flat surfaces. Furniture moves to avoid you."}, {"word": "DRAMATIC", "emoji": "🎭", "color": "#8B008B", "desc": "Everything is a movie and you are the star. Always."}, {"word": "SASSY", "emoji": "💅", "color": "#FF1493", "desc": "Your comebacks arrive before the insult finishes. Sharp."}, {"word": "SILLY", "emoji": "🤡", "color": "#FF6347", "desc": "Takes nothing seriously including this result. Iconic."}, {"word": "WEIRD", "emoji": "🌀", "color": "#00CED1", "desc": "Wonderfully odd. The world needs more of whatever you are."}, {"word": "HAIRY", "emoji": "🦁", "color": "#DAA520", "desc": "Majestic. Like a lion crossed with a carpet. Gorgeous."}, {"word": "TINY", "emoji": "🐭", "color": "#DDA0DD", "desc": "Small but absolutely feral. The energy is enormous."}, {"word": "GIGGLY", "emoji": "😆", "color": "#FF69B4", "desc": "Laughs at everything including serious moments. Infectious."}, {"word": "CHEEKY", "emoji": "😏", "color": "#FF8C00", "desc": "Always pushing limits. Gets away with it every single time."}, {"word": "SNEAKY", "emoji": "🦊", "color": "#FF4500", "desc": "You were there. Nobody saw you. That is the point entirely."}, {"word": "NOSY", "emoji": "👃", "color": "#DDA0DD", "desc": "You know things you should not know. How? Nobody knows."}, {"word": "STINKY", "emoji": "💨", "color": "#556B2F", "desc": "A natural talent. Windows open when you walk in. A gift."}, {"word": "BOSSY", "emoji": "📋", "color": "#B22222", "desc": "You were not asked but you stepped up anyway. Legend."}, {"word": "WOBBLY", "emoji": "🍮", "color": "#FF8C00", "desc": "Unsteady but always upright in the end. Like a champion."}, {"word": "CRANKY", "emoji": "😤", "color": "#8B0000", "desc": "Woke up on the wrong side of the bed. Again. Every day."}, {"word": "FLUFFY", "emoji": "☁️", "color": "#E6E6FA", "desc": "Soft and round and huggable. Like a very warm cloud."}, {"word": "SPOILED", "emoji": "🎀", "color": "#FF69B4", "desc": "Gets what you want always. Refuse to apologise for it."}, {"word": "GREEDY", "emoji": "🍰", "color": "#FF8C00", "desc": "One is never enough. Two is a start. Three is just normal."}, {"word": "SHY", "emoji": "🙈", "color": "#DDA0DD", "desc": "Quiet on the outside. Absolute chaos on the inside."}, {"word": "BRAVE", "emoji": "🦁", "color": "#FFD700", "desc": "Faces the scary thing anyway. Knees shaking. Still goes."}, {"word": "FEARLESS", "emoji": "🔥", "color": "#FF4500", "desc": "Nothing scares you. This is either courage or a problem."}, {"word": "NOISY", "emoji": "🔊", "color": "#FF6347", "desc": "You have never been in a library. You would not survive it."}, {"word": "POLITE", "emoji": "🎩", "color": "#4169E1", "desc": "Please and thank you. Always. Bless your sweet sweet heart."}, {"word": "RUDE", "emoji": "😬", "color": "#8B0000", "desc": "Calls it honesty. Everyone else calls it something else."}, {"word": "LUCKY", "emoji": "🍀", "color": "#228B22", "desc": "Things just work out for you. People have noticed. Suspicious."}, {"word": "UNLUCKY", "emoji": "🌧️", "color": "#4682B4", "desc": "If it can go wrong for you it absolutely will. Somehow."}, {"word": "SPARKLY", "emoji": "💎", "color": "#00CED1", "desc": "You shimmer. Glitter follows you home. You glow up rooms."}, {"word": "GRACEFUL", "emoji": "🦢", "color": "#B0C4DE", "desc": "Moves through life like water. Everyone watches in awe."}, {"word": "MESSY", "emoji": "🌪️", "color": "#8B4513", "desc": "Your house is a vibe. A chaotic beautiful disaster vibe."}, {"word": "TIDY", "emoji": "🧹", "color": "#4682B4", "desc": "Everything has a place. You rearrange things in other people's homes."}, {"word": "JOLLY", "emoji": "🎅", "color": "#CC0000", "desc": "Permanently cheerful. A human Santa. The room lifts when you arrive."}, {"word": "FRIENDLY", "emoji": "🤗", "color": "#FFD700", "desc": "Talks to everyone including strangers and their dogs. Legend."}, {"word": "CUDDLY", "emoji": "🧸", "color": "#DEB887", "desc": "Arms open. Always warm. The best person to be stuck with."}, {"word": "SCRUFFY", "emoji": "🦔", "color": "#808080", "desc": "Dishevelled in a charming way. Effortlessly unbothered always."}, {"word": "BUBBLY", "emoji": "🫧", "color": "#00CED1", "desc": "Fizzy with joy. People cannot help smiling around you."}, {"word": "WILD", "emoji": "🐆", "color": "#FF4500", "desc": "Cannot be tamed. Should not be tamed. Magnificent."}, {"word": "CRAZY", "emoji": "🌀", "color": "#9400D3", "desc": "Fully unhinged in the most entertaining way possible."}, {"word": "ODD", "emoji": "🎲", "color": "#00CED1", "desc": "Delightfully peculiar. A puzzle nobody can quite solve."}, {"word": "GOOFY", "emoji": "🤪", "color": "#FF8C00", "desc": "Trips over nothing. Laughs at yourself first. Perfect."}, {"word": "DIZZY", "emoji": "🌀", "color": "#9B59B6", "desc": "Always slightly confused about what day it is. Same honestly."}, {"word": "FANCY", "emoji": "🥂", "color": "#DAA520", "desc": "Pinky up. You deserve the good things and you know it."}, {"word": "STUBBORN", "emoji": "🐂", "color": "#8B0000", "desc": "Your mind was made up before the conversation started."}, {"word": "CURIOUS", "emoji": "🔍", "color": "#4169E1", "desc": "Needs to know everything immediately. Cannot leave it alone."}, {"word": "PLAYFUL", "emoji": "🎉", "color": "#FF69B4", "desc": "Still a kid on the inside. Age is just a number to you."}, {"word": "CHATTY", "emoji": "💬", "color": "#FF8C00", "desc": "Silence makes you uncomfortable. You fill it beautifully."}, {"word": "SPEEDY", "emoji": "⚡", "color": "#FFD700", "desc": "First one there. First one done. Already bored waiting for others."}, {"word": "SLOW", "emoji": "🐢", "color": "#228B22", "desc": "On your own timeline. Unbothered by everyone rushing past."}, {"word": "SQUISHY", "emoji": "🫠", "color": "#FFB6C1", "desc": "Soft and wonderful. Like a stress ball but with feelings."}, {"word": "BEEFY", "emoji": "💪", "color": "#8B4513", "desc": "Built like a door. A very strong door. An impressive door."}, {"word": "CHUNKY", "emoji": "🍫", "color": "#8B4513", "desc": "Solid. Substantial. A presence that fills the room nicely."}, {"word": "TICKLISH", "emoji": "😂", "color": "#FF69B4", "desc": "Do not touch the sides. People know your weakness. Oh no."}, {"word": "SNUGGLY", "emoji": "🛌", "color": "#DDA0DD", "desc": "Born to be wrapped in blankets with snacks. Life goals."}, {"word": "SASSY", "emoji": "💅", "color": "#FF1493", "desc": "Your comebacks arrive before the insult finishes. Sharp."}, {"word": "MOODY", "emoji": "🌦️", "color": "#4682B4", "desc": "Four seasons in one afternoon. Keep them guessing always."}, {"word": "BRAINY", "emoji": "🧠", "color": "#4169E1", "desc": "Always the smartest in the room. Quietly aware of this."}, {"word": "FORGETFUL", "emoji": "🧩", "color": "#9B59B6", "desc": "Left the house twice today and forgot why both times."}, {"word": "CARELESS", "emoji": "💨", "color": "#708090", "desc": "Free spirit. Things break around you. Coincidence probably."}, {"word": "CLEVER", "emoji": "🦉", "color": "#DAA520", "desc": "Always three steps ahead. People catch up eventually."}, {"word": "GENTLE", "emoji": "🕊️", "color": "#B0C4DE", "desc": "Handles everything and everyone with the softest touch."}, {"word": "KIND", "emoji": "💚", "color": "#228B22", "desc": "Actually good. Genuinely caring. Rare and wonderful."}, {"word": "MISCHIEVOUS", "emoji": "😈", "color": "#9B59B6", "desc": "The look in your eye tells everyone everything already."}, {"word": "HONEST", "emoji": "🎯", "color": "#4169E1", "desc": "Says the thing nobody else will say. Terrifying and necessary."}, {"word": "TROUBLEMAKER", "emoji": "💥", "color": "#FF4500", "desc": "Did not start it but definitely continued it. Own it."}, {"word": "DREAMY", "emoji": "🌙", "color": "#6A5ACD", "desc": "Head in the clouds permanently. Sees things others miss."}, {"word": "GLOWING", "emoji": "🌟", "color": "#FFD700", "desc": "You radiate. Warm and bright and impossible to ignore."}, {"word": "WIGGLY", "emoji": "🪱", "color": "#228B22", "desc": "Cannot stay still. Even sitting you are moving somehow."}, {"word": "JUMPY", "emoji": "🐸", "color": "#228B22", "desc": "Startled by everything including your own reflection. Relatable."}, {"word": "BASHFUL", "emoji": "🙈", "color": "#FFB6C1", "desc": "Goes red at the slightest attention. Endearingly sweet."}, {"word": "HILARIOUS", "emoji": "😂", "color": "#FF69B4", "desc": "Actually funny. Not just thinks they are. The real deal."}, {"word": "CHARMING", "emoji": "🌹", "color": "#DC143C", "desc": "Could talk anyone into anything. A dangerous gift."}, {"word": "LOVABLE", "emoji": "💕", "color": "#FF69B4", "desc": "People just want to hug you. It is the vibe you give off."}, {"word": "FABULOUS", "emoji": "💃", "color": "#FF1493", "desc": "Fabulousness at maximum. There is no other setting for you."}, {"word": "GRUMPALICIOUS", "emoji": "😤", "color": "#8B0000", "desc": "Grumpy but make it fashion. A grump with standards."}, {"word": "SNACKY", "emoji": "🍿", "color": "#FF8C00", "desc": "Always eating. Always have snacks. The MVP of any trip."}, {"word": "BURPY", "emoji": "🫧", "color": "#556B2F", "desc": "A natural talent. A gift nobody asked for. They still notice."}, {"word": "FARTY", "emoji": "💨", "color": "#6B8E23", "desc": "Blame it on the dog. There is no dog. Everyone knows."}, {"word": "TOOTY", "emoji": "🎺", "color": "#DAA520", "desc": "Music from within. Nobody requested it. Here it is anyway."}, {"word": "PICKY", "emoji": "🔍", "color": "#4682B4", "desc": "Has opinions on everything. Especially food. Especially."}, {"word": "GASSY", "emoji": "🌬️", "color": "#556B2F", "desc": "A one person weather system. Meteorologically significant."}, {"word": "GOOEY", "emoji": "🍯", "color": "#DAA520", "desc": "Warm and sticky and sweet. People stick around you literally."}, {"word": "CRISPY", "emoji": "🥓", "color": "#8B4513", "desc": "Sharp edges. Direct. No nonsense. Goes well with everything."}, {"word": "CRUNCHY", "emoji": "🥬", "color": "#228B22", "desc": "Earthy and real and wholesome. A good solid presence."}, {"word": "JUICY", "emoji": "🍓", "color": "#DC143C", "desc": "Full of stories. People lean in when you talk. Every time."}, {"word": "SQUAWKY", "emoji": "🦜", "color": "#FF8C00", "desc": "Loud and colourful and impossible to ignore. Parrot energy."}, {"word": "BREEZY", "emoji": "🍃", "color": "#20B2AA", "desc": "Carefree. Nothing sticks. You float through problems easily."}, {"word": "WOOZY", "emoji": "🌀", "color": "#9B59B6", "desc": "Slightly dizzy. Slightly confused. Fully lovable always."}, {"word": "DOPEY", "emoji": "😵", "color": "#708090", "desc": "Lovably slow on the uptake. The joke lands late but it lands."}, {"word": "TWITCHY", "emoji": "⚡", "color": "#FFD700", "desc": "On high alert at all times. Something moves and so do you."}, {"word": "WACKY", "emoji": "🤪", "color": "#FF6347", "desc": "Zero filter. Maximum entertainment. Nobody knows what is next."}, {"word": "BONKERS", "emoji": "🌀", "color": "#9400D3", "desc": "Fully off the rails in the most delightful way possible."}, {"word": "NUTTY", "emoji": "🥜", "color": "#8B4513", "desc": "Absolutely crackers. Wonderfully mad. A joy to be around."}, {"word": "ZANY", "emoji": "🎪", "color": "#FF4500", "desc": "Comedy is your default setting. Life is your personal stage."}, {"word": "CHATTY", "emoji": "💬", "color": "#FF8C00", "desc": "Silence makes you uncomfortable. You fill it beautifully."}, {"word": "YAPPY", "emoji": "🐶", "color": "#DAA520", "desc": "Small voice big presence. You make yourself known immediately."}, {"word": "WHINY", "emoji": "😭", "color": "#4682B4", "desc": "Everything is a lot. You feel it deeply. Loudly. Very often."}, {"word": "BRAINY", "emoji": "🧠", "color": "#4169E1", "desc": "Always the smartest in the room. Quietly aware of this."}, {"word": "SPOTTY", "emoji": "🐾", "color": "#8B4513", "desc": "Covered in character marks. Each one tells a story."}, {"word": "FRECKLY", "emoji": "🌟", "color": "#DAA520", "desc": "Kissed by the sun repeatedly. Each freckle is a story."}, {"word": "BLOTCHY", "emoji": "🎨", "color": "#DC143C", "desc": "Goes red at everything. Your face is a live mood ring."}, {"word": "ROSY", "emoji": "🌹", "color": "#FF69B4", "desc": "Permanently flushed with life. A warm glow follows you."}, {"word": "SUNNY", "emoji": "☀️", "color": "#FFD700", "desc": "Radiates warmth. People gravitate to you like sunflowers."}, {"word": "STORMY", "emoji": "⛈️", "color": "#4682B4", "desc": "Intense and dramatic and powerful. Watch out for lightning."}, {"word": "PEPPY", "emoji": "🎉", "color": "#FF69B4", "desc": "Annoyingly energetic before 9am. A human alarm clock."}, {"word": "CHILLY", "emoji": "🧊", "color": "#00CED1", "desc": "Cool exterior. Very warm inside once the ice melts."}, {"word": "TOASTY", "emoji": "🔥", "color": "#FF8C00", "desc": "Warm to the core. People want to be near you in winter."}, {"word": "SWEATY", "emoji": "💦", "color": "#4682B4", "desc": "Always warm. Always damp. Working hard or hardly working."}, {"word": "ITCHY", "emoji": "🦟", "color": "#8B4513", "desc": "Fidgety and restless. Cannot stay in one place. Scratching."}, {"word": "SCRATCHY", "emoji": "🦔", "color": "#708090", "desc": "Rough around the edges. Surprisingly soft once you trust."}, {"word": "PRICKLY", "emoji": "🌵", "color": "#228B22", "desc": "Hard to handle but worth the effort. Like a beautiful cactus."}, {"word": "BREEZY", "emoji": "🍃", "color": "#20B2AA", "desc": "Carefree. Nothing sticks. You float through problems easily."}, {"word": "SOGGY", "emoji": "🌧️", "color": "#4682B4", "desc": "Always wet from something. Rain follows you. Always somehow."}, {"word": "CRUSTY", "emoji": "🥖", "color": "#8B4513", "desc": "Hard on the outside completely soft on the inside. Classic."}, {"word": "DUSTY", "emoji": "🌫️", "color": "#808080", "desc": "Been around a while. Some cobwebs. Still entirely magnificent."}, {"word": "RUSTY", "emoji": "⚙️", "color": "#8B4513", "desc": "A bit creaky first thing. Gets going eventually. Reliable."}, {"word": "MUSTY", "emoji": "📦", "color": "#708080", "desc": "Old soul. Classic vibe. The smell of history and experience."}, {"word": "CRABBY", "emoji": "🦀", "color": "#DC143C", "desc": "Sideways approach to everything. Pinchy when cornered."}, {"word": "SALTY", "emoji": "🧂", "color": "#708090", "desc": "Permanently seasoned with bitterness. And honestly fair enough."}, {"word": "SWEET", "emoji": "🍭", "color": "#228B22", "desc": "Genuinely good and warm. The world needs more of you."}, {"word": "SOUR", "emoji": "🍋", "color": "#FFD700", "desc": "Puckered. Unimpressed. The face says everything clearly."}, {"word": "SPICY", "emoji": "🌶️", "color": "#FF4500", "desc": "Too much for some. Exactly right for those who can handle it."}, {"word": "BITTER", "emoji": "☕", "color": "#4B3832", "desc": "An acquired taste. Complex and rich. Not for everyone."}, {"word": "ZIPPY", "emoji": "⚡", "color": "#FFD700", "desc": "Fast. Light. Gone before you register they were even there."}, {"word": "FLASHY", "emoji": "💫", "color": "#FFD700", "desc": "Bling is not enough. You need more bling on your bling."}, {"word": "GLAMOROUS", "emoji": "💄", "color": "#FF1493", "desc": "Fully put together at all times. How? Nobody knows."}, {"word": "POSH", "emoji": "🎩", "color": "#4169E1", "desc": "Pinky permanently elevated. Standards unreasonably high."}, {"word": "ROYAL", "emoji": "👑", "color": "#FFD700", "desc": "Born to be served. Fully aware of it. No apologies given."}, {"word": "HEROIC", "emoji": "🦸", "color": "#4169E1", "desc": "Rushes in when others run out. Natural born rescuer always."}, {"word": "LEGENDARY", "emoji": "⭐", "color": "#FFD700", "desc": "People talk about you after you leave. Always will."}, {"word": "ICONIC", "emoji": "🏆", "color": "#FFD700", "desc": "A moment. A movement. Completely one of a kind."}, {"word": "EPIC", "emoji": "🔥", "color": "#FF4500", "desc": "Everything you do is on a grand scale. No half measures ever."}, {"word": "FEISTY", "emoji": "🥊", "color": "#FF4500", "desc": "Small but absolutely comes with a fight. Deep respect."}, {"word": "FIESTY", "emoji": "🥊", "color": "#FF8C00", "desc": "Spelled wrong but the energy is still absolutely right."}, {"word": "NAUGHTY", "emoji": "😈", "color": "#9B59B6", "desc": "You know exactly what you did. So does everyone else."}, {"word": "ANGELIC", "emoji": "😇", "color": "#FFD700", "desc": "Pure as snow. Totally innocent. The halo is doing a lot."}, {"word": "DEVIOUS", "emoji": "😈", "color": "#8B0000", "desc": "Plotting something. Eyes too calm. That smile is suspicious."}, {"word": "DEFIANT", "emoji": "✊", "color": "#8B0000", "desc": "Tell them no and watch them go. Nothing stops you."}, {"word": "REBELLIOUS", "emoji": "🤘", "color": "#FF4500", "desc": "Rules are suggestions. You wrote your own long ago."}, {"word": "FEARLESS", "emoji": "🔥", "color": "#FF4500", "desc": "Nothing scares you. This is either courage or a problem."}, {"word": "BOLD", "emoji": "🦁", "color": "#FF8C00", "desc": "Goes first. Speaks first. Apologises never. Admirable."}, {"word": "DARING", "emoji": "🪂", "color": "#FF4500", "desc": "Jumps before looking. Somehow always lands. Infuriating."}, {"word": "CHEEKY", "emoji": "😏", "color": "#FF8C00", "desc": "Always pushing limits. Gets away with it every single time."}, {"word": "IMPISH", "emoji": "👺", "color": "#228B22", "desc": "Mischievous grin. Small trouble. Big consequences. Worth it."}, {"word": "SUSPICIOUS", "emoji": "🕵️", "color": "#4B3832", "desc": "Something about you is off. Nobody knows what. You do."}, {"word": "SHADY", "emoji": "😎", "color": "#4B3832", "desc": "Sunglasses on. Mouth closed. You know more than you say."}, {"word": "SKETCHY", "emoji": "🖊️", "color": "#708090", "desc": "Unverified. Unreliable. Oddly charming. Do not trust but do."}, {"word": "MYSTERIOUS", "emoji": "🌙", "color": "#6A5ACD", "desc": "Nobody knows your backstory. You prefer it that way."}, {"word": "SECRETIVE", "emoji": "🤐", "color": "#4B3832", "desc": "Vault locked. Stories untold. Eyes that have seen things."}, {"word": "SLY", "emoji": "🦊", "color": "#FF8C00", "desc": "Clever and quiet about it. You already got what you came for."}, {"word": "TRICKY", "emoji": "🃏", "color": "#9B59B6", "desc": "Gets out of everything. How? That is the trick exactly."}, {"word": "CRAFTY", "emoji": "🧶", "color": "#FF69B4", "desc": "Makes something out of nothing. Plans nobody sees coming."}, {"word": "SLIPPERY", "emoji": "🐟", "color": "#4682B4", "desc": "Hard to catch. Hard to pin down. Always just out of reach."}, {"word": "FIBBER", "emoji": "🤥", "color": "#DC143C", "desc": "Stretches truth into shapes nobody recognises. Very talented."}, {"word": "SHOWOFF", "emoji": "🎪", "color": "#FF6347", "desc": "Cannot help it. Born to perform. The room is always a stage."}, {"word": "BRAGGY", "emoji": "🏆", "color": "#FFD700", "desc": "Has achieved things. Will tell you. Repeatedly. In detail."}, {"word": "DRIFTY", "emoji": "🍂", "color": "#20B2AA", "desc": "Floats through life like a leaf. Not lost. Just exploring."}, {"word": "SPACEY", "emoji": "🚀", "color": "#6A5ACD", "desc": "Out there orbiting something beautiful. Checked out but happy."}, {"word": "HYPER", "emoji": "⚡", "color": "#FFD700", "desc": "Too much caffeine or just born like this. Nobody can keep up."}, {"word": "ZOOMY", "emoji": "💨", "color": "#00CED1", "desc": "There and gone. A blur. You leave a trail of pure excitement."}, {"word": "WIGGLY", "emoji": "🪱", "color": "#228B22", "desc": "Cannot stay still. Even sitting you are moving somehow."}, {"word": "JITTERY", "emoji": "☕", "color": "#FFD700", "desc": "Vibrating at a frequency only small animals can hear."}, {"word": "BOUNCY", "emoji": "🏀", "color": "#FF69B4", "desc": "Cannot sit still more than four seconds. Full of life!"}, {"word": "TWIRLY", "emoji": "🌀", "color": "#DDA0DD", "desc": "Spins for fun. In supermarkets. At crossings. Just because."}, {"word": "DAZZLING", "emoji": "✨", "color": "#FFD700", "desc": "Blinding. Radiant. People shield their eyes. Keep shining."}, {"word": "BEAUTIFUL", "emoji": "🌸", "color": "#FF69B4", "desc": "Actually stunning. Inside and out. Cannot be argued with."}, {"word": "HANDSOME", "emoji": "😍", "color": "#4169E1", "desc": "Ridiculously good looking. You ruin people's concentration."}, {"word": "GORGEOUS", "emoji": "💐", "color": "#FF1493", "desc": "Unfairly attractive. The mirror smiles back. Always."}, {"word": "STUNNING", "emoji": "😮", "color": "#9B59B6", "desc": "People stop mid-sentence when you walk in. Every time."}, {"word": "RADIANT", "emoji": "🌟", "color": "#FFD700", "desc": "You light up from the inside. Rooms get brighter with you."}, {"word": "LOVELY", "emoji": "💕", "color": "#FF69B4", "desc": "Simply and completely lovely. A rare and wonderful thing."}, {"word": "PRECIOUS", "emoji": "💎", "color": "#DDA0DD", "desc": "Irreplaceable. Treasured. Handle with care and endless love."}, {"word": "DARLING", "emoji": "🌹", "color": "#DC143C", "desc": "Endearingly wonderful. People call you darling and mean it."}, {"word": "DELIGHTFUL", "emoji": "🎀", "color": "#FF69B4", "desc": "An actual delight. Being near you is genuinely fun."}, {"word": "CHAOTIC", "emoji": "🌪️", "color": "#FF4500", "desc": "A walking natural disaster. Somehow everything works out."}, {"word": "UNSTOPPABLE", "emoji": "🚂", "color": "#8B0000", "desc": "Once you start nothing and nobody can slow you down."}, {"word": "UNPREDICTABLE", "emoji": "🎲", "color": "#9B59B6", "desc": "Nobody knows what is next. Including you. That is the charm."}, {"word": "RIDICULOUS", "emoji": "🤦", "color": "#FF6347", "desc": "Absurd in the best possible way. Life would be boring without you."}, {"word": "ABSURD", "emoji": "🎭", "color": "#9B59B6", "desc": "Makes no sense whatsoever. Somehow entirely right though."}, {"word": "EXTRA", "emoji": "🎆", "color": "#FF1493", "desc": "Could not be less if you tried. Maximum at all times. Always."}, {"word": "OVERDRAMATIC", "emoji": "🎬", "color": "#8B008B", "desc": "Stubbed toe. Called an ambulance. Everything is a production."}, {"word": "OVERCAFFEINATED", "emoji": "☕", "color": "#4B3832", "desc": "On your fifth coffee. Typing at the speed of sound."}, {"word": "OVERCONFIDENT", "emoji": "🦚", "color": "#228B22", "desc": "Skill level three. Confidence level eleven. Respect."}, {"word": "OVERSHARING", "emoji": "📢", "color": "#FF8C00", "desc": "Nobody needed to know that. You told them anyway. Twice."}, {"word": "MEMORABLE", "emoji": "🎯", "color": "#FFD700", "desc": "Nobody forgets you. Even when they try. Especially then."}, {"word": "UNIQUE", "emoji": "🦋", "color": "#9B59B6", "desc": "One of one. No copy exists. An original in every single way."}, {"word": "ECCENTRIC", "emoji": "🎩", "color": "#FF8C00", "desc": "Rich people call it eccentric. Everyone else says odd. Same."}, {"word": "COLORFUL", "emoji": "🌈", "color": "#9B59B6", "desc": "A full rainbow of emotions moods and outfits. Never dull."}, {"word": "ENERGETIC", "emoji": "⚡", "color": "#FF4500", "desc": "Running on something the rest of us do not have access to."}, {"word": "VIBRANT", "emoji": "🌺", "color": "#FF4500", "desc": "Alive in every colour and sound and feeling. Fully on."}, {"word": "ELECTRIC", "emoji": "⚡", "color": "#FFD700", "desc": "A charge follows you. Touch something and it lights up."}, {"word": "MAGNETIC", "emoji": "🧲", "color": "#9B59B6", "desc": "People are drawn to you against their better judgment."}, {"word": "MAGICAL", "emoji": "🪄", "color": "#9B59B6", "desc": "Things happen around you that cannot be explained. Enchanting."}, {"word": "CURSED", "emoji": "🔮", "color": "#4B3832", "desc": "Not bad luck. Specifically your luck. Cosmically targeted."}, {"word": "BLESSED", "emoji": "🙏", "color": "#FFD700", "desc": "Things work out for you in ways that make others suspicious."}, {"word": "GOLDEN", "emoji": "🥇", "color": "#FFD700", "desc": "Everything you touch turns gold. Literally or metaphorically."}, {"word": "SHIMMERING", "emoji": "✨", "color": "#C0C0C0", "desc": "Moving light. Catching eyes. Cannot be ignored anywhere."}, {"word": "TWINKLY", "emoji": "⭐", "color": "#FFD700", "desc": "Eyes sparkle. Smile twinkles. You have a light inside you."}, {"word": "PUZZLING", "emoji": "🧩", "color": "#4169E1", "desc": "Nobody can quite figure you out and that is entirely intentional."}, {"word": "CONFUSING", "emoji": "🌀", "color": "#9B59B6", "desc": "Contradicts yourself constantly and is somehow always right."}, {"word": "UNBELIEVABLE", "emoji": "🤯", "color": "#FF4500", "desc": "The stories. The experiences. The audacity. All true."}, {"word": "EXTRAORDINARY", "emoji": "🌟", "color": "#FFD700", "desc": "Beyond ordinary. Beyond extra. A whole other category."}, {"word": "REMARKABLE", "emoji": "🎯", "color": "#4169E1", "desc": "Worthy of being remarked upon. Frequently. And loudly."}, {"word": "UNFORGETTABLE", "emoji": "💫", "color": "#9B59B6", "desc": "Leave a room and they still talk about you. Years later."}, {"word": "BANANAS", "emoji": "🍌", "color": "#FFD700", "desc": "Absolutely off the wall. Unhinged in the greatest possible way."}, {"word": "AWESOME", "emoji": "🏆", "color": "#FF8C00", "desc": "Actually genuinely awesome. Not using the word lightly. You. Are. It."}];
 
-const JOKES = [{"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your breath could knock out a shark at 50 feet"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your snoring has been classified as a natural disaster"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are the reason they put instructions on shampoo"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your face is fine but your attitude needs surgery"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are so naughty even your shadow blushes"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You have the energy of a broken escalator"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your common sense called — it got lost on the way"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You could start an argument in an empty room"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are a limited edition of bad decisions"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your vibe is giving haunted house on a Tuesday"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You have the audacity of a toddler and the wisdom of one too"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your lies are so good even you believe them"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You walk into a room and lower the average IQ"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your drama could fill three Netflix seasons"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You say you are fine but your eye twitches"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your morning voice sounds like a foghorn in a tunnel"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are the main character but in the wrong movie"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your cooking is why restaurants exist"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You have a face for radio and a voice for mime"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your life is a cautionary tale told at family dinners"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are built for excuses not results"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your dance moves are illegal in three countries"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You have never been right but you are always confident"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your fashion sense arrived in 2003 and never left"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You treat Mondays like a personal attack"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your ego is writing checks your talent cannot cash"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You are the reason people develop trust issues"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your excuses are more creative than your work"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "You ghosted someone and then liked their photo"}, {"cat": "Savage Roast", "color": "#ff6b6b", "icon": "😤", "text": "Your WiFi password is more secure than your secrets"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You would be late to your own funeral"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your nap schedule is more organised than your career"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You consider turning over in bed a workout"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your couch filed a restraining order against you"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You set six alarms and ignore all of them daily"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You call delivery drivers your personal chefs"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You shower when the smell offends even you"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your to-do list has been pending since 2019"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You watch exercise videos instead of exercising"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You have worn the same outfit three days running"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your idea of meal prep is ordering two pizzas"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You googled how to be motivated and then napped"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your energy drink does nothing anymore"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You call breathing cardio and you mean it"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You wait for the dishwasher to become its own ecosystem"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your fridge is empty but your snack drawer is stacked"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You pause Netflix to think about pausing Netflix"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You have seventeen browser tabs open doing nothing"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You reply next week and it becomes next year"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your plants died because watering was too much effort"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You read self help books and stay exactly the same"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your motivation left the chat and never came back"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You said you would start Monday for twelve Mondays"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "You sleep through opportunities and dream about them"}, {"cat": "Lazy Bones", "color": "#a0a000", "icon": "😴", "text": "Your ambition and your effort have never met"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You ate the last slice and looked them dead in the eye"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your stomach has a separate agenda from your brain"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You eat your feelings and your feelings are enormous"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You ordered dessert before finishing the main course"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your midnight snack is a full three course meal"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You lie about being full and order more five minutes later"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You have food hidden in places guests will never find"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You cook only when the fridge is empty and the shops are shut"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your diet starts tomorrow since 2015"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You described a meal so well you made yourself hungry again"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You said just one bite fourteen bites ago"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your shopping list is sixty percent snacks"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You eat slowly so no one asks you to share"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your eyes ordered for six but your stomach said hold my beer"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You screenshot menus before making any life decisions"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You budget for everything except food and food wins"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You have eaten cereal for dinner and felt no shame"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You refer to restaurants as your second home"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your plate has never seen a leftover in its life"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You sneak food into cinemas like a professional"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You weigh yourself before and after eating out of pure curiosity"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You eat when sad eat when happy and eat when bored"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You have eaten something off the floor and justified it"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "Your kitchen smells of regret and garlic bread"}, {"cat": "Foodie", "color": "#ff8c00", "icon": "🍕", "text": "You consider ketchup a vegetable and argue about it"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You checked your phone three times reading this"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You screenshot everything including this message"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You posted your food before it went cold — it went cold"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You panic when the battery hits twenty percent"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You have argued online with a stranger for three hours"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You sleep with your phone like it needs protection"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You reply instantly to strangers but ignore your family"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "Your screen time report made you rethink your whole life"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You read on the toilet so long your legs went numb"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You walk slower than everyone because you are on your phone"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "Your phone data is gone by the third day of the month"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You typed LOL and your face did absolutely nothing"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You have sent a voice note longer than a TED talk"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You stalk people you claim you do not care about"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You updated your status to unbothered while extremely bothered"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You posed for forty photos and used none of them"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You have been seen active but not replied for six hours"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You deleted and reposted the same photo twice"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "Your thumbs have more stamina than the rest of you"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You have fallen for a spam link and said nothing"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You own three phone chargers and cannot find any of them"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You cried at a video of a dog you do not know"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You have an opinion on everything and experience in nothing"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "You muted someone and then checked their page manually"}, {"cat": "Phone Addict", "color": "#4fc3f7", "icon": "📱", "text": "Your phone is more protected than your feelings"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your gym bag has been in the car for three months"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You bought new gym clothes and wore them to the shops"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You took the lift to the gym floor"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You run only when chased and not very far"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your personal best is finishing a family size bag alone"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You get out of breath describing exercise"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You wore a waist trainer over pyjamas and called it gym"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You own a yoga mat that has only seen the floor"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your step count today is a source of personal shame"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You sweated at the gym selfie not at the gym"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You did one sit up and called it abs day"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You cancelled a gym session because it looked like rain"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your warm up is thinking about warming up"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You weighed yourself after using the toilet for accuracy"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You Googled calories in celery to feel better about the chips"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You told yourself this week is different and it is not"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your protein shake sat in the fridge until it evolved"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You count walking to the kitchen as steps"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your rest day followed your rest week followed your rest month"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You stretched once in 2021 and call yourself flexible"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You joined Pilates posted about it and never went back"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You told the gym you were moving abroad — you moved streets"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "Your fitness journey has more stops than milestones"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You bought a Fitbit to watch your laziness in real time"}, {"cat": "Fitness", "color": "#ef4444", "icon": "💪", "text": "You reward every workout with food that undoes it completely"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You practise your walk in every shop window you pass"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You act unbothered while being extremely bothered"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You have never admitted to being wrong in recorded history"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You enter every room like you own the mortgage"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You gave yourself a nickname nobody actually uses"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You quote films nobody has seen to seem deep"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You pretend to be busy when you are doing nothing at all"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You leave parties early to seem mysterious"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You wear sunglasses indoors and call it a vibe"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You laugh last at jokes because you did not get them"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "Your hair takes longer to do than most surgeries"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You ask for opinions and ignore all of them"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You narrate your own life like a movie in your head"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You respond to compliments with I know"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You walk slow in fast lanes and fast in slow ones"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "Your confidence has no relationship with your ability"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You are the most interesting person in your own mind"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You say you hate drama while stirring it with a spoon"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You have strong opinions on things you just learned existed"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You dress for the life you want not the one you have"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You name drop people nobody in the room has heard of"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You leave people on read and call it selective energy"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You turn everything into a lesson nobody asked for"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You have main character energy in a supporting role"}, {"cat": "Too Cool", "color": "#22d3ee", "icon": "😎", "text": "You think silence makes you mysterious — it makes you awkward"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You sunburned in four minutes and stayed all day"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You called poi baby food and they heard you"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You wore socks with flip flops in Waikiki. In summer."}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You tried to surf and the board tried to escape"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You mispronounced Humuhumunukunukuapuaa with confidence"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You complained it was too hot in Hawaii to the locals"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You called spam processed meat at a luau. Rookie."}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You took forty photos of the same sunset"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You got lei'd and immediately asked what it meant"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You are a tourist in your own life"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You tried shave ice and asked for sprinkles"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You drove to a trailhead and turned back at the sign"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You called every fish a Nemo and nobody corrected you"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You ordered pineapple pizza in the pineapple capital"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You did the hula once and now call yourself spiritual"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You packed Hawaii in a suitcase and stayed on the resort"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You called the ocean too blue to be real"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You said aloha to everyone including the parking meter"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You asked if poke was pronounced the same as Pokemon"}, {"cat": "Aloha Roast", "color": "#22c55e", "icon": "🌺", "text": "You thought the volcano was decorative"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "Your love life is a recycling bin of red flags"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You fell for someone you knew was trouble and looked shocked"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You send mixed signals in high definition"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "Your type is emotionally unavailable and you keep ordering"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You said it is not you it is me and meant them"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You follow your ex on a second account claiming no contact"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You write long texts then delete them and say nothing"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "Your talking stage has lasted longer than some marriages"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You play hard to get with people who are not even chasing"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You want commitment but leave every door open"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You described your type and then dated the opposite again"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You said you were healed and got triggered in the parking lot"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You post about self love and call your ex at 2am"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You fall in love with potential not people"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You called it a vibe check — they failed and you stayed"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You manifested a partner and got situationship energy"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You said I do not want anything serious then cried about it"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You know all your ex is up to and claim you have moved on"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You wear your heart on your sleeve and bruise it daily"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You attract chaos and call it passion"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "Your love language is overthinking at three in the morning"}, {"cat": "Love Life", "color": "#f472b6", "icon": "💔", "text": "You chose the red flag because it matched your outfit"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your LinkedIn says boss your bank says otherwise"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You work hard enough to not get fired and nothing more"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your side hustle has been on the side since forever"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You are always broke after payday — it is a talent"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You spend money on things that impress people you dislike"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your savings account is a theoretical concept"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You unmute yourself on Zoom and say nothing important"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You could have been a meeting that was an email"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You negotiate salary once and apologised for asking"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You invest in yourself — mostly in shoes"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your five year plan starts next year"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You check your bank balance then close the app immediately"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You spend on vibes and budget on essentials"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your dream job and your job have never met"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You reply to all on company emails like a wildcard"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You call adulting hard and that is your whole personality"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You owe money to someone in this room right now"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You go on holiday you cannot afford and worry there"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "Your financial plan is hoping for the best"}, {"cat": "Work & Money", "color": "#a78bfa", "icon": "💼", "text": "You told people you were rich because you filled the tank"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are a good time but an awful idea"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "Your reputation arrived before you and it is not great"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are the human version of a warning label"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You have done things this wheel is not allowed to mention"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are someone your mother warned you about"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You blame Mercury retrograde for your personality"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are so extra even your extra has extra"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "Your energy is a lot — and not in the good way today"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You have been reported for being too much on a Tuesday"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You start drama and then leave the group chat"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You told a secret as your own idea and nobody noticed"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are the friend people vent about after venting to you"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are entertaining but exhausting — a Vegas buffet"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You know exactly what you are doing and do it anyway"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You have unfinished business in every city you have visited"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "Your search history would end careers — yours included"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You told one person and now everyone knows"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are living proof that charm is more powerful than sense"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You have three versions of the same story depending on the crowd"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You arrived late to your own apology"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You call yourself an open book but skip all the good chapters"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are naughty enough to get in trouble but smart enough to deny it"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You make bad decisions with great confidence"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "Your chaos theory is just Tuesday for you"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are the reason people say trust no one"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are too naughty for a fortune and too smart to admit it"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You have done worse and will probably do it again"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are delightfully dangerous in the best possible way"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "The devil is not busy — you keep him fully employed"}, {"cat": "Extra Spicy", "color": "#ff4500", "icon": "🌶", "text": "You are not a bad person you just make spectacularly bad choices"}];
+const NUM = PERSONALITIES.length;
+let currentAngle=0,spinning=false,spinCount=0;
+let current=null,history=[];
+let muted=false;
 
-const NUM_SEGMENTS = JOKES.length;
-let currentAngle = 0;
-let spinning = false;
-let spinCount = 0;
-let currentJoke = null;
-let jokeHistory = [];
-
-// Build funny background
-function buildBackground(){
-  const bg = document.getElementById('funBg');
-  const emojis = ['😂','🤣','😆','😜','🎰','🎪','😎','💀','😤','🤪'];
-  for(let i=0;i<20;i++){
-    const p = document.createElement('div');
-    p.className = 'confetti-bg';
-    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    p.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*5}s;font-size:${18+Math.random()*20}px;`;
+// Background
+(function(){
+  const bg=document.getElementById('funBg');
+  const em=['😂','🤣','😆','😜','🎭','🎰','😎','💀','🤪','🎉','😈','🙈'];
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div');p.className='bg-emoji';
+    p.textContent=em[Math.floor(Math.random()*em.length)];
+    p.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${3+Math.random()*6}s;animation-delay:${Math.random()*6}s;font-size:${16+Math.random()*24}px;`;
     bg.appendChild(p);
   }
-}
+})();
 
 // Draw wheel
 function drawWheel(){
-  const canvas = document.getElementById('wheelCanvas');
-  const size = canvas.parentElement.offsetWidth;
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const cx = size/2, cy = size/2, r = size/2 - 2;
-  const slice = (Math.PI*2) / NUM_SEGMENTS;
-
-  JOKES.forEach((j, i) => {
-    const startAngle = i * slice - Math.PI/2;
-    const endAngle = startAngle + slice;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, startAngle, endAngle);
-    ctx.closePath();
-    ctx.fillStyle = i%2===0 ? j.color : adjustColor(j.color,-25);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Icon
-    const midAngle = startAngle + slice/2;
-    const lx = cx + Math.cos(midAngle) * r * 0.72;
-    const ly = cy + Math.sin(midAngle) * r * 0.72;
-    ctx.save();
-    ctx.translate(lx, ly);
-    ctx.rotate(midAngle + Math.PI/2);
-    ctx.font = `${Math.max(9,size*0.026)}px system-ui`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(j.icon, 0, 0);
+  const canvas=document.getElementById('wheelCanvas');
+  const size=canvas.parentElement.offsetWidth;
+  canvas.width=canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  const cx=size/2,cy=size/2,r=size/2-2;
+  const slice=(Math.PI*2)/NUM;
+  PERSONALITIES.forEach((p,i)=>{
+    const s=i*slice-Math.PI/2,e=s+slice;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+    // Alternate shade
+    const c=p.color;
+    ctx.fillStyle=i%2===0?c:adjustColor(c,-30);
+    ctx.fill();ctx.strokeStyle='rgba(0,0,0,0.25)';ctx.lineWidth=0.8;ctx.stroke();
+    // Word on wheel (very small)
+    const mid=s+slice/2;
+    const lx=cx+Math.cos(mid)*r*0.7;
+    const ly=cy+Math.sin(mid)*r*0.7;
+    ctx.save();ctx.translate(lx,ly);ctx.rotate(mid+Math.PI/2);
+    ctx.font=`bold ${Math.max(5,size*0.018)}px system-ui`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.fillText(p.word.length>8?p.word.slice(0,7)+'…':p.word,0,0);
     ctx.restore();
   });
-
-  // Center circle
-  ctx.beginPath();
-  ctx.arc(cx, cy, r*0.18, 0, Math.PI*2);
-  ctx.fillStyle = '#0a0a00';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255,200,0,0.6)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
+  // Center
+  ctx.beginPath();ctx.arc(cx,cy,r*0.16,0,Math.PI*2);
+  ctx.fillStyle='#080800';ctx.fill();
+  ctx.strokeStyle='rgba(255,200,0,0.7)';ctx.lineWidth=2;ctx.stroke();
 }
 
-function adjustColor(hex, amount){
-  const num = parseInt(hex.replace('#',''), 16);
-  const r = Math.min(255, Math.max(0, (num>>16) + amount));
-  const g = Math.min(255, Math.max(0, ((num>>8)&0xff) + amount));
-  const b = Math.min(255, Math.max(0, (num&0xff) + amount));
-  return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+function adjustColor(hex,amt){
+  const n=parseInt(hex.replace('#',''),16);
+  const r=Math.min(255,Math.max(0,(n>>16)+amt));
+  const g=Math.min(255,Math.max(0,((n>>8)&0xff)+amt));
+  const b=Math.min(255,Math.max(0,(n&0xff)+amt));
+  return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
 }
 
 function spinWheel(){
-  if(spinning) return;
-  spinning = true;
-  spinCount++;
-  document.getElementById('spinBtn').disabled = true;
-  document.getElementById('spinBtn').classList.remove('glowing');
+  if(spinning)return;
+  spinning=true;spinCount++;
+  const btn=document.getElementById('spinBtn');
+  btn.disabled=true;btn.classList.remove('glowing');
   document.getElementById('shareBtn').classList.remove('show');
-  document.getElementById('jokeText').innerHTML = '<span style="font-size:28px;animation:emojiWiggle 0.3s ease-in-out infinite alternate;">🎰</span>';
-  document.getElementById('jokeBox').classList.remove('revealed');
-  document.getElementById('jokeCat').classList.remove('show');
-  document.getElementById('jokeEmoji').classList.remove('show');
-  document.getElementById('jokeBar').classList.remove('show');
+  document.getElementById('resultBox').classList.remove('revealed');
+  document.getElementById('bigWord').classList.remove('show');
+  document.getElementById('bigWord').textContent='';
+  document.getElementById('resultEmoji').classList.remove('show');
+  document.getElementById('youAre').classList.remove('show');
+  document.getElementById('descText').innerHTML='<span style="font-size:28px;animation:emojiWiggle 0.3s ease-in-out infinite alternate;">🎰</span>';
 
   playSpinSound();
 
-  const extraSpins = 5 + Math.random() * 5;
-  const targetRotation = currentAngle + extraSpins * 360 + Math.random() * 360;
-  const slice = 360 / NUM_SEGMENTS;
-  const normalizedAngle = ((targetRotation % 360) + 360) % 360;
-  const jokeIdx = Math.floor(((360 - normalizedAngle) % 360) / slice) % NUM_SEGMENTS;
+  const spins=5+Math.random()*5;
+  const target=currentAngle+spins*360+Math.random()*360;
+  const slice=360/NUM;
+  const norm=((target%360)+360)%360;
+  const idx=Math.floor(((360-norm)%360)/slice)%NUM;
 
-  const duration = 4000 + Math.random() * 2000;
-  const startTime = Date.now();
-  const startAngle = currentAngle;
+  const dur=4000+Math.random()*2000;
+  const t0=Date.now();
+  const a0=currentAngle;
 
-  function animSpin(){
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(1, elapsed/duration);
-    const ease = 1 - Math.pow(1-progress, 3);
-    const angle = startAngle + (targetRotation-startAngle)*ease;
-
-    const prev = Math.floor((currentAngle%360)/slice);
-    const curr = Math.floor((angle%360)/slice);
-    if(prev!==curr) playTickSound();
-
-    document.getElementById('wheel').style.transform = `rotate(${angle}deg)`;
-    currentAngle = angle;
-
-    if(progress < 1){
-      requestAnimationFrame(animSpin);
-    } else {
-      currentAngle = targetRotation;
-      spinning = false;
-      revealJoke(jokeIdx);
-    }
+  function anim(){
+    const elapsed=Date.now()-t0;
+    const p=Math.min(1,elapsed/dur);
+    const ease=1-Math.pow(1-p,3);
+    const angle=a0+(target-a0)*ease;
+    const prev=Math.floor((currentAngle%360)/slice);
+    const curr=Math.floor((angle%360)/slice);
+    if(prev!==curr)playTick();
+    document.getElementById('wheel').style.transform=`rotate(${angle}deg)`;
+    currentAngle=angle;
+    if(p<1){requestAnimationFrame(anim);}
+    else{currentAngle=target;spinning=false;reveal(idx);}
   }
-  requestAnimationFrame(animSpin);
+  requestAnimationFrame(anim);
 }
 
-function revealJoke(idx){
-  const joke = JOKES[idx];
-  currentJoke = joke;
-
+function reveal(idx){
+  const p=PERSONALITIES[idx];current=p;
   setTimeout(()=>{
-    const box = document.getElementById('jokeBox');
+    const box=document.getElementById('resultBox');
     box.classList.add('revealed');
-    box.style.borderTopColor = joke.color;
-    box.style.borderBottomColor = joke.color;
-    box.style.boxShadow = `0 -8px 0 rgba(150,100,0,0.6),0 8px 0 rgba(150,100,0,0.6),0 0 40px ${joke.color}33,inset 0 0 40px rgba(0,0,0,0.4)`;
+    box.style.borderTopColor=p.color;
+    box.style.borderBottomColor=p.color;
+    box.style.boxShadow=`0 -8px 0 rgba(140,90,0,0.6),0 8px 0 rgba(140,90,0,0.6),0 0 60px ${p.color}30,inset 0 0 40px rgba(0,0,0,0.5)`;
 
-    // Category
-    const cat = document.getElementById('jokeCat');
-    cat.textContent = joke.icon + ' ' + joke.cat;
-    cat.style.background = joke.color + '22';
-    cat.style.border = `1px solid ${joke.color}66`;
-    cat.style.color = joke.color;
-    cat.classList.add('show');
+    document.getElementById('youAre').classList.add('show');
+
+    // Big word pop in
+    const wordEl=document.getElementById('bigWord');
+    wordEl.textContent=p.word;
+    wordEl.style.color=p.color;
+    wordEl.style.textShadow=`0 0 20px ${p.color},0 0 40px ${p.color}60`;
+    wordEl.classList.add('show');
 
     // Emoji
-    const emojiEl = document.getElementById('jokeEmoji');
-    emojiEl.textContent = joke.icon;
-    emojiEl.classList.add('show');
+    const em=document.getElementById('resultEmoji');
+    em.textContent=p.emoji;em.classList.add('show');
 
-    // Typewriter
-    const textEl = document.getElementById('jokeText');
-    textEl.innerHTML = '';
-    textEl.style.color = '#ffe066';
-    let i = 0;
-    const txt = joke.text;
-    function typeNext(){
-      if(i < txt.length){
-        textEl.innerHTML = '"' + txt.slice(0,i+1) + (i<txt.length-1?'|':'') + '"';
-        i++;
-        setTimeout(typeNext, 35);
+    // Typewriter description
+    const desc=document.getElementById('descText');
+    desc.innerHTML='';desc.style.color='#ffe066';
+    let i=0;
+    function type(){
+      if(i<p.desc.length){
+        desc.innerHTML='"'+p.desc.slice(0,i+1)+(i<p.desc.length-1?'|':'')+'"';
+        i++;setTimeout(type,30);
       } else {
-        textEl.innerHTML = '"' + txt + '"';
-        const bar = document.getElementById('jokeBar');
-        bar.style.background = joke.color;
-        bar.style.boxShadow = `0 0 8px ${joke.color}`;
-        bar.classList.add('show');
+        desc.innerHTML='"'+p.desc+'"';
         document.getElementById('shareBtn').classList.add('show');
-        document.getElementById('spinBtn').disabled = false;
+        document.getElementById('spinBtn').disabled=false;
         document.getElementById('spinBtn').classList.add('glowing');
-        laughCelebrate(joke.color);
-        playRevealSound();
+        celebrate(p.color);
+        playReveal();
       }
     }
-    setTimeout(typeNext, 200);
+    setTimeout(type,300);
 
-    jokeHistory.unshift(joke);
-    if(jokeHistory.length > 5) jokeHistory.pop();
+    history.unshift(p);
+    if(history.length>5)history.pop();
     updateHistory();
 
-    const msgs = [
-      '😂 Getting warmed up!',
-      '🔥 The roast continues!',
-      '💀 You asked for it!',
-      '😂 Spin again for more!',
-      '🎰 The wheel never lies!',
-    ];
-    document.getElementById('spinCount').textContent =
-      'Roast #' + spinCount + ' · ' + msgs[Math.min(spinCount-1, msgs.length-1)];
-  }, 500);
+    const msgs=['😂 Spin again!','🎭 Try another!','😆 Keep going!','🎰 Who are you now?!','💀 The wheel never lies!'];
+    document.getElementById('spinCount').textContent=
+      'Spin #'+spinCount+' · '+msgs[Math.min(spinCount-1,msgs.length-1)];
+  },500);
 }
 
 function updateHistory(){
-  const list = document.getElementById('historyList');
-  const title = document.getElementById('historyTitle');
-  title.style.display = jokeHistory.length > 1 ? 'block' : 'none';
-  list.innerHTML = jokeHistory.slice(1).map(j=>`
+  const list=document.getElementById('histList');
+  const title=document.getElementById('histTitle');
+  title.style.display=history.length>1?'block':'none';
+  list.innerHTML=history.slice(1).map(p=>`
     <div class="history-item">
-      <div class="history-dot" style="background:${j.color};box-shadow:0 0 4px ${j.color};"></div>
-      <span>${j.icon} ${j.text}</span>
-    </div>
-  `).join('');
+      <div class="history-dot" style="background:${p.color};box-shadow:0 0 4px ${p.color};"></div>
+      <span class="history-word" style="color:${p.color};">${p.word}</span>
+      <span class="history-desc">— ${p.desc.slice(0,45)}...</span>
+    </div>`).join('');
 }
 
-function shareJoke(){
-  if(!currentJoke) return;
-  const txt = `😂 My Humour Roulette reading: "${currentJoke.text}" 🎰 What does YOUR wheel say? todayinhawaii.com/humor`;
+function shareResult(){
+  if(!current)return;
+  const txt=`🎭 I just found out WHO I AM on the "Who Are You?" wheel: I AM ${current.word}!! ${current.emoji} "${current.desc}" 😂 What are YOU? todayinhawaii.com/humor`;
   window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.todayinhawaii.com/humor')+'&quote='+encodeURIComponent(txt),'_blank');
 }
 
-// Laugh celebration
-function laughCelebrate(color){
-  const emojis = ['😂','🤣','😆','💀','😜','🎉','🔥'];
-  for(let i=0;i<20;i++){
-    const p = document.createElement('div');
-    p.className='confetti';
-    const isEmoji = Math.random()>0.5;
-    if(isEmoji){
-      p.style.cssText=`font-size:${16+Math.random()*16}px;left:${10+Math.random()*80}%;top:${15+Math.random()*35}%;`;
-      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+function celebrate(color){
+  const em=['😂','🤣','😆','🎉','💥','✨','🎭'];
+  for(let i=0;i<22;i++){
+    const c=document.createElement('div');c.className='confetti';
+    const isE=Math.random()>0.5;
+    if(isE){
+      c.style.cssText=`font-size:${16+Math.random()*20}px;left:${8+Math.random()*84}%;top:${10+Math.random()*40}%;pointer-events:none;`;
+      c.textContent=em[Math.floor(Math.random()*em.length)];
     } else {
-      p.style.cssText=`background:${color};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'3px'};left:${10+Math.random()*80}%;top:${15+Math.random()*35}%;`;
+      c.style.cssText=`background:${color};width:${6+Math.random()*9}px;height:${6+Math.random()*9}px;border-radius:${Math.random()>0.5?'50%':'3px'};left:${8+Math.random()*84}%;top:${10+Math.random()*40}%;`;
     }
-    document.body.appendChild(p);
-    const ang=Math.random()*Math.PI*2, dist=50+Math.random()*120;
-    const tx=Math.cos(ang)*dist, ty=Math.sin(ang)*dist;
-    const dur=500+Math.random()*700, start=Date.now();
+    document.body.appendChild(c);
+    const ang=Math.random()*Math.PI*2,dist=60+Math.random()*130;
+    const tx=Math.cos(ang)*dist,ty=Math.sin(ang)*dist;
+    const dur=500+Math.random()*700,t=Date.now();
     function animC(){
-      const pr=Math.min(1,(Date.now()-start)/dur);
+      const pr=Math.min(1,(Date.now()-t)/dur);
       const e=1-Math.pow(1-pr,2);
-      p.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+100*pr*pr}px)) rotate(${pr*720}deg)`;
-      p.style.opacity=1-pr;
-      if(pr<1) requestAnimationFrame(animC);
-      else p.remove();
+      c.style.transform=`translate(calc(-50% + ${tx*e}px),calc(-50% + ${ty*e+100*pr*pr}px)) rotate(${pr*720}deg)`;
+      c.style.opacity=1-pr;
+      if(pr<1)requestAnimationFrame(animC);else c.remove();
     }
     requestAnimationFrame(animC);
   }
 }
 
-// Sounds
-let audioCtx=null;
-function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
-function playTone(f,t,v,d,delay){
+// Sound
+let ac=null;
+function ga(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();return ac;}
+function tone(f,t,v,d,dl){
   try{
-    const c=getAudio(),o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);
-    o.type=t;o.frequency.value=f;delay=delay||0;
-    g.gain.setValueAtTime(0,c.currentTime+delay);
-    g.gain.linearRampToValueAtTime(v,c.currentTime+delay+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
-    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+0.05);
+    const c=ga(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);dl=dl||0;
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(0,c.currentTime+dl);
+    g.gain.linearRampToValueAtTime(v,c.currentTime+dl+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dl+d);
+    o.start(c.currentTime+dl);o.stop(c.currentTime+dl+d+0.05);
   }catch(e){}
 }
-function playTickSound(){playTone(600+Math.random()*300,'square',0.06,0.03);}
-function playSpinSound(){playTone(150,'sawtooth',0.1,0.3);}
-function playRevealSound(){
-  // Wah wah wah — comedy trombone!
-  [466,440,415,392].forEach((f,i)=>playTone(f,'sawtooth',0.35,0.25,i*0.12));
-  setTimeout(()=>{
-    [523,659,784].forEach((f,i)=>playTone(f,'sine',0.3,0.2,i*0.08));
-  },600);
+function playTick(){tone(500+Math.random()*400,'square',0.05,0.03);}
+function playSpinSound(){tone(120,'sawtooth',0.08,0.4);}
+function playReveal(){
+  // WAH WAH WAH comedy + fanfare!
+  [460,440,415,390].forEach((f,i)=>tone(f,'sawtooth',0.3,0.22,i*0.11));
+  setTimeout(()=>{[523,659,784,1047].forEach((f,i)=>tone(f,'sine',0.35,0.2,i*0.07));},550);
 }
 
-buildBackground();
 drawWheel();
-window.addEventListener('resize', drawWheel);
+window.addEventListener('resize',drawWheel);
 </script>
 </body>
 </html>
