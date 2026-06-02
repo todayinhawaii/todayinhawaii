@@ -255,13 +255,20 @@ def chess_piece_img(piece):
     return '', 404
 
 @app.route('/chess_bg.mp4')
+@app.route('/chess_bg2.mp4')
+@app.route('/chess_bg3.mp4')
+@app.route('/chess_bg4.mp4')
+@app.route('/chess_bg5.mp4')
 def chess_bg_video():
-    # Upload chess_bg.mp4 to GitHub and it plays as background!
+    # Serves chess_bg.mp4 through chess_bg5.mp4
+    # Upload any/all of them to GitHub — missing ones are skipped!
     import os
-    if os.path.exists('chess_bg.mp4'):
-        return send_from_directory('.', 'chess_bg.mp4',
+    from flask import request
+    filename = request.path.lstrip('/')
+    if os.path.exists(filename):
+        return send_from_directory('.', filename,
             mimetype='video/mp4',
-            conditional=True)  # supports range requests for video streaming
+            conditional=True)
     return '', 404
 
 @app.route('/chess_score', methods=['POST'])
