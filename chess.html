@@ -708,7 +708,7 @@ function draw(){
 
     if(dark){
       // Deep ocean squares — 75% opacity so video shows through!
-      ctx.globalAlpha=0.75;
+      ctx.globalAlpha=0.50;
       const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
       g.addColorStop(0,'#1a4a6e');
       g.addColorStop(0.5,'#0d3554');
@@ -721,7 +721,7 @@ function draw(){
       ctx.globalAlpha=1;
     } else {
       // Light squares — 75% opacity so video shows through!
-      ctx.globalAlpha=0.75;
+      ctx.globalAlpha=0.50;
       const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
       g.addColorStop(0,'#c8e8f0');
       g.addColorStop(0.4,'#b0d8e8');
