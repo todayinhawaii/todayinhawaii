@@ -41,6 +41,11 @@
       top:48px;
       z-index:55;
       display:flex;align-items:flex-start;
+      transition:transform 0.28s ease;
+    }
+    /* When hidden, shift whole wrap LEFT by toolbar width so only toggle peeks out */
+    #toolWrap.hidden{
+      transform:translateX(-138px);
     }
     #toolBar{
       pointer-events:all;
@@ -58,7 +63,7 @@
       touch-action:pan-y;
     }
     #toolBar::-webkit-scrollbar{display:none;}
-    #toolBar.hidden{transform:translateX(-100%);opacity:0;pointer-events:none;}
+    #toolBar.hidden{opacity:0;pointer-events:none;}
 
     /* Big flashing pink arrow */
     #tbToggle{
@@ -108,7 +113,9 @@
     /* Color + sliders section */
     .tool-ctrl{
       display:flex;flex-direction:column;align-items:stretch;
-      gap:5px;padding:4px 0;width:100%;
+      gap:8px;padding:6px 0 4px;width:100%;
+      border-top:1px solid rgba(255,255,255,0.08);
+      margin-top:2px;
     }
     /* Live brush preview area */
     #brushPreview{
@@ -126,14 +133,14 @@
       text-align:center;font-size:7px;font-weight:800;color:rgba(255,255,255,0.5);
       pointer-events:none;
     }
-    .slider-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
+    .slider-wrap{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;padding:4px 0;}
     .sldr-lbl{
       font-size:8px;color:#aaa;font-weight:900;
       text-transform:uppercase;letter-spacing:0.1em;
       text-shadow:0 0 6px rgba(255,255,255,0.3);
     }
     /* Horizontal neon sliders — mobile friendly! */
-    .sldr-row{display:flex;align-items:center;gap:4px;width:100%;}
+    .sldr-row{display:flex;align-items:center;gap:6px;width:100%;padding:5px 4px;background:rgba(255,255,255,0.03);border-radius:8px;}
     .sldr-lbl{font-size:8px;color:#aaa;font-weight:900;
       text-transform:uppercase;white-space:nowrap;width:24px;text-align:right;flex-shrink:0;
       text-shadow:0 0 6px rgba(255,255,255,0.3);}
@@ -703,6 +710,7 @@ document.getElementById('brushSz').addEventListener('input',e=>{brushSz=parseInt
 let tbVisible=true;
 function toggleToolbar(){
   tbVisible=!tbVisible;
+  document.getElementById('toolWrap').classList.toggle('hidden',!tbVisible);
   document.getElementById('toolBar').classList.toggle('hidden',!tbVisible);
   document.getElementById('tbToggle').textContent=tbVisible?'◀':'▶';
 }
