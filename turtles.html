@@ -526,7 +526,7 @@ function initBoard(){
 // ── MOVE GENERATION ────────────────────────────────
 function getMoves(b, player){
   const moves=[], jumps=[];
-  const dir=player===1?-1:1; // p1 moves up, p2 moves down
+  const dir=player===1?-1:1;
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const p=b[r][c];
     if(!p||p.player!==player) continue;
@@ -535,39 +535,19 @@ function getMoves(b, player){
       [-1,1].forEach(dc=>{
         const nr=r+dr, nc=c+dc;
         if(nr<0||nr>7||nc<0||nc>7) return;
-        if(!b[nr][nc]) moves.push({fromRow:r,fromCol:c,toRow:nr,toCol:nc,jumps:[]});
-        else if(b[nr][nc].player!==player){
+        if(!b[nr][nc]){
+          moves.push({fromRow:r,fromCol:c,toRow:nr,toCol:nc,jumps:[]});
+        } else if(b[nr][nc].player!==player){
           const jr=r+dr*2, jc=c+dc*2;
           if(jr>=0&&jr<=7&&jc>=0&&jc<=7&&!b[jr][jc])
-            jumps.push({fromRow:r,fromCol:c,toRow:jr,toCol:jc,capRow:nr,capCol:nc,jumps:[{r:nr,c:nc}]});
+            jumps.push({fromRow:r,fromCol:c,toRow:jr,toCol:jc,
+              capRow:nr,capCol:nc,jumps:[{r:nr,c:nc}]});
         }
       });
     });
   }
-  // Multi-jump: expand jumps
-  const allJumps=[];
-  function expandJump(jmp, bd){
-    const nb=cloneBoard(bd);
-    applyMove(nb,jmp);
-    const p=nb[jmp.toRow][jmp.toCol];
-    let more=false;
-    const dirs=p.king?[-1,1]:[player===1?-1:1];
-    dirs.forEach(dr=>[-1,1].forEach(dc=>{
-      const mr=jmp.toRow+dr,mc=jmp.toCol+dc;
-      if(mr<0||mr>7||mc<0||mc>7) return;
-      if(nb[mr][mc]&&nb[mr][mc].player!==player){
-        const jr=jmp.toRow+dr*2,jc=jmp.toCol+dc*2;
-        if(jr>=0&&jr<=7&&jc>=0&&jc<=7&&!nb[jr][jc]){
-          more=true;
-          const nj={...jmp,toRow:jr,toCol:jc,capRow:mr,capCol:mc,jumps:[...jmp.jumps,{r:mr,c:mc}]};
-          expandJump(nj,nb);
-        }
-      }
-    }));
-    if(!more) allJumps.push(jmp);
-  }
-  jumps.forEach(j=>expandJump(j,b));
-  return allJumps.length>0?allJumps:moves;
+  // Simple single-jump only (no recursive multi-jump cloning = no freeze!)
+  return jumps.length>0 ? jumps : moves;
 }
 
 // ── BOARD UTILS ────────────────────────────────────
@@ -607,7 +587,11 @@ function evaluate(b){
   return score;
 }
 
+let aiDeadline=0; // time limit for AI search
+
 function minimax(b, depth, alpha, beta, maximizing){
+  // Hard time limit — never think more than 800ms
+  if(Date.now()>aiDeadline) return evaluate(b);
   const moves=getMoves(b, maximizing?2:1);
   if(depth===0||moves.length===0) return evaluate(b);
   if(maximizing){
@@ -635,8 +619,9 @@ function aiMove(){
   const moves=getMoves(board,2);
   if(!moves.length) return;
   let best=null, bestVal=-Infinity;
-  const depths=[0,1,3,6]; // baby, easy, medium, hard
+  const depths=[0,1,2,3]; // baby=random, sea=1, old=2, demon=3
   const depth=depths[Math.min(difficulty-1,3)];
+  aiDeadline=Date.now()+800; // 800ms max think time!
 
   if(difficulty===1){
     // Baby: random move
@@ -693,7 +678,7 @@ function handleClick(row,col){
     document.getElementById('turnLabel').textContent='AI thinking...';
     document.getElementById('turnTurtle').textContent='🤖';
     setStatus('AI is thinking...');
-    setTimeout(()=>{aiMove();},400+Math.random()*500);
+    setTimeout(()=>{aiMove();},300+Math.random()*200);
     return;
   }
   // Clicked a piece
