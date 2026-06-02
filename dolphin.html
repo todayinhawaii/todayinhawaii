@@ -532,9 +532,15 @@ function startGame(){
 
 // ── Build & Shuffle Deck ──────────────────────
 function buildDeck(){
-  // Build 26 pairs as groups first
+  // Use 2 suits only: ♠ (black) and ♥ (red)
+  // Each value gets 2 pairs — one black, one red = 26 pairs total
+  // This guarantees each stage has EXACTLY 2 of every value shown!
+  const DECK_SUITS=[
+    {sym:'♠',name:'spades',  color:'black'},
+    {sym:'♥',name:'hearts',  color:'red'},
+  ];
   const pairs=[];
-  SUITS.forEach(suit=>{
+  DECK_SUITS.forEach(suit=>{
     VALUES.forEach(val=>{
       pairs.push([
         {id:suit.sym+val+'_1',val,suit,flipped:false,matched:false},
@@ -542,13 +548,10 @@ function buildDeck(){
       ]);
     });
   });
-  // Shuffle the PAIRS (not individual cards) so stages always have complete pairs
-  function shufflePairs(arr){
-    for(let i=arr.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [arr[i],arr[j]]=[arr[j],arr[i]];
-    }
-    return arr;
+  // 2 × 13 = 26 pairs. Shuffle them.
+  for(let i=pairs.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pairs[i],pairs[j]]=[pairs[j],pairs[i]];
   }
   function flatShuffle(pairList){
     const flat=pairList.flat();
@@ -558,12 +561,8 @@ function buildDeck(){
     }
     return flat;
   }
-  shufflePairs(pairs);
-  // Stage 1: first 15 pairs = 30 cards (all pairs guaranteed!)
-  // Stage 2: remaining 11 pairs = 22 cards
-  const s1Pairs=pairs.slice(0,15);
-  const s2Pairs=pairs.slice(15);
-  allCards={s1:flatShuffle(s1Pairs), s2:flatShuffle(s2Pairs)};
+  // Stage 1 = 15 pairs (30 cards), Stage 2 = 11 pairs (22 cards)
+  allCards={s1:flatShuffle(pairs.slice(0,15)), s2:flatShuffle(pairs.slice(15))};
   cards=allCards.s1;
 }
 
@@ -729,8 +728,8 @@ function checkMatch(){
   const [i1,i2]=flippedCards;
   const c1=cards[i1],c2=cards[i2];
 
-  // Match if same value AND same suit!
-  const isMatch=(c1.val===c2.val && c1.suit.sym===c2.suit.sym);
+  // Match by VALUE only — any two 5s match, any two Jacks match!
+  const isMatch=(c1.val===c2.val);
 
   if(isMatch){
     // MATCH!
@@ -739,20 +738,15 @@ function checkMatch(){
       const el2=document.getElementById('card-'+i2);
       el1.classList.add('matched');
       el2.classList.add('matched');
+      // Inject overlay into .card-front (works with 3D flip)
       [el1,el2].forEach(el=>{
-        // Inject overlay INSIDE .card-front so it works with 3D flip!
         const front=el.querySelector('.card-front');
-        const target=front||el;
-        const ov=document.createElement('div');
-        ov.className='match-overlay';ov.textContent='✓';
-        target.appendChild(ov);
-      });
-      // Add visible green overlay div (::after won't work with 3D transforms)
-      [el1,el2].forEach(el=>{
-        const ov=document.createElement('div');
-        ov.className='match-overlay';
-        ov.innerHTML='✓';
-        el.appendChild(ov);
+        if(front){
+          const ov=document.createElement('div');
+          ov.className='match-overlay';
+          ov.textContent='✓';
+          front.appendChild(ov);
+        }
       });
       c1.matched=true;c2.matched=true;
       matchesFound++;
