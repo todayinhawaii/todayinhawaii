@@ -77,10 +77,11 @@
     .sc-lbl{font-size:7px;color:#4caf50;font-weight:700;text-transform:uppercase;}
     .sc-val{font-size:16px;font-weight:900;color:#fff;}
 
-    /* Board container */
+    /* Board container — fills all available space */
     #boardWrap{
       position:relative;flex:1;min-height:0;
       display:flex;align-items:center;justify-content:center;
+      width:100%;
     }
     #boardCanvas{
       display:block;
@@ -342,16 +343,39 @@ let SZ, PR; // cell size, pixel ratio
 
 function sizeBoard(){
   PR = window.devicePixelRatio||1;
-  const wrap = document.getElementById('boardWrap');
-  const avail = Math.min(wrap.clientWidth, wrap.clientHeight, 480);
-  SZ = Math.floor(avail / 8);
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const isMobile = vw <= 768;
+
+  // Calculate space taken by other elements
+  const hdrH   = document.getElementById('hdr').offsetHeight       || 36;
+  const statH  = document.getElementById('statusBar').offsetHeight  || 44;
+  const ctrlH  = document.getElementById('controls').offsetHeight   || 50;
+  const gaps   = 40; // padding + gaps between elements
+  const availH = vh - hdrH - statH - ctrlH - gaps;
+  const availW = vw - 16; // side padding
+
+  if(isMobile){
+    // Mobile: fill as much screen as possible (10%+ bigger)
+    const avail = Math.min(availW, availH);
+    SZ = Math.floor(avail / 8);
+  } else {
+    // Desktop: use up to 720px board (50% bigger than before 480px)
+    const avail = Math.min(availW * 0.85, availH, 720);
+    SZ = Math.floor(avail / 8);
+  }
+
+  // Ensure minimum playable size
+  SZ = Math.max(SZ, 44);
+
   const total = SZ * 8;
   canvas.width  = total * PR;
   canvas.height = total * PR;
   canvas.style.width  = total + 'px';
   canvas.style.height = total + 'px';
 }
-sizeBoard();
+// Wait for layout to settle before sizing
+setTimeout(sizeBoard, 60);
 
 // ── GAME STATE ─────────────────────────────────────
 // board[row][col]: null | {player:1or2, king:bool}
@@ -842,7 +866,9 @@ history=[cloneBoard(board)];
 updateStatus();
 cancelAnimationFrame(animId);
 drawBoard();
-window.addEventListener('resize',()=>{sizeBoard();});
+window.addEventListener('resize',()=>{setTimeout(sizeBoard,60);});
+// Re-size once page fully rendered
+window.addEventListener('load',()=>{setTimeout(sizeBoard,100);});
 </script>
 </body>
 </html>
