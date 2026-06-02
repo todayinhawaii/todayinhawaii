@@ -273,11 +273,13 @@
     <button class="tool-btn"    id="t-air"    onclick="setTool('air')">💨<span class="tlbl">Spray</span></button>
     <button class="tool-btn"    id="t-text"   onclick="showTxt()">💬<span class="tlbl">Add Text</span></button>
     <div class="tool-ctrl">
-      <div id="brushPreview">
+      <div id="brushPreview" onclick="document.getElementById('cpick').click()">
         <canvas id="previewCanvas" width="136" height="136"></canvas>
-        <input type="color" id="cpick" value="#ff3366" oninput="setColor(this.value)">
-        <span class="prev-lbl">BRUSH</span>
+        <span class="prev-lbl">TAP COLOR</span>
       </div>
+      <input type="color" id="cpick" value="#ff3366"
+        style="position:fixed;left:-999px;top:-999px;width:1px;height:1px;opacity:0;pointer-events:none;"
+        oninput="setColor(this.value)">
       <div class="slider-wrap">
         <span class="sldr-lbl">Size</span>
         <input type="range" class="vslider" id="brushSz" min="1" max="50" value="8" orient="vertical">
@@ -718,44 +720,48 @@ function updateBrushPreview(){
   const pw=pc.width, ph=pc.height;
   pCtx.clearRect(0,0,pw,ph);
 
-  // Checkerboard background to show opacity
+  // Dark background
+  pCtx.fillStyle='#111';
+  pCtx.fillRect(0,0,pw,ph);
+
+  // Checkerboard to show opacity
   const csz=8;
-  for(let gy=0;gy<ph/csz;gy++) for(let gx=0;gx<pw/csz;gx++){
-    pCtx.fillStyle=(gx+gy)%2===0?'rgba(80,80,80,0.5)':'rgba(50,50,50,0.5)';
-    pCtx.fillRect(gx*csz,gy*csz,csz,csz);
+  for(let gy=0;gy<Math.ceil(ph/csz);gy++){
+    for(let gx=0;gx<Math.ceil(pw/csz);gx++){
+      pCtx.fillStyle=(gx+gy)%2===0?'rgba(80,80,80,0.6)':'rgba(40,40,40,0.6)';
+      pCtx.fillRect(gx*csz,gy*csz,csz,csz);
+    }
   }
 
-  const cx=pw/2, cy=ph/2;
-  // Scale preview radius to brush size (1-50 → 4-32px in preview)
-  const previewR = Math.max(4, Math.min(32, brushSz * 0.8));
-  // Softness = blur
-  const blurPx = (1-brushHardness)*8;
+  const pcx=pw/2, pcy=ph/2;
+  const previewR=Math.max(5,Math.min(30,brushSz*0.75));
+  const blurPx=(1-brushHardness)*10;
 
   pCtx.save();
-  pCtx.globalAlpha = brushOpacity;
-  if(blurPx>0.5){pCtx.filter=`blur(${blurPx}px)`;}
+  pCtx.globalAlpha=brushOpacity;
+  if(blurPx>0.5) pCtx.filter='blur('+blurPx+'px)';
 
-  // Draw a dot representing the brush
-  const grad=pCtx.createRadialGradient(cx-previewR*0.3,cy-previewR*0.3,0,cx,cy,previewR*1.1);
-  grad.addColorStop(0,'white');
-  grad.addColorStop(0.3,drawColor);
-  grad.addColorStop(1,drawColor);
-  pCtx.fillStyle=grad;
-  pCtx.beginPath();pCtx.arc(cx,cy,previewR,0,Math.PI*2);pCtx.fill();
+  const pg=pCtx.createRadialGradient(pcx-previewR*0.3,pcy-previewR*0.3,0,pcx,pcy,previewR*1.1);
+  pg.addColorStop(0,'white');
+  pg.addColorStop(0.25,drawColor);
+  pg.addColorStop(1,drawColor);
+  pCtx.fillStyle=pg;
+  pCtx.beginPath();pCtx.arc(pcx,pcy,previewR,0,Math.PI*2);pCtx.fill();
 
-  // For soft tools also show feather ring
   if(blurPx>2){
-    pCtx.globalAlpha=brushOpacity*0.3;
-    pCtx.filter=`blur(${blurPx*2}px)`;
+    pCtx.globalAlpha=brushOpacity*0.25;
+    pCtx.filter='blur('+(blurPx*2)+'px)';
     pCtx.fillStyle=drawColor;
-    pCtx.beginPath();pCtx.arc(cx,cy,previewR*1.4,0,Math.PI*2);pCtx.fill();
+    pCtx.beginPath();pCtx.arc(pcx,pcy,previewR*1.5,0,Math.PI*2);pCtx.fill();
   }
-
   pCtx.restore();
 
-  // Glow border matching color
-  document.getElementById('brushPreview').style.borderColor=drawColor;
-  document.getElementById('brushPreview').style.boxShadow=`0 0 10px ${drawColor}66, inset 0 0 10px rgba(0,0,0,0.5)`;
+  // Glow border
+  const bp=document.getElementById('brushPreview');
+  if(bp){
+    bp.style.borderColor=drawColor;
+    bp.style.boxShadow='0 0 10px '+drawColor+'88, inset 0 0 8px rgba(0,0,0,0.6)';
+  }
 }
 
 // ── POINTER HANDLING ───────────────────────────
@@ -1130,7 +1136,7 @@ loop();
   div.innerHTML=
     '<span style="font:900 42px system-ui">Aa</span>'+
     '<span style="font:900 42px Georgia">Aa</span>'+
-    "<span style="font:900 38px 'Courier New'">Aa</span>"+
+    '<span style="font:900 38px Courier New">Aa</span>'+
     '<span style="font:italic 900 42px Georgia">Aa</span>'+
     '<span style="font:900 48px fantasy">Aa</span>';
   document.body.appendChild(div);
@@ -1140,7 +1146,7 @@ loop();
     const fonts=[
       '900 '+Math.round(42*PR)+'px system-ui',
       '900 '+Math.round(42*PR)+'px Georgia',
-      "900 "+Math.round(38*PR)+"px 'Courier New'",
+      '900 '+Math.round(38*PR)+'px Courier New',
       'italic 900 '+Math.round(42*PR)+'px Georgia',
       '900 '+Math.round(48*PR)+'px fantasy',
     ];
