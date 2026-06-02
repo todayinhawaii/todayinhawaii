@@ -16,12 +16,30 @@
     }
     #bg{
       position:fixed;inset:0;z-index:0;
-      background:
-        radial-gradient(ellipse at 20% 80%,rgba(0,80,120,0.55) 0%,transparent 50%),
-        radial-gradient(ellipse at 80% 15%,rgba(0,50,100,0.45) 0%,transparent 45%),
-        radial-gradient(ellipse at 50% 50%,rgba(20,0,60,0.4) 0%,transparent 60%),
-        linear-gradient(180deg,#020812 0%,#041525 35%,#061830 65%,#020e1a 100%);
+      background:#020e1a; /* fallback if no video */
       overflow:hidden;
+    }
+    /* Mermaid video — loops silently behind everything */
+    #bgVideo{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      object-fit:cover;      /* fills screen, crops edges */
+      opacity:0.55;          /* subtle — doesn't overpower board */
+      pointer-events:none;
+      z-index:0;
+      display:none;          /* hidden until loaded */
+    }
+    /* Dark ocean overlay on top of video */
+    #bgOverlay{
+      position:absolute;inset:0;z-index:1;
+      background:
+        radial-gradient(ellipse at 50% 50%,rgba(0,5,20,0.45) 0%,transparent 70%),
+        linear-gradient(180deg,
+          rgba(2,8,18,0.55) 0%,
+          rgba(2,8,18,0.25) 40%,
+          rgba(2,8,18,0.25) 60%,
+          rgba(2,8,18,0.6)  100%);
+      pointer-events:none;
     }
     /* Floating ocean bubbles */
     .sea-bubble{
@@ -197,9 +215,18 @@
   </style>
 </head>
 <body>
-<div id="bg"></div>
+<div id="bg">
+  <!-- chess_bg.mp4 plays automatically when uploaded to GitHub! -->
+  <video id="bgVideo"
+    src="/chess_bg.mp4"
+    autoplay loop muted playsinline
+    oncanplay="this.style.display='block'"
+    onerror="this.style.display='none'">
+  </video>
+  <div id="bgOverlay"></div>
+</div>
 <script>
-// Ocean bubbles
+// Ocean bubbles (show whether or not video is present)
 for(let i=0;i<20;i++){
   const b=document.createElement('div'); b.className='sea-bubble';
   const sz=6+Math.random()*22;
@@ -209,8 +236,7 @@ for(let i=0;i<20;i++){
     animation-delay:${Math.random()*12}s;`;
   document.getElementById('bg').appendChild(b);
 }
-// Ocean sparkles
-['✦','🌊','✧','🐚','⋆','🧜','·','✦'].forEach((s,i)=>{
+['✦','🌊','✧','🐚','⋆','🧜','·','✦'].forEach(s=>{
   const sp=document.createElement('div'); sp.className='sea-spark';
   sp.textContent=s;
   sp.style.cssText=`left:${10+Math.random()*80}%;top:${10+Math.random()*80}%;
@@ -218,6 +244,14 @@ for(let i=0;i<20;i++){
     animation-delay:${Math.random()*6}s;`;
   document.getElementById('bg').appendChild(sp);
 });
+// Fade video in smoothly once playing
+const vid=document.getElementById('bgVideo');
+if(vid){
+  vid.addEventListener('playing',()=>{
+    vid.style.transition='opacity 1.5s ease';
+    vid.style.opacity='0.55';
+  });
+}
 </script>
 <div id="wrap">
   <div id="hdr">
