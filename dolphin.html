@@ -124,11 +124,11 @@
 
     /* Front — Playing card */
     .card-front{
-      background:white;
+      background:#fffef9;
       transform:rotateY(180deg);
-      padding:0;
-      border:2px solid rgba(255,255,255,0.3);
-      overflow:hidden;
+      border:2px solid #ddd;
+      overflow:visible;
+      position:relative;
     }
     .card-front.red{color:#cc0000;}
     .card-front.black{color:#111;}
@@ -530,21 +530,39 @@ function startGame(){
 
 // ── Build & Shuffle Deck ──────────────────────
 function buildDeck(){
-  const deck=[];
+  // Build 26 pairs as groups first
+  const pairs=[];
   SUITS.forEach(suit=>{
     VALUES.forEach(val=>{
-      deck.push({id:suit.sym+val+'_1',val,suit,flipped:false,matched:false});
-      deck.push({id:suit.sym+val+'_2',val,suit,flipped:false,matched:false});
+      pairs.push([
+        {id:suit.sym+val+'_1',val,suit,flipped:false,matched:false},
+        {id:suit.sym+val+'_2',val,suit,flipped:false,matched:false}
+      ]);
     });
   });
-  // Fisher-Yates shuffle
-  for(let i=deck.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [deck[i],deck[j]]=[deck[j],deck[i]];
+  // Shuffle the PAIRS (not individual cards) so stages always have complete pairs
+  function shufflePairs(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
   }
-  // Always use 2-stage system: 30 cards first, then rest
-  allCards=deck;
-  cards=deck.slice(0,stage1Count);
+  function flatShuffle(pairList){
+    const flat=pairList.flat();
+    for(let i=flat.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [flat[i],flat[j]]=[flat[j],flat[i]];
+    }
+    return flat;
+  }
+  shufflePairs(pairs);
+  // Stage 1: first 15 pairs = 30 cards (all pairs guaranteed!)
+  // Stage 2: remaining 11 pairs = 22 cards
+  const s1Pairs=pairs.slice(0,15);
+  const s2Pairs=pairs.slice(15);
+  allCards={s1:flatShuffle(s1Pairs), s2:flatShuffle(s2Pairs)};
+  cards=allCards.s1;
 }
 
 // ── Render Grid ────────────────────────────────
@@ -671,162 +689,6 @@ function buildCardHTML(card){
   </div>`;
 }
 
-function getCardImageName(card){
-  // card_as.jpg, card_2h.jpg, card_kd.jpg etc
-  const valMap={'A':'a','J':'j','Q':'q','K':'k'};
-  const suitMap={'♠':'s','♥':'h','♦':'d','♣':'c'};
-  const v=valMap[card.val]||card.val;
-  const s=suitMap[card.suit.sym];
-  return 'card_'+v+s+'.jpg';
-}
-
-function buildCardHTML(card){
-  const s=card.suit.sym;
-  const v=card.val;
-  const color=card.suit.color==='red'?'#cc0000':'#111';
-  const isFace=['J','Q','K'].includes(v);
-  const isAce=v==='A';
-
-  // Suit pip arrangements for number cards
-  const pips={
-    '2':[[1,5]],
-    '3':[[1,3,5]],
-    '4':[[1,2,4,5]],
-    '5':[[1,2,3,4,5]],
-    '6':[[1,2,3,4,5,6]],
-    '7':[[1,2,3,4,5,6,7]],
-    '8':[[1,2,3,4,5,6,7,8]],
-    '9':[[1,2,3,4,5,6,7,8,9]],
-    '10':[[1,2,3,4,5,6,7,8,9,10]],
-  };
-
-  // Build suit grid for number cards
-  function pipGrid(val){
-    // Grid positions for each count
-    const layouts={
-      '2':  [{r:0,c:1},{r:4,c:1,flip:true}],
-      '3':  [{r:0,c:1},{r:2,c:1},{r:4,c:1,flip:true}],
-      '4':  [{r:0,c:0},{r:0,c:2},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '5':  [{r:0,c:0},{r:0,c:2},{r:2,c:1},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '6':  [{r:0,c:0},{r:0,c:2},{r:2,c:0},{r:2,c:2},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '7':  [{r:0,c:0},{r:0,c:2},{r:1,c:1},{r:2,c:0},{r:2,c:2},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '8':  [{r:0,c:0},{r:0,c:2},{r:1,c:1},{r:2,c:0},{r:2,c:2},{r:3,c:1,flip:true},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '9':  [{r:0,c:0},{r:0,c:2},{r:1,c:0},{r:1,c:2},{r:2,c:1},{r:3,c:0,flip:true},{r:3,c:2,flip:true},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-      '10': [{r:0,c:0},{r:0,c:2},{r:1,c:0},{r:1,c:2},{r:2,c:1},{r:2,c:1,flip:true},{r:3,c:0,flip:true},{r:3,c:2,flip:true},{r:4,c:0,flip:true},{r:4,c:2,flip:true}],
-    };
-    const pos=layouts[val]||[];
-    const cells=Array.from({length:5},()=>['','','']);
-    pos.forEach(p=>{
-      const sym=p.flip?`<span style="display:inline-block;transform:rotate(180deg)">${s}</span>`:s;
-      cells[p.r][p.c]=sym;
-    });
-    return `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;
-      grid-template-rows:repeat(5,1fr);width:78%;height:74%;
-      font-size:1.05em;align-items:center;justify-items:center;color:${color};">
-      ${cells.flat().map(c=>`<div>${c}</div>`).join('')}
-    </div>`;
-  }
-
-  // Face card design
-  function faceDesign(val){
-    const faces={
-      'J':{top:'J',symbol:'⚔️',label:'JACK'},
-      'Q':{top:'Q',symbol:'👑',label:'QUEEN'},
-      'K':{top:'K',symbol:'🔱',label:'KING'},
-    };
-    const f=faces[val];
-    return `<div style="display:flex;flex-direction:column;align-items:center;
-      justify-content:center;height:65%;gap:2px;">
-      <div style="font-size:1.8em;">${f.symbol}</div>
-      <div style="font-size:0.9em;font-weight:900;color:${color};
-        letter-spacing:0.05em;font-family:serif;">${f.label}</div>
-      <div style="font-size:1.3em;color:${color};">${s}</div>
-    </div>`;
-  }
-
-  // Ace design
-  function aceDesign(){
-    return `<div style="font-size:3.2em;line-height:1;color:${color};">${s}</div>`;
-  }
-
-  const centerContent = isAce ? aceDesign()
-    : isFace ? faceDesign(v)
-    : pipGrid(v);
-
-  return `<div class="card-inner">
-    <div class="card-back">
-      <div class="dolphin-back">🐬</div>
-      <div class="dolphin-sub">DOLPHIN</div>
-    </div>
-    <div class="card-front" style="
-      background:#fff;border-radius:8px;
-      display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      position:absolute;inset:0;
-      backface-visibility:hidden;-webkit-backface-visibility:hidden;
-      transform:rotateY(180deg);
-      box-shadow:0 3px 10px rgba(0,0,0,0.4);
-      overflow:hidden;font-family:Georgia,serif;">
-      <!-- Top-left corner -->
-      <div style="position:absolute;top:5%;left:8%;
-        display:flex;flex-direction:column;align-items:center;
-        line-height:1.1;color:${color};">
-        <div style="font-size:clamp(9px,2.5vw,14px);font-weight:900;">${v}</div>
-        <div style="font-size:clamp(8px,2vw,12px);">${s}</div>
-      </div>
-      <!-- Bottom-right corner (rotated) -->
-      <div style="position:absolute;bottom:5%;right:8%;
-        display:flex;flex-direction:column;align-items:center;
-        line-height:1.1;color:${color};transform:rotate(180deg);">
-        <div style="font-size:clamp(9px,2.5vw,14px);font-weight:900;">${v}</div>
-        <div style="font-size:clamp(8px,2vw,12px);">${s}</div>
-      </div>
-      <!-- Border decorative lines -->
-      <div style="position:absolute;inset:6px;border:1px solid rgba(0,0,0,0.12);border-radius:5px;pointer-events:none;"></div>
-      <!-- Center content -->
-      ${centerContent}
-    </div>
-  </div>`;
-}
-
-function getCardImageName(card){
-  // card_as.jpg, card_2h.jpg, card_kd.jpg etc
-  const valMap={'A':'a','J':'j','Q':'q','K':'k'};
-  const suitMap={'♠':'s','♥':'h','♦':'d','♣':'c'};
-  const v=valMap[card.val]||card.val;
-  const s=suitMap[card.suit.sym];
-  return 'card_'+v+s+'.jpg';
-}
-
-function buildCardHTML(card){
-  const colorClass=card.suit.color;
-  const imgName=getCardImageName(card);
-  return `
-    <div class="card-inner">
-      <div class="card-back">
-        <div class="dolphin-emoji">🐬</div>
-        <div class="dolphin-sub">DOLPHIN</div>
-      </div>
-      <div class="card-front ${colorClass}">
-        <img src="/${imgName}" 
-          style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-          alt="${card.val}${card.suit.sym}">
-        <div class="card-fallback" style="display:none;width:100%;height:100%;flex-direction:column;justify-content:space-between;padding:3px;">
-          <div class="card-corner tl">
-            <div class="card-val">${card.val}</div>
-            <div class="card-suit-sm">${card.suit.sym}</div>
-          </div>
-          <div class="card-suit-big">${card.suit.sym}</div>
-          <div class="card-corner br">
-            <div class="card-val">${card.val}</div>
-            <div class="card-suit-sm">${card.suit.sym}</div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-}
-
 // ── Flip Card ──────────────────────────────────
 function flipCard(idx){
   if(!canFlip) return;
@@ -876,9 +738,12 @@ function checkMatch(){
       el1.classList.add('matched');
       el2.classList.add('matched');
       [el1,el2].forEach(el=>{
+        // Inject overlay INSIDE .card-front so it works with 3D flip!
+        const front=el.querySelector('.card-front');
+        const target=front||el;
         const ov=document.createElement('div');
         ov.className='match-overlay';ov.textContent='✓';
-        el.appendChild(ov);
+        target.appendChild(ov);
       });
       // Add visible green overlay div (::after won't work with 3D transforms)
       [el1,el2].forEach(el=>{
@@ -910,10 +775,9 @@ function checkMatch(){
 
       // Check win!
       const pairsInStage = Math.floor(cards.length/2);
-      if(matchesFound===pairsInStage && isMobile() && stage===1){
-        // Stage 1 complete on mobile! Load stage 2
+      if(matchesFound===pairsInStage && stage===1){
         setTimeout(()=>advanceStage(),800);
-      } else if(matchesFound===26 || (isMobile() && stage===2 && matchesFound===pairsInStage)){
+      } else if(matchesFound===pairsInStage && stage===2){
         setTimeout(()=>winGame(),600);
       }
     },400);
@@ -939,9 +803,8 @@ function checkMatch(){
 // ── Stage Advance (mobile) ─────────────────────
 function advanceStage(){
   stage=2;
-  matchesFound=0; // reset match counter for stage 2
-  // Load remaining cards
-  cards=allCards.slice(stage1Count);
+  matchesFound=0;
+  cards=allCards.s2;
   // Quick flash animation
   const grid=document.getElementById('cardGrid');
   grid.style.transition='opacity 0.3s';
