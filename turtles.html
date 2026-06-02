@@ -277,7 +277,7 @@ for(let i=0;i<12;i++){
     <button class="diff-btn" onclick="setDiff(1)" id="d1">
       <span class="diff-icon">🐣</span>
       <div class="diff-name">Baby Turtle</div>
-      <div class="diff-desc">Random moves — perfect for kids!</div>
+      <div class="diff-desc">Random — but always captures!</div>
     </button>
     <button class="diff-btn" onclick="setDiff(2)" id="d2">
       <span class="diff-icon">🐢</span>
@@ -650,6 +650,8 @@ function minimax(b, depth, alpha, beta, maximizing){
 }
 
 function aiPickBest(moves, depth){
+  if(!moves.length) return null;
+  // Baby = random pick (but still forced to jump if jumps passed in)
   if(difficulty===1) return moves[Math.floor(Math.random()*moves.length)];
   let best=null, bestVal=-Infinity;
   aiDeadline=Date.now()+800;
@@ -663,8 +665,12 @@ function aiPickBest(moves, depth){
 }
 
 function aiMove(){
-  const moves=getMoves(board,2);
-  if(!moves.length){ endAiTurn(); return; }
+  const allMoves=getMoves(board,2);
+  if(!allMoves.length){ endAiTurn(); return; }
+
+  // AI ALWAYS jumps when it can — on every difficulty level!
+  const jumps=allMoves.filter(m=>m.capRow!==undefined);
+  const moves=jumps.length>0 ? jumps : allMoves;
 
   const depths=[0,1,2,3];
   const depth=depths[Math.min(difficulty-1,3)];
@@ -1044,6 +1050,24 @@ function startFromDiff(){
   }
 }
 function beginGame(){
+  // Content filter — block bad words and politics
+  const _fc = checkInputs('playerName', 'playerLoc');
+  if(!_fc.ok){
+    const _fi = document.getElementById('playerName');
+    if(_fi){ _fi.style.borderColor='#ff4444'; _fi.style.boxShadow='0 0 10px rgba(255,0,0,0.4)'; }
+    // Show error message
+    const _fe = document.getElementById('filterError') || (()=>{
+      const d=document.createElement('div');
+      d.id='filterError';
+      d.style.cssText='color:#ff6666;font-size:12px;font-weight:700;text-align:center;margin-top:-8px;';
+      const btn=document.querySelector('.ov-btn');
+      if(btn&&btn.parentNode)btn.parentNode.insertBefore(d,btn);
+      return d;
+    })();
+    _fe.textContent='⚠️ '+_fc.msg;
+    setTimeout(()=>{if(_fi){_fi.style.borderColor='';_fi.style.boxShadow='';}if(_fe)_fe.textContent='';},3000);
+    return;
+  }
   playerName=document.getElementById('playerName').value.trim()||'Turtle Warrior';
   playerLoc =document.getElementById('playerLoc').value.trim()||'Hawaii';
   document.getElementById('nameOv').classList.add('hide');
@@ -1066,6 +1090,61 @@ drawBoard();
 window.addEventListener('resize',()=>{setTimeout(sizeBoard,60);});
 // Re-size once page fully rendered
 window.addEventListener('load',()=>{setTimeout(sizeBoard,100);});
+
+// ── CONTENT FILTER ──────────────────────────────
+// Checks names/locations for inappropriate content
+// Returns {ok:true} or {ok:false, msg:"reason"}
+function filterInput(text){
+  if(!text||text.trim().length===0) return {ok:true};
+  const t = text.toLowerCase().replace(/[^a-z0-9\s]/g,'');
+  const words = t.split(/\s+/);
+
+  // Bad words list (partial — catches roots)
+  const BAD = [
+    'fuck','shit','ass','bitch','cunt','dick','cock','pussy','bastard',
+    'whore','slut','nigger','nigga','faggot','retard','rape','pedo',
+    'porn','sex','naked','nude','boob','tit','butt','anus','penis',
+    'vagina','dildo','boner','horny','cum','jizz','anal','xxx',
+    'drugs','meth','cocaine','heroin','weed','kike','spic','chink',
+    'cracker','tranny','crap','piss','damn','hell','idiot','moron',
+    'stupid','loser','hate','kill','murder','suicide','terrorist',
+    'jihad','nazi','racist','slavery'
+  ];
+
+  // Political / divisive names to block
+  const POLITICAL = [
+    'trump','biden','obama','clinton','hillary','harris','desantis',
+    'pelosi','maga','democrat','republican','liberal','conservative',
+    'socialist','communist','fascist','antifa','kkk','proud boys',
+    'blm','qanon','isis','taliban','putin','kim jong','xi jinping',
+    'zelensky','netanyahu','aoc','bernie','elon','musk','soros',
+    'rothschild','illuminati'
+  ];
+
+  // Check each word
+  for(const w of words){
+    for(const bad of BAD){
+      if(w.includes(bad)) return {ok:false, msg:'Please keep it family-friendly! 🌺'};
+    }
+    for(const pol of POLITICAL){
+      if(t.includes(pol)) return {ok:false, msg:'Please keep names neutral — no politics here! 🌺'};
+    }
+  }
+  // Max length check
+  if(text.trim().length > 25) return {ok:false, msg:'Please keep it under 25 characters! 🌺'};
+  return {ok:true};
+}
+
+function checkInputs(nameId, locId){
+  const name = document.getElementById(nameId)?.value.trim()||'';
+  const loc  = document.getElementById(locId)?.value.trim()||'';
+  const nCheck = filterInput(name);
+  const lCheck = filterInput(loc);
+  if(!nCheck.ok) return {ok:false, msg:'Name: '+nCheck.msg};
+  if(!lCheck.ok) return {ok:false, msg:'Location: '+lCheck.msg};
+  return {ok:true};
+}
+// ────────────────────────────────────────────────
 </script>
 </body>
 </html>
