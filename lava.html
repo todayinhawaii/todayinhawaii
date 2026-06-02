@@ -342,13 +342,93 @@ for(let i=0;i<25;i++){
 <!-- Start screen -->
 
 
+<!-- Screen 1: Welcome -->
+<div class="overlay" id="welcomeScreen">
+  <div class="ov-title">🌋 Pele's Fury</div>
+  <div class="ov-sub">
+    Pele the volcano goddess is angry!!<br>
+    She's hurling lava rocks from above!<br>
+    <strong style="color:#ffcc00;">Can you survive her fury?</strong>
+  </div>
+  <button class="ov-btn" onclick="showHowToPlay()">🔥 How To Play!</button>
+  <button class="ov-btn sec" onclick="showNameEntry()">⚡ I Know — Let's Go!</button>
+  <a href="/games" style="color:#ff8844;font-size:12px;">← Games Hub</a>
+</div>
+
+<!-- Screen 2: How To Play -->
+<div class="overlay hide" id="htpScreen">
+  <div class="ov-title" style="font-size:clamp(20px,5vw,30px);">🌋 How To Play</div>
+  <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">
+    <div style="text-align:center;">
+      <div class="htp-lbl" style="margin-bottom:5px;">Rocks fall — move &amp; rotate!</div>
+      <div class="htp-grid">
+        <div class="htp-row"><div class="htp-cell empty"></div><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell empty"></div></div>
+        <div class="htp-row"><div class="htp-cell empty"></div><div class="htp-cell lava"></div><div class="htp-cell empty"></div><div class="htp-cell empty"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell empty"></div><div class="htp-cell empty"></div><div class="htp-cell empty"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell empty"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell empty"></div><div class="htp-cell lava"></div><div class="htp-cell lava"></div></div>
+      </div>
+      <div class="htp-lbl" style="margin-top:4px;">Stack them — no gaps!</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="htp-lbl" style="margin-bottom:5px;">Full row = 💥 ERUPTION!</div>
+      <div class="htp-grid">
+        <div class="htp-row"><div class="htp-cell empty"></div><div class="htp-cell empty"></div><div class="htp-cell empty"></div><div class="htp-cell empty"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell gap">╳</div><div class="htp-cell lava"></div><div class="htp-cell lava"></div></div>
+        <div class="htp-row"><div class="htp-cell clear"></div><div class="htp-cell clear"></div><div class="htp-cell clear"></div><div class="htp-cell clear"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell gap">╳</div><div class="htp-cell lava"></div></div>
+        <div class="htp-row"><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell lava"></div><div class="htp-cell lava"></div></div>
+      </div>
+      <div class="htp-lbl" style="margin-top:4px;">✅ Full = gone! ❌ Gap = stays!</div>
+    </div>
+  </div>
+  <div class="ov-sub" style="font-size:12px;">
+    💥 Clear <strong style="color:#ffcc00;">4 rows at once</strong> = MEGA ERUPTION!! 🌋<br>
+    ☠️ Rocks reach the <strong style="color:#ff4444;">top</strong> = Pele wins!
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+    <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,80,0,0.3);border-radius:10px;padding:7px 12px;text-align:center;">
+      <div style="font-size:16px;">◀ ▶</div><div style="font-size:8px;color:#ff8844;font-weight:700;">MOVE</div>
+    </div>
+    <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,80,0,0.3);border-radius:10px;padding:7px 12px;text-align:center;">
+      <div style="font-size:16px;">↻</div><div style="font-size:8px;color:#ff8844;font-weight:700;">ROTATE</div>
+    </div>
+    <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,80,0,0.3);border-radius:10px;padding:7px 12px;text-align:center;">
+      <div style="font-size:16px;">⬇</div><div style="font-size:8px;color:#ff8844;font-weight:700;">SLAM!</div>
+    </div>
+  </div>
+  <button class="ov-btn" onclick="showNameEntry()">🌋 Let's Erupt!!</button>
+</div>
+
+<!-- Screen 3: Name + Location -->
+<div class="overlay hide" id="nameScreen">
+  <div class="ov-title" style="font-size:clamp(20px,5vw,30px);">🌋 Who Are You?</div>
+  <div class="ov-sub">
+    Enter your name and join the<br>
+    <strong style="color:#ffcc00;">Global Eruption Leaderboard!! 🏆</strong>
+  </div>
+  <input class="ov-input" id="playerName" placeholder="Your name 🌋" maxlength="20"
+    onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
+  <input class="ov-input" id="playerLoc" placeholder="City / Island 🌺" maxlength="24"
+    onkeydown="if(event.key==='Enter')beginGame()">
+  <button class="ov-btn" onclick="beginGame()">🔥 IGNITE THE VOLCANO!!</button>
+  <button class="ov-btn sec" onclick="beginGame()">Play as Guest</button>
+</div>
+
 <!-- Game over screen -->
 <div class="overlay hide" id="overScreen">
-  <div class="ov-title">💀 The Lava<br>Won...</div>
-  <div class="ov-sub">The volcano swallowed your rocks!</div>
+  <div class="ov-title" style="font-size:clamp(20px,5vw,32px);">💀 The Lava Won...</div>
+  <div class="ov-sub">
+    The volcano swallowed your rocks!<br>
+    <span id="overName" style="color:#ffcc00;font-weight:900;"></span>
+  </div>
   <div class="ov-score" id="finalScore">0</div>
-  <button class="ov-btn" onclick="startGame()">🌋 Erupt Again!</button>
-  <a href="/games" style="color:#ff6622;font-size:12px;margin-top:4px;">← Games Hub</a>
+  <div id="lbWrap" class="lb-wrap" style="max-height:200px;overflow-y:auto;"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+    <button class="ov-btn" onclick="startGame()">🌋 Erupt Again!</button>
+    <button class="ov-btn sec" onclick="showWelcome()">🏠 Menu</button>
+  </div>
+  <a href="/games" style="color:#ff8844;font-size:12px;">← Games Hub</a>
 </div>
 
 <script>
