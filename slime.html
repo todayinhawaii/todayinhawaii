@@ -154,13 +154,13 @@ function setSize(){
 setSize();
 
 // ── PHYSICS CONFIG ─────────────────────────────
-const N           = 48;      // boundary control points — smooth!
-const STIFFNESS   = 0.018;   // spring to rest position (low = very pliable)
-const NEIGHBOR_K  = 0.12;    // spring between adjacent points
-const PRESSURE_K  = 0.008;   // area preservation force
-const DAMPING     = 0.88;    // velocity damping (0=frozen, 1=no friction) — slimy!
-const FINGER_R    = NATURAL_R * 0.55; // how far finger influence reaches
-const FINGER_F    = 2.8;     // finger force multiplier
+const N           = 48;      // boundary control points
+const STIFFNESS   = 0.003;   // VERY slow spring back — thick clay!
+const NEIGHBOR_K  = 0.035;   // soft neighbor connection — gooey!
+const PRESSURE_K  = 0.002;   // very weak pressure — barely fights back
+const DAMPING     = 0.76;    // HIGH damping — thick slime barely moves!
+const FINGER_R    = NATURAL_R * 0.6;
+const FINGER_F    = 1.6;     // lighter force — thick material
 
 // ── SLIME STATE ───────────────────────────────
 let pts = [];    // boundary points: {x,y,vx,vy}
@@ -651,82 +651,197 @@ function showToast(msg){
   document.body.appendChild(t); setTimeout(()=>t.remove(),2200);
 }
 
-// ── SOUND ──────────────────────────────────────
+// ── SOUND — Wet Clay / Gooey Slime ─────────────
+// All sounds use filtered noise — no electronic tones!
 let ac=null; let muted=false;
-function ga(){if(!ac) ac=new(window.AudioContext||window.webkitAudioContext)();return ac;}
+function ga(){
+  if(!ac) ac=new(window.AudioContext||window.webkitAudioContext)();
+  return ac;
+}
+
+// Core: generate wet clay noise buffer
+// Uses layered low-freq noise — sounds like squishing wet clay/slime
+function makeSlimeBuffer(c, duration, wetness){
+  const len = Math.floor(c.sampleRate * duration);
+  const buf = c.createBuffer(1, len, c.sampleRate);
+  const d   = buf.getChannelData(0);
+  // Wet clay = very low freq noise with slow envelope
+  // Mix three components:
+  // 1. Low rumble (20-80Hz movement of mass)
+  // 2. Wet suction/squish noise (filtered broadband)
+  // 3. Gooey bubbling (random low-freq modulation)
+  let prev = 0;
+  for(let i=0;i<len;i++){
+    const t = i/c.sampleRate;
+    // Slow attack, slow decay — like clay moving
+    const env = Math.min(t/(duration*0.15), 1) * Math.exp(-t*(3+wetness*4));
+    // Brown noise (integrated white noise) — very bassy
+    const white = Math.random()*2-1;
+    prev = (prev + 0.08*white) / 1.08; // brownian
+    const brown = prev * 3.5;
+    // Very low sine wobble (20-40Hz range)
+    const rumble = Math.sin(2*Math.PI*(25+wetness*15)*t) * 0.25;
+    // Slow random suction modulation
+    const suck = Math.sin(2*Math.PI*8*t + Math.sin(2*Math.PI*3*t)*2) * 0.15;
+    d[i] = env * (brown*0.7 + rumble + suck);
+  }
+  return buf;
+}
 
 function playTouch(){
-  if(muted)return;
+  if(muted) return;
   try{
-    const c=ga(),buf=c.createBuffer(1,c.sampleRate*0.12,c.sampleRate),d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++){const t=i/c.sampleRate;d[i]=Math.exp(-t*30)*(Math.sin(2*Math.PI*75*t)*0.5+(Math.random()*2-1)*0.3*Math.exp(-t*70));}
-    const s=c.createBufferSource(),g=c.createGain();
-    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.45;s.start();
+    const c=ga();
+    const buf = makeSlimeBuffer(c, 0.18, 1.5);
+    const src = c.createBufferSource();
+    // Low-pass filter — remove all high freq, keep wet bassy squelch
+    const lp  = c.createBiquadFilter();
+    lp.type='lowpass'; lp.frequency.value=180; lp.Q.value=1.2;
+    const g   = c.createGain();
+    src.buffer=buf;
+    src.connect(lp); lp.connect(g); g.connect(c.destination);
+    g.gain.value=0.55;
+    src.start();
   }catch(e){}
 }
 
-let lastStretchPlay=0;
+let lastSnd=0;
 function playStretch(speed){
-  if(muted||speed<2)return;
+  if(muted||speed<1.5) return;
   const now=Date.now();
-  if(now-lastStretchPlay<60)return;
-  lastStretchPlay=now;
+  if(now-lastSnd<80) return;
+  lastSnd=now;
   try{
-    const c=ga(),o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);o.type='sine';
-    o.frequency.setValueAtTime(55+speed*1.5,c.currentTime);
-    o.frequency.exponentialRampToValueAtTime(35+speed,c.currentTime+0.1);
-    g.gain.setValueAtTime(0,c.currentTime);
-    g.gain.linearRampToValueAtTime(0.12,c.currentTime+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.1);
-    o.start(c.currentTime);o.stop(c.currentTime+0.12);
+    const c=ga();
+    // Stretching slime = slow low gooey pull sound
+    const dur = 0.12 + speed*0.008;
+    const buf = makeSlimeBuffer(c, Math.min(dur,0.3), 0.8+speed*0.05);
+    const src = c.createBufferSource();
+    const lp  = c.createBiquadFilter();
+    lp.type='lowpass'; lp.frequency.value=140; lp.Q.value=0.8;
+    // Subtle pitch shift as you drag
+    const g=c.createGain();
+    src.buffer=buf;
+    src.connect(lp); lp.connect(g); g.connect(c.destination);
+    g.gain.value=0.35;
+    src.start();
   }catch(e){}
 }
 
 function playRelease(){
-  if(muted)return;
+  if(muted) return;
   try{
-    const c=ga(),buf=c.createBuffer(1,c.sampleRate*0.22,c.sampleRate),d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++){const t=i/c.sampleRate;d[i]=Math.exp(-t*15)*(Math.sin(2*Math.PI*(100-t*120)*t)*0.45+(Math.random()*2-1)*0.18);}
-    const s=c.createBufferSource(),g=c.createGain();
-    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.38;s.start();
+    const c=ga();
+    // Release = soft gooey thud — like slime settling
+    const len=Math.floor(c.sampleRate*0.25);
+    const buf=c.createBuffer(1,len,c.sampleRate);
+    const d=buf.getChannelData(0);
+    let prev=0;
+    for(let i=0;i<len;i++){
+      const t=i/c.sampleRate;
+      const env=Math.exp(-t*9);
+      const white=Math.random()*2-1;
+      prev=(prev+0.1*white)/1.1;
+      // Very soft, slow thud
+      d[i]=env*(prev*2+Math.sin(2*Math.PI*30*t)*0.3);
+    }
+    const src=c.createBufferSource();
+    const lp=c.createBiquadFilter();
+    lp.type='lowpass';lp.frequency.value=120;lp.Q.value=0.7;
+    const g=c.createGain();
+    src.buffer=buf;
+    src.connect(lp);lp.connect(g);g.connect(c.destination);
+    g.gain.value=0.4;src.start();
   }catch(e){}
 }
 
 function playSquish(){
-  if(muted)return;
+  if(muted) return;
   try{
-    const c=ga(),buf=c.createBuffer(1,c.sampleRate*0.35,c.sampleRate),d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++){const t=i/c.sampleRate;d[i]=Math.exp(-t*10)*((Math.sin(2*Math.PI*38*t)+Math.sin(2*Math.PI*55*t))*0.3+(Math.random()*2-1)*0.4*Math.exp(-t*18));}
-    const s=c.createBufferSource(),g=c.createGain();
-    s.connect(g);g.connect(c.destination);s.buffer=buf;g.gain.value=0.65;s.start();
+    const c=ga();
+    // Big squish = longer wet clay compression sound
+    const dur=0.5;
+    const len=Math.floor(c.sampleRate*dur);
+    const buf=c.createBuffer(1,len,c.sampleRate);
+    const d=buf.getChannelData(0);
+    let prev=0;
+    for(let i=0;i<len;i++){
+      const t=i/c.sampleRate;
+      // Two phase: push (0-0.12s) and ooze out (0.12-0.5s)
+      const pushEnv  = t<0.12 ? t/0.12 : 0;
+      const oozeEnv  = t>0.1  ? Math.exp(-(t-0.1)*5) : 0;
+      const env      = pushEnv*0.6 + oozeEnv*0.9;
+      const white    = Math.random()*2-1;
+      prev=(prev+0.07*white)/1.07;
+      const suck=Math.sin(2*Math.PI*(18+t*12)*t)*0.3;
+      const bubble=Math.sin(2*Math.PI*45*t+Math.random()*0.5)*0.15;
+      d[i]=env*(prev*3+suck+bubble);
+    }
+    const src=c.createBufferSource();
+    const lp=c.createBiquadFilter();
+    lp.type='lowpass';lp.frequency.value=200;lp.Q.value=1.5;
+    const g=c.createGain();
+    src.buffer=buf;
+    src.connect(lp);lp.connect(g);g.connect(c.destination);
+    g.gain.value=0.7;src.start();
   }catch(e){}
 }
 
 function playMix(){
-  if(muted)return;
+  if(muted) return;
   try{
     const c=ga();
-    [70,85,100,80,95,110].forEach((f,i)=>{
-      const o=c.createOscillator(),g=c.createGain();
-      o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;
-      const t=i*0.05;
-      g.gain.setValueAtTime(0,c.currentTime+t);
-      g.gain.linearRampToValueAtTime(0.18,c.currentTime+t+0.02);
-      g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+t+0.18);
-      o.start(c.currentTime+t);o.stop(c.currentTime+t+0.22);
-    });
+    // Mixing = gooey churning sound — slow low wobbling
+    const dur=0.7;
+    const len=Math.floor(c.sampleRate*dur);
+    const buf=c.createBuffer(1,len,c.sampleRate);
+    const d=buf.getChannelData(0);
+    let prev=0;
+    for(let i=0;i<len;i++){
+      const t=i/c.sampleRate;
+      const env=Math.sin(Math.PI*t/dur); // smooth bell shape
+      const white=Math.random()*2-1;
+      prev=(prev+0.06*white)/1.06;
+      // Slow circular mixing gurgle
+      const gurgle=Math.sin(2*Math.PI*12*t)*Math.sin(2*Math.PI*35*t)*0.4;
+      const ooze=Math.sin(2*Math.PI*20*t+Math.sin(2*Math.PI*4*t)*3)*0.25;
+      d[i]=env*(prev*2.5+gurgle+ooze);
+    }
+    const src=c.createBufferSource();
+    const lp=c.createBiquadFilter();
+    lp.type='lowpass';lp.frequency.value=220;lp.Q.value=1.8;
+    const g=c.createGain();
+    src.buffer=buf;
+    src.connect(lp);lp.connect(g);g.connect(c.destination);
+    g.gain.value=0.65;src.start();
   }catch(e){}
 }
 
 function playPop(freq){
-  if(muted)return;
+  // Soft wet plop — no snappy tone!
+  if(muted) return;
   try{
-    const c=ga(),o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=freq||600;
-    g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.15);
-    o.start(c.currentTime);o.stop(c.currentTime+0.18);
+    const c=ga();
+    const dur=0.2;
+    const len=Math.floor(c.sampleRate*dur);
+    const buf=c.createBuffer(1,len,c.sampleRate);
+    const d=buf.getChannelData(0);
+    let prev=0;
+    for(let i=0;i<len;i++){
+      const t=i/c.sampleRate;
+      const env=Math.exp(-t*14);
+      const white=Math.random()*2-1;
+      prev=(prev+0.09*white)/1.09;
+      // Soft wet plop — very low
+      d[i]=env*(prev*2.8+Math.sin(2*Math.PI*28*t)*0.35);
+    }
+    const src=c.createBufferSource();
+    const lp=c.createBiquadFilter();
+    lp.type='lowpass';lp.frequency.value=160;lp.Q.value=1.0;
+    const g=c.createGain();
+    src.buffer=buf;
+    src.connect(lp);lp.connect(g);g.connect(c.destination);
+    g.gain.value=0.5;src.start();
   }catch(e){}
 }
 
