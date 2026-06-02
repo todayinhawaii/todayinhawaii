@@ -662,16 +662,66 @@
     </a>
   </div>
 
-  <!-- Bottom CTA -->
-  <div class="bottom-cta">
-    <h3>🌺 New Games Every Month!</h3>
-    <p>We are building new Hawaii games all the time! Sign up for our newsletter to be the first to know when a new game launches — and get notified when YOU make the leaderboard!</p>
-    <a href="/#email-signup" class="cta-btn">🌺 Get Notified!</a>
+  <!-- Bottom CTA — Email Signup -->
+  <div class="bottom-cta" id="email-signup" style="padding:0;background:none;border:none;">
+    <div style="margin:0;padding:40px 24px;background:linear-gradient(135deg,#0a2e44 0%,#061d2c 50%,#0a2e44 100%);border:1px solid rgba(34,211,238,0.2);border-radius:24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(14,116,144,0.25),transparent);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-size:40px;margin-bottom:12px;">🌺</div>
+        <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:8px;">Get Notified — New Games!</div>
+        <div style="font-size:14px;color:#7fb3c8;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">
+          New Hawaii games launching every month! Sign up to be first to know — and get notified when YOU make the leaderboard! 🏆
+        </div>
+        <div style="display:flex;gap:10px;max-width:500px;margin:0 auto 14px;flex-wrap:wrap;justify-content:center;" id="gamesSignupForm">
+          <input type="text" id="gSigName" placeholder="Your first name" style="flex:1;min-width:130px;padding:13px 16px;background:rgba(34,211,238,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:system-ui,sans-serif;outline:none;"
+            onfocus="this.style.borderColor='rgba(34,211,238,0.6)'" onblur="this.style.borderColor='rgba(34,211,238,0.2)'">
+          <input type="email" id="gSigEmail" placeholder="Your email address" style="flex:2;min-width:190px;padding:13px 16px;background:rgba(34,211,238,0.07);border:1px solid rgba(34,211,238,0.2);border-radius:12px;color:#e8f4f8;font-size:14px;font-family:system-ui,sans-serif;outline:none;"
+            onfocus="this.style.borderColor='rgba(34,211,238,0.6)'" onblur="this.style.borderColor='rgba(34,211,238,0.2)'"
+            onkeydown="if(event.key==='Enter')doGamesSignup()">
+          <button id="gSignupBtn" onclick="doGamesSignup()" style="padding:13px 28px;background:linear-gradient(135deg,#0e7490,#22d3ee);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;font-family:system-ui,sans-serif;cursor:pointer;white-space:nowrap;box-shadow:0 4px 20px rgba(34,211,238,0.3);transition:all 0.2s;">
+            Join Free 🌺
+          </button>
+        </div>
+        <div id="gSignupMsg" style="display:none;margin-top:12px;font-size:14px;font-weight:600;"></div>
+        <div style="font-size:11px;color:rgba(127,179,200,0.6);margin-top:10px;">✨ No spam ever &nbsp;·&nbsp; Unsubscribe anytime &nbsp;·&nbsp; Hawaii only 🤙</div>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <script>
+function doGamesSignup(){
+  var name  = document.getElementById('gSigName').value.trim();
+  var email = document.getElementById('gSigEmail').value.trim();
+  var msg   = document.getElementById('gSignupMsg');
+  var btn   = document.getElementById('gSignupBtn');
+  if(!email){
+    msg.style.display='block';
+    msg.style.color='#f97316';
+    msg.textContent='Please enter your email! 🌺';
+    return;
+  }
+  btn.textContent='Joining...';
+  btn.disabled=true;
+  fetch('/subscribe',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email, name:name})
+  }).then(r=>r.json()).then(data=>{
+    document.getElementById('gamesSignupForm').style.display='none';
+    msg.style.display='block';
+    msg.style.color='#10b981';
+    msg.innerHTML='🎉 Mahalo!! Welcome to the Hawaii Insiders family! 🌺🤙';
+  }).catch(()=>{
+    btn.textContent='Join Free 🌺';
+    btn.disabled=false;
+    msg.style.display='block';
+    msg.style.color='#f97316';
+    msg.textContent='Something went wrong — please try again!';
+  });
+}
+
 // Load top score for memory game
 async function loadTopScore() {
   try {
