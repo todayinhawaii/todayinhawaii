@@ -285,6 +285,29 @@ const GLYPH = {
   wK:'♔', wQ:'♕', wR:'♖', wB:'♗', wN:'♘', wP:'♙',
   bK:'♚', bQ:'♛', bR:'♜', bB:'♝', bN:'♞', bP:'♟',
 };
+
+// ── CUSTOM PNG PIECES ────────────────────────────
+// When you upload chess_wK.png, chess_bQ.png etc, they
+// load automatically and replace the Unicode symbols!
+// File names: chess_wK.png  chess_wQ.png  chess_wR.png
+//             chess_wB.png  chess_wN.png  chess_wP.png
+//             chess_bK.png  chess_bQ.png  chess_bR.png
+//             chess_bB.png  chess_bN.png  chess_bP.png
+// Size: 128x128px, transparent background PNG recommended
+
+const PIECE_IMGS = {};  // loaded images stored here
+let imgsLoaded = 0, imgsTotal = 12;
+
+function loadPieceImages(){
+  const keys=['wK','wQ','wR','wB','wN','wP','bK','bQ','bR','bB','bN','bP'];
+  keys.forEach(key=>{
+    const img=new Image();
+    img.onload=()=>{ PIECE_IMGS[key]=img; imgsLoaded++; };
+    img.onerror=()=>{ imgsLoaded++; }; // silently fall back to Unicode
+    img.src=`/chess_${key}.png`;
+  });
+}
+loadPieceImages();
 const PIECE_VAL = {P:100,N:320,B:330,R:500,Q:900,K:20000};
 
 // ── STATE ─────────────────────────────────────────
@@ -645,31 +668,37 @@ function draw(){
     ctx.fillText(String.fromCharCode(97+i),(i+1)*SZ-2,W-1);
   }
 
-  // ── PIECES — large classic Unicode symbols ───────
+  // ── PIECES — PNG if loaded, else classic Unicode ──
   const fontSize=Math.round(SZ*0.82);
-  ctx.font=`${fontSize}px serif`;
-  ctx.textAlign='center';
-  ctx.textBaseline='middle';
 
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const p=board[r][c]; if(!p) continue;
-    const glyph=GLYPH[p.color+p.type];
-    const cx=c*SZ+SZ/2, cy=r*SZ+SZ/2+SZ*0.04;
+    const key=p.color+p.type;
+    const px=c*SZ, py=r*SZ;
+    const pad=Math.round(SZ*0.06); // small padding inside square
 
-    if(p.color==='w'){
-      // White pieces — outline style
-      ctx.fillStyle='#fff';
-      ctx.strokeStyle='#000';
-      ctx.lineWidth=Math.max(1,SZ*0.04);
-      ctx.strokeText(glyph,cx,cy);
-      ctx.fillText(glyph,cx,cy);
+    if(PIECE_IMGS[key]){
+      // ── Custom PNG piece ─────────────────────────
+      ctx.drawImage(PIECE_IMGS[key], px+pad, py+pad, SZ-pad*2, SZ-pad*2);
     } else {
-      // Black pieces — solid dark
-      ctx.fillStyle='#1a1a1a';
-      ctx.strokeStyle='rgba(255,255,255,0.35)';
-      ctx.lineWidth=Math.max(1,SZ*0.03);
-      ctx.strokeText(glyph,cx,cy);
-      ctx.fillText(glyph,cx,cy);
+      // ── Classic Unicode fallback ─────────────────
+      ctx.font=`${fontSize}px serif`;
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      const cx=c*SZ+SZ/2, cy=r*SZ+SZ/2+SZ*0.04;
+      if(p.color==='w'){
+        ctx.fillStyle='#fff';
+        ctx.strokeStyle='#1a1a1a';
+        ctx.lineWidth=Math.max(1.5,SZ*0.045);
+        ctx.strokeText(GLYPH[key],cx,cy);
+        ctx.fillText(GLYPH[key],cx,cy);
+      } else {
+        ctx.fillStyle='#1a1a1a';
+        ctx.strokeStyle='rgba(255,255,255,0.4)';
+        ctx.lineWidth=Math.max(1,SZ*0.03);
+        ctx.strokeText(GLYPH[key],cx,cy);
+        ctx.fillText(GLYPH[key],cx,cy);
+      }
     }
   }
 
