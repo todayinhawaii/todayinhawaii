@@ -19,15 +19,15 @@
       background:#020e1a; /* fallback if no video */
       overflow:hidden;
     }
-    /* Mermaid video — loops silently behind everything */
+    /* Mermaid video — always visible */
     #bgVideo{
       position:absolute;inset:0;
       width:100%;height:100%;
-      object-fit:cover;      /* fills screen, crops edges */
-      opacity:0.72;          /* more visible through transparent board */
+      object-fit:cover;
+      opacity:0.72;
       pointer-events:none;
       z-index:0;
-      display:none;          /* hidden until loaded */
+      display:block;   /* ALWAYS visible — was wrongly set to none! */
     }
     /* Dark ocean overlay on top of video */
     #bgOverlay{
