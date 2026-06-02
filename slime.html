@@ -109,13 +109,7 @@
       box-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.3);
       cursor:grab;
     }
-    /* Hardness preview dot */
-    #hardDot{
-      width:18px;height:18px;border-radius:50%;
-      background:rgba(255,255,255,0.9);
-      box-shadow:0 0 8px rgba(255,255,255,0.4);
-      transition:all 0.2s;margin:0 auto;
-    }
+
     /* Vegas opacity display */
     #opacityVal{
       font-size:9px;font-weight:900;
@@ -162,10 +156,10 @@
       text-shadow:0 0 8px rgba(34,211,238,0.4);
     }
     .stab:nth-child(2){
-      color:#ffd700;
-      background:rgba(255,215,0,0.08);
-      border:1.5px solid rgba(255,215,0,0.2);
-      text-shadow:0 0 8px rgba(255,215,0,0.4);
+      color:#00e676;
+      background:rgba(0,230,118,0.08);
+      border:1.5px solid rgba(0,230,118,0.2);
+      text-shadow:0 0 8px rgba(0,230,118,0.4);
     }
     .stab:nth-child(1).on{
       background:linear-gradient(135deg,rgba(34,211,238,0.25),rgba(34,211,238,0.1));
@@ -175,10 +169,10 @@
       transform:scale(1.03);
     }
     .stab:nth-child(2).on{
-      background:linear-gradient(135deg,rgba(255,215,0,0.25),rgba(255,140,0,0.1));
-      border-color:rgba(255,215,0,0.7);
-      box-shadow:0 0 16px rgba(255,215,0,0.35),0 0 32px rgba(255,140,0,0.1),inset 0 1px 0 rgba(255,255,255,0.15);
-      color:#ffe566;
+      background:linear-gradient(135deg,rgba(0,230,118,0.25),rgba(0,200,80,0.1));
+      border-color:rgba(0,230,118,0.7);
+      box-shadow:0 0 16px rgba(0,230,118,0.35),0 0 32px rgba(0,200,80,0.1),inset 0 1px 0 rgba(255,255,255,0.15);
+      color:#69ffb4;
       transform:scale(1.03);
     }
     .stab:active{transform:scale(0.96)!important;}
@@ -217,8 +211,11 @@
       box-shadow:0 4px 0 #7c1b4f,0 0 12px rgba(168,85,247,0.3);}
     .bsv{background:linear-gradient(180deg,#fbbf24,#ef4444);
       box-shadow:0 4px 0 #b91c1c,0 0 12px rgba(251,191,36,0.3);}
-    .brs{background:rgba(255,255,255,0.07);color:#aaa;
-      box-shadow:0 4px 0 rgba(0,0,0,0.4);}
+    .brs{
+      background:linear-gradient(180deg,#b0b0b0,#888);
+      color:#fff;
+      box-shadow:0 4px 0 #555,0 0 8px rgba(180,180,180,0.15);
+    }
 
     /* Text modal */
     #txtModal{display:none;position:fixed;inset:0;z-index:200;
@@ -287,7 +284,7 @@
       <div class="slider-wrap">
         <span class="sldr-lbl">Soft↔Hard</span>
         <input type="range" class="vslider" id="brushHard" min="0" max="100" value="50" orient="vertical">
-        <div id="hardDot"></div>
+
       </div>
       <div class="slider-wrap">
         <span class="sldr-lbl">Opacity</span>
@@ -671,8 +668,7 @@ let brushOpacity=0.8;  // 0.05 to 1.0
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('brushHard').addEventListener('input',e=>{
     brushHardness=parseInt(e.target.value)/100;
-    updateHardDot();
-    updateBrushPreview(); // LIVE UPDATE!
+    updateBrushPreview();
   });
   document.getElementById('brushSz').addEventListener('input',e=>{
     brushSz=parseInt(e.target.value);
@@ -683,18 +679,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('opacityVal').textContent=e.target.value+'%';
     updateBrushPreview(); // LIVE UPDATE!
   });
-  updateHardDot();
   setTimeout(updateBrushPreview, 200); // init preview after DOM ready
 });
-function updateHardDot(){
-  const d=document.getElementById('hardDot');
-  if(!d)return;
-  const blur=Math.round((1-brushHardness)*8);
-  const size=14+brushHardness*8;
-  d.style.width=size+'px';d.style.height=size+'px';
-  d.style.boxShadow=`0 0 ${blur+2}px rgba(255,255,255,${0.3+(1-brushHardness)*0.5})`;
-  d.style.filter=`blur(${blur*0.5}px)`;
-}
+
 
 function setTool(t){
   currentTool=t;
