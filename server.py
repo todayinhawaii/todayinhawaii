@@ -256,23 +256,23 @@ def chess_piece_img(piece):
 
 @app.route('/chess_bg.mp4')
 def chess_bg1(): 
-    return send_from_directory('.','chess_bg.mp4',mimetype='video/mp4',conditional=True) if __import__('os').path.exists('chess_bg.mp4') else ('',404)
+    return send_from_directory('.','chess_bg.mp4') if __import__('os').path.exists('chess_bg.mp4') else ('',404)
 
 @app.route('/chess_bg2.mp4')
 def chess_bg2():
-    return send_from_directory('.','chess_bg2.mp4',mimetype='video/mp4',conditional=True) if __import__('os').path.exists('chess_bg2.mp4') else ('',404)
+    return send_from_directory('.','chess_bg2.mp4') if __import__('os').path.exists('chess_bg2.mp4') else ('',404)
 
 @app.route('/chess_bg3.mp4')
 def chess_bg3():
-    return send_from_directory('.','chess_bg3.mp4',mimetype='video/mp4',conditional=True) if __import__('os').path.exists('chess_bg3.mp4') else ('',404)
+    return send_from_directory('.','chess_bg3.mp4') if __import__('os').path.exists('chess_bg3.mp4') else ('',404)
 
 @app.route('/chess_bg4.mp4')
 def chess_bg4():
-    return send_from_directory('.','chess_bg4.mp4',mimetype='video/mp4',conditional=True) if __import__('os').path.exists('chess_bg4.mp4') else ('',404)
+    return send_from_directory('.','chess_bg4.mp4') if __import__('os').path.exists('chess_bg4.mp4') else ('',404)
 
 @app.route('/chess_bg5.mp4')
 def chess_bg5():
-    return send_from_directory('.','chess_bg5.mp4',mimetype='video/mp4',conditional=True) if __import__('os').path.exists('chess_bg5.mp4') else ('',404)
+    return send_from_directory('.','chess_bg5.mp4') if __import__('os').path.exists('chess_bg5.mp4') else ('',404)
 
 @app.route('/chess_score', methods=['POST'])
 def save_chess_score():
