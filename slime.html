@@ -13,15 +13,16 @@
 
     /* Header */
     #hdr{
-      position:fixed;top:0;left:0;right:0;height:52px;
+      position:fixed;top:0;left:0;right:0;height:48px;
       padding:0 12px;z-index:50;
       display:flex;align-items:center;justify-content:space-between;
       background:rgba(13,17,23,0.92);backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(255,255,255,0.06);
+      flex-shrink:0;
     }
     .hdr-left{display:flex;flex-direction:column;}
     .hdr-title{
-      font-size:15px;font-weight:900;letter-spacing:0.5px;
+      font-size:16px;font-weight:900;letter-spacing:0.5px;
       background:linear-gradient(90deg,#00ff88,#00ccff,#ff00ff,#00ff88);
       background-size:200% auto;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -30,74 +31,115 @@
     @keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
     .hdr-hint{font-size:9px;color:#444;margin-top:1px;}
     .mute-btn{
-      width:34px;height:34px;border-radius:50%;
+      width:36px;height:36px;border-radius:50%;
       background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
-      font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;
+      font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;
     }
 
-    /* Main canvas — fills everything below header */
+    /* Shelf height — enough for all rows + buttons */
+    :root{--shelf-h: 200px;}
+    @media(max-height:680px){:root{--shelf-h:180px;}}
+    @media(min-height:800px){:root{--shelf-h:220px;}}
+
+    /* Main canvas */
     #slimeCanvas{
-      position:fixed;top:52px;left:0;right:0;
-      bottom:170px;
+      position:fixed;
+      top:48px;left:0;right:0;
+      bottom:var(--shelf-h);
       width:100%;touch-action:none;cursor:crosshair;
       display:block;
     }
 
     /* Bottom shelf */
     #shelf{
-      position:fixed;bottom:0;left:0;right:0;height:168px;
+      position:fixed;bottom:0;left:0;right:0;
+      height:var(--shelf-h);
       background:rgba(13,17,23,0.97);
-      border-top:1px solid rgba(255,255,255,0.07);
-      padding:8px 10px 10px;z-index:50;
-      display:flex;flex-direction:column;gap:5px;
+      border-top:1.5px solid rgba(255,255,255,0.08);
+      padding:6px 10px 8px;z-index:50;
+      display:flex;flex-direction:column;
+      justify-content:space-between;
+      gap:4px;
     }
+
     .shelf-section{display:flex;flex-direction:column;gap:3px;}
-    .shelf-label{font-size:8px;font-weight:800;color:#444;text-transform:uppercase;letter-spacing:0.15em;}
-    .shelf-row{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+    .shelf-label{
+      font-size:9px;font-weight:800;color:#555;
+      text-transform:uppercase;letter-spacing:0.15em;
+      padding-left:2px;
+    }
+    .shelf-row{
+      display:flex;gap:7px;overflow-x:auto;
+      scrollbar-width:none;padding-bottom:3px;
+      -webkit-overflow-scrolling:touch;
+    }
     .shelf-row::-webkit-scrollbar{display:none;}
 
+    /* Ingredient buttons — bigger! */
     .ing-btn{
-      flex-shrink:0;width:46px;height:46px;border-radius:12px;
-      border:1.5px solid rgba(255,255,255,0.08);cursor:pointer;
-      font-size:18px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:1px;
-      transition:all 0.12s;background:rgba(255,255,255,0.05);
-      position:relative;
+      flex-shrink:0;
+      width:56px;height:56px;
+      border-radius:14px;
+      border:2px solid rgba(255,255,255,0.1);
+      cursor:pointer;
+      font-size:24px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      gap:2px;
+      transition:all 0.12s;
+      background:rgba(255,255,255,0.06);
     }
-    .ing-btn:active{transform:scale(0.85);}
+    @media(max-height:700px){
+      .ing-btn{width:48px;height:48px;font-size:20px;}
+    }
+    .ing-btn:active{transform:scale(0.83);}
     .ing-btn.active{
-      border-color:rgba(255,255,255,0.5);
-      box-shadow:0 0 12px rgba(255,255,255,0.25);
-      transform:scale(1.06);
+      border-color:rgba(255,255,255,0.55);
+      box-shadow:0 0 16px rgba(255,255,255,0.3);
+      transform:scale(1.08);
     }
-    .ing-name{font-size:6px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:0.03em;}
+    .ing-name{
+      font-size:7px;color:rgba(255,255,255,0.6);
+      font-weight:700;letter-spacing:0.02em;
+    }
 
-    /* Action row */
-    .action-row{display:flex;gap:6px;margin-top:2px;}
-    .act-btn{
-      flex:1;padding:8px 4px;border:none;border-radius:10px;
-      font-size:11px;font-weight:800;cursor:pointer;
-      font-family:inherit;color:#fff;transition:all 0.1s;
-      white-space:nowrap;
+    /* Action buttons */
+    .action-row{
+      display:flex;gap:8px;
+      flex-shrink:0;
     }
-    .act-btn:active{transform:scale(0.94);}
+    .act-btn{
+      flex:1;
+      padding:11px 4px;
+      border:none;border-radius:12px;
+      font-size:12px;font-weight:900;
+      cursor:pointer;font-family:inherit;
+      color:#fff;transition:all 0.1s;
+      white-space:nowrap;
+      min-height:42px;
+    }
+    @media(max-height:700px){
+      .act-btn{padding:8px 4px;font-size:11px;min-height:36px;}
+    }
+    .act-btn:active{transform:scale(0.93);}
     .btn-squish{background:linear-gradient(135deg,#059669,#0891b2);}
     .btn-mix{background:linear-gradient(135deg,#7c3aed,#db2777);}
-    .btn-reset{background:rgba(255,255,255,0.07);color:#888;}
+    .btn-reset{background:rgba(255,255,255,0.08);color:#999;}
     .btn-save{background:linear-gradient(135deg,#d97706,#dc2626);}
 
     /* Toast */
     .toast{
-      position:fixed;top:62px;left:50%;transform:translateX(-50%);
-      background:rgba(0,0,0,0.85);color:white;padding:6px 16px;
-      border-radius:99px;font-size:12px;font-weight:700;
-      z-index:200;animation:toastAnim 2s ease forwards;white-space:nowrap;
-      pointer-events:none;
+      position:fixed;top:58px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.88);color:white;
+      padding:7px 18px;border-radius:99px;
+      font-size:13px;font-weight:700;
+      z-index:200;animation:toastAnim 2.2s ease forwards;
+      white-space:nowrap;pointer-events:none;
     }
     @keyframes toastAnim{
       0%{opacity:0;transform:translate(-50%,-8px);}
-      15%{opacity:1;transform:translate(-50%,0);}
-      75%{opacity:1;}
+      12%{opacity:1;transform:translate(-50%,0);}
+      78%{opacity:1;}
       100%{opacity:0;transform:translate(-50%,-8px);}
     }
   </style>
@@ -199,19 +241,21 @@ function addDecorBlobs(type, count){
       rot:Math.random()*Math.PI*2, rotV:(Math.random()-0.5)*0.04,
       type, size:0, emoji:'', color:'',
     };
+    // Scale factor — bigger so you can actually see them!
+    const sc = NATURAL_R / 160;
     switch(type){
-      case 'glitter': b.color=`hsl(${Math.random()*360},100%,70%)`; b.size=2+Math.random()*3; break;
-      case 'stars':   b.emoji='⭐'; b.size=10+Math.random()*8; break;
-      case 'sprinkles': b.color=`hsl(${Math.random()*360},90%,60%)`; b.size=3+Math.random()*3; b.shape='rect'; break;
-      case 'sparkles': b.emoji='✨'; b.size=11+Math.random()*7; break;
-      case 'foam':    b.color=`rgba(255,255,255,${0.3+Math.random()*0.4})`; b.size=7+Math.random()*10; break;
-      case 'hearts':  b.emoji='💕'; b.size=11+Math.random()*8; break;
-      case 'candy':   b.color=`hsl(${Math.random()*360},90%,65%)`; b.size=6+Math.random()*5; break;
-      case 'confetti': b.color=`hsl(${Math.random()*360},95%,60%)`; b.size=5+Math.random()*5; b.shape='rect'; break;
-      case 'pearls':  b.color=`rgba(240,240,255,0.85)`; b.size=7+Math.random()*5; break;
-      case 'ice':     b.color=`rgba(180,220,255,0.6)`; b.size=6+Math.random()*7; break;
-      case 'beads':   b.color=`hsl(${Math.random()*360},80%,65%)`; b.size=6+Math.random()*4; break;
-      case 'glow':    b.color=`hsl(${160+Math.random()*80},100%,65%)`; b.size=5+Math.random()*5; break;
+      case 'glitter':  b.color=`hsl(${Math.random()*360},100%,75%)`; b.size=(5+Math.random()*6)*sc; break;
+      case 'stars':    b.emoji='⭐'; b.size=(22+Math.random()*18)*sc; break;
+      case 'sprinkles':b.color=`hsl(${Math.random()*360},95%,65%)`; b.size=(8+Math.random()*7)*sc; b.shape='rect'; break;
+      case 'sparkles': b.emoji='✨'; b.size=(24+Math.random()*16)*sc; break;
+      case 'foam':     b.color=`rgba(255,255,255,${0.5+Math.random()*0.4})`; b.size=(16+Math.random()*18)*sc; break;
+      case 'hearts':   b.emoji='💕'; b.size=(26+Math.random()*16)*sc; break;
+      case 'candy':    b.color=`hsl(${Math.random()*360},95%,65%)`; b.size=(14+Math.random()*10)*sc; break;
+      case 'confetti': b.color=`hsl(${Math.random()*360},95%,65%)`; b.size=(10+Math.random()*10)*sc; b.shape='rect'; break;
+      case 'pearls':   b.color=`rgba(240,240,255,0.9)`; b.size=(14+Math.random()*10)*sc; break;
+      case 'ice':      b.color=`rgba(180,230,255,0.75)`;b.size=(13+Math.random()*12)*sc; break;
+      case 'beads':    b.color=`hsl(${Math.random()*360},85%,65%)`; b.size=(12+Math.random()*10)*sc; break;
+      case 'glow':     b.color=`hsl(${160+Math.random()*80},100%,70%)`; b.size=(11+Math.random()*10)*sc; break;
     }
     blobs.push(b);
   }
