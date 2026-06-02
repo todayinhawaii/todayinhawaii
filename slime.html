@@ -41,12 +41,13 @@
     @media(max-height:680px){:root{--shelf-h:180px;}}
     @media(min-height:800px){:root{--shelf-h:220px;}}
 
-    /* Main canvas */
+    /* Main canvas — JS sets exact size */
     #slimeCanvas{
       position:fixed;
-      top:48px;left:0;right:0;
-      bottom:var(--shelf-h);
-      width:100%;touch-action:none;cursor:crosshair;
+      top:48px;
+      left:0;
+      touch-action:none;
+      cursor:crosshair;
       display:block;
     }
 
@@ -184,14 +185,32 @@ const ctx     = canvas.getContext('2d');
 
 let W, H, CX, CY, NATURAL_R;
 
+function getShelfH(){
+  // Match CSS --shelf-h variable
+  const vh = window.innerHeight;
+  if(vh <= 680) return 180;
+  if(vh >= 800) return 220;
+  return 200;
+}
+
 function setSize(){
-  const rect = canvas.getBoundingClientRect();
-  W = canvas.width  = rect.width  * window.devicePixelRatio;
-  H = canvas.height = rect.height * window.devicePixelRatio;
-  canvas.style.width  = rect.width  + 'px';
-  canvas.style.height = rect.height + 'px';
-  CX = W/2; CY = H/2;
-  NATURAL_R = Math.min(W, H) * 0.38;
+  const pr  = window.devicePixelRatio || 1;
+  const vw  = window.innerWidth;
+  const vh  = window.innerHeight;
+  const hdrH   = 48;
+  const shelfH = getShelfH();
+  const availW = vw;
+  const availH = vh - hdrH - shelfH;
+
+  W = canvas.width  = availW * pr;
+  H = canvas.height = availH * pr;
+  canvas.style.width  = availW + 'px';
+  canvas.style.height = availH + 'px';
+
+  CX = W / 2;
+  CY = H / 2;
+  // Fill almost all available space!
+  NATURAL_R = Math.min(W, H) * 0.44;
 }
 setSize();
 
