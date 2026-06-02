@@ -104,6 +104,11 @@
       -webkit-backface-visibility:hidden;
       display:flex;align-items:center;justify-content:center;
       box-shadow:0 3px 10px rgba(0,0,0,0.4);
+      background:#fffef9;
+      transform:rotateY(180deg);
+      border:2px solid #e0e0e0;
+      flex-direction:column;
+      overflow:hidden;
     }
 
     /* Back — Dolphin */
@@ -123,13 +128,7 @@
     .dolphin-sub{font-size:clamp(7px,1.8vw,11px);color:rgba(34,211,238,0.6);font-weight:700;letter-spacing:0.05em;}
 
     /* Front — Playing card */
-    .card-front{
-      background:#fffef9;
-      transform:rotateY(180deg);
-      border:2px solid #ddd;
-      overflow:visible;
-      position:relative;
-    }
+    
     .card-front.red{color:#cc0000;}
     .card-front.black{color:#111;}
 
@@ -679,7 +678,7 @@ function buildCardHTML(card){
       <div class="dolphin-back">🐬</div>
       <div class="dolphin-sub">DOLPHINS</div>
     </div>
-    <div class="card-front" style="background:#fffef8;flex-direction:column;">
+    <div class="card-front">
       ${corner(false)}
       <div style="position:absolute;inset:8px;border:1px solid rgba(0,0,0,0.1);
         border-radius:4px;pointer-events:none;"></div>
