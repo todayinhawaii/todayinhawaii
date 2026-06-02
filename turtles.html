@@ -388,6 +388,7 @@ let difficulty=1, gameOver=false;
 let playerName='', playerLoc='', diffLabel='Baby';
 let history=[]; // for undo
 let fromDiffScreen=false;
+let moveablePieces=[]; // pieces that can move this turn
 
 // ── TURTLE EMOJI ───────────────────────────────────
 // Draw big turtle emoji on each piece
@@ -495,6 +496,18 @@ function drawBoard(){
     ctx.fillStyle=`rgba(255,220,0,${0.5+0.3*Math.sin(pulse)})`;ctx.fill();
   });
 
+  // Glow on all moveable pieces (player's turn)
+  if(turn===1){
+    moveablePieces.forEach(({row:r,col:c})=>{
+      if(selected&&selected.row===r&&selected.col===c) return;
+      ctx.save();
+      ctx.beginPath();ctx.arc(c*SZ+SZ/2,r*SZ+SZ/2,SZ*0.46,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(100,255,150,${0.25+0.2*Math.sin(pulse)})`;
+      ctx.lineWidth=SZ*0.07;ctx.stroke();
+      ctx.restore();
+    });
+  }
+
   // Pieces
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const p=board[r][c];
@@ -524,30 +537,38 @@ function initBoard(){
 }
 
 // ── MOVE GENERATION ────────────────────────────────
-function getMoves(b, player){
-  const moves=[], jumps=[];
-  const dir=player===1?-1:1;
-  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
-    const p=b[r][c];
-    if(!p||p.player!==player) continue;
-    const dirs=p.king?[-1,1]:[dir];
-    dirs.forEach(dr=>{
-      [-1,1].forEach(dc=>{
-        const nr=r+dr, nc=c+dc;
-        if(nr<0||nr>7||nc<0||nc>7) return;
-        if(!b[nr][nc]){
-          moves.push({fromRow:r,fromCol:c,toRow:nr,toCol:nc,jumps:[]});
-        } else if(b[nr][nc].player!==player){
-          const jr=r+dr*2, jc=c+dc*2;
-          if(jr>=0&&jr<=7&&jc>=0&&jc<=7&&!b[jr][jc])
-            jumps.push({fromRow:r,fromCol:c,toRow:jr,toCol:jc,
-              capRow:nr,capCol:nc,jumps:[{r:nr,c:nc}]});
-        }
-      });
+// Get ALL moves for a piece at (pr,pc) — both walks and jumps
+function getPieceMoves(b, pr, pc){
+  const p=b[pr][pc];
+  if(!p) return [];
+  const moves=[];
+  const dirs=p.king?[-1,1]:[p.player===1?-1:1];
+  dirs.forEach(dr=>{
+    [-1,1].forEach(dc=>{
+      const nr=pr+dr, nc=pc+dc;
+      if(nr<0||nr>7||nc<0||nc>7) return;
+      if(!b[nr][nc]){
+        // Simple step
+        moves.push({fromRow:pr,fromCol:pc,toRow:nr,toCol:nc,capRow:undefined,jumps:[]});
+      } else if(b[nr][nc].player!==p.player){
+        // Jump
+        const jr=pr+dr*2, jc=pc+dc*2;
+        if(jr>=0&&jr<=7&&jc>=0&&jc<=7&&!b[jr][jc])
+          moves.push({fromRow:pr,fromCol:pc,toRow:jr,toCol:jc,
+            capRow:nr,capCol:nc,jumps:[{r:nr,c:nc}]});
+      }
     });
+  });
+  return moves;
+}
+
+// Get ALL moves for a player (no forced capture — casual mode!)
+function getMoves(b, player){
+  const all=[];
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    if(b[r][c]?.player===player) all.push(...getPieceMoves(b,r,c));
   }
-  // Simple single-jump only (no recursive multi-jump cloning = no freeze!)
-  return jumps.length>0 ? jumps : moves;
+  return all;
 }
 
 // ── BOARD UTILS ────────────────────────────────────
@@ -640,9 +661,10 @@ function aiMove(){
     updateStatus();
     if(checkGameOver()) return;
     turn=1;
-    setStatus('Your turn!');
+    setStatus('Pick a glowing turtle! 🐢');
     document.getElementById('turnLabel').textContent='Your turn';
     document.getElementById('turnTurtle').textContent='🐢';
+    refreshMoveables();
   }
 }
 
@@ -671,7 +693,7 @@ function handleClick(row,col){
     history.push(cloneBoard(board));
     applyMove(board,mv);
     checkKings();
-    selected=null;validMoves=[];
+    selected=null;validMoves=[];moveablePieces=[];
     updateStatus();
     if(checkGameOver()) return;
     turn=2;
@@ -681,18 +703,22 @@ function handleClick(row,col){
     setTimeout(()=>{aiMove();},300+Math.random()*200);
     return;
   }
-  // Clicked a piece
+  // Clicked one of your turtles — show its available moves
   if(board[row]&&board[row][col]&&board[row][col].player===1){
     selected={row,col};
-    const allMoves=getMoves(board,1);
-    // Must jump if possible
-    const hasJump=allMoves.some(m=>m.jumps&&m.jumps.length>0);
-    validMoves=allMoves.filter(m=>m.fromRow===row&&m.fromCol===col&&
-      (!hasJump||( m.jumps&&m.jumps.length>0)));
-    setStatus(validMoves.length?`${validMoves.length} move${validMoves.length>1?'s':''} available!`:'No moves from here!');
+    validMoves=getPieceMoves(board,row,col);
+    if(validMoves.length){
+      const hasJump=validMoves.some(m=>m.capRow!==undefined);
+      setStatus(hasJump?'🔥 Jump! Pick destination!':
+        `${validMoves.length} move${validMoves.length>1?'s':''} — pick a square!`);
+    } else {
+      setStatus('This turtle is blocked! Try another 🐢');
+    }
     return;
   }
+  // Clicked empty with nothing useful
   selected=null;validMoves=[];
+  setStatus('Pick one of your dark turtles! 🐢');
 }
 
 // ── GAME LOGIC ─────────────────────────────────────
@@ -795,9 +821,10 @@ function newGame(){
   selected=null;validMoves=[];
   turn=1;gameOver=false;
   updateStatus();
-  setStatus('Select a turtle to move!');
+  setStatus('Pick a glowing turtle! 🐢');
   document.getElementById('turnLabel').textContent='Your turn';
   document.getElementById('turnTurtle').textContent='🐢';
+  refreshMoveables();
 }
 
 function showDifficultyFirst(){
