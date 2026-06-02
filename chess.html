@@ -16,8 +16,37 @@
     }
     #bg{
       position:fixed;inset:0;z-index:0;
-      background:radial-gradient(ellipse at 40% 60%,rgba(30,0,80,0.6),transparent 60%),
-        linear-gradient(160deg,#0a0015 0%,#1a0a2e 50%,#0a0a20 100%);
+      background:
+        radial-gradient(ellipse at 20% 80%,rgba(0,80,120,0.55) 0%,transparent 50%),
+        radial-gradient(ellipse at 80% 15%,rgba(0,50,100,0.45) 0%,transparent 45%),
+        radial-gradient(ellipse at 50% 50%,rgba(20,0,60,0.4) 0%,transparent 60%),
+        linear-gradient(180deg,#020812 0%,#041525 35%,#061830 65%,#020e1a 100%);
+      overflow:hidden;
+    }
+    /* Floating ocean bubbles */
+    .sea-bubble{
+      position:absolute;border-radius:50%;pointer-events:none;
+      background:radial-gradient(circle at 35% 35%,rgba(150,230,255,0.25),rgba(0,150,220,0.08));
+      border:1px solid rgba(0,200,255,0.12);
+      animation:seaRise linear infinite;
+    }
+    @keyframes seaRise{
+      0%{transform:translateY(0) scale(1) rotate(0deg);opacity:0;}
+      10%{opacity:1;}
+      90%{opacity:0.4;}
+      100%{transform:translateY(-110vh) scale(0.4) rotate(180deg);opacity:0;}
+    }
+    /* Floating sparkles */
+    .sea-spark{
+      position:absolute;pointer-events:none;
+      font-size:14px;opacity:0;
+      animation:sparkDrift ease-in-out infinite;
+    }
+    @keyframes sparkDrift{
+      0%{opacity:0;transform:translateY(0) rotate(0deg);}
+      30%{opacity:0.35;}
+      70%{opacity:0.2;}
+      100%{opacity:0;transform:translateY(-60px) rotate(360deg);}
     }
     #wrap{
       position:relative;z-index:1;
@@ -26,24 +55,29 @@
     }
     #hdr{text-align:center;flex-shrink:0;}
     #hdr h1{
-      font-size:clamp(15px,4vw,22px);font-weight:900;letter-spacing:1px;
-      background:linear-gradient(135deg,#c8a800,#ffe066,#c8a800);
+      font-size:clamp(15px,4vw,23px);font-weight:900;letter-spacing:1.5px;
+      background:linear-gradient(135deg,#00e5ff,#7c4dff,#e040fb,#00bcd4,#00e5ff);
       background-size:200% auto;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      animation:shine 3s linear infinite;
+      animation:shine 4s linear infinite;
     }
     @keyframes shine{0%{background-position:0%}100%{background-position:200%}}
-    .hdr-sub{font-size:9px;color:#9e7c00;letter-spacing:0.1em;margin-top:1px;}
+    .hdr-sub{
+      font-size:10px;color:#00bcd4;letter-spacing:0.12em;margin-top:2px;
+      font-weight:600;
+    }
 
     #statusBar{
       width:100%;max-width:440px;flex-shrink:0;
-      background:rgba(0,0,0,0.5);border:1px solid rgba(200,168,0,0.25);
+      background:rgba(0,15,30,0.85);
+      border:1px solid rgba(0,200,255,0.25);
       border-radius:12px;padding:6px 12px;
       display:flex;align-items:center;justify-content:space-between;gap:6px;
+      box-shadow:0 0 12px rgba(0,150,220,0.12);
     }
     .turn-ind{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#fff;}
     .turn-icon{font-size:22px;}
-    #statusMsg{font-size:10px;font-weight:700;color:#ffe066;text-align:center;flex:1;}
+    #statusMsg{font-size:10px;font-weight:700;color:#00e5ff;text-align:center;flex:1;}
     .score-pair{display:flex;gap:8px;}
     .sc{text-align:center;}
     .sc-lbl{font-size:7px;color:#9e7c00;font-weight:700;text-transform:uppercase;}
@@ -164,6 +198,27 @@
 </head>
 <body>
 <div id="bg"></div>
+<script>
+// Ocean bubbles
+for(let i=0;i<20;i++){
+  const b=document.createElement('div'); b.className='sea-bubble';
+  const sz=6+Math.random()*22;
+  b.style.cssText=`width:${sz}px;height:${sz}px;
+    left:${Math.random()*100}%;bottom:${Math.random()*20}%;
+    animation-duration:${9+Math.random()*16}s;
+    animation-delay:${Math.random()*12}s;`;
+  document.getElementById('bg').appendChild(b);
+}
+// Ocean sparkles
+['✦','🌊','✧','🐚','⋆','🧜','·','✦'].forEach((s,i)=>{
+  const sp=document.createElement('div'); sp.className='sea-spark';
+  sp.textContent=s;
+  sp.style.cssText=`left:${10+Math.random()*80}%;top:${10+Math.random()*80}%;
+    animation-duration:${4+Math.random()*7}s;
+    animation-delay:${Math.random()*6}s;`;
+  document.getElementById('bg').appendChild(sp);
+});
+</script>
 <div id="wrap">
   <div id="hdr">
     <h1>♛ Mermaid Chess ♛</h1>
@@ -600,12 +655,72 @@ function draw(){
   ctx.save(); ctx.scale(PR,PR);
   const W=SZ*8;
 
-  // Board squares — classic walnut/cream
+  // ── MERMAID OCEAN BOARD ─────────────────────────
+  // Draw the full board background first
+  const boardGrad=ctx.createLinearGradient(0,0,W,W);
+  boardGrad.addColorStop(0,'#0a1628');
+  boardGrad.addColorStop(0.5,'#0d2040');
+  boardGrad.addColorStop(1,'#0a1628');
+  ctx.fillStyle=boardGrad;
+  ctx.fillRect(0,0,W,W);
+
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const dark=(r+c)%2===1;
-    ctx.fillStyle=dark?'#b58863':'#f0d9b5';
-    ctx.fillRect(c*SZ,r*SZ,SZ,SZ);
+    const x=c*SZ, y=r*SZ;
+
+    if(dark){
+      // Deep ocean squares — rich teal/navy
+      const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
+      g.addColorStop(0,'#1a4a6e');
+      g.addColorStop(0.5,'#0d3554');
+      g.addColorStop(1,'#0a2840');
+      ctx.fillStyle=g;
+      ctx.fillRect(x,y,SZ,SZ);
+      // Subtle wave shimmer on dark squares
+      ctx.fillStyle=`rgba(0,180,220,${0.04+0.03*Math.sin(glowT+r*0.7+c*0.5)})`;
+      ctx.fillRect(x,y,SZ,SZ);
+    } else {
+      // Light ocean squares — pearl seafoam
+      const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
+      g.addColorStop(0,'#c8e8f0');
+      g.addColorStop(0.4,'#b0d8e8');
+      g.addColorStop(1,'#9ecce0');
+      ctx.fillStyle=g;
+      ctx.fillRect(x,y,SZ,SZ);
+      // Pearl shimmer
+      ctx.fillStyle=`rgba(255,255,255,${0.08+0.06*Math.sin(glowT*1.3+c*0.6+r*0.4)})`;
+      ctx.fillRect(x,y,SZ,SZ);
+    }
+
+    // Subtle sea texture lines on dark squares
+    if(dark){
+      ctx.strokeStyle='rgba(0,200,255,0.06)';
+      ctx.lineWidth=0.5;
+      ctx.strokeRect(x+0.5,y+0.5,SZ-1,SZ-1);
+      // Tiny wave hint
+      ctx.beginPath();
+      ctx.moveTo(x+4, y+SZ*0.6);
+      ctx.bezierCurveTo(x+SZ*0.25,y+SZ*0.52, x+SZ*0.5,y+SZ*0.68, x+SZ-4,y+SZ*0.6);
+      ctx.strokeStyle=`rgba(0,200,255,${0.05+0.03*Math.sin(glowT+c)})`;
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
   }
+
+  // ── CORNER DECORATIONS ────────────────────────
+  // Tiny mermaid / ocean emojis in board corners
+  const cornerSize=Math.round(SZ*0.32);
+  ctx.font=`${cornerSize}px system-ui`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.globalAlpha=0.18+0.06*Math.sin(glowT*0.8);
+  const corners=[
+    {x:SZ*0.5,       y:SZ*0.5,        e:'🧜‍♀️'},
+    {x:SZ*7.5,       y:SZ*0.5,        e:'🌊'},
+    {x:SZ*0.5,       y:SZ*7.5,        e:'🐚'},
+    {x:SZ*7.5,       y:SZ*7.5,        e:'🧜‍♀️'},
+  ];
+  corners.forEach(({x,y,e})=>ctx.fillText(e,x,y));
+  ctx.globalAlpha=1;
 
   // Last move highlight
   if(lastMove){
@@ -669,20 +784,20 @@ function draw(){
   }
 
   // ── PIECES — PNG if loaded, else classic Unicode ──
-  const fontSize=Math.round(SZ*0.82);
+  const fontSize=Math.round(SZ*0.92);
 
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const p=board[r][c]; if(!p) continue;
     const key=p.color+p.type;
     const px=c*SZ, py=r*SZ;
-    const pad=Math.round(SZ*0.06); // small padding inside square
+    const pad=Math.round(SZ*0.03); // tighter padding = 10% bigger pieces
 
     if(PIECE_IMGS[key]){
       // ── Custom PNG piece ─────────────────────────
       ctx.drawImage(PIECE_IMGS[key], px+pad, py+pad, SZ-pad*2, SZ-pad*2);
     } else {
       // ── Classic Unicode fallback ─────────────────
-      ctx.font=`${fontSize}px serif`;
+      ctx.font=`${Math.round(SZ*0.92)}px serif`;
       ctx.textAlign='center';
       ctx.textBaseline='middle';
       const cx=c*SZ+SZ/2, cy=r*SZ+SZ/2+SZ*0.04;
@@ -702,10 +817,18 @@ function draw(){
     }
   }
 
-  // Board border
-  ctx.strokeStyle='rgba(0,0,0,0.5)';
-  ctx.lineWidth=2;
+  // ── BOARD BORDER — mermaid gold + ocean glow ──
+  // Outer glow
+  ctx.shadowColor='rgba(0,200,255,0.4)';
+  ctx.shadowBlur=18;
+  ctx.strokeStyle=`rgba(0,${180+Math.round(40*Math.sin(glowT*0.7))},255,0.6)`;
+  ctx.lineWidth=3;
   ctx.strokeRect(1,1,W-2,W-2);
+  ctx.shadowBlur=0;
+  // Inner gold accent
+  ctx.strokeStyle=`rgba(200,168,0,${0.4+0.15*Math.sin(glowT*0.9)})`;
+  ctx.lineWidth=1.5;
+  ctx.strokeRect(3,3,W-6,W-6);
 
   ctx.restore();
   animFrame=requestAnimationFrame(draw);
