@@ -37,34 +37,67 @@
 
     /* Tool bar — left side, collapsible */
     #toolWrap{
-      position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:50;
-      display:flex;align-items:center;
+      position:fixed;left:0;
+      top:48px;
+      z-index:55;
+      display:flex;align-items:flex-start;
     }
     #toolBar{
-      padding:8px 6px;display:flex;flex-direction:column;gap:4px;
-      background:rgba(13,17,23,0.95);border-radius:0 14px 14px 0;
+      pointer-events:all;
+      padding:8px 6px 12px;
+      display:flex;flex-direction:column;gap:4px;
+      background:rgba(13,17,23,0.97);
+      border-radius:0 14px 14px 0;
       border:1px solid rgba(255,255,255,0.08);border-left:none;
-      transition:all 0.25s;overflow-y:auto;overflow-x:hidden;
-      max-width:160px;
-      max-height:calc(100vh - 48px - 215px);
+      transition:transform 0.25s ease, opacity 0.25s;
+      overflow-y:auto;overflow-x:hidden;
+      max-width:155px;
+      /* Fit between header and shelf with scroll */
+      max-height:calc(100svh - 48px - 185px);
       scrollbar-width:none;
+      touch-action:pan-y;
     }
     #toolBar::-webkit-scrollbar{display:none;}
-    #toolBar.hidden{max-width:0;padding:8px 0;opacity:0;pointer-events:none;}
+    #toolBar.hidden{transform:translateX(-100%);opacity:0;pointer-events:none;}
+
+    /* Big flashing pink arrow */
     #tbToggle{
-      width:20px;height:56px;border-radius:0 10px 10px 0;
-      background:rgba(13,17,23,0.95);border:1px solid rgba(255,255,255,0.08);
-      border-left:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:rgba(255,255,255,0.6);font-size:12px;flex-shrink:0;transition:all 0.25s;
+      width:36px;height:80px;
+      border-radius:0 18px 18px 0;
+      background:linear-gradient(180deg,rgba(13,17,23,0.97),rgba(30,10,30,0.97));
+      border:3px solid #ff69b4;border-left:none;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;font-weight:900;color:#ff69b4;
+      flex-shrink:0;
+      align-self:center;
+      margin-left:0px;
+      animation:togglePulse 1s ease-in-out infinite;
+      box-shadow:0 0 16px rgba(255,105,180,0.6),0 0 32px rgba(255,105,180,0.25);
+      z-index:56;
     }
-    #tbToggle:hover{color:#fff;background:rgba(255,255,255,0.1);}
+    @keyframes togglePulse{
+      0%,100%{
+        color:#ff69b4;
+        border-color:#ff69b4;
+        box-shadow:0 0 14px rgba(255,105,180,0.5),0 0 28px rgba(255,105,180,0.2);
+        background:linear-gradient(180deg,rgba(13,17,23,0.97),rgba(30,10,30,0.97));
+      }
+      50%{
+        color:#fff;
+        border-color:#ffaadd;
+        box-shadow:0 0 28px rgba(255,105,180,1),0 0 56px rgba(255,105,180,0.6);
+        background:linear-gradient(180deg,rgba(60,10,60,0.97),rgba(13,17,23,0.97));
+      }
+    }
 
     .tool-btn{
-      width:110px;height:40px;border-radius:11px;cursor:pointer;
+      width:130px;height:38px;border-radius:11px;cursor:pointer;
       background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.09);
       font-size:17px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
       gap:8px;padding:0 10px;transition:all 0.12s;color:#fff;
       white-space:nowrap;overflow:hidden;
+      flex-shrink:0;
     }
     .tool-btn:active{transform:scale(0.88);}
     .tool-btn.on{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.5);
@@ -79,14 +112,14 @@
     }
     /* Live brush preview area */
     #brushPreview{
-      width:68px;height:68px;border-radius:14px;
+      width:130px;height:60px;border-radius:12px;
       background:rgba(0,0,0,0.4);
       border:2px solid rgba(255,255,255,0.15);
       position:relative;overflow:hidden;cursor:pointer;
       display:flex;align-items:center;justify-content:center;
       box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
     }
-    #previewCanvas{width:68px;height:68px;border-radius:12px;display:block;}
+    #previewCanvas{width:130px;height:60px;border-radius:10px;display:block;}
     #cpick{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
     .prev-lbl{
       position:absolute;bottom:3px;left:0;right:0;
@@ -106,15 +139,21 @@
       text-shadow:0 0 6px rgba(255,255,255,0.3);}
     .hslider{
       -webkit-appearance:none;appearance:none;
-      flex:1;height:16px;border-radius:8px;
+      flex:1;height:20px;border-radius:10px;
       outline:none;cursor:pointer;
       border:1px solid rgba(255,255,255,0.12);
-      touch-action:none;
+      touch-action:manipulation;
+      min-width:60px;
+      -webkit-user-select:none;
+    }
+    .hslider::-webkit-slider-runnable-track{
+      height:20px;border-radius:10px;
     }
     .hslider::-webkit-slider-thumb{
       -webkit-appearance:none;
-      width:24px;height:24px;border-radius:50%;
+      width:28px;height:28px;border-radius:50%;
       cursor:grab;
+      border:2px solid rgba(255,255,255,0.3);
     }
     /* Vegas opacity display */
     #opacityVal{
@@ -276,7 +315,7 @@
     <button class="tool-btn"    id="t-text"   onclick="showTxt()">💬<span class="tlbl">Add Text</span></button>
     <div class="tool-ctrl">
       <div id="brushPreview" onclick="document.getElementById('cpick').click()">
-        <canvas id="previewCanvas" width="136" height="136"></canvas>
+        <canvas id="previewCanvas" width="260" height="120"></canvas>
         <span class="prev-lbl">TAP COLOR</span>
       </div>
       <input type="color" id="cpick" value="#ff3366"
@@ -727,7 +766,7 @@ function updateBrushPreview(){
   }
 
   const pcx=pw/2, pcy=ph/2;
-  const previewR=Math.max(5,Math.min(30,brushSz*0.75));
+  const previewR=Math.max(5,Math.min(ph*0.42,brushSz*0.85));
   const blurPx=(1-brushHardness)*10;
 
   pCtx.save();
@@ -762,32 +801,29 @@ function updateBrushPreview(){
 // Drawing is ADDED ON TOP — slime is never locked!
 
 canvas.addEventListener('pointerdown',e=>{
+  // ONLY capture if directly touching the canvas — never steal from UI controls!
+  if(e.target !== canvas) return;
   e.preventDefault();
   const pos=getPos(e);
   fingers[e.pointerId]={...pos};
   canvas.setPointerCapture(e.pointerId);
   isPointerDown=true; lastPos={...pos};
-  // ALWAYS apply a gentle squish force
   applyForce(pos.x,pos.y,0,0);
   playTouch();
-  // If drawing tool, start stroke
   if(currentTool!=='squish'&&currentTool!=='text') startStroke(pos.x,pos.y);
 },{passive:false});
 
 canvas.addEventListener('pointermove',e=>{
-  e.preventDefault();
+  if(e.target !== canvas && !fingers[e.pointerId]) return;
   if(!fingers[e.pointerId]) return;
+  e.preventDefault();
   const pos=getPos(e);
   const prev=fingers[e.pointerId];
   const dx=pos.x-prev.x, dy=pos.y-prev.y;
   fingers[e.pointerId]={...pos};
-
-  // ALWAYS squish — this is the key fix!
   applyForce(pos.x,pos.y,dx,dy);
   moveBlobs(pos.x,pos.y,dx*0.3,dy*0.3);
   playStretch(Math.sqrt(dx*dx+dy*dy));
-
-  // If drawing tool, extend stroke
   if(currentTool!=='squish'&&currentTool!=='text'&&isPointerDown) extendStroke(pos.x,pos.y);
 },{passive:false});
 
