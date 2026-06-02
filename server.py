@@ -197,6 +197,10 @@ def humor_game():
 def slime_game():
     return send_from_directory('.', 'slime.html')
 
+@app.route('/lava')
+def lava_game():
+    return send_from_directory('.', 'lava.html')
+
 @app.route('/card_<name>.jpg')
 def card_image(name):
     return send_from_directory('.', 'card_'+name+'.jpg')
