@@ -414,6 +414,24 @@ function checkReady(){
 }
 
 function startGame(){
+  // Content filter — block bad words and politics
+  const _fc = checkInputs('playerName', 'playerLoc');
+  if(!_fc.ok){
+    const _fi = document.getElementById('playerName');
+    if(_fi){ _fi.style.borderColor='#ff4444'; _fi.style.boxShadow='0 0 10px rgba(255,0,0,0.4)'; }
+    // Show error message
+    const _fe = document.getElementById('filterError') || (()=>{
+      const d=document.createElement('div');
+      d.id='filterError';
+      d.style.cssText='color:#ff6666;font-size:12px;font-weight:700;text-align:center;margin-top:-8px;';
+      const btn=document.querySelector('.ov-btn');
+      if(btn&&btn.parentNode)btn.parentNode.insertBefore(d,btn);
+      return d;
+    })();
+    _fe.textContent='⚠️ '+_fc.msg;
+    setTimeout(()=>{if(_fi){_fi.style.borderColor='';_fi.style.boxShadow='';}if(_fe)_fe.textContent='';},3000);
+    return;
+  }
   playerName=document.getElementById('pName').value.trim();
   playerLoc=document.getElementById('pLoc').value;
   if(!playerName||!playerLoc) return;
@@ -1146,6 +1164,61 @@ setInterval(loadLeaderboard,20000);
 // Init
 loadLeaderboard();
 setInterval(loadLeaderboard,20000);
+
+// ── CONTENT FILTER ──────────────────────────────
+// Checks names/locations for inappropriate content
+// Returns {ok:true} or {ok:false, msg:"reason"}
+function filterInput(text){
+  if(!text||text.trim().length===0) return {ok:true};
+  const t = text.toLowerCase().replace(/[^a-z0-9\s]/g,'');
+  const words = t.split(/\s+/);
+
+  // Bad words list (partial — catches roots)
+  const BAD = [
+    'fuck','shit','ass','bitch','cunt','dick','cock','pussy','bastard',
+    'whore','slut','nigger','nigga','faggot','retard','rape','pedo',
+    'porn','sex','naked','nude','boob','tit','butt','anus','penis',
+    'vagina','dildo','boner','horny','cum','jizz','anal','xxx',
+    'drugs','meth','cocaine','heroin','weed','kike','spic','chink',
+    'cracker','tranny','crap','piss','damn','hell','idiot','moron',
+    'stupid','loser','hate','kill','murder','suicide','terrorist',
+    'jihad','nazi','racist','slavery'
+  ];
+
+  // Political / divisive names to block
+  const POLITICAL = [
+    'trump','biden','obama','clinton','hillary','harris','desantis',
+    'pelosi','maga','democrat','republican','liberal','conservative',
+    'socialist','communist','fascist','antifa','kkk','proud boys',
+    'blm','qanon','isis','taliban','putin','kim jong','xi jinping',
+    'zelensky','netanyahu','aoc','bernie','elon','musk','soros',
+    'rothschild','illuminati'
+  ];
+
+  // Check each word
+  for(const w of words){
+    for(const bad of BAD){
+      if(w.includes(bad)) return {ok:false, msg:'Please keep it family-friendly! 🌺'};
+    }
+    for(const pol of POLITICAL){
+      if(t.includes(pol)) return {ok:false, msg:'Please keep names neutral — no politics here! 🌺'};
+    }
+  }
+  // Max length check
+  if(text.trim().length > 25) return {ok:false, msg:'Please keep it under 25 characters! 🌺'};
+  return {ok:true};
+}
+
+function checkInputs(nameId, locId){
+  const name = document.getElementById(nameId)?.value.trim()||'';
+  const loc  = document.getElementById(locId)?.value.trim()||'';
+  const nCheck = filterInput(name);
+  const lCheck = filterInput(loc);
+  if(!nCheck.ok) return {ok:false, msg:'Name: '+nCheck.msg};
+  if(!lCheck.ok) return {ok:false, msg:'Location: '+lCheck.msg};
+  return {ok:true};
+}
+// ────────────────────────────────────────────────
 </script>
 </body>
 </html>
