@@ -27,12 +27,12 @@
       font-size:15px;display:flex;align-items:center;justify-content:center;color:#fff;}
     .hdr-right{display:flex;gap:6px;}
 
-    /* Single canvas fills space */
+    /* Canvas covers full viewport — slime centered in usable area via JS */
     #mainCanvas{
-      position:fixed;top:48px;left:0;
+      position:fixed;top:0;left:0;
+      width:100%!important;height:100%!important;
       touch-action:none;cursor:crosshair;
       display:block;z-index:1;
-      background:transparent;
     }
 
     /* Tool bar — left side, collapsible */
@@ -71,12 +71,22 @@
 
     /* Color + sliders section */
     .tool-ctrl{display:flex;flex-direction:column;align-items:center;gap:5px;padding:4px 0;}
-    #colorDot{
-      width:36px;height:36px;border-radius:50%;cursor:pointer;
-      border:2px solid rgba(255,255,255,0.4);position:relative;overflow:hidden;
-      box-shadow:0 0 8px currentColor;
+    /* Live brush preview area */
+    #brushPreview{
+      width:68px;height:68px;border-radius:14px;
+      background:rgba(0,0,0,0.4);
+      border:2px solid rgba(255,255,255,0.15);
+      position:relative;overflow:hidden;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
     }
-    #cpick{position:absolute;inset:-4px;opacity:0;cursor:pointer;width:130%;height:130%;}
+    #previewCanvas{width:68px;height:68px;border-radius:12px;display:block;}
+    #cpick{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .prev-lbl{
+      position:absolute;bottom:3px;left:0;right:0;
+      text-align:center;font-size:7px;font-weight:800;color:rgba(255,255,255,0.5);
+      pointer-events:none;
+    }
     .slider-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
     .sldr-lbl{
       font-size:8px;color:#aaa;font-weight:900;
@@ -263,8 +273,10 @@
     <button class="tool-btn"    id="t-air"    onclick="setTool('air')">💨<span class="tlbl">Spray</span></button>
     <button class="tool-btn"    id="t-text"   onclick="showTxt()">💬<span class="tlbl">Add Text</span></button>
     <div class="tool-ctrl">
-      <div id="colorDot" style="background:#ff3366">
+      <div id="brushPreview">
+        <canvas id="previewCanvas" width="136" height="136"></canvas>
         <input type="color" id="cpick" value="#ff3366" oninput="setColor(this.value)">
+        <span class="prev-lbl">BRUSH</span>
       </div>
       <div class="slider-wrap">
         <span class="sldr-lbl">Size</span>
@@ -341,15 +353,20 @@ let W,H,CX,CY,NR,PR; // NR = natural radius
 function shelfH(){const v=window.innerHeight;return v<=680?175:v>=800?215:195;}
 
 function setSize(){
-  PR=window.devicePixelRatio||1;
-  const vw=window.innerWidth, vh=window.innerHeight;
-  const aH=Math.max(200, vh - 48 - shelfH());
-  W=canvas.width=Math.round(vw*PR);
-  H=canvas.height=Math.round(aH*PR);
-  canvas.style.width=vw+'px';
-  canvas.style.height=aH+'px';
-  CX=W/2; CY=H/2;
-  NR=Math.min(W,H)*0.44;
+  PR = window.devicePixelRatio||1;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Full screen canvas
+  W = canvas.width  = Math.round(vw*PR);
+  H = canvas.height = Math.round(vh*PR);
+  canvas.style.width  = vw+'px';
+  canvas.style.height = vh+'px';
+  // Center slime in the USABLE area (between header 48px and shelf)
+  const usableTop = 48;
+  const usableH   = vh - 48 - shelfH();
+  CX = W/2;
+  CY = Math.round((usableTop + usableH/2) * PR);
+  NR = Math.min(W, usableH*PR) * 0.42;
 }
 setSize();
 
@@ -653,15 +670,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('brushHard').addEventListener('input',e=>{
     brushHardness=parseInt(e.target.value)/100;
     updateHardDot();
+    updateBrushPreview(); // LIVE UPDATE!
   });
   document.getElementById('brushSz').addEventListener('input',e=>{
     brushSz=parseInt(e.target.value);
+    updateBrushPreview(); // LIVE UPDATE!
   });
   document.getElementById('brushOpacity').addEventListener('input',e=>{
     brushOpacity=parseInt(e.target.value)/100;
     document.getElementById('opacityVal').textContent=e.target.value+'%';
+    updateBrushPreview(); // LIVE UPDATE!
   });
   updateHardDot();
+  setTimeout(updateBrushPreview, 200); // init preview after DOM ready
 });
 function updateHardDot(){
   const d=document.getElementById('hardDot');
@@ -682,8 +703,60 @@ function setTool(t){
     crayon:'🖍️ Crayon — try soft vs hard brush!',chalk:'🪨 Chalk texture!',water:'🎨 Watercolour wash!',
     oil:'🖌️ Thick oil paint!',air:'💨 Spray paint!',text:'💬 Write in the slime!'};
   document.getElementById('hdrHint').textContent=hints[t]||'';
+  updateBrushPreview(); // update preview for new tool
 }
-function setColor(c){drawColor=c;document.getElementById('colorDot').style.background=c;}
+function setColor(c){
+  drawColor=c;
+  updateBrushPreview();
+}
+
+// Live brush preview — shows size, color, hardness, opacity
+function updateBrushPreview(){
+  const pc=document.getElementById('previewCanvas');
+  if(!pc) return;
+  const pCtx=pc.getContext('2d');
+  const pw=pc.width, ph=pc.height;
+  pCtx.clearRect(0,0,pw,ph);
+
+  // Checkerboard background to show opacity
+  const csz=8;
+  for(let gy=0;gy<ph/csz;gy++) for(let gx=0;gx<pw/csz;gx++){
+    pCtx.fillStyle=(gx+gy)%2===0?'rgba(80,80,80,0.5)':'rgba(50,50,50,0.5)';
+    pCtx.fillRect(gx*csz,gy*csz,csz,csz);
+  }
+
+  const cx=pw/2, cy=ph/2;
+  // Scale preview radius to brush size (1-50 → 4-32px in preview)
+  const previewR = Math.max(4, Math.min(32, brushSz * 0.8));
+  // Softness = blur
+  const blurPx = (1-brushHardness)*8;
+
+  pCtx.save();
+  pCtx.globalAlpha = brushOpacity;
+  if(blurPx>0.5){pCtx.filter=`blur(${blurPx}px)`;}
+
+  // Draw a dot representing the brush
+  const grad=pCtx.createRadialGradient(cx-previewR*0.3,cy-previewR*0.3,0,cx,cy,previewR*1.1);
+  grad.addColorStop(0,'white');
+  grad.addColorStop(0.3,drawColor);
+  grad.addColorStop(1,drawColor);
+  pCtx.fillStyle=grad;
+  pCtx.beginPath();pCtx.arc(cx,cy,previewR,0,Math.PI*2);pCtx.fill();
+
+  // For soft tools also show feather ring
+  if(blurPx>2){
+    pCtx.globalAlpha=brushOpacity*0.3;
+    pCtx.filter=`blur(${blurPx*2}px)`;
+    pCtx.fillStyle=drawColor;
+    pCtx.beginPath();pCtx.arc(cx,cy,previewR*1.4,0,Math.PI*2);pCtx.fill();
+  }
+
+  pCtx.restore();
+
+  // Glow border matching color
+  document.getElementById('brushPreview').style.borderColor=drawColor;
+  document.getElementById('brushPreview').style.boxShadow=`0 0 10px ${drawColor}66, inset 0 0 10px rgba(0,0,0,0.5)`;
+}
 
 // ── POINTER HANDLING ───────────────────────────
 // CRITICAL: touch ALWAYS squishes slime regardless of tool!
@@ -1046,9 +1119,9 @@ function showToast(msg){
 window.addEventListener('resize',()=>{setSize();reNatural();initSlime();strokes=[];});
 
 buildUI();
-setSize();      // ensure correct dimensions
-initSlime();    // place slime at correct CX,CY with correct NR
-loop();         // start rendering
+// setSize already called above — just init and go!
+initSlime();
+loop();
 
 // Reliable font preload — hidden div forces browser to render all fonts NOW
 (function preloadFonts(){
