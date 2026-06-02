@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌋 Pele's Fury — Today in Hawaii</title>
+  <meta name="description" content="Hawaii's hottest falling rock game! Lava rocks rain from above — stack them, clear lines, trigger eruptions!">
+  <link rel="icon" href="/icon-192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{
+      width:100%;height:100%;overflow:hidden;
+      background:#000;
+      font-family:system-ui,sans-serif;
+      user-select:none;-webkit-user-select:none;
+    }
+
+    /* Animated lava bg */
+    #bg{
+      position:fixed;inset:0;z-index:0;
+      background:radial-gradient(ellipse at 50% 110%,#ff2200 0%,#cc1100 20%,#440000 55%,#0a0000 100%);
+    }
+    .ember{
+      position:absolute;border-radius:50%;
+      background:radial-gradient(circle,#ffcc00,#ff4400);
+      animation:emberRise linear infinite;
+      pointer-events:none;
+    }
+    @keyframes emberRise{
+      0%{transform:translateY(0) scale(1);opacity:0.8;}
+      100%{transform:translateY(-100vh) scale(0.2);opacity:0;}
+    }
+
+    /* Layout */
+    #wrap{
+      position:relative;z-index:1;
+      display:flex;flex-direction:column;align-items:center;
+      height:100vh;padding:8px 8px 4px;
+      gap:6px;
+    }
+
+    /* Header */
+    #hdr{
+      text-align:center;flex-shrink:0;
+    }
+    #hdr h1{
+      font-size:clamp(18px,5vw,26px);font-weight:900;
+      letter-spacing:2px;text-transform:uppercase;
+      background:linear-gradient(180deg,#fff700,#ffaa00,#ff4400,#cc0000);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      text-shadow:none;
+      filter:drop-shadow(0 0 8px rgba(255,100,0,0.8));
+    }
+    #hdr .sub{font-size:10px;color:#ff8844;letter-spacing:0.15em;margin-top:1px;}
+
+    /* Score row */
+    #scoreRow{
+      display:flex;gap:10px;flex-shrink:0;
+      width:100%;max-width:420px;justify-content:center;
+    }
+    .sbox{
+      flex:1;text-align:center;padding:5px 8px;
+      background:rgba(0,0,0,0.6);
+      border:1px solid rgba(255,80,0,0.4);
+      border-radius:10px;
+      box-shadow:0 0 10px rgba(255,60,0,0.2);
+    }
+    .sbox-lbl{font-size:8px;font-weight:800;color:#ff6622;
+      text-transform:uppercase;letter-spacing:0.12em;}
+    .sbox-val{font-size:18px;font-weight:900;color:#ffcc00;
+      text-shadow:0 0 10px rgba(255,200,0,0.6);}
+
+    /* Game area */
+    #gameArea{
+      display:flex;gap:10px;flex:1;min-height:0;
+      align-items:flex-start;justify-content:center;
+      width:100%;max-width:420px;
+    }
+
+    /* Main board */
+    #boardWrap{
+      position:relative;flex-shrink:0;
+    }
+    #board{
+      display:block;
+      border:2px solid rgba(255,80,0,0.6);
+      border-radius:4px;
+      box-shadow:
+        0 0 20px rgba(255,60,0,0.4),
+        0 0 60px rgba(255,30,0,0.15),
+        inset 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    /* Side panel */
+    #side{
+      display:flex;flex-direction:column;gap:8px;
+      min-width:72px;
+    }
+    .side-box{
+      background:rgba(0,0,0,0.6);
+      border:1px solid rgba(255,80,0,0.3);
+      border-radius:10px;padding:8px;
+      text-align:center;
+    }
+    .side-lbl{font-size:8px;font-weight:800;color:#ff6622;
+      text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+    #nextCanvas{display:block;margin:0 auto;}
+    #levelVal{font-size:22px;font-weight:900;color:#ff8800;
+      text-shadow:0 0 10px rgba(255,140,0,0.6);}
+    #linesVal{font-size:18px;font-weight:900;color:#ffcc00;}
+
+    /* Bottom controls — mobile touch */
+    #controls{
+      display:flex;gap:8px;flex-shrink:0;
+      width:100%;max-width:420px;padding-bottom:4px;
+    }
+    .ctrl-btn{
+      flex:1;padding:12px 4px;border:none;border-radius:12px;
+      font-size:20px;cursor:pointer;
+      background:rgba(0,0,0,0.6);
+      border:2px solid rgba(255,80,0,0.4);
+      color:#ff8800;
+      box-shadow:0 0 10px rgba(255,60,0,0.2);
+      transition:all 0.1s;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .ctrl-btn:active{
+      background:rgba(255,60,0,0.3);
+      transform:scale(0.93);
+    }
+    .ctrl-btn.rotate{
+      border-color:rgba(255,200,0,0.6);color:#ffcc00;
+      box-shadow:0 0 14px rgba(255,200,0,0.3);
+    }
+    .ctrl-btn.drop{
+      border-color:rgba(255,30,0,0.7);color:#ff4400;
+      box-shadow:0 0 14px rgba(255,30,0,0.4);
+    }
+
+    /* Overlay screens */
+    .overlay{
+      position:fixed;inset:0;z-index:100;
+      background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:16px;
+      padding:20px;
+    }
+    .overlay.hide{display:none;}
+    .ov-title{
+      font-size:clamp(28px,8vw,48px);font-weight:900;
+      text-transform:uppercase;letter-spacing:3px;
+      background:linear-gradient(180deg,#fff700,#ff6600,#cc0000);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 0 16px rgba(255,100,0,0.8));
+      text-align:center;
+    }
+    .ov-sub{font-size:14px;color:#ff8844;text-align:center;
+      line-height:1.6;max-width:300px;}
+    .ov-score{font-size:32px;font-weight:900;color:#ffcc00;
+      text-shadow:0 0 20px rgba(255,200,0,0.7);}
+    .ov-btn{
+      padding:14px 40px;border:none;border-radius:99px;
+      font-size:16px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:1px;text-transform:uppercase;
+      background:linear-gradient(180deg,#ff6600,#cc2200);
+      color:#fff;
+      box-shadow:0 6px 0 #660000,0 8px 20px rgba(255,60,0,0.4);
+      transition:all 0.1s;
+    }
+    .ov-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #660000;}
+
+    /* Eruption flash */
+    #eruption{
+      position:fixed;inset:0;z-index:90;
+      pointer-events:none;opacity:0;
+      background:radial-gradient(ellipse at 50% 100%,rgba(255,150,0,0.6),transparent 70%);
+      transition:opacity 0.1s;
+    }
+    #eruption.flash{opacity:1;}
+
+    /* Line clear particles */
+    .lava-particle{
+      position:fixed;pointer-events:none;z-index:91;
+      border-radius:50%;
+      background:radial-gradient(circle,#ffcc00,#ff4400);
+    }
+
+    /* Lava drip on piece */
+    @keyframes drip{
+      0%{transform:scaleY(0);opacity:1;}
+      100%{transform:scaleY(1);opacity:0;}
+    }
+
+    /* Big text announcement */
+    #announce{
+      position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);
+      z-index:95;pointer-events:none;
+      font-size:clamp(28px,8vw,52px);font-weight:900;
+      text-transform:uppercase;letter-spacing:4px;
+      background:linear-gradient(180deg,#ffffff,#ffcc00,#ff4400);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 0 20px rgba(255,150,0,1));
+      opacity:0;transition:opacity 0.2s;
+      text-align:center;white-space:nowrap;
+    }
+    #announce.show{opacity:1;}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+
+<!-- Embers -->
+<script>
+for(let i=0;i<25;i++){
+  const e=document.createElement('div');
+  e.className='ember';
+  const sz=2+Math.random()*5;
+  e.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;bottom:${Math.random()*20}%;
+    animation-duration:${3+Math.random()*6}s;animation-delay:${Math.random()*6}s;`;
+  document.getElementById('bg').appendChild(e);
+}
+</script>
+
+<div id="wrap">
+  <div id="hdr">
+    <h1>🌋 Pele's Fury</h1>
+    <div class="sub">Stack the lava rocks — trigger the eruption!!</div>
+  </div>
+
+  <div id="scoreRow">
+    <div class="sbox">
+      <div class="sbox-lbl">🔥 Score</div>
+      <div class="sbox-val" id="scoreVal">0</div>
+    </div>
+    <div class="sbox">
+      <div class="sbox-lbl">⚡ Best</div>
+      <div class="sbox-val" id="bestVal">0</div>
+    </div>
+  </div>
+
+  <div id="gameArea">
+    <div id="boardWrap">
+      <canvas id="board"></canvas>
+    </div>
+    <div id="side">
+      <div class="side-box">
+        <div class="side-lbl">Next</div>
+        <canvas id="nextCanvas" width="72" height="72"></canvas>
+      </div>
+      <div class="side-box">
+        <div class="side-lbl">Level</div>
+        <div id="levelVal">1</div>
+      </div>
+      <div class="side-box">
+        <div class="side-lbl">Lines</div>
+        <div id="linesVal">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="controls">
+    <button class="ctrl-btn" id="btnLeft"  ontouchstart="startRepeat('left')"  ontouchend="stopRepeat()" onclick="move(-1)">◀</button>
+    <button class="ctrl-btn rotate"         ontouchstart="rotatePiece()"        onclick="rotatePiece()">↻</button>
+    <button class="ctrl-btn"               ontouchstart="startRepeat('right')" ontouchend="stopRepeat()" onclick="move(1)">▶</button>
+    <button class="ctrl-btn drop"          ontouchstart="hardDrop()"           onclick="hardDrop()">⬇</button>
+  </div>
+</div>
+
+<!-- Eruption overlay -->
+<div id="eruption"></div>
+<div id="announce"></div>
+
+<!-- Start screen -->
+<div class="overlay" id="startScreen">
+  <div class="ov-title">🌋 Pele's Fury</div>
+  <div class="ov-sub">
+    Lava rocks rain from the volcano!<br>
+    Stack them — clear lines — trigger the ERUPTION!!<br><br>
+    ◀ ▶ Move &nbsp;|&nbsp; ↻ Rotate &nbsp;|&nbsp; ⬇ Drop<br>
+    <em style="color:#ff6622">Keyboard: arrows + space + Z</em>
+  </div>
+  <button class="ov-btn" onclick="startGame()">🔥 IGNITE!!</button>
+</div>
+
+<!-- Game over screen -->
+<div class="overlay hide" id="overScreen">
+  <div class="ov-title">💀 The Lava<br>Won...</div>
+  <div class="ov-sub">The volcano swallowed your rocks!</div>
+  <div class="ov-score" id="finalScore">0</div>
+  <button class="ov-btn" onclick="startGame()">🌋 Erupt Again!</button>
+  <a href="/games" style="color:#ff6622;font-size:12px;margin-top:4px;">← Games Hub</a>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// PELE'S FURY — Hawaii Falling Rock Game
+// Today in Hawaii © 2026
+// ═══════════════════════════════════════════════════
+
+// ── CANVAS SETUP ─────────────────────────────────
+const COLS=10, ROWS=20;
+let CELL, PR, BW, BH;
+
+const boardCanvas = document.getElementById('board');
+const bCtx        = boardCanvas.getContext('2d');
+const nextCanvas  = document.getElementById('nextCanvas');
+const nCtx        = nextCanvas.getContext('2d');
+
+function sizeBoard(){
+  PR = window.devicePixelRatio||1;
+  const gameArea = document.getElementById('gameArea');
+  const sideW    = 88;
+  const gap      = 10;
+  const availW   = Math.min(gameArea.clientWidth - sideW - gap, 300);
+  const availH   = gameArea.clientHeight || (window.innerHeight*0.55);
+  CELL = Math.floor(Math.min(availW/COLS, availH/ROWS));
+  BW = CELL*COLS; BH = CELL*ROWS;
+  boardCanvas.width  = BW*PR; boardCanvas.height = BH*PR;
+  boardCanvas.style.width = BW+'px'; boardCanvas.style.height = BH+'px';
+}
+sizeBoard();
+
+// ── LAVA ROCK PIECES ──────────────────────────────
+// 7 unique shapes — NOT the classic tetromino set!
+// Inspired by Hawaiian lava rock chunks
+const SHAPES = [
+  // Long flow (like a'a lava channel)
+  [[1,1,1,1]],
+  // Square chunk (dense pahoehoe)
+  [[1,1],[1,1]],
+  // L-rock
+  [[1,0],[1,0],[1,1]],
+  // J-rock
+  [[0,1],[0,1],[1,1]],
+  // S-crack
+  [[0,1,1],[1,1,0]],
+  // Z-crack
+  [[1,1,0],[0,1,1]],
+  // T-vent
+  [[1,1,1],[0,1,0]],
+];
+
+// Lava color palettes per piece
+const LAVA_COLORS = [
+  {hot:'#ff8800',mid:'#cc4400',cool:'#661100',glow:'rgba(255,140,0,0.8)'},  // orange
+  {hot:'#ff3300',mid:'#aa1100',cool:'#550000',glow:'rgba(255,50,0,0.8)'},   // red
+  {hot:'#ffaa00',mid:'#dd6600',cool:'#774400',glow:'rgba(255,170,0,0.8)'},  // amber
+  {hot:'#ff6600',mid:'#bb3300',cool:'#661100',glow:'rgba(255,100,0,0.8)'},  // deep orange
+  {hot:'#ff2200',mid:'#991100',cool:'#440000',glow:'rgba(255,30,0,0.9)'},   // hot red
+  {hot:'#ffcc00',mid:'#cc8800',cool:'#775500',glow:'rgba(255,200,0,0.8)'},  // yellow lava
+  {hot:'#ff4400',mid:'#cc2200',cool:'#550000',glow:'rgba(255,70,0,0.85)'}, // ember
+];
+
+// ── GAME STATE ─────────────────────────────────────
+let board=[], score=0, best=0, level=1, lines=0;
+let piece=null, next=null;
+let gameLoop=null, dropTimer=null;
+let running=false, paused=false;
+let combo=0;
+
+function emptyBoard(){
+  board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+}
+
+function newPiece(shape, colorIdx){
+  const s = shape || SHAPES[Math.floor(Math.random()*SHAPES.length)];
+  const c = colorIdx!==undefined ? colorIdx : Math.floor(Math.random()*LAVA_COLORS.length);
+  return{
+    shape:s, color:c,
+    x: Math.floor((COLS-s[0].length)/2),
+    y:-1,
+    heat: 1.0, // how hot/bright (decreases as it ages)
+  };
+}
+
+// ── COLLISION ─────────────────────────────────────
+function collides(p, dx=0, dy=0, shape=null){
+  const s = shape||p.shape;
+  for(let r=0;r<s.length;r++)
+    for(let c=0;c<s[r].length;c++){
+      if(!s[r][c]) continue;
+      const nx=p.x+c+dx, ny=p.y+r+dy;
+      if(nx<0||nx>=COLS||ny>=ROWS) return true;
+      if(ny>=0 && board[ny][nx]) return true;
+    }
+  return false;
+}
+
+// ── ROTATION ──────────────────────────────────────
+function rotateShape(s){
+  const rows=s.length, cols=s[0].length;
+  const r=Array.from({length:cols},()=>Array(rows).fill(0));
+  for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) r[x][rows-1-y]=s[y][x];
+  return r;
+}
+
+function rotatePiece(){
+  if(!piece||!running||paused) return;
+  const r=rotateShape(piece.shape);
+  if(!collides(piece,0,0,r)){piece.shape=r;playRotate();draw();}
+  else if(!collides(piece,1,0,r)){piece.x++;piece.shape=r;playRotate();draw();}
+  else if(!collides(piece,-1,0,r)){piece.x--;piece.shape=r;playRotate();draw();}
+}
+
+// ── MOVEMENT ──────────────────────────────────────
+function move(dx){
+  if(!piece||!running||paused) return;
+  if(!collides(piece,dx,0)){piece.x+=dx;draw();}
+}
+
+function softDrop(){
+  if(!piece||!running||paused) return;
+  if(!collides(piece,0,1)){piece.y++;score+=1;updateScore();}
+  else landPiece();
+}
+
+function hardDrop(){
+  if(!piece||!running||paused) return;
+  let drops=0;
+  while(!collides(piece,0,1)){piece.y++;drops++;}
+  score+=drops*2;updateScore();
+  landPiece();
+  playDrop();
+}
+
+// ── LAND PIECE ─────────────────────────────────────
+function landPiece(){
+  // Bake into board
+  piece.shape.forEach((row,r)=>
+    row.forEach((cell,c)=>{
+      if(cell && piece.y+r>=0)
+        board[piece.y+r][piece.x+c]=piece.color;
+    })
+  );
+  playLand();
+  checkLines();
+  piece=next;
+  next=newPiece();
+  drawNext();
+  if(collides(piece,0,0)){gameOver();return;}
+  resetDropTimer();
+}
+
+// ── LINE CLEAR ─────────────────────────────────────
+function checkLines(){
+  const full=[];
+  for(let r=0;r<ROWS;r++) if(board[r].every(c=>c!==null)) full.push(r);
+  if(!full.length){combo=0;return;}
+
+  combo++;
+  const cleared=full.length;
+  lines+=cleared;
+
+  // Score: more lines at once = exponential points
+  const pts=[0,100,300,600,1000];
+  const base=(pts[Math.min(cleared,4)]||1200)*(level);
+  const comboBonus=combo>1?Math.floor(base*0.5*(combo-1)):0;
+  score+=base+comboBonus;
+  updateScore();
+
+  // Erupt!
+  triggerEruption(cleared, full);
+
+  // Remove lines
+  full.forEach(r=>{board.splice(r,1);board.unshift(Array(COLS).fill(null));});
+  document.getElementById('linesVal').textContent=lines;
+
+  // Level up every 10 lines
+  const newLevel=Math.floor(lines/10)+1;
+  if(newLevel>level){
+    level=newLevel;
+    document.getElementById('levelVal').textContent=level;
+    showAnnounce('LEVEL '+level+' 🌋');
+    resetDropTimer();
+  }
+}
+
+// ── ERUPTION EFFECTS ───────────────────────────────
+function triggerEruption(count, rows){
+  const el=document.getElementById('eruption');
+  el.classList.add('flash');
+  setTimeout(()=>el.classList.remove('flash'),300);
+
+  const msgs=['🔥 ERUPTION!!','💥 MAGMA BLAST!!','🌋 LAVA SURGE!!','☄️ PELE RISES!!','🔥 INFERNO!!'];
+  if(count>=4) showAnnounce('🌋 MEGA ERUPTION!! 🌋');
+  else if(count>=3) showAnnounce(msgs[Math.floor(Math.random()*msgs.length)]);
+  else if(count>=2) showAnnounce('🔥 DOUBLE BURN!!');
+  else if(combo>=3) showAnnounce('🔥 COMBO x'+combo+'!!');
+
+  playEruption(count);
+  spawnLavaParticles(count, rows);
+}
+
+function showAnnounce(txt){
+  const el=document.getElementById('announce');
+  el.textContent=txt;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),1400);
+}
+
+function spawnLavaParticles(count, rows){
+  const boardRect=boardCanvas.getBoundingClientRect();
+  for(let i=0;i<count*18;i++){
+    const p=document.createElement('div');
+    p.className='lava-particle';
+    const row=rows[Math.floor(Math.random()*rows.length)];
+    const sz=4+Math.random()*10;
+    const x=boardRect.left+Math.random()*boardRect.width;
+    const y=boardRect.top+(row/ROWS)*boardRect.height;
+    const angle=Math.random()*Math.PI*2;
+    const speed=60+Math.random()*140;
+    const tx=Math.cos(angle)*speed;
+    const ty=Math.sin(angle)*speed-80;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${x}px;top:${y}px;position:fixed;pointer-events:none;z-index:91;`;
+    document.body.appendChild(p);
+    const dur=400+Math.random()*500;
+    const t0=Date.now();
+    function animP(){
+      const prog=Math.min(1,(Date.now()-t0)/dur);
+      const ease=1-Math.pow(1-prog,2);
+      p.style.transform=`translate(${tx*ease}px,${ty*ease+100*prog*prog}px) scale(${1-prog*0.7})`;
+      p.style.opacity=1-prog;
+      if(prog<1) requestAnimationFrame(animP); else p.remove();
+    }
+    requestAnimationFrame(animP);
+  }
+}
+
+// ── DRAW ───────────────────────────────────────────
+let glowPhase=0;
+
+function draw(){
+  glowPhase+=0.05;
+  bCtx.save();
+  bCtx.scale(PR,PR);
+
+  // Background — dark volcanic rock texture
+  bCtx.fillStyle='#0a0000';
+  bCtx.fillRect(0,0,BW,BH);
+
+  // Subtle grid
+  bCtx.strokeStyle='rgba(255,40,0,0.08)';
+  bCtx.lineWidth=0.5;
+  for(let r=0;r<=ROWS;r++){bCtx.beginPath();bCtx.moveTo(0,r*CELL);bCtx.lineTo(BW,r*CELL);bCtx.stroke();}
+  for(let c=0;c<=COLS;c++){bCtx.beginPath();bCtx.moveTo(c*CELL,0);bCtx.lineTo(c*CELL,BH);bCtx.stroke();}
+
+  // Draw board cells
+  for(let r=0;r<ROWS;r++)
+    for(let c=0;c<COLS;c++)
+      if(board[r][c]!==null) drawCell(bCtx, c, r, board[r][c], 0.7);
+
+  // Ghost piece
+  if(piece&&running){
+    let ghostY=piece.y;
+    while(!collides(piece,0,ghostY-piece.y+1)) ghostY++;
+    if(ghostY!==piece.y) drawPiece(bCtx, piece, ghostY, 0.18, true);
+    // Active piece
+    drawPiece(bCtx, piece, piece.y, 1.0, false);
+  }
+
+  // Lava glow at bottom
+  const lavaGrad=bCtx.createLinearGradient(0,BH-CELL*1.5,0,BH);
+  lavaGrad.addColorStop(0,'rgba(0,0,0,0)');
+  const glow=0.08+0.06*Math.sin(glowPhase);
+  lavaGrad.addColorStop(1,`rgba(255,60,0,${glow})`);
+  bCtx.fillStyle=lavaGrad;
+  bCtx.fillRect(0,BH-CELL*1.5,BW,CELL*1.5);
+
+  bCtx.restore();
+}
+
+function drawCell(ctx, cx, cy, colorIdx, alpha, ghost=false){
+  const col=LAVA_COLORS[colorIdx%LAVA_COLORS.length];
+  const x=cx*CELL, y=cy*CELL, s=CELL;
+  const pad=1;
+
+  ctx.save();
+  ctx.globalAlpha=alpha;
+
+  if(ghost){
+    ctx.strokeStyle=col.hot;
+    ctx.lineWidth=1.5;
+    ctx.strokeRect(x+pad+1,y+pad+1,s-pad*2-2,s-pad*2-2);
+    ctx.restore(); return;
+  }
+
+  // Main lava block
+  const grad=ctx.createRadialGradient(
+    x+s*0.35, y+s*0.3, 0,
+    x+s*0.5,  y+s*0.5, s*0.75
+  );
+  // Pulse hot center
+  const pulse=0.85+0.15*Math.sin(glowPhase+cx*0.7+cy*0.5);
+  grad.addColorStop(0, col.hot);
+  grad.addColorStop(0.4, col.mid);
+  grad.addColorStop(1, col.cool);
+  ctx.fillStyle=grad;
+  ctx.beginPath();
+  ctx.roundRect(x+pad,y+pad,s-pad*2,s-pad*2,3);
+  ctx.fill();
+
+  // Cracked lava texture lines
+  ctx.strokeStyle=`rgba(0,0,0,0.45)`;
+  ctx.lineWidth=0.8;
+  ctx.beginPath();
+  ctx.moveTo(x+s*0.3,y+pad);
+  ctx.lineTo(x+s*0.5,y+s*0.45);
+  ctx.lineTo(x+s*0.75,y+s*0.7);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x+pad,y+s*0.55);
+  ctx.lineTo(x+s*0.45,y+s*0.6);
+  ctx.stroke();
+
+  // Hot glow top highlight
+  ctx.fillStyle=`rgba(255,255,200,${0.2*pulse})`;
+  ctx.beginPath();
+  ctx.roundRect(x+pad+2,y+pad+2,s-pad*2-4,(s-pad*2)*0.35,2);
+  ctx.fill();
+
+  // Glow shadow
+  ctx.shadowColor=col.glow;
+  ctx.shadowBlur=6*pulse;
+  ctx.strokeStyle=col.hot;
+  ctx.lineWidth=0.5;
+  ctx.strokeRect(x+pad,y+pad,s-pad*2,s-pad*2);
+
+  ctx.restore();
+}
+
+function drawPiece(ctx, p, overrideY, alpha, ghost){
+  p.shape.forEach((row,r)=>
+    row.forEach((cell,c)=>{
+      if(cell) drawCell(ctx, p.x+c, overrideY+r, p.color, alpha, ghost);
+    })
+  );
+}
+
+function drawNext(){
+  const nc=LAVA_COLORS[next.color%LAVA_COLORS.length];
+  nCtx.save();
+  nCtx.clearRect(0,0,72,72);
+  nCtx.fillStyle='rgba(0,0,0,0.5)';
+  nCtx.fillRect(0,0,72,72);
+  const ns=next.shape;
+  const cellSz=14;
+  const ox=(72-ns[0].length*cellSz)/2;
+  const oy=(72-ns.length*cellSz)/2;
+  ns.forEach((row,r)=>row.forEach((cell,c)=>{
+    if(!cell) return;
+    const x=ox+c*cellSz, y=oy+r*cellSz;
+    const g=nCtx.createRadialGradient(x+cellSz*0.35,y+cellSz*0.3,0,x+cellSz*0.5,y+cellSz*0.5,cellSz*0.75);
+    g.addColorStop(0,nc.hot);g.addColorStop(0.5,nc.mid);g.addColorStop(1,nc.cool);
+    nCtx.fillStyle=g;
+    nCtx.beginPath();nCtx.roundRect(x+1,y+1,cellSz-2,cellSz-2,2);nCtx.fill();
+    nCtx.shadowColor=nc.glow;nCtx.shadowBlur=5;
+    nCtx.strokeStyle=nc.hot;nCtx.lineWidth=0.5;nCtx.strokeRect(x+1,y+1,cellSz-2,cellSz-2);
+  }));
+  nCtx.restore();
+}
+
+// ── TIMERS ─────────────────────────────────────────
+function dropInterval(){
+  // Gets faster with level — starts 800ms, min 80ms
+  return Math.max(80, 800 - (level-1)*70);
+}
+
+function resetDropTimer(){
+  clearInterval(dropTimer);
+  if(running&&!paused) dropTimer=setInterval(softDrop, dropInterval());
+}
+
+// ── REPEAT KEYS (hold left/right) ──────────────────
+let repeatTimer=null, repeatKey=null;
+function startRepeat(dir){
+  if(dir==='left') move(-1); else move(1);
+  repeatTimer=setInterval(()=>{if(dir==='left')move(-1);else move(1);},100);
+}
+function stopRepeat(){clearInterval(repeatTimer);repeatTimer=null;}
+
+// ── KEYBOARD ───────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(!running||paused) return;
+  switch(e.code){
+    case 'ArrowLeft': e.preventDefault(); move(-1); break;
+    case 'ArrowRight':e.preventDefault(); move(1);  break;
+    case 'ArrowDown': e.preventDefault(); softDrop();break;
+    case 'ArrowUp':
+    case 'KeyZ':      e.preventDefault(); rotatePiece();break;
+    case 'Space':     e.preventDefault(); hardDrop(); break;
+    case 'KeyP':      togglePause(); break;
+  }
+});
+
+// ── SWIPE CONTROLS ─────────────────────────────────
+let touchStartX=0, touchStartY=0, touchTime=0;
+boardCanvas.addEventListener('touchstart',e=>{
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+  touchTime=Date.now();
+},{passive:true});
+boardCanvas.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  const dy=e.changedTouches[0].clientY-touchStartY;
+  const dt=Date.now()-touchTime;
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(Math.abs(dx)>20) move(dx>0?1:-1);
+  } else {
+    if(dy>30) hardDrop();
+    else if(Math.abs(dy)<15&&dt<250) rotatePiece();
+  }
+},{passive:true});
+
+// ── SCORE ──────────────────────────────────────────
+function updateScore(){
+  document.getElementById('scoreVal').textContent=score.toLocaleString();
+  if(score>best){
+    best=score;
+    document.getElementById('bestVal').textContent=best.toLocaleString();
+    try{localStorage.setItem('pelesBest',best);}catch(e){}
+  }
+}
+
+// ── GAME FLOW ──────────────────────────────────────
+function startGame(){
+  document.getElementById('startScreen').classList.add('hide');
+  document.getElementById('overScreen').classList.add('hide');
+  emptyBoard();
+  score=0;lines=0;level=1;combo=0;
+  updateScore();
+  document.getElementById('linesVal').textContent='0';
+  document.getElementById('levelVal').textContent='1';
+  next=newPiece();
+  piece=newPiece();
+  drawNext();
+  running=true;paused=false;
+  resetDropTimer();
+  cancelAnimationFrame(animFrame);
+  animate();
+  playStart();
+}
+
+function gameOver(){
+  running=false;
+  clearInterval(dropTimer);
+  document.getElementById('finalScore').textContent='Score: '+score.toLocaleString();
+  setTimeout(()=>document.getElementById('overScreen').classList.remove('hide'),800);
+  playGameOver();
+  showAnnounce('💀 GAME OVER');
+}
+
+function togglePause(){
+  paused=!paused;
+  if(paused) clearInterval(dropTimer);
+  else resetDropTimer();
+}
+
+// ── ANIMATION LOOP ─────────────────────────────────
+let animFrame;
+function animate(){
+  draw();
+  animFrame=requestAnimationFrame(animate);
+}
+
+// ── SOUNDS ─────────────────────────────────────────
+let ac=null,muted=false;
+function ga(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();return ac;}
+
+function tone(freq,type,vol,dur,delay=0){
+  try{
+    const c=ga(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+0.05);
+  }catch(e){}
+}
+function noise(vol,dur,freqLow=80,freqHigh=300){
+  try{
+    const c=ga(),buf=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
+    const src=c.createBufferSource();src.buffer=buf;
+    const bp=c.createBiquadFilter();bp.type='bandpass';
+    bp.frequency.value=(freqLow+freqHigh)/2;bp.Q.value=1;
+    const g=c.createGain();g.gain.value=vol;
+    src.connect(bp);bp.connect(g);g.connect(c.destination);src.start();
+  }catch(e){}
+}
+
+function playLand(){
+  noise(0.3,0.12,60,200);
+  tone(120,'sine',0.2,0.1);
+}
+function playRotate(){
+  tone(440,'square',0.06,0.06);
+  tone(660,'square',0.04,0.04,0.03);
+}
+function playDrop(){
+  noise(0.4,0.15,50,180);
+  tone(100,'sawtooth',0.2,0.12);
+}
+function playEruption(count){
+  // Rumble
+  noise(0.5+count*0.1,0.4,30,120);
+  // Explosion tones
+  [180,220,160,200].forEach((f,i)=>tone(f,'sawtooth',0.25,0.2,i*0.05));
+  if(count>=4){
+    // MEGA eruption!
+    [100,150,200,250,300].forEach((f,i)=>tone(f,'square',0.18,0.35,i*0.06));
+    noise(0.6,0.6,20,100);
+  }
+}
+function playStart(){
+  [220,330,440,550].forEach((f,i)=>tone(f,'sine',0.3,0.15,i*0.08));
+  tone(880,'sine',0.2,0.3,0.35);
+}
+function playGameOver(){
+  [440,330,220,110].forEach((f,i)=>tone(f,'sawtooth',0.25,0.25,i*0.15));
+  noise(0.4,0.5,30,100);
+}
+
+// ── INIT ───────────────────────────────────────────
+try{
+  const saved=localStorage.getItem('pelesBest');
+  if(saved){best=parseInt(saved)||0;document.getElementById('bestVal').textContent=best.toLocaleString();}
+}catch(e){}
+
+window.addEventListener('resize',()=>{sizeBoard();if(running)draw();});
+</script>
+</body>
+</html>
