@@ -524,7 +524,9 @@ function drawBoard(){
     const p=board[r][c];
     if(!p) continue;
     const cx=c*SZ+SZ/2, cy=r*SZ+SZ/2, rad=SZ*0.42;
-    const isSel=selected&&selected.row===r&&selected.col===c;
+    // Don't double-highlight chain piece (chain ring handles it)
+    const isChainPiece = chainPiece&&chainPiece.row===r&&chainPiece.col===c;
+    const isSel = !isChainPiece && selected&&selected.row===r&&selected.col===c;
     drawTurtle(ctx,cx,cy,rad,p.player===1,p.king,isSel,pulse);
   }
 
@@ -650,13 +652,76 @@ function minimax(b, depth, alpha, beta, maximizing){
 function aiPickBest(moves, depth){
   if(difficulty===1) return moves[Math.floor(Math.random()*moves.length)];
   let best=null, bestVal=-Infinity;
+  aiDeadline=Date.now()+800;
   moves.forEach(m=>{
-    const nb=cloneBoard(board);applyMove(nb,m);
+    const nb=cloneBoard(board);
+    applyMove(nb,m);
     const v=minimax(nb,depth,-Infinity,Infinity,false);
     if(v>bestVal){bestVal=v;best=m;}
   });
-  return best;
+  return best||moves[0];
 }
+
+function aiMove(){
+  const moves=getMoves(board,2);
+  if(!moves.length){ endAiTurn(); return; }
+
+  const depths=[0,1,2,3];
+  const depth=depths[Math.min(difficulty-1,3)];
+
+  // Pick and execute the first move
+  const best=aiPickBest(moves,depth);
+  if(!best){ endAiTurn(); return; }
+
+  history.push(cloneBoard(board));
+  applyMove(board,best);
+  checkKings();
+
+  // ── AI MULTI-JUMP CHAIN ─────────────────────────
+  if(best.capRow!==undefined){
+    let cr=best.toRow, cc=best.toCol;
+    for(let safety=0; safety<8; safety++){
+      // Find all available jump moves from current landing position
+      const jumps=getJumpsFor(board, cr, cc);
+      if(!jumps.length) break; // no more jumps available
+
+      // Pick the best follow-up jump
+      let next;
+      if(difficulty===1){
+        next=jumps[Math.floor(Math.random()*jumps.length)];
+      } else {
+        let bestV=-Infinity;
+        jumps.forEach(j=>{
+          const nb=cloneBoard(board);
+          applyMove(nb,j);
+          const v=evaluate(nb);
+          if(v>bestV){bestV=v;next=j;}
+        });
+      }
+      if(!next) break;
+      applyMove(board,next);
+      checkKings();
+      cr=next.toRow;
+      cc=next.toCol;
+    }
+  }
+
+  updateStatus();
+  if(checkGameOver()) return;
+  endAiTurn();
+}
+
+function endAiTurn(){
+  turn=1;
+  chainPiece=null;
+  selected=null;
+  validMoves=[];
+  setStatus('Your turn — pick a glowing turtle! 🐢');
+  document.getElementById('turnLabel').textContent='Your turn';
+  document.getElementById('turnTurtle').textContent='🐢';
+  refreshMoveables();
+}
+
 
 function aiMove(){
   const moves=getMoves(board,2);
@@ -715,14 +780,15 @@ function aiMove(){
 
 // ── PLAYER INTERACTION ─────────────────────────────
 canvas.addEventListener('click', e=>{
-  if(turn!==1||gameOver) return;
+  // Allow clicks during human turn AND chain mode
+  if((turn!==1 && turn!=='chain') || gameOver) return;
   const rect=canvas.getBoundingClientRect();
   const x=(e.clientX-rect.left), y=(e.clientY-rect.top);
   const col=Math.floor(x/SZ), row=Math.floor(y/SZ);
   handleClick(row,col);
 });
 canvas.addEventListener('touchend', e=>{
-  if(turn!==1||gameOver) return;
+  if((turn!==1 && turn!=='chain') || gameOver) return;
   e.preventDefault();
   const rect=canvas.getBoundingClientRect();
   const t=e.changedTouches[0];
