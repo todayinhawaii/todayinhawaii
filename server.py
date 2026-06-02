@@ -249,11 +249,19 @@ def chess_game():
 
 @app.route('/chess_<piece>.png')
 def chess_piece_img(piece):
-    # Serves custom chess piece PNGs when uploaded
-    # e.g. chess_wK.png, chess_bQ.png etc
     import os
     if os.path.exists(f'chess_{piece}.png'):
         return send_from_directory('.', f'chess_{piece}.png')
+    return '', 404
+
+@app.route('/chess_bg.mp4')
+def chess_bg_video():
+    # Upload chess_bg.mp4 to GitHub and it plays as background!
+    import os
+    if os.path.exists('chess_bg.mp4'):
+        return send_from_directory('.', 'chess_bg.mp4',
+            mimetype='video/mp4',
+            conditional=True)  # supports range requests for video streaming
     return '', 404
 
 @app.route('/chess_score', methods=['POST'])
