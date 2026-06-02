@@ -28,7 +28,12 @@
     .hdr-right{display:flex;gap:6px;}
 
     /* Single canvas fills space */
-    #mainCanvas{position:fixed;top:48px;left:0;touch-action:none;cursor:crosshair;display:block;z-index:1;}
+    #mainCanvas{
+      position:fixed;top:48px;left:0;
+      touch-action:none;cursor:crosshair;
+      display:block;z-index:1;
+      background:transparent;
+    }
 
     /* Tool bar — left side, collapsible */
     #toolWrap{
@@ -338,10 +343,7 @@ function shelfH(){const v=window.innerHeight;return v<=680?175:v>=800?215:195;}
 function setSize(){
   PR=window.devicePixelRatio||1;
   const vw=window.innerWidth, vh=window.innerHeight;
-  // Use actual shelf DOM height for accuracy
-  const shelfEl=document.getElementById('shelf');
-  const actualShelfH=shelfEl?shelfEl.getBoundingClientRect().height:shelfH();
-  const aH=Math.max(200, vh - 48 - actualShelfH);
+  const aH=Math.max(200, vh - 48 - shelfH());
   W=canvas.width=Math.round(vw*PR);
   H=canvas.height=Math.round(aH*PR);
   canvas.style.width=vw+'px';
@@ -349,9 +351,7 @@ function setSize(){
   CX=W/2; CY=H/2;
   NR=Math.min(W,H)*0.44;
 }
-// Run once immediately, then again after layout settles
 setSize();
-setTimeout(()=>{setSize();reNatural();initSlime();},120);
 
 // ── PHYSICS ───────────────────────────────────
 const N=48, STIFF=0.0008, NBK=0.012, PREK=0.0006, DAMP=0.64;
@@ -611,7 +611,7 @@ function addBlobs(type,count){
       rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.04,
       type,size:0,emoji:'',color:'',shape:'circle'};
     switch(type){
-      case 'bubble': b.size=(20+Math.random()*24)*sc; break;
+      case 'bubble': b.size=(32+Math.random()*30)*sc; break; // bigger!
       case 'glitter':b.color=`hsl(${Math.random()*360},100%,75%)`;b.size=(6+Math.random()*6)*sc;break;
       case 'stars':  b.emoji='⭐';b.size=(26+Math.random()*18)*sc;break;
       case 'sprinkles':b.color=`hsl(${Math.random()*360},95%,65%)`;b.size=(9+Math.random()*7)*sc;b.shape='rect';break;
@@ -809,20 +809,55 @@ function hsl2rgb(h,s,l){
   return[Math.round(r*255),Math.round(g*255),Math.round(b*255)];
 }
 
-// ── BUBBLE ─────────────────────────────────────
+// ── BUBBLE — Realistic visible soap bubble ──────
 function drawBubble(x,y,r){
-  const g=ctx.createRadialGradient(x-r*0.3,y-r*0.35,r*0.04,x,y,r);
-  g.addColorStop(0,'rgba(255,255,255,0.14)');
-  g.addColorStop(0.4,'rgba(200,230,255,0.07)');
-  g.addColorStop(0.85,'rgba(180,220,255,0.17)');
-  g.addColorStop(1,'rgba(160,200,255,0.38)');
-  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
-  ctx.strokeStyle='rgba(200,235,255,0.6)';ctx.lineWidth=r*0.07;ctx.stroke();
-  const h=ctx.createRadialGradient(x-r*0.32,y-r*0.36,0,x-r*0.3,y-r*0.32,r*0.33);
-  h.addColorStop(0,'rgba(255,255,255,0.78)');h.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.beginPath();ctx.arc(x-r*0.3,y-r*0.3,r*0.3,0,Math.PI*2);ctx.fillStyle=h;ctx.fill();
-  ctx.beginPath();ctx.arc(x+r*0.3,y+r*0.22,r*0.1,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,255,255,0.38)';ctx.fill();
+  ctx.save();
+
+  // 1. Outer glow ring so it shows against any slime colour
+  ctx.beginPath();ctx.arc(x,y,r*1.08,0,Math.PI*2);
+  ctx.strokeStyle='rgba(200,240,255,0.35)';
+  ctx.lineWidth=r*0.18;ctx.stroke();
+
+  // 2. Main bubble body — semi-transparent with rainbow tint
+  const body=ctx.createRadialGradient(x,y,r*0.1,x,y,r);
+  body.addColorStop(0,  'rgba(255,255,255,0.08)');
+  body.addColorStop(0.5,'rgba(180,230,255,0.12)');
+  body.addColorStop(0.82,'rgba(160,210,255,0.28)');
+  body.addColorStop(1,  'rgba(120,180,255,0.55)');
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=body;ctx.fill();
+
+  // 3. Crisp coloured rim — this is what makes it LOOK like a bubble!
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+  const rim=ctx.createLinearGradient(x-r,y-r,x+r,y+r);
+  rim.addColorStop(0,'rgba(255,150,255,0.85)');   // pink
+  rim.addColorStop(0.25,'rgba(100,200,255,0.85)'); // blue
+  rim.addColorStop(0.5,'rgba(150,255,200,0.7)');   // green
+  rim.addColorStop(0.75,'rgba(255,220,100,0.85)'); // gold
+  rim.addColorStop(1,'rgba(255,150,255,0.85)');    // back to pink
+  ctx.strokeStyle=rim;
+  ctx.lineWidth=r*0.1;ctx.stroke();
+
+  // 4. Big bright highlight — top left shine
+  const shine=ctx.createRadialGradient(
+    x-r*0.35,y-r*0.38,0,
+    x-r*0.3, y-r*0.3, r*0.42
+  );
+  shine.addColorStop(0,'rgba(255,255,255,0.92)');
+  shine.addColorStop(0.4,'rgba(255,255,255,0.45)');
+  shine.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.beginPath();ctx.arc(x-r*0.3,y-r*0.3,r*0.42,0,Math.PI*2);
+  ctx.fillStyle=shine;ctx.fill();
+
+  // 5. Small secondary sparkle
+  ctx.beginPath();ctx.arc(x+r*0.35,y+r*0.28,r*0.13,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.65)';ctx.fill();
+
+  // 6. Tiny star glint
+  ctx.beginPath();ctx.arc(x-r*0.45,y+r*0.35,r*0.06,0,Math.PI*2);
+  ctx.fillStyle='rgba(200,240,255,0.8)';ctx.fill();
+
+  ctx.restore();
 }
 
 // ── MAIN RENDER ────────────────────────────────
@@ -863,7 +898,8 @@ function render(){
 
   // Particles (blobs)
   blobs.forEach(bl=>{
-    ctx.save();ctx.translate(bl.x,bl.y);ctx.rotate(bl.rot);ctx.globalAlpha=0.92;
+    ctx.save();ctx.translate(bl.x,bl.y);ctx.rotate(bl.rot);
+    ctx.globalAlpha=bl.type==='bubble'?1.0:0.92; // bubbles fully opaque!
     if(bl.type==='bubble'){drawBubble(0,0,bl.size/2);}
     else if(bl.emoji){ctx.font=`${bl.size}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(bl.emoji,0,0);}
     else if(bl.shape==='rect'){ctx.fillStyle=bl.color;ctx.fillRect(-bl.size/2,-bl.size*0.25,bl.size,bl.size*0.5);}
@@ -1009,7 +1045,10 @@ function showToast(msg){
 
 window.addEventListener('resize',()=>{setSize();reNatural();initSlime();strokes=[];});
 
-buildUI();initSlime();loop();
+buildUI();
+setSize();      // ensure correct dimensions
+initSlime();    // place slime at correct CX,CY with correct NR
+loop();         // start rendering
 
 // Reliable font preload — hidden div forces browser to render all fonts NOW
 (function preloadFonts(){
