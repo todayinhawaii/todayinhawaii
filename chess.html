@@ -246,50 +246,46 @@ for(let i=0;i<20;i++){
   document.getElementById('bg').appendChild(sp);
 });
 // ── VIDEO PLAYLIST ─────────────────────────────
-// Plays chess_bg.mp4 → chess_bg2.mp4 → ... → chess_bg5.mp4 → loops!
-// Any missing videos are silently skipped.
-const VIDEO_LIST = [
+const VIDS = [
   '/chess_bg.mp4',
   '/chess_bg2.mp4',
   '/chess_bg3.mp4',
   '/chess_bg4.mp4',
   '/chess_bg5.mp4',
 ];
-let vidIndex = 0;
+let vIdx = 0, skipCount = 0;
 const vid = document.getElementById('bgVideo');
 
-function playNextVideo(){
+function loadVid(idx){
   if(!vid) return;
-  const src = VIDEO_LIST[vidIndex];
-  vid.src = src;
-  vid.load();
-  vid.play().then(()=>{
-    // Fade in smoothly
-    vid.style.opacity = '0.72';
-  }).catch(()=>{
-    // This video missing — skip to next
-    skipToNext();
-  });
+  // Safety — if all 5 fail, stop trying
+  if(skipCount >= VIDS.length){ vid.style.opacity='0'; return; }
+  vid.src = VIDS[idx];
 }
 
-function skipToNext(){
-  vidIndex = (vidIndex + 1) % VIDEO_LIST.length;
-  playNextVideo();
+function nextVid(){
+  skipCount = 0; // reset on natural end
+  vIdx = (vIdx + 1) % VIDS.length;
+  loadVid(vIdx);
 }
 
 if(vid){
-  // When a video ends → play next one
-  vid.addEventListener('ended', skipToNext);
-  // When a video loads and can play → show it
-  vid.addEventListener('canplay', ()=>{
+  // Video ready to play — show it and start
+  vid.addEventListener('canplaythrough', ()=>{
+    skipCount = 0;
     vid.style.opacity = '0.72';
+    vid.play().catch(()=>{});
   });
-  // If a video errors (file not uploaded yet) → skip it silently
+  // Video ended naturally — play next
+  vid.addEventListener('ended', nextVid);
+  // Video failed to load — skip to next silently
   vid.addEventListener('error', ()=>{
-    setTimeout(skipToNext, 200);
+    skipCount++;
+    vIdx = (vIdx + 1) % VIDS.length;
+    setTimeout(()=>loadVid(vIdx), 100);
   });
-  // Start the playlist!
-  playNextVideo();
+  // Kick off with first video
+  loadVid(0);
 }
 </script>
 <div id="wrap">
