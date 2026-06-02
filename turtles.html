@@ -389,7 +389,8 @@ let playerName='', playerLoc='', diffLabel='Baby';
 let history=[]; // for undo
 let fromDiffScreen=false;
 let moveablePieces=[]; // pieces that can move this turn
-let chainPiece=null;   // row/col of piece mid-jump-chain (must keep jumping!)
+let chainPiece=null;   // piece locked mid-chain
+// turn values: 1=human, 2=AI, 'chain'=human must continue jumping
 
 // ── TURTLE EMOJI ───────────────────────────────────
 // Draw big turtle emoji on each piece
@@ -497,23 +498,23 @@ function drawBoard(){
     ctx.fillStyle=`rgba(255,220,0,${0.5+0.3*Math.sin(pulse)})`;ctx.fill();
   });
 
-  // Chain piece — big urgent glow!
+  // Chain piece — urgent flashing orange ring
   if(chainPiece){
     ctx.save();
     ctx.beginPath();
-    ctx.arc(chainPiece.col*SZ+SZ/2,chainPiece.row*SZ+SZ/2,SZ*0.48,0,Math.PI*2);
-    ctx.strokeStyle=`rgba(255,80,0,${0.7+0.3*Math.sin(pulse*2)})`;
-    ctx.lineWidth=SZ*0.1;ctx.stroke();
+    ctx.arc(chainPiece.col*SZ+SZ/2, chainPiece.row*SZ+SZ/2, SZ*0.5, 0, Math.PI*2);
+    ctx.strokeStyle=`rgba(255,80,0,${0.6+0.4*Math.abs(Math.sin(pulse*3))})`;
+    ctx.lineWidth=SZ*0.12; ctx.stroke();
     ctx.restore();
   }
-  // Glow on all moveable pieces (player's turn, no chain)
-  if(turn===1 && !chainPiece){
+  // Glow on moveable pieces (human turn, not in chain)
+  if((turn===1) && !chainPiece){
     moveablePieces.forEach(({row:r,col:c})=>{
       if(selected&&selected.row===r&&selected.col===c) return;
       ctx.save();
-      ctx.beginPath();ctx.arc(c*SZ+SZ/2,r*SZ+SZ/2,SZ*0.46,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(100,255,150,${0.25+0.2*Math.sin(pulse)})`;
-      ctx.lineWidth=SZ*0.07;ctx.stroke();
+      ctx.beginPath(); ctx.arc(c*SZ+SZ/2,r*SZ+SZ/2,SZ*0.47,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(100,255,150,${0.2+0.2*Math.sin(pulse)})`;
+      ctx.lineWidth=SZ*0.07; ctx.stroke();
       ctx.restore();
     });
   }
@@ -703,7 +704,10 @@ function aiMove(){
   updateStatus();
   if(checkGameOver()) return;
   turn=1;
-  setStatus('Pick a glowing turtle! 🐢');
+  chainPiece=null;
+  selected=null;
+  validMoves=[];
+  setStatus('Your turn — pick a glowing turtle! 🐢');
   document.getElementById('turnLabel').textContent='Your turn';
   document.getElementById('turnTurtle').textContent='🐢';
   refreshMoveables();
@@ -727,98 +731,114 @@ canvas.addEventListener('touchend', e=>{
   handleClick(row,col);
 },{passive:false});
 
-function handleClick(row,col){
-  // ── MID CHAIN: piece must keep jumping ──────────
-  if(chainPiece){
-    const mv=validMoves.find(m=>m.toRow===row&&m.toCol===col);
-    if(mv && mv.capRow!==undefined){
-      // Execute the jump
-      applyMove(board,mv);
+function handleClick(row, col){
+  if(gameOver) return;
+  if(turn === 2) return; // AI's turn, ignore clicks
+
+  // ──────────────────────────────────────────────────
+  // CHAIN MODE: human MUST keep jumping with chainPiece
+  // ──────────────────────────────────────────────────
+  if(turn === 'chain'){
+    const mv = validMoves.find(m => m.toRow===row && m.toCol===col);
+    if(mv){
+      // Execute next jump in chain
+      applyMove(board, mv);
+      checkKings();
+      updateStatus();
+
+      // Check for ANOTHER jump from new landing spot
+      const nextJumps = getJumpsFor(board, mv.toRow, mv.toCol);
+      if(nextJumps.length){
+        // Keep chain going!
+        chainPiece = {row:mv.toRow, col:mv.toCol};
+        selected   = {row:mv.toRow, col:mv.toCol};
+        validMoves = nextJumps;
+        setStatus('🔥🔥 CHAIN!! Jump again!! Take another!!');
+        return;
+      }
+      // Chain complete — hand to AI
+      endHumanTurn();
+      return;
+    }
+    // Clicked wrong square — remind them
+    setStatus('🔥 Must keep jumping that turtle!!');
+    return;
+  }
+
+  // ──────────────────────────────────────────────────
+  // NORMAL TURN: select piece or execute move
+  // ──────────────────────────────────────────────────
+
+  // Did they click a valid destination for already-selected piece?
+  if(selected){
+    const mv = validMoves.find(m => m.toRow===row && m.toCol===col);
+    if(mv){
+      history.push(cloneBoard(board));
+      applyMove(board, mv);
       checkKings();
       updateStatus();
       if(checkGameOver()) return;
 
-      // Check if this piece can jump AGAIN from new position
-      const moreJumps=getPieceMoves(board,mv.toRow,mv.toCol)
-        .filter(m=>m.capRow!==undefined);
-
-      if(moreJumps.length){
-        // Keep the chain going! Same piece must jump again
-        selected={row:mv.toRow,col:mv.toCol};
-        validMoves=moreJumps;
-        chainPiece={row:mv.toRow,col:mv.toCol};
-        setStatus('🔥🔥 Keep jumping!! Take another!!');
-        return;
+      // Was it a jump? Check for chain
+      if(mv.capRow !== undefined){
+        const nextJumps = getJumpsFor(board, mv.toRow, mv.toCol);
+        if(nextJumps.length){
+          // Start chain!
+          chainPiece = {row:mv.toRow, col:mv.toCol};
+          selected   = {row:mv.toRow, col:mv.toCol};
+          validMoves = nextJumps;
+          turn       = 'chain';
+          setStatus('🔥🔥 KEEP JUMPING!! Take another!!');
+          return;
+        }
       }
-      // Chain done — hand off to AI
-      chainPiece=null;
-      selected=null;validMoves=[];chainPiece=null;moveablePieces=[];
-      turn=2;
-      document.getElementById('turnLabel').textContent='AI thinking...';
-      document.getElementById('turnTurtle').textContent='🤖';
-      setStatus('AI is thinking...');
-      setTimeout(()=>{aiMove();},300+Math.random()*200);
+      // Normal end of turn
+      endHumanTurn();
       return;
     }
-    // Clicked elsewhere during chain — keep chain active
-    setStatus('🔥 You MUST keep jumping with this turtle!!');
-    return;
   }
 
-  // ── NORMAL: clicked a valid move destination ─────
-  const mv=validMoves.find(m=>m.toRow===row&&m.toCol===col);
-  if(mv){
-    history.push(cloneBoard(board));
-    applyMove(board,mv);
-    checkKings();
-    updateStatus();
-    if(checkGameOver()) return;
-
-    // Was this a jump? Check for follow-up jumps
-    if(mv.capRow!==undefined){
-      const moreJumps=getPieceMoves(board,mv.toRow,mv.toCol)
-        .filter(m=>m.capRow!==undefined);
-      if(moreJumps.length){
-        // Start a chain!
-        selected={row:mv.toRow,col:mv.toCol};
-        validMoves=moreJumps;
-        chainPiece={row:mv.toRow,col:mv.toCol};
-        setStatus('🔥🔥 KEEP JUMPING!! Take another!!');
-        return;
-      }
-    }
-
-    // No chain — AI's turn
-    chainPiece=null;
-    selected=null;validMoves=[];moveablePieces=[];
-    turn=2;
-    document.getElementById('turnLabel').textContent='AI thinking...';
-    document.getElementById('turnTurtle').textContent='🤖';
-    setStatus('AI is thinking...');
-    setTimeout(()=>{aiMove();},300+Math.random()*200);
-    return;
-  }
-
-  // ── Clicked one of your turtles ─────────────────
-  if(board[row]&&board[row][col]&&board[row][col].player===1){
-    selected={row,col};
-    validMoves=getPieceMoves(board,row,col);
-    if(validMoves.length){
-      const hasJump=validMoves.some(m=>m.capRow!==undefined);
-      setStatus(hasJump?'🔥 Jump available! Pick destination!':
-        `${validMoves.length} move${validMoves.length>1?'s':''} — pick a square!`);
+  // Clicked one of the human's pieces — select it
+  if(board[row] && board[row][col] && board[row][col].player === 1){
+    selected   = {row, col};
+    validMoves = getPieceMoves(board, row, col);
+    const hasJump = validMoves.some(m => m.capRow !== undefined);
+    if(validMoves.length === 0){
+      setStatus('This turtle is blocked! Pick another 🐢');
     } else {
-      setStatus('This turtle is blocked! Try another 🐢');
+      setStatus(hasJump
+        ? `🔥 ${validMoves.length} move(s) — including a JUMP!`
+        : `${validMoves.length} move(s) available — pick a square!`);
     }
     return;
   }
 
-  // Clicked empty square
-  selected=null;validMoves=[];
-  setStatus('Pick one of your dark turtles! 🐢');
+  // Clicked empty/opponent square with nothing selected
+  if(selected){
+    selected = null;
+    validMoves = [];
+    setStatus('Pick one of your dark turtles! 🐢');
+  }
 }
 
-// ── GAME LOGIC ─────────────────────────────────────
+// Get ONLY jump moves for a specific piece
+function getJumpsFor(b, r, c){
+  return getPieceMoves(b, r, c).filter(m => m.capRow !== undefined);
+}
+
+function endHumanTurn(){
+  chainPiece = null;
+  selected   = null;
+  validMoves = [];
+  moveablePieces = [];
+  turn = 2;
+  document.getElementById('turnLabel').textContent = 'AI thinking...';
+  document.getElementById('turnTurtle').textContent = '🤖';
+  setStatus('AI is thinking... 🤖');
+  setTimeout(() => { aiMove(); }, 350 + Math.random()*200);
+}
+
+
 function checkKings(){
   for(let c=0;c<8;c++){
     if(board[0][c]?.player===1) board[0][c].king=true;
@@ -852,7 +872,7 @@ function undoMove(){
   history.pop(); // remove AI move
   history.pop(); // remove player move
   board=cloneBoard(history[history.length-1]||initBoardState());
-  selected=null;validMoves=[];chainPiece=null;turn=1;gameOver=false;
+  selected=null;validMoves=[];chainPiece=null;turn=1;turn=1;gameOver=false;
   updateStatus();setStatus('Move undone! Your turn.');
   document.getElementById('turnLabel').textContent='Your turn';
   document.getElementById('turnTurtle').textContent='🐢';
