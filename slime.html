@@ -10,675 +10,550 @@
     html,body{width:100%;height:100%;overflow:hidden;background:#0d1117;
       font-family:system-ui,sans-serif;user-select:none;-webkit-user-select:none;}
 
-    /* ── HEADER ─────────────────────────────── */
     #hdr{
       position:fixed;top:0;left:0;right:0;height:48px;z-index:60;
       padding:0 10px;display:flex;align-items:center;justify-content:space-between;
       background:rgba(13,17,23,0.95);backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(255,255,255,0.07);
     }
-    .hdr-title{
-      font-size:15px;font-weight:900;
+    .hdr-title{font-size:15px;font-weight:900;
       background:linear-gradient(90deg,#00ff88,#00ccff,#ff00ff,#00ff88);
-      background-size:200% auto;-webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;
-    }
+      background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:shimmer 3s linear infinite;}
     @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
-    .hdr-hint{font-size:8px;color:#444;margin-top:1px;}
-    .icon-btn{
-      width:34px;height:34px;border-radius:50%;cursor:pointer;
+    .hdr-hint{font-size:8px;color:#555;margin-top:1px;}
+    .icon-btn{width:34px;height:34px;border-radius:50%;cursor:pointer;
       background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
-      font-size:15px;display:flex;align-items:center;justify-content:center;color:#fff;
-    }
-    .hdr-btns{display:flex;gap:6px;align-items:center;}
+      font-size:15px;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .hdr-right{display:flex;gap:6px;}
 
-    /* ── CANVASES ────────────────────────────── */
-    #canvasWrap{position:fixed;top:48px;left:0;}
-    #slimeCanvas,#drawCanvas{position:absolute;top:0;left:0;touch-action:none;}
-    #slimeCanvas{z-index:1;cursor:crosshair;}
-    #drawCanvas{z-index:2;cursor:crosshair;}
+    /* Single canvas fills space */
+    #mainCanvas{position:fixed;top:48px;left:0;touch-action:none;cursor:crosshair;display:block;z-index:1;}
 
-    /* ── TOOL BAR (left side) ────────────────── */
+    /* Tool bar — left side */
     #toolBar{
-      position:fixed;left:0;top:50%;transform:translateY(-50%);
-      z-index:50;display:flex;flex-direction:column;gap:5px;
-      padding:8px 6px;
-      background:rgba(13,17,23,0.9);
-      border-radius:0 14px 14px 0;
-      border:1px solid rgba(255,255,255,0.07);
-      border-left:none;
+      position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:50;
+      padding:8px 5px;display:flex;flex-direction:column;gap:4px;
+      background:rgba(13,17,23,0.92);border-radius:0 14px 14px 0;
+      border:1px solid rgba(255,255,255,0.07);border-left:none;
     }
     .tool-btn{
-      width:40px;height:40px;border-radius:10px;cursor:pointer;
-      background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);
-      font-size:18px;display:flex;align-items:center;justify-content:center;
-      transition:all 0.12s;color:#fff;flex-direction:column;gap:1px;
+      width:42px;height:42px;border-radius:10px;cursor:pointer;
+      background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.09);
+      font-size:19px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:1px;transition:all 0.12s;color:#fff;
     }
-    .tool-btn:active{transform:scale(0.88);}
-    .tool-btn.active{
-      background:rgba(255,255,255,0.18);
-      border-color:rgba(255,255,255,0.5);
-      box-shadow:0 0 10px rgba(255,255,255,0.2);
-    }
-    .tool-lbl{font-size:5px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:0.03em;}
+    .tool-btn:active{transform:scale(0.85);}
+    .tool-btn.on{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.5);
+      box-shadow:0 0 10px rgba(255,255,255,0.2);}
+    .tlbl{font-size:5px;color:rgba(255,255,255,0.45);font-weight:700;}
+    #colorDot{width:30px;height:30px;border-radius:50%;margin:3px auto 0;cursor:pointer;
+      border:2px solid rgba(255,255,255,0.4);position:relative;overflow:hidden;flex-shrink:0;}
+    #cpick{position:absolute;inset:-4px;opacity:0;cursor:pointer;width:120%;height:120%;}
+    #szWrap{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:3px;}
+    #brushSz{-webkit-appearance:none;appearance:none;
+      width:30px;height:72px;writing-mode:vertical-lr;direction:rtl;
+      background:rgba(255,255,255,0.1);border-radius:4px;outline:none;cursor:pointer;}
+    #brushSz::-webkit-slider-thumb{-webkit-appearance:none;
+      width:16px;height:16px;border-radius:50%;background:#fff;}
+    .szlbl{font-size:5px;color:#555;font-weight:700;}
 
-    /* Color dot on tool bar */
-    #colorDot{
-      width:28px;height:28px;border-radius:50%;
-      margin:2px auto 0;cursor:pointer;
-      border:2px solid rgba(255,255,255,0.4);
-      box-shadow:0 0 8px rgba(255,255,255,0.2);
-      position:relative;overflow:hidden;
-    }
-    #colorPicker{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-
-    /* Brush size slider */
-    #sizeWrap{
-      display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:2px;
-    }
-    #brushSize{
-      -webkit-appearance:none;appearance:none;
-      width:32px;height:80px;
-      writing-mode:vertical-lr;direction:rtl;
-      background:rgba(255,255,255,0.1);
-      border-radius:4px;outline:none;cursor:pointer;
-    }
-    #brushSize::-webkit-slider-thumb{
-      -webkit-appearance:none;width:18px;height:18px;
-      border-radius:50%;background:#fff;cursor:pointer;
-    }
-    .size-lbl{font-size:5px;color:#555;font-weight:700;}
-
-    /* ── BOTTOM SHELF ────────────────────────── */
+    /* Shelf */
     #shelf{
       position:fixed;bottom:0;left:0;right:0;z-index:50;
-      background:rgba(13,17,23,0.97);
-      border-top:1px solid rgba(255,255,255,0.08);
-      padding:6px 8px 8px;
+      background:rgba(13,17,23,0.97);border-top:1px solid rgba(255,255,255,0.08);
+      padding:5px 8px 8px;
     }
-    .shelf-tabs{display:flex;gap:5px;margin-bottom:6px;}
-    .shelf-tab{
-      flex:1;padding:5px;border:none;border-radius:8px;
-      font-size:11px;font-weight:800;cursor:pointer;
-      font-family:inherit;color:#888;background:rgba(255,255,255,0.05);
-      transition:all 0.15s;
-    }
-    .shelf-tab.active{background:rgba(255,255,255,0.14);color:#fff;}
-    .shelf-panel{display:none;}
-    .shelf-panel.active{display:block;}
-    .shelf-row{
-      display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;
-      scrollbar-width:none;-webkit-overflow-scrolling:touch;
-    }
-    .shelf-row::-webkit-scrollbar{display:none;}
-    .ing-btn{
-      flex-shrink:0;width:54px;height:54px;border-radius:13px;
+    .stabs{display:flex;gap:5px;margin-bottom:5px;}
+    .stab{flex:1;padding:5px;border:none;border-radius:8px;font-size:11px;font-weight:800;
+      cursor:pointer;font-family:inherit;color:#777;background:rgba(255,255,255,0.05);transition:all 0.15s;}
+    .stab.on{background:rgba(255,255,255,0.13);color:#fff;}
+    .spanel{display:none;}.spanel.on{display:block;}
+    .srow{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;scrollbar-width:none;}
+    .srow::-webkit-scrollbar{display:none;}
+    .ibtn{flex-shrink:0;width:54px;height:54px;border-radius:13px;
       border:2px solid rgba(255,255,255,0.1);cursor:pointer;font-size:22px;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap:2px;transition:all 0.12s;background:rgba(255,255,255,0.06);
-    }
-    .ing-btn:active{transform:scale(0.86);}
-    .ing-btn.active{border-color:rgba(255,255,255,0.5);box-shadow:0 0 14px rgba(255,255,255,0.25);transform:scale(1.08);}
-    .ing-name{font-size:7px;color:rgba(255,255,255,0.55);font-weight:700;}
-    .action-row{display:flex;gap:6px;margin-top:6px;}
-    .act-btn{
-      flex:1;padding:10px 4px;border:none;border-radius:11px;
-      font-size:11px;font-weight:900;cursor:pointer;
-      font-family:inherit;color:#fff;min-height:40px;transition:all 0.1s;
-    }
-    .act-btn:active{transform:scale(0.93);}
-    .btn-squish{background:linear-gradient(135deg,#059669,#0891b2);}
-    .btn-mix{background:linear-gradient(135deg,#7c3aed,#db2777);}
-    .btn-clear{background:rgba(255,255,255,0.07);color:#999;}
-    .btn-save{background:linear-gradient(135deg,#d97706,#dc2626);}
+      gap:2px;transition:all 0.12s;background:rgba(255,255,255,0.06);}
+    .ibtn:active{transform:scale(0.85);}
+    .ibtn.on{border-color:rgba(255,255,255,0.5);box-shadow:0 0 14px rgba(255,255,255,0.25);transform:scale(1.08);}
+    .inm{font-size:7px;color:rgba(255,255,255,0.5);font-weight:700;}
+    .arow{display:flex;gap:6px;margin-top:5px;}
+    .abtn{flex:1;padding:10px 3px;border:none;border-radius:11px;font-size:11px;
+      font-weight:900;cursor:pointer;font-family:inherit;color:#fff;min-height:40px;transition:all 0.1s;}
+    .abtn:active{transform:scale(0.93);}
+    .bsq{background:linear-gradient(135deg,#059669,#0891b2);}
+    .bmx{background:linear-gradient(135deg,#7c3aed,#db2777);}
+    .bsv{background:linear-gradient(135deg,#d97706,#dc2626);}
+    .brs{background:rgba(255,255,255,0.07);color:#999;}
 
-    /* ── TEXT OVERLAY ────────────────────────── */
-    #textOverlay{
-      display:none;position:fixed;inset:0;z-index:200;
-      background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
-      align-items:center;justify-content:center;
-    }
-    #textOverlay.show{display:flex;}
-    .text-card{
-      background:#1a1a2e;border:2px solid rgba(255,255,255,0.15);
-      border-radius:20px;padding:20px;width:min(320px,90vw);
-    }
-    .text-card h3{color:#fff;font-size:15px;margin-bottom:12px;text-align:center;}
-    #textInput{
-      width:100%;padding:10px;background:rgba(255,255,255,0.08);
+    /* Text modal */
+    #txtModal{display:none;position:fixed;inset:0;z-index:200;
+      background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+      align-items:center;justify-content:center;}
+    #txtModal.on{display:flex;}
+    .tcard{background:#1a1a2e;border:2px solid rgba(255,255,255,0.12);
+      border-radius:20px;padding:20px;width:min(320px,90vw);}
+    .tcard h3{color:#fff;font-size:15px;margin-bottom:12px;text-align:center;}
+    #tInput{width:100%;padding:10px;background:rgba(255,255,255,0.08);
       border:1.5px solid rgba(255,255,255,0.2);border-radius:10px;
-      color:#fff;font-size:16px;font-family:inherit;outline:none;margin-bottom:10px;
-    }
-    #fontSel{
-      width:100%;padding:8px;background:rgba(13,17,23,0.9);
+      color:#fff;font-size:16px;font-family:inherit;outline:none;margin-bottom:10px;}
+    #fSel{width:100%;padding:8px;background:rgba(13,17,23,0.9);
       border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;
-      color:#fff;font-size:13px;font-family:inherit;margin-bottom:12px;
-    }
-    .text-btns{display:flex;gap:8px;}
-    .text-btn{
-      flex:1;padding:10px;border:none;border-radius:10px;
-      font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
-    }
-    .text-btn-ok{background:linear-gradient(135deg,#7c3aed,#00ccff);color:#fff;}
-    .text-btn-cancel{background:rgba(255,255,255,0.08);color:#aaa;}
+      color:#fff;font-size:13px;font-family:inherit;margin-bottom:12px;}
+    .tbtns{display:flex;gap:8px;}
+    .tbok{flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;
+      font-weight:800;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#00ccff);color:#fff;}
+    .tbno{flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;
+      font-weight:800;cursor:pointer;background:rgba(255,255,255,0.08);color:#aaa;}
 
-    /* Toast */
-    .toast{
-      position:fixed;top:58px;left:50%;transform:translateX(-50%);
-      background:rgba(0,0,0,0.88);color:#fff;padding:7px 18px;
-      border-radius:99px;font-size:12px;font-weight:700;z-index:300;
-      animation:toastA 2.2s ease forwards;white-space:nowrap;pointer-events:none;
-    }
-    @keyframes toastA{
-      0%{opacity:0;transform:translate(-50%,-8px);}
-      12%{opacity:1;transform:translate(-50%,0);}
-      78%{opacity:1;}100%{opacity:0;}
-    }
+    .toast{position:fixed;top:58px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.88);color:#fff;padding:7px 18px;border-radius:99px;
+      font-size:12px;font-weight:700;z-index:300;animation:tpop 2.2s ease forwards;
+      white-space:nowrap;pointer-events:none;}
+    @keyframes tpop{0%{opacity:0;transform:translate(-50%,-8px);}12%{opacity:1;transform:translate(-50%,0);}78%{opacity:1;}100%{opacity:0;}}
   </style>
 </head>
 <body>
 
-<!-- Header -->
 <div id="hdr">
-  <div>
-    <div class="hdr-title">🧪 THE SLIME FACTORY</div>
-    <div class="hdr-hint" id="hdrHint">👆 Squish the slime!</div>
-  </div>
-  <div class="hdr-btns">
-    <button class="icon-btn" onclick="clearDrawing()" title="Clear drawing">🗑</button>
+  <div><div class="hdr-title">🧪 THE SLIME FACTORY</div>
+    <div class="hdr-hint" id="hdrHint">👆 Squish · ✏️ Draw · 💬 Write!</div></div>
+  <div class="hdr-right">
+    <button class="icon-btn" onclick="undoStroke()" title="Undo">↩️</button>
+    <button class="icon-btn" onclick="clearDrawings()" title="Clear art">🗑</button>
     <button class="icon-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
   </div>
 </div>
 
-<!-- Canvas wrap -->
-<div id="canvasWrap">
-  <canvas id="slimeCanvas"></canvas>
-  <canvas id="drawCanvas"></canvas>
-</div>
+<canvas id="mainCanvas"></canvas>
 
-<!-- Tool Bar -->
+<!-- Tool bar -->
 <div id="toolBar">
-  <button class="tool-btn active" id="tool-squish" onclick="setTool('squish')" title="Squish slime">
-    🖐️<span class="tool-lbl">SQUISH</span>
-  </button>
-  <button class="tool-btn" id="tool-pencil" onclick="setTool('pencil')">
-    ✏️<span class="tool-lbl">PENCIL</span>
-  </button>
-  <button class="tool-btn" id="tool-airbrush" onclick="setTool('airbrush')">
-    💨<span class="tool-lbl">AIR</span>
-  </button>
-  <button class="tool-btn" id="tool-chalk" onclick="setTool('chalk')">
-    🖍️<span class="tool-lbl">CHALK</span>
-  </button>
-  <button class="tool-btn" id="tool-water" onclick="setTool('water')">
-    🎨<span class="tool-lbl">WATER</span>
-  </button>
-  <button class="tool-btn" id="tool-oil" onclick="setTool('oil')">
-    🖌️<span class="tool-lbl">OIL</span>
-  </button>
-  <button class="tool-btn" id="tool-text" onclick="showTextBox()">
-    💬<span class="tool-lbl">TEXT</span>
-  </button>
-  <!-- Color picker -->
-  <div id="colorDot" style="background:#ff6600;">
-    <input type="color" id="colorPicker" value="#ff6600" oninput="setDrawColor(this.value)">
+  <button class="tool-btn on" id="t-squish" onclick="setTool('squish')">🖐️<span class="tlbl">SQUISH</span></button>
+  <button class="tool-btn"    id="t-pencil" onclick="setTool('pencil')">✏️<span class="tlbl">PENCIL</span></button>
+  <button class="tool-btn"    id="t-crayon" onclick="setTool('crayon')">🖍️<span class="tlbl">CRAYON</span></button>
+  <button class="tool-btn"    id="t-chalk"  onclick="setTool('chalk')">🪨<span class="tlbl">CHALK</span></button>
+  <button class="tool-btn"    id="t-water"  onclick="setTool('water')">🎨<span class="tlbl">WATER</span></button>
+  <button class="tool-btn"    id="t-oil"    onclick="setTool('oil')">🖌️<span class="tlbl">OIL</span></button>
+  <button class="tool-btn"    id="t-air"    onclick="setTool('air')">💨<span class="tlbl">SPRAY</span></button>
+  <button class="tool-btn"    id="t-text"   onclick="showTxt()">💬<span class="tlbl">TEXT</span></button>
+  <div id="colorDot" style="background:#ff3366">
+    <input type="color" id="cpick" value="#ff3366" oninput="setColor(this.value)">
   </div>
-  <!-- Brush size -->
-  <div id="sizeWrap">
-    <span class="size-lbl">SIZE</span>
-    <input type="range" id="brushSize" min="2" max="40" value="10" orient="vertical">
+  <div id="szWrap">
+    <span class="szlbl">SIZE</span>
+    <input type="range" id="brushSz" min="1" max="50" value="8" orient="vertical">
+    <span class="szlbl">↑↓</span>
   </div>
 </div>
 
-<!-- Bottom Shelf -->
+<!-- Shelf -->
 <div id="shelf">
-  <div class="shelf-tabs">
-    <button class="shelf-tab active" onclick="switchTab('colors')">🎨 Colors</button>
-    <button class="shelf-tab" onclick="switchTab('addins')">✨ Add-ins</button>
+  <div class="stabs">
+    <button class="stab on" onclick="stab('colors')">🎨 Slime Colors</button>
+    <button class="stab"    onclick="stab('addins')">✨ Add-ins</button>
   </div>
-  <div id="tab-colors" class="shelf-panel active">
-    <div class="shelf-row" id="colorRow"></div>
-  </div>
-  <div id="tab-addins" class="shelf-panel">
-    <div class="shelf-row" id="addinsRow"></div>
-  </div>
-  <div class="action-row">
-    <button class="act-btn btn-squish" onclick="doSquish()">💦 SQUISH</button>
-    <button class="act-btn btn-mix"    onclick="doMix()">🌀 MIX</button>
-    <button class="act-btn btn-save"   onclick="doSave()">📸 SAVE</button>
-    <button class="act-btn btn-clear"  onclick="doReset()">🔄 RESET</button>
+  <div id="sp-colors" class="spanel on"><div class="srow" id="colorRow"></div></div>
+  <div id="sp-addins" class="spanel"><div class="srow" id="addinsRow"></div></div>
+  <div class="arow">
+    <button class="abtn bsq" onclick="doSquish()">💦 SQUISH</button>
+    <button class="abtn bmx" onclick="doMix()">🌀 MIX</button>
+    <button class="abtn bsv" onclick="doSave()">📸 SAVE</button>
+    <button class="abtn brs" onclick="doReset()">🔄 RESET</button>
   </div>
 </div>
 
-<!-- Text overlay -->
-<div id="textOverlay">
-  <div class="text-card">
-    <h3>✍️ Type your message!</h3>
-    <input type="text" id="textInput" placeholder="Hello World! 🌺" maxlength="40">
-    <select id="fontSel">
-      <option value="bold 36px system-ui">Normal Bold</option>
-      <option value="bold 36px Georgia">Serif Classic</option>
-      <option value="bold 36px 'Courier New'">Typewriter</option>
-      <option value="italic bold 36px Georgia">Italic Fancy</option>
+<!-- Text modal -->
+<div id="txtModal">
+  <div class="tcard">
+    <h3>✍️ Write in your slime!</h3>
+    <input type="text" id="tInput" placeholder="I ❤️ Slime! 🌺" maxlength="30">
+    <select id="fSel">
+      <option value="900 42px system-ui">Bold Modern</option>
+      <option value="900 42px Georgia">Bold Serif</option>
+      <option value="900 38px 'Courier New'">Typewriter</option>
+      <option value="italic 900 42px Georgia">Fancy Italic</option>
+      <option value="900 48px fantasy">Blocky Fun</option>
     </select>
-    <div class="text-btns">
-      <button class="text-btn text-btn-cancel" onclick="closeTextBox()">Cancel</button>
-      <button class="text-btn text-btn-ok" onclick="addText()">Add to Slime! 🎉</button>
+    <div class="tbtns">
+      <button class="tbno" onclick="closeTxt()">Cancel</button>
+      <button class="tbok" onclick="addText()">Squish it in! 🎉</button>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-// THE SLIME FACTORY — Full Art Studio
+// ════════════════════════════════════════════════
+// THE SLIME FACTORY — Live Warp Art Studio
 // Today in Hawaii © 2026
-// ═══════════════════════════════════════════════
+//
+// KEY ARCHITECTURE:
+// • Single canvas renders everything each frame
+// • Strokes stored as NORMALIZED coords (r, angle)
+//   relative to slime center + natural radius
+// • Each frame: strokes WARPED by boundary deformation
+// • Touch ALWAYS squishes slime regardless of tool
+// • Drawing happens as secondary effect on top
+// ════════════════════════════════════════════════
 
-const slimeCanvas = document.getElementById('slimeCanvas');
-const drawCanvas  = document.getElementById('drawCanvas');
-const sCtx = slimeCanvas.getContext('2d');
-const dCtx = drawCanvas.getContext('2d');
-const wrap = document.getElementById('canvasWrap');
+const canvas = document.getElementById('mainCanvas');
+const ctx    = canvas.getContext('2d');
+let W,H,CX,CY,NR,PR; // NR = natural radius
 
-let W,H,CX,CY,NATURAL_R,PR;
-
-function getShelfH(){
-  const vh=window.innerHeight;
-  return vh<=680?170:vh>=800?210:190;
-}
+function shelfH(){const v=window.innerHeight;return v<=680?175:v>=800?215:195;}
 
 function setSize(){
-  PR = window.devicePixelRatio||1;
-  const vw=window.innerWidth;
-  const vh=window.innerHeight;
-  const hdrH=48, shelfH=getShelfH();
-  const aW=vw, aH=vh-hdrH-shelfH;
-
-  [slimeCanvas,drawCanvas].forEach(c=>{
-    c.width=aW*PR; c.height=aH*PR;
-    c.style.width=aW+'px'; c.style.height=aH+'px';
-  });
-  wrap.style.width=aW+'px'; wrap.style.height=aH+'px';
-
-  W=aW*PR; H=aH*PR;
-  CX=W/2; CY=H/2;
-  NATURAL_R=Math.min(W,H)*0.44;
+  PR=window.devicePixelRatio||1;
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const aH=vh-48-shelfH();
+  W=canvas.width=vw*PR; H=canvas.height=aH*PR;
+  canvas.style.width=vw+'px'; canvas.style.height=aH+'px';
+  CX=W/2; CY=H/2; NR=Math.min(W,H)*0.44;
 }
 setSize();
 
 // ── PHYSICS ───────────────────────────────────
-const N=48;
-const STIFFNESS  =0.0008;
-const NEIGHBOR_K =0.012;
-const PRESSURE_K =0.0006;
-const DAMPING    =0.64;
-const FINGER_R   =NATURAL_R*0.62;
-const FINGER_F   =1.2;
-
-let pts=[], naturalPts=[];
+const N=48, STIFF=0.0008, NBK=0.012, PREK=0.0006, DAMP=0.64;
+let pts=[], nPts=[];
 function initSlime(){
-  pts=[]; naturalPts=[];
+  pts=[]; nPts=[];
   for(let i=0;i<N;i++){
     const a=(i/N)*Math.PI*2;
-    pts.push({x:CX+Math.cos(a)*NATURAL_R,y:CY+Math.sin(a)*NATURAL_R,vx:0,vy:0});
-    naturalPts.push({x:CX+Math.cos(a)*NATURAL_R,y:CY+Math.sin(a)*NATURAL_R});
+    pts.push({x:CX+Math.cos(a)*NR, y:CY+Math.sin(a)*NR, vx:0,vy:0});
+    nPts.push({x:CX+Math.cos(a)*NR, y:CY+Math.sin(a)*NR});
   }
 }
-function recalcNatural(){
-  for(let i=0;i<N;i++){
-    const a=(i/N)*Math.PI*2;
-    naturalPts[i].x=CX+Math.cos(a)*NATURAL_R;
-    naturalPts[i].y=CY+Math.sin(a)*NATURAL_R;
-  }
+function reNatural(){
+  for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2;nPts[i].x=CX+Math.cos(a)*NR;nPts[i].y=CY+Math.sin(a)*NR;}
 }
 initSlime();
 
+const NAT_AREA=Math.PI*NR*NR;
+const NAT_DIST=NR*(2*Math.PI/N);
+
+function physicsTick(){
+  let area=0;
+  for(let i=0;i<N;i++){const j=(i+1)%N;area+=(pts[i].x*pts[j].y-pts[j].x*pts[i].y);}
+  const pe=(Math.abs(area)*0.5-NAT_AREA)/NAT_AREA;
+  pts.forEach((p,i)=>{
+    const prev=pts[(i-1+N)%N], next=pts[(i+1)%N], n=nPts[i];
+    let fx=(n.x-p.x)*STIFF, fy=(n.y-p.y)*STIFF;
+    function sp(o){const dx=o.x-p.x,dy=o.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1,s=d-NAT_DIST;fx+=(dx/d)*s*NBK;fy+=(dy/d)*s*NBK;}
+    sp(prev);sp(next);
+    const nx=p.x-CX,ny=p.y-CY,nl=Math.sqrt(nx*nx+ny*ny)||1;
+    fx-=(nx/nl)*pe*PREK*NR; fy-=(ny/nl)*pe*PREK*NR;
+    p.vx=(p.vx+fx)*DAMP; p.vy=(p.vy+fy)*DAMP;
+    p.x+=p.vx; p.y+=p.vy;
+  });
+  blobs.forEach(b=>{
+    b.x+=b.vx; b.y+=b.vy; b.vx*=0.97; b.vy*=0.97; b.rot+=b.rotV;
+    const bx=b.x-CX,by=b.y-CY,bd=Math.sqrt(bx*bx+by*by);
+    if(bd>NR*0.88){b.vx-=(bx/bd)*0.4;b.vy-=(by/bd)*0.4;}
+  });
+}
+
+// ── WARP FUNCTION ─────────────────────────────
+// Map any canvas point through the slime deformation
+// Points near boundary warp more, center barely moves
+function warpPoint(px,py){
+  const dx=px-CX, dy=py-CY;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<0.1) return {x:px,y:py};
+  const angle=Math.atan2(dy,dx);
+  // Normalized angle 0..N
+  const seg=((angle+Math.PI)/(Math.PI*2))*N;
+  const i0=Math.floor(seg)%N, i1=(i0+1)%N;
+  const t=seg-Math.floor(seg);
+  // Boundary displacement at this angle (interpolated)
+  const bdx=(pts[i0].x-nPts[i0].x)*(1-t)+(pts[i1].x-nPts[i1].x)*t;
+  const bdy=(pts[i0].y-nPts[i0].y)*(1-t)+(pts[i1].y-nPts[i1].y)*t;
+  // Influence = how much this point warps (0=center, 1=boundary edge)
+  const r=dist/NR;
+  const infl=Math.min(1, r*r * 1.3); // quadratic falloff — center barely moves
+  return {x:px+bdx*infl, y:py+bdy*infl};
+}
+
+// ── STROKES (stored in natural coords, warped on render) ──
+// Each stroke: {tool, color, size, pts:[{x,y}]}
+// pts stored as ABSOLUTE canvas coords at time of drawing
+// Each frame we warp them through warpPoint()
+let strokes=[];
+let activeStroke=null;
+
+function startStroke(x,y){
+  activeStroke={tool:currentTool, color:drawColor, size:brushSz*PR*0.6, pts:[{x,y}]};
+}
+function extendStroke(x,y){
+  if(activeStroke) activeStroke.pts.push({x,y});
+}
+function finishStroke(){
+  if(activeStroke && activeStroke.pts.length>0){
+    strokes.push(activeStroke);
+    if(strokes.length>80) strokes.shift(); // limit memory
+  }
+  activeStroke=null;
+}
+function undoStroke(){
+  if(strokes.length>0){strokes.pop();showToast('↩️ Undone!');}
+}
+function clearDrawings(){
+  strokes=[];activeStroke=null;showToast('🗑 Art cleared!');
+}
+
+// ── RENDER A STROKE WITH WARP ─────────────────
+function renderStroke(stroke){
+  if(!stroke||stroke.pts.length<1) return;
+  const warped=stroke.pts.map(p=>warpPoint(p.x,p.y));
+  const sz=stroke.size;
+  ctx.save();
+  ctx.lineCap='round'; ctx.lineJoin='round';
+
+  switch(stroke.tool){
+
+    case 'pencil':
+      ctx.globalAlpha=1;
+      ctx.strokeStyle=stroke.color;
+      ctx.lineWidth=Math.max(1,sz*0.45);
+      ctx.beginPath();
+      warped.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+      break;
+
+    case 'crayon':
+      // Crayon = waxy streaky lines, slight texture
+      for(let layer=0;layer<3;layer++){
+        ctx.globalAlpha=0.55-layer*0.1;
+        ctx.strokeStyle=stroke.color;
+        ctx.lineWidth=sz*(0.8+layer*0.3);
+        ctx.beginPath();
+        warped.forEach((p,i)=>{
+          const jx=p.x+(Math.random()-0.5)*sz*0.4;
+          const jy=p.y+(Math.random()-0.5)*sz*0.4;
+          i===0?ctx.moveTo(jx,jy):ctx.lineTo(jx,jy);
+        });
+        ctx.stroke();
+      }
+      break;
+
+    case 'chalk':
+      // Chalk = rough grainy look — multiple thin strokes
+      for(let j=0;j<5;j++){
+        ctx.globalAlpha=0.12+Math.random()*0.18;
+        ctx.strokeStyle=stroke.color;
+        ctx.lineWidth=sz*(0.3+Math.random()*0.7);
+        ctx.beginPath();
+        warped.forEach((p,i)=>{
+          const ox=(Math.random()-0.5)*sz*1.2;
+          const oy=(Math.random()-0.5)*sz*1.2;
+          i===0?ctx.moveTo(p.x+ox,p.y+oy):ctx.lineTo(p.x+ox,p.y+oy);
+        });
+        ctx.stroke();
+      }
+      break;
+
+    case 'water':
+      // Watercolor = transparent soft washes
+      ctx.globalAlpha=0.06;
+      ctx.strokeStyle=stroke.color;
+      ctx.lineWidth=sz*2.5;
+      ctx.beginPath();
+      warped.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+      // Edge bloom
+      for(let j=0;j<3;j++){
+        ctx.globalAlpha=0.025;
+        ctx.lineWidth=sz*(3+j*1.5);
+        ctx.beginPath();
+        warped.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+        ctx.stroke();
+      }
+      break;
+
+    case 'oil':
+      // Oil paint = thick strokes with highlight
+      ctx.globalAlpha=0.92;
+      ctx.strokeStyle=stroke.color;
+      ctx.lineWidth=sz*1.4;
+      ctx.beginPath();
+      warped.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+      // Thick highlight streak
+      ctx.globalAlpha=0.3;
+      ctx.strokeStyle='rgba(255,255,255,0.9)';
+      ctx.lineWidth=sz*0.35;
+      ctx.beginPath();
+      warped.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+      break;
+
+    case 'air':
+      // Airbrush = scattered dots along path
+      ctx.fillStyle=stroke.color;
+      warped.forEach(p=>{
+        for(let j=0;j<12;j++){
+          ctx.globalAlpha=0.05+Math.random()*0.06;
+          const ang=Math.random()*Math.PI*2;
+          const r=Math.random()*sz*2;
+          ctx.beginPath();
+          ctx.arc(p.x+Math.cos(ang)*r, p.y+Math.sin(ang)*r, sz*0.2,0,Math.PI*2);
+          ctx.fill();
+        }
+      });
+      break;
+
+    case 'text':
+      // Text strokes stored differently — single point + text
+      if(stroke.text){
+        const wp=warpPoint(stroke.pts[0].x,stroke.pts[0].y);
+        ctx.globalAlpha=0.95;
+        ctx.font=stroke.font||`900 ${sz*3}px system-ui`;
+        ctx.fillStyle=stroke.color;
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.shadowColor='rgba(0,0,0,0.5)';
+        ctx.shadowBlur=4*PR;
+        ctx.fillText(stroke.text, wp.x, wp.y);
+      }
+      break;
+  }
+  ctx.restore();
+}
+
 // ── PARTICLES ──────────────────────────────────
-let blobs=[];
+let blobs=[], activeAddins=new Set();
 function addBlobs(type,count){
-  const sc=NATURAL_R/160;
+  const sc=NR/160;
   for(let k=0;k<count;k++){
-    const a=Math.random()*Math.PI*2;
-    const r=NATURAL_R*(0.1+Math.random()*0.72);
+    const a=Math.random()*Math.PI*2, r=NR*(0.1+Math.random()*0.72);
     const b={x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r,
       vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5,
       rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.04,
       type,size:0,emoji:'',color:'',shape:'circle'};
     switch(type){
-      case 'bubble': b.size=(18+Math.random()*22)*sc; b.type='bubble'; break;
+      case 'bubble': b.size=(20+Math.random()*24)*sc; break;
       case 'glitter':b.color=`hsl(${Math.random()*360},100%,75%)`;b.size=(6+Math.random()*6)*sc;break;
-      case 'stars':  b.emoji='⭐';b.size=(24+Math.random()*18)*sc;break;
+      case 'stars':  b.emoji='⭐';b.size=(26+Math.random()*18)*sc;break;
       case 'sprinkles':b.color=`hsl(${Math.random()*360},95%,65%)`;b.size=(9+Math.random()*7)*sc;b.shape='rect';break;
-      case 'sparkles':b.emoji='✨';b.size=(26+Math.random()*16)*sc;break;
+      case 'sparkles':b.emoji='✨';b.size=(28+Math.random()*16)*sc;break;
       case 'foam':   b.color=`rgba(255,255,255,${0.5+Math.random()*0.4})`;b.size=(18+Math.random()*20)*sc;break;
-      case 'hearts': b.emoji='💕';b.size=(28+Math.random()*16)*sc;break;
+      case 'hearts': b.emoji='💕';b.size=(30+Math.random()*16)*sc;break;
       case 'candy':  b.color=`hsl(${Math.random()*360},95%,65%)`;b.size=(15+Math.random()*12)*sc;break;
-      case 'confetti':b.color=`hsl(${Math.random()*360},95%,65%)`;b.size=(11+Math.random()*10)*sc;b.shape='rect';break;
-      case 'pearls': b.color=`rgba(240,240,255,0.9)`;b.size=(15+Math.random()*10)*sc;break;
-      case 'ice':    b.color=`rgba(180,230,255,0.75)`;b.size=(14+Math.random()*12)*sc;break;
-      case 'beads':  b.color=`hsl(${Math.random()*360},85%,65%)`;b.size=(13+Math.random()*10)*sc;break;
-      case 'glow':   b.color=`hsl(${160+Math.random()*80},100%,70%)`;b.size=(12+Math.random()*10)*sc;break;
+      case 'confetti':b.color=`hsl(${Math.random()*360},95%,65%)`;b.size=(12+Math.random()*10)*sc;b.shape='rect';break;
+      case 'pearls': b.color=`rgba(240,240,255,0.9)`;b.size=(16+Math.random()*10)*sc;break;
+      case 'ice':    b.color=`rgba(180,230,255,0.75)`;b.size=(15+Math.random()*12)*sc;break;
+      case 'beads':  b.color=`hsl(${Math.random()*360},85%,65%)`;b.size=(14+Math.random()*10)*sc;break;
+      case 'glow':   b.color=`hsl(${160+Math.random()*80},100%,70%)`;b.size=(13+Math.random()*10)*sc;break;
     }
     blobs.push(b);
   }
 }
 
-// ── SLIME COLOR ───────────────────────────────
-let slimeR=0,slimeG=200,slimeB=80,isRainbow=false,rainbowHue=0;
-let activeAddins=new Set();
+// ── SLIME COLOR ────────────────────────────────
+let sR=0,sG=200,sB=80,isRainbow=false,rainbowHue=0;
 
-// ── TOOLS ─────────────────────────────────────
-let currentTool='squish';
-let drawColor='#ff6600';
-let brushSz=10;
-let isDrawing=false;
-let lastDraw={x:0,y:0};
+// ── TOOL STATE ─────────────────────────────────
+let currentTool='squish', drawColor='#ff3366', brushSz=8;
+let isPointerDown=false, lastPos={x:0,y:0};
+const fingers={};
 
-document.getElementById('brushSize').addEventListener('input',e=>{
-  brushSz=parseInt(e.target.value);
-});
+document.getElementById('brushSz').addEventListener('input',e=>{brushSz=parseInt(e.target.value);});
 
 function setTool(t){
   currentTool=t;
-  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
-  const btn=document.getElementById('tool-'+t);
-  if(btn) btn.classList.add('active');
-  const hints={
-    squish:'👆 Push and squish the slime!',
-    pencil:'✏️ Draw with pencil',
-    airbrush:'💨 Spray with airbrush',
-    chalk:'🖍️ Draw chalk lines',
-    water:'🎨 Paint with watercolor',
-    oil:'🖌️ Paint with oil brush',
-    text:'💬 Tap to add text',
-  };
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('on'));
+  const btn=document.getElementById('t-'+t);
+  if(btn) btn.classList.add('on');
+  const hints={squish:'👆 Squish and push the slime!',pencil:'✏️ Draw — slime still squishes!',
+    crayon:'🖍️ Colour with crayon!',chalk:'🪨 Chalk texture!',water:'🎨 Watercolour wash!',
+    oil:'🖌️ Thick oil paint!',air:'💨 Spray paint!',text:'💬 Write in the slime!'};
   document.getElementById('hdrHint').textContent=hints[t]||'';
-  drawCanvas.style.cursor = t==='squish'?'crosshair':'url("")';
 }
+function setColor(c){drawColor=c;document.getElementById('colorDot').style.background=c;}
 
-function setDrawColor(c){
-  drawColor=c;
-  document.getElementById('colorDot').style.background=c;
-}
+// ── POINTER HANDLING ───────────────────────────
+// CRITICAL: touch ALWAYS squishes slime regardless of tool!
+// Drawing is ADDED ON TOP — slime is never locked!
 
-// ── POINTER EVENTS ────────────────────────────
-let fingers={};
+canvas.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  const pos=getPos(e);
+  fingers[e.pointerId]={...pos};
+  canvas.setPointerCapture(e.pointerId);
+  isPointerDown=true; lastPos={...pos};
+  // ALWAYS apply a gentle squish force
+  applyForce(pos.x,pos.y,0,0);
+  playTouch();
+  // If drawing tool, start stroke
+  if(currentTool!=='squish'&&currentTool!=='text') startStroke(pos.x,pos.y);
+},{passive:false});
+
+canvas.addEventListener('pointermove',e=>{
+  e.preventDefault();
+  if(!fingers[e.pointerId]) return;
+  const pos=getPos(e);
+  const prev=fingers[e.pointerId];
+  const dx=pos.x-prev.x, dy=pos.y-prev.y;
+  fingers[e.pointerId]={...pos};
+
+  // ALWAYS squish — this is the key fix!
+  applyForce(pos.x,pos.y,dx,dy);
+  moveBlobs(pos.x,pos.y,dx*0.3,dy*0.3);
+  playStretch(Math.sqrt(dx*dx+dy*dy));
+
+  // If drawing tool, extend stroke
+  if(currentTool!=='squish'&&currentTool!=='text'&&isPointerDown) extendStroke(pos.x,pos.y);
+},{passive:false});
+
+canvas.addEventListener('pointerup',e=>{
+  delete fingers[e.pointerId];
+  if(isPointerDown) finishStroke();
+  isPointerDown=false; playRelease();
+});
+canvas.addEventListener('pointercancel',e=>{delete fingers[e.pointerId];isPointerDown=false;finishStroke();});
 
 function getPos(e){
-  const rect=slimeCanvas.getBoundingClientRect();
-  return {
-    x:(e.clientX-rect.left)*PR,
-    y:(e.clientY-rect.top)*PR
-  };
+  const r=canvas.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*PR, y:(e.clientY-r.top)*PR};
 }
-
-function isInsideSlime(x,y){
-  const dx=x-CX,dy=y-CY;
-  return Math.sqrt(dx*dx+dy*dy)<NATURAL_R*1.1;
-}
-
-// Route events to correct handler
-[slimeCanvas,drawCanvas].forEach(cv=>{
-  cv.addEventListener('pointerdown',e=>{
-    e.preventDefault();
-    const pos=getPos(e);
-    if(currentTool==='squish'){
-      fingers[e.pointerId]={...pos};
-      cv.setPointerCapture(e.pointerId);
-      playTouch(); return;
-    }
-    if(currentTool==='text') return;
-    isDrawing=true; lastDraw={...pos};
-    cv.setPointerCapture(e.pointerId);
-    startStroke(pos.x,pos.y);
-  });
-  cv.addEventListener('pointermove',e=>{
-    e.preventDefault();
-    const pos=getPos(e);
-    if(currentTool==='squish'&&fingers[e.pointerId]){
-      const prev=fingers[e.pointerId];
-      const dx=pos.x-prev.x,dy=pos.y-prev.y;
-      applyForce(pos.x,pos.y,dx,dy);
-      moveBlobs(pos.x,pos.y,dx*0.3,dy*0.3);
-      fingers[e.pointerId]={...pos};
-      playStretch(Math.sqrt(dx*dx+dy*dy)); return;
-    }
-    if(isDrawing) continueStroke(pos.x,pos.y);
-  });
-  cv.addEventListener('pointerup',e=>{
-    delete fingers[e.pointerId];
-    if(isDrawing){isDrawing=false;endStroke();}
-    playRelease();
-  });
-  cv.addEventListener('pointercancel',e=>{delete fingers[e.pointerId];isDrawing=false;});
-});
 
 function applyForce(fx,fy,dx,dy){
+  const FR=NR*0.62, FF=1.2;
   const speed=Math.sqrt(dx*dx+dy*dy);
-  if(speed<0.5) return;
   pts.forEach(p=>{
     const ex=p.x-fx,ey=p.y-fy,dist=Math.sqrt(ex*ex+ey*ey);
-    if(dist<FINGER_R*1.4){
-      const inf=Math.pow(Math.max(0,1-dist/(FINGER_R*1.4)),2);
-      p.vx+=dx*FINGER_F*inf; p.vy+=dy*FINGER_F*inf;
+    if(dist<FR*1.4){
+      const inf=Math.pow(Math.max(0,1-dist/(FR*1.4)),2);
+      // Even without movement, pressing creates a small indent
+      if(speed>0.3){p.vx+=dx*FF*inf;p.vy+=dy*FF*inf;}
+      else{const nx=(p.x-CX),ny=(p.y-CY),nl=Math.sqrt(nx*nx+ny*ny)||1;
+        p.vx-=(nx/nl)*inf*0.3;p.vy-=(ny/nl)*inf*0.3;}
     }
   });
 }
 function moveBlobs(fx,fy,dx,dy){
   blobs.forEach(b=>{
     const d=Math.sqrt((b.x-fx)**2+(b.y-fy)**2);
-    if(d<FINGER_R){const i=Math.max(0,1-d/FINGER_R);b.vx+=dx*i*1.5;b.vy+=dy*i*1.5;}
+    if(d<NR){const i=Math.max(0,1-d/NR);b.vx+=dx*i*1.5;b.vy+=dy*i*1.5;}
   });
 }
 
-// ── DRAWING TOOLS ─────────────────────────────
-function startStroke(x,y){
-  dCtx.save();
-  applySlimeClip(dCtx);
-  drawAt(x,y,x,y,true);
-  dCtx.restore();
-  lastDraw={x,y};
-}
-
-function continueStroke(x,y){
-  dCtx.save();
-  applySlimeClip(dCtx);
-  drawAt(lastDraw.x,lastDraw.y,x,y,false);
-  dCtx.restore();
-  lastDraw={x,y};
-}
-
-function endStroke(){
-  dCtx.restore && null;
-}
-
-function applySlimeClip(ctx){
-  ctx.beginPath();
-  for(let i=0;i<N;i++){
-    const a=pts[i],b=pts[(i+1)%N],c=pts[(i+2)%N];
-    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
-    const nx=(b.x+c.x)/2,ny=(b.y+c.y)/2;
-    if(i===0) ctx.moveTo(mx,my);
-    ctx.quadraticCurveTo(b.x,b.y,nx,ny);
-  }
-  ctx.closePath();
-  ctx.clip();
-}
-
-function drawAt(x1,y1,x2,y2,isStart){
-  const sz=brushSz*PR*0.5;
-  dCtx.lineCap='round'; dCtx.lineJoin='round';
-
-  switch(currentTool){
-    case 'pencil':
-      dCtx.globalAlpha=1;
-      dCtx.strokeStyle=drawColor;
-      dCtx.lineWidth=Math.max(1,sz*0.4);
-      if(isStart){dCtx.beginPath();dCtx.moveTo(x1,y1);}
-      else{dCtx.lineTo(x2,y2);dCtx.stroke();}
-      break;
-
-    case 'airbrush':
-      dCtx.globalAlpha=0.04;
-      dCtx.fillStyle=drawColor;
-      const spray=sz*2.5;
-      for(let i=0;i<30;i++){
-        const ang=Math.random()*Math.PI*2;
-        const r=Math.random()*spray;
-        const px=x2+Math.cos(ang)*r, py=y2+Math.sin(ang)*r;
-        dCtx.beginPath();dCtx.arc(px,py,sz*0.25,0,Math.PI*2);dCtx.fill();
-      }
-      break;
-
-    case 'chalk':
-      dCtx.globalAlpha=0.55;
-      // Chalk = rough jagged strokes
-      for(let i=0;i<3;i++){
-        const jx=x2+(Math.random()-0.5)*sz*1.5;
-        const jy=y2+(Math.random()-0.5)*sz*1.5;
-        dCtx.strokeStyle=drawColor;
-        dCtx.lineWidth=Math.max(1,(sz*0.5)*(0.5+Math.random()*0.8));
-        dCtx.globalAlpha=0.1+Math.random()*0.3;
-        if(isStart){dCtx.beginPath();dCtx.moveTo(x1,y1);}
-        else{dCtx.lineTo(jx,jy);dCtx.stroke();}
-      }
-      break;
-
-    case 'water':
-      // Watercolor = soft transparent overlapping circles
-      dCtx.globalAlpha=0.04;
-      dCtx.fillStyle=drawColor;
-      for(let i=0;i<5;i++){
-        const ox=(Math.random()-0.5)*sz*2;
-        const oy=(Math.random()-0.5)*sz*2;
-        const gr=dCtx.createRadialGradient(x2+ox,y2+oy,0,x2+ox,y2+oy,sz*1.8);
-        gr.addColorStop(0,drawColor);
-        gr.addColorStop(1,'transparent');
-        dCtx.fillStyle=gr;
-        dCtx.beginPath();dCtx.arc(x2+ox,y2+oy,sz*1.8,0,Math.PI*2);dCtx.fill();
-      }
-      // Also draw connecting line
-      dCtx.globalAlpha=0.06;
-      dCtx.strokeStyle=drawColor;
-      dCtx.lineWidth=sz*2;
-      if(isStart){dCtx.beginPath();dCtx.moveTo(x1,y1);}
-      else{dCtx.lineTo(x2,y2);dCtx.stroke();}
-      break;
-
-    case 'oil':
-      // Oil = thick opaque strokes with texture
-      dCtx.globalAlpha=0.88;
-      dCtx.strokeStyle=drawColor;
-      dCtx.lineWidth=sz*1.2;
-      if(isStart){dCtx.beginPath();dCtx.moveTo(x1,y1);}
-      else{dCtx.lineTo(x2,y2);dCtx.stroke();}
-      // Lighter center highlight
-      dCtx.globalAlpha=0.25;
-      dCtx.strokeStyle='rgba(255,255,255,0.8)';
-      dCtx.lineWidth=sz*0.35;
-      if(isStart){dCtx.beginPath();dCtx.moveTo(x1,y1);}
-      else{dCtx.lineTo(x2,y2);dCtx.stroke();}
-      break;
-  }
-}
-
-// ── TEXT TOOL ─────────────────────────────────
-function showTextBox(){
-  document.getElementById('textOverlay').classList.add('show');
-  setTimeout(()=>document.getElementById('textInput').focus(),100);
-}
-function closeTextBox(){
-  document.getElementById('textOverlay').classList.remove('show');
-  setTool('squish');
-}
+// ── TEXT ───────────────────────────────────────
+function showTxt(){setTool('text');document.getElementById('txtModal').classList.add('on');setTimeout(()=>document.getElementById('tInput').focus(),100);}
+function closeTxt(){document.getElementById('txtModal').classList.remove('on');setTool('squish');}
 function addText(){
-  const txt=document.getElementById('textInput').value.trim();
-  if(!txt){closeTextBox();return;}
-  const font=document.getElementById('fontSel').value;
-  const sz=parseInt(font.match(/(\d+)px/)[1])*PR;
-  dCtx.save();
-  applySlimeClip(dCtx);
-  // Draw text centered in slime
-  dCtx.font=font.replace(/\d+px/,sz+'px');
-  dCtx.fillStyle=drawColor;
-  dCtx.textAlign='center';
-  dCtx.textBaseline='middle';
-  dCtx.globalAlpha=0.92;
-  // Shadow for readability
-  dCtx.shadowColor='rgba(0,0,0,0.5)';
-  dCtx.shadowBlur=6*PR;
-  dCtx.fillText(txt,CX,CY);
-  dCtx.restore();
-  closeTextBox();
-  showToast('✍️ Text added! Now squish it!');
+  const txt=document.getElementById('tInput').value.trim();
+  if(!txt){closeTxt();return;}
+  const font=document.getElementById('fSel').value;
+  const sz=parseInt(font.match(/(\d+)px/)[1]);
+  strokes.push({tool:'text',color:drawColor,size:sz*PR*0.6,
+    text:txt,font:font.replace(/(\d+)px/,sz*PR+'px'),
+    pts:[{x:CX,y:CY}]});
+  closeTxt();
+  showToast('✍️ Now squish it around!');
 }
 
-// Clear drawing only
-function clearDrawing(){
-  dCtx.clearRect(0,0,W,H);
-  showToast('🗑 Drawing cleared!');
-}
-
-// ── BUBBLE DRAWING ────────────────────────────
-function drawBubble(ctx,x,y,r){
-  // Realistic bubble: transparent sphere with highlights
-  // Main sphere
-  const grad=ctx.createRadialGradient(x-r*0.3,y-r*0.35,r*0.05,x,y,r);
-  grad.addColorStop(0,'rgba(255,255,255,0.15)');
-  grad.addColorStop(0.4,'rgba(200,230,255,0.08)');
-  grad.addColorStop(0.85,'rgba(180,220,255,0.18)');
-  grad.addColorStop(1,'rgba(160,200,255,0.35)');
-  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.fillStyle=grad;ctx.fill();
-  // Rim
-  ctx.strokeStyle='rgba(200,230,255,0.55)';
-  ctx.lineWidth=r*0.06;
-  ctx.stroke();
-  // Top-left bright highlight
-  const hl1=ctx.createRadialGradient(x-r*0.32,y-r*0.35,0,x-r*0.3,y-r*0.32,r*0.32);
-  hl1.addColorStop(0,'rgba(255,255,255,0.75)');
-  hl1.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.beginPath();ctx.arc(x-r*0.3,y-r*0.3,r*0.3,0,Math.PI*2);
-  ctx.fillStyle=hl1;ctx.fill();
-  // Small secondary sparkle
-  ctx.beginPath();ctx.arc(x+r*0.3,y+r*0.2,r*0.1,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.fill();
-}
-
-// ── PHYSICS UPDATE ────────────────────────────
-const NAT_AREA=Math.PI*NATURAL_R*NATURAL_R;
-const NAT_DIST=NATURAL_R*(2*Math.PI/N);
-
-function updatePhysics(){
-  let area=0;
-  for(let i=0;i<N;i++){const j=(i+1)%N;area+=(pts[i].x*pts[j].y-pts[j].x*pts[i].y);}
-  const pressErr=(Math.abs(area)*0.5-NAT_AREA)/NAT_AREA;
-
-  pts.forEach((p,i)=>{
-    const prev=pts[(i-1+N)%N],next=pts[(i+1)%N],nat=naturalPts[i];
-    let fx=(nat.x-p.x)*STIFFNESS,fy=(nat.y-p.y)*STIFFNESS;
-    function spring(o){
-      const dx=o.x-p.x,dy=o.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-      const s=d-NAT_DIST;
-      fx+=(dx/d)*s*NEIGHBOR_K;fy+=(dy/d)*s*NEIGHBOR_K;
-    }
-    spring(prev);spring(next);
-    const nx=p.x-CX,ny=p.y-CY,nl=Math.sqrt(nx*nx+ny*ny)||1;
-    fx-=(nx/nl)*pressErr*PRESSURE_K*NATURAL_R;
-    fy-=(ny/nl)*pressErr*PRESSURE_K*NATURAL_R;
-    p.vx=(p.vx+fx)*DAMPING; p.vy=(p.vy+fy)*DAMPING;
-    p.x+=p.vx; p.y+=p.vy;
-  });
-
-  blobs.forEach(b=>{
-    b.x+=b.vx;b.y+=b.vy;b.vx*=0.97;b.vy*=0.97;b.rot+=b.rotV;
-    const bx=b.x-CX,by=b.y-CY,bd=Math.sqrt(bx*bx+by*by);
-    if(bd>NATURAL_R*0.88){b.vx-=(bx/bd)*0.4;b.vy-=(by/bd)*0.4;}
-  });
-}
-
-// ── DRAW SLIME ────────────────────────────────
-function buildPath(ctx){
+// ── SLIME PATH BUILDER ─────────────────────────
+function buildPath(){
   ctx.beginPath();
   for(let i=0;i<N;i++){
     const a=pts[i],b=pts[(i+1)%N],c=pts[(i+2)%N];
@@ -690,78 +565,95 @@ function buildPath(ctx){
   ctx.closePath();
 }
 
-function hslToRgb(h,s,l){
-  let r,g,bb;
-  if(s===0){r=g=bb=l;}
-  else{
-    const q=l<0.5?l*(1+s):l+s-l*s,p2=2*l-q;
-    function hue(h){h=(h%1+1)%1;if(h<1/6)return p2+(q-p2)*6*h;if(h<1/2)return q;if(h<2/3)return p2+(q-p2)*(2/3-h)*6;return p2;}
-    r=hue(h+1/3);g=hue(h);bb=hue(h-1/3);
+function hsl2rgb(h,s,l){
+  let r,g,b;
+  if(s===0){r=g=b=l;}else{
+    const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+    function hu(h){h=(h%1+1)%1;if(h<1/6)return p+(q-p)*6*h;if(h<1/2)return q;if(h<2/3)return p+(q-p)*(2/3-h)*6;return p;}
+    r=hu(h+1/3);g=hu(h);b=hu(h-1/3);
   }
-  return[Math.round(r*255),Math.round(g*255),Math.round(bb*255)];
+  return[Math.round(r*255),Math.round(g*255),Math.round(b*255)];
 }
 
-function drawSlime(){
-  sCtx.clearRect(0,0,W,H);
+// ── BUBBLE ─────────────────────────────────────
+function drawBubble(x,y,r){
+  const g=ctx.createRadialGradient(x-r*0.3,y-r*0.35,r*0.04,x,y,r);
+  g.addColorStop(0,'rgba(255,255,255,0.14)');
+  g.addColorStop(0.4,'rgba(200,230,255,0.07)');
+  g.addColorStop(0.85,'rgba(180,220,255,0.17)');
+  g.addColorStop(1,'rgba(160,200,255,0.38)');
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  ctx.strokeStyle='rgba(200,235,255,0.6)';ctx.lineWidth=r*0.07;ctx.stroke();
+  const h=ctx.createRadialGradient(x-r*0.32,y-r*0.36,0,x-r*0.3,y-r*0.32,r*0.33);
+  h.addColorStop(0,'rgba(255,255,255,0.78)');h.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.beginPath();ctx.arc(x-r*0.3,y-r*0.3,r*0.3,0,Math.PI*2);ctx.fillStyle=h;ctx.fill();
+  ctx.beginPath();ctx.arc(x+r*0.3,y+r*0.22,r*0.1,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.38)';ctx.fill();
+}
+
+// ── MAIN RENDER ────────────────────────────────
+function render(){
+  ctx.clearRect(0,0,W,H);
   if(isRainbow)rainbowHue=(rainbowHue+0.6)%360;
 
-  buildPath(sCtx);
-  let r=slimeR,g=slimeG,b=slimeB;
+  // 1. Draw slime body
+  buildPath();
+  let r=sR,g=sG,b=sB;
   if(isRainbow){
-    const[r1,g1,b1]=hslToRgb(rainbowHue/360,1,0.7);
-    const[r2,g2,b2]=hslToRgb(((rainbowHue+120)%360)/360,1,0.5);
-    const[r3,g3,b3]=hslToRgb(((rainbowHue+240)%360)/360,1,0.38);
+    const[r1,g1,b1]=hsl2rgb(rainbowHue/360,1,0.7);
+    const[r2,g2,b2]=hsl2rgb(((rainbowHue+120)%360)/360,1,0.5);
+    const[r3,g3,b3]=hsl2rgb(((rainbowHue+240)%360)/360,1,0.38);
     r=r1;g=g1;b=b1;
-    const gr=sCtx.createRadialGradient(CX-NATURAL_R*0.22,CY-NATURAL_R*0.22,0,CX,CY,NATURAL_R*1.1);
+    const gr=ctx.createRadialGradient(CX-NR*0.22,CY-NR*0.22,0,CX,CY,NR*1.1);
     gr.addColorStop(0,`rgba(${r1},${g1},${b1},0.92)`);
     gr.addColorStop(0.5,`rgba(${r2},${g2},${b2},0.94)`);
     gr.addColorStop(1,`rgba(${r3},${g3},${b3},0.97)`);
-    sCtx.shadowColor=`hsl(${rainbowHue},100%,60%)`;
-    sCtx.shadowBlur=28;sCtx.fillStyle=gr;sCtx.fill();sCtx.shadowBlur=0;
-  } else {
-    const gr=sCtx.createRadialGradient(CX-NATURAL_R*0.22,CY-NATURAL_R*0.22,0,CX,CY,NATURAL_R*1.1);
+    ctx.shadowColor=`hsl(${rainbowHue},100%,60%)`;ctx.shadowBlur=28;
+    ctx.fillStyle=gr;ctx.fill();ctx.shadowBlur=0;
+  }else{
+    const gr=ctx.createRadialGradient(CX-NR*0.22,CY-NR*0.22,0,CX,CY,NR*1.1);
     gr.addColorStop(0,`rgba(${Math.min(255,r+90)},${Math.min(255,g+90)},${Math.min(255,b+90)},0.92)`);
     gr.addColorStop(0.5,`rgba(${r},${g},${b},0.95)`);
     gr.addColorStop(1,`rgba(${Math.max(0,r-70)},${Math.max(0,g-70)},${Math.max(0,b-70)},0.97)`);
-    sCtx.shadowColor=`rgba(${r},${g},${b},0.8)`;
-    sCtx.shadowBlur=26;sCtx.fillStyle=gr;sCtx.fill();sCtx.shadowBlur=0;
+    ctx.shadowColor=`rgba(${r},${g},${b},0.8)`;ctx.shadowBlur=26;
+    ctx.fillStyle=gr;ctx.fill();ctx.shadowBlur=0;
   }
 
-  sCtx.save();buildPath(sCtx);sCtx.clip();
+  // 2. Clip and draw everything INSIDE the slime
+  ctx.save();buildPath();ctx.clip();
 
   // Shine
-  const sh=sCtx.createRadialGradient(CX-NATURAL_R*0.28,CY-NATURAL_R*0.3,0,CX-NATURAL_R*0.28,CY-NATURAL_R*0.28,NATURAL_R*0.55);
-  sh.addColorStop(0,'rgba(255,255,255,0.4)');sh.addColorStop(1,'rgba(255,255,255,0)');
-  sCtx.fillStyle=sh;sCtx.fillRect(0,0,W,H);
+  const sh=ctx.createRadialGradient(CX-NR*0.28,CY-NR*0.3,0,CX-NR*0.28,CY-NR*0.28,NR*0.55);
+  sh.addColorStop(0,'rgba(255,255,255,0.38)');sh.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=sh;ctx.fillRect(0,0,W,H);
 
-  // Particles
-  blobs.forEach(b=>{
-    sCtx.save();sCtx.translate(b.x,b.y);sCtx.rotate(b.rot);sCtx.globalAlpha=0.92;
-    if(b.type==='bubble'){
-      drawBubble(sCtx,0,0,b.size/2);
-    } else if(b.emoji){
-      sCtx.font=`${b.size}px system-ui`;sCtx.textAlign='center';sCtx.textBaseline='middle';
-      sCtx.fillText(b.emoji,0,0);
-    } else if(b.shape==='rect'){
-      sCtx.fillStyle=b.color;sCtx.fillRect(-b.size/2,-b.size*0.25,b.size,b.size*0.5);
-    } else {
-      sCtx.fillStyle=b.color;sCtx.shadowColor=b.color;sCtx.shadowBlur=b.size*0.5;
-      sCtx.beginPath();sCtx.arc(0,0,b.size/2,0,Math.PI*2);sCtx.fill();
-    }
-    sCtx.restore();
+  // Particles (blobs)
+  blobs.forEach(bl=>{
+    ctx.save();ctx.translate(bl.x,bl.y);ctx.rotate(bl.rot);ctx.globalAlpha=0.92;
+    if(bl.type==='bubble'){drawBubble(0,0,bl.size/2);}
+    else if(bl.emoji){ctx.font=`${bl.size}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(bl.emoji,0,0);}
+    else if(bl.shape==='rect'){ctx.fillStyle=bl.color;ctx.fillRect(-bl.size/2,-bl.size*0.25,bl.size,bl.size*0.5);}
+    else{ctx.fillStyle=bl.color;ctx.shadowColor=bl.color;ctx.shadowBlur=bl.size*0.5;ctx.beginPath();ctx.arc(0,0,bl.size/2,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
   });
-  sCtx.restore();
 
-  // Rim
-  buildPath(sCtx);
-  sCtx.strokeStyle=isRainbow?`hsla(${(rainbowHue+60)%360},100%,80%,0.4)`:`rgba(${Math.min(255,r+120)},${Math.min(255,g+120)},${Math.min(255,b+120)},0.35)`;
-  sCtx.lineWidth=2.5;sCtx.stroke();
+  // ★ ART STROKES — warped by slime physics!
+  strokes.forEach(s=>renderStroke(s));
+  // Active stroke being drawn right now
+  if(activeStroke&&activeStroke.pts.length>1) renderStroke(activeStroke);
+
+  ctx.restore(); // end clip
+
+  // 3. Rim highlight
+  buildPath();
+  ctx.strokeStyle=isRainbow?`hsla(${(rainbowHue+60)%360},100%,80%,0.4)`:`rgba(${Math.min(255,r+120)},${Math.min(255,g+120)},${Math.min(255,b+120)},0.35)`;
+  ctx.lineWidth=2.5;ctx.stroke();
 }
 
 // ── MAIN LOOP ─────────────────────────────────
-function loop(){updatePhysics();drawSlime();requestAnimationFrame(loop);}
+function loop(){physicsTick();render();requestAnimationFrame(loop);}
 
-// ── UI BUILDERS ───────────────────────────────
+// ── UI ─────────────────────────────────────────
 const COLORS=[
   {l:'Green',i:'🟢',r:0,g:200,b:80},{l:'Purple',i:'🟣',r:160,g:32,b:240},
   {l:'Pink',i:'🩷',r:255,g:80,b:180},{l:'Blue',i:'🔵',r:30,g:140,b:255},
@@ -771,60 +663,48 @@ const COLORS=[
   {l:'Black',i:'⚫',r:25,g:25,b:35},{l:'Rainbow',i:'🌈',r:-1,g:-1,b:-1},
 ];
 const ADDINS=[
-  {i:'🫧',n:'Bubbles',e:'bubble'},
-  {i:'✨',n:'Glitter',e:'glitter'},{i:'⭐',n:'Stars',e:'stars'},
-  {i:'🎊',n:'Sprinkles',e:'sprinkles'},{i:'💫',n:'Sparkles',e:'sparkles'},
-  {i:'🫧',n:'Foam',e:'foam'},{i:'💕',n:'Hearts',e:'hearts'},
-  {i:'🍬',n:'Candy',e:'candy'},{i:'🎉',n:'Confetti',e:'confetti'},
-  {i:'🫧',n:'Pearls',e:'pearls'},{i:'❄️',n:'Ice',e:'ice'},
-  {i:'🫧',n:'Beads',e:'beads'},{i:'🌟',n:'Glow',e:'glow'},
+  {i:'🫧',n:'Bubbles',e:'bubble'},{i:'✨',n:'Glitter',e:'glitter'},
+  {i:'⭐',n:'Stars',e:'stars'},{i:'🎊',n:'Sprinkles',e:'sprinkles'},
+  {i:'💫',n:'Sparkles',e:'sparkles'},{i:'🫧',n:'Foam',e:'foam'},
+  {i:'💕',n:'Hearts',e:'hearts'},{i:'🍬',n:'Candy',e:'candy'},
+  {i:'🎉',n:'Confetti',e:'confetti'},{i:'🫧',n:'Pearls',e:'pearls'},
+  {i:'❄️',n:'Ice',e:'ice'},{i:'🫧',n:'Beads',e:'beads'},{i:'🌟',n:'Glow',e:'glow'},
 ];
 
 function buildUI(){
   const cr=document.getElementById('colorRow');
   COLORS.forEach(c=>{
-    const btn=document.createElement('button');btn.className='ing-btn';
-    btn.innerHTML=`<span>${c.i}</span><span class="ing-name">${c.l}</span>`;
+    const btn=document.createElement('button');btn.className='ibtn';
+    btn.innerHTML=`<span>${c.i}</span><span class="inm">${c.l}</span>`;
     if(c.r===-1)btn.style.background='linear-gradient(135deg,#ff0080,#ffcc00,#00ff88,#00ccff,#ff00ff)';
     else{btn.style.background=`rgba(${c.r},${c.g},${c.b},0.25)`;btn.style.borderColor=`rgba(${c.r},${c.g},${c.b},0.5)`;}
     btn.onclick=()=>{
-      document.querySelectorAll('#colorRow .ing-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      if(c.r===-1){isRainbow=true;showToast('🌈 RAINBOW SLIME!!');}
-      else{isRainbow=false;slimeR=c.r;slimeG=c.g;slimeB=c.b;showToast(`${c.i} ${c.l} slime!`);}
-      playPop();splatColor(c);
+      document.querySelectorAll('#colorRow .ibtn').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      if(c.r===-1){isRainbow=true;showToast('🌈 Rainbow Slime!!');}
+      else{isRainbow=false;sR=c.r;sG=c.g;sB=c.b;showToast(`${c.i} ${c.l} slime!`);}
+      splat();
     };
     cr.appendChild(btn);
   });
-
   const ar=document.getElementById('addinsRow');
   ADDINS.forEach(a=>{
-    const btn=document.createElement('button');btn.className='ing-btn';
-    btn.innerHTML=`<span>${a.i}</span><span class="ing-name">${a.n}</span>`;
+    const btn=document.createElement('button');btn.className='ibtn';
+    btn.innerHTML=`<span>${a.i}</span><span class="inm">${a.n}</span>`;
     btn.onclick=()=>{
-      if(activeAddins.has(a.e)){
-        activeAddins.delete(a.e);blobs=blobs.filter(b=>b.type!==a.e);
-        btn.classList.remove('active');showToast(`Removed ${a.i}`);
-      } else {
-        activeAddins.add(a.e);btn.classList.add('active');
-        addBlobs(a.e,22);showToast(`${a.i} ${a.n} added!`);
-        playPop();vibrate(15);
-      }
+      if(activeAddins.has(a.e)){activeAddins.delete(a.e);blobs=blobs.filter(b=>b.type!==a.e);btn.classList.remove('on');showToast(`Removed ${a.i}`);}
+      else{activeAddins.add(a.e);btn.classList.add('on');addBlobs(a.e,22);showToast(`${a.i} ${a.n} added!`);playPop();vibrate(15);}
     };
     ar.appendChild(btn);
   });
 }
-
-function switchTab(t){
-  document.querySelectorAll('.shelf-tab').forEach((b,i)=>{
-    const tabs=['colors','addins'];
-    b.classList.toggle('active',tabs[i]===t);
-  });
-  document.querySelectorAll('.shelf-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active');
+function stab(t){
+  document.querySelectorAll('.stab').forEach((b,i)=>b.classList.toggle('on',['colors','addins'][i]===t));
+  document.querySelectorAll('.spanel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('sp-'+t).classList.add('on');
 }
 
-// ── ACTIONS ───────────────────────────────────
+// ── ACTIONS ────────────────────────────────────
 function doSquish(){
   pts.forEach(p=>{const dx=p.x-CX,dy=p.y-CY,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx-=(dx/d)*18;p.vy-=(dy/d)*18;});
   setTimeout(()=>pts.forEach(p=>{const dx=p.x-CX,dy=p.y-CY,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx+=(dx/d)*22;p.vy+=(dy/d)*22;}),160);
@@ -835,93 +715,68 @@ function doMix(){
   activeAddins.forEach(a=>addBlobs(a,5));playMix();vibrate([10,5,10,5,20]);showToast('🌀 Mixing!');
 }
 function doSave(){
-  // Merge slime + drawing canvases
-  const tmp=document.createElement('canvas');
-  tmp.width=W;tmp.height=H;
-  const tCtx=tmp.getContext('2d');
-  tCtx.drawImage(slimeCanvas,0,0);
-  tCtx.drawImage(drawCanvas,0,0);
-  const link=document.createElement('a');
-  link.download='my-slime-art.png';
-  link.href=tmp.toDataURL('image/png');
-  link.click();
-  showToast('📸 Saved! Share your masterpiece!');
-  playPop();vibrate([30,20,30]);
+  const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+  tmp.getContext('2d').drawImage(canvas,0,0);
+  const lnk=document.createElement('a');lnk.download='slime-art.png';
+  lnk.href=tmp.toDataURL('image/png');lnk.click();
+  showToast('📸 Masterpiece saved!');vibrate([30,20,30]);
 }
 function doReset(){
-  blobs=[];activeAddins.clear();
-  document.querySelectorAll('.ing-btn').forEach(b=>b.classList.remove('active'));
-  slimeR=0;slimeG=200;slimeB=80;isRainbow=false;
-  dCtx.clearRect(0,0,W,H);
-  initSlime();playPop();showToast('🔄 Fresh start!');
+  blobs=[];strokes=[];activeStroke=null;activeAddins.clear();
+  document.querySelectorAll('.ibtn').forEach(b=>b.classList.remove('on'));
+  sR=0;sG=200;sB=80;isRainbow=false;
+  initSlime();showToast('🔄 Fresh slime!');
 }
-
-function splatColor(c){
+function splat(){
   pts.forEach(p=>{const dx=p.x-CX,dy=p.y-CY,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx+=(dx/d)*3;p.vy+=(dy/d)*3;});
   setTimeout(()=>pts.forEach(p=>{const dx=p.x-CX,dy=p.y-CY,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx-=(dx/d)*2;p.vy-=(dy/d)*2;}),120);
 }
 
-// ── SOUNDS ────────────────────────────────────
+// ── SOUNDS ─────────────────────────────────────
 let ac=null,muted=false;
 function ga(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();return ac;}
-
-function wetSquelch(vol,pitch,dur){
-  if(muted)return;
-  try{
+function wetSq(vol,pitch,dur){
+  if(muted)return;try{
     const c=ga(),sr=c.sampleRate,len=Math.floor(sr*dur);
     const buf=c.createBuffer(1,len,sr),d=buf.getChannelData(0);
     for(let i=0;i<len;i++){const t=i/sr;d[i]=(Math.random()*2-1)*Math.exp(-t*(8/dur));}
-    const src=c.createBufferSource();
-    src.buffer=buf;
+    const src=c.createBufferSource();src.buffer=buf;
     const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=350+pitch*200;bp.Q.value=1.8;
-    const g=c.createGain();g.gain.value=vol;
-    src.connect(bp);bp.connect(g);g.connect(c.destination);src.start();
+    const gn=c.createGain();gn.gain.value=vol;
+    src.connect(bp);bp.connect(gn);gn.connect(c.destination);src.start();
   }catch(e){}
 }
-function wateryShlorp(vol,dur){
-  if(muted)return;
-  try{
+function shlorp(vol,dur){
+  if(muted)return;try{
     const c=ga(),sr=c.sampleRate,len=Math.floor(sr*dur);
     const buf=c.createBuffer(1,len,sr),d=buf.getChannelData(0);
-    for(let i=0;i<len;i++){
-      const t=i/sr;
-      const env=Math.min(t/(dur*0.08),1)*Math.exp(-t*(3/dur));
-      d[i]=((Math.random()*2-1)*0.9+Math.sin(2*Math.PI*180*t)*0.08)*env;
-    }
+    for(let i=0;i<len;i++){const t=i/sr;const env=Math.min(t/(dur*0.08),1)*Math.exp(-t*(3/dur));d[i]=((Math.random()*2-1)*0.9+Math.sin(2*Math.PI*180*t)*0.08)*env;}
     const src=c.createBufferSource();src.buffer=buf;
     const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=450;bp.Q.value=1.4;
-    const g=c.createGain();g.gain.value=vol;
-    src.connect(bp);bp.connect(g);g.connect(c.destination);src.start();
+    const gn=c.createGain();gn.gain.value=vol;
+    src.connect(bp);bp.connect(gn);gn.connect(c.destination);src.start();
   }catch(e){}
 }
-function playTouch(){wetSquelch(0.5,1.5+Math.random(),0.08);setTimeout(()=>wetSquelch(0.3,1+Math.random(),0.06),40);}
-let lastSnd=0;
-function playStretch(speed){
-  if(muted||speed<1.5)return;const now=Date.now();if(now-lastSnd<90)return;lastSnd=now;
-  wetSquelch(0.28,0.4+Math.random()*0.4,0.07);
-}
-function playRelease(){wetSquelch(0.32,0.2,0.1);setTimeout(()=>wetSquelch(0.15,0.1,0.08),60);}
-function playSquish(){wateryShlorp(0.65,0.22);for(let i=0;i<4;i++)setTimeout(()=>wetSquelch(0.4,0.5+Math.random(),0.06),i*40);}
-function playMix(){for(let i=0;i<6;i++)setTimeout(()=>wateryShlorp(0.35,0.12),i*90);}
-function playPop(){wetSquelch(0.35,0.5,0.09);}
+function playTouch(){wetSq(0.5,1.5+Math.random(),0.08);setTimeout(()=>wetSq(0.3,1+Math.random(),0.06),40);}
+let lsnd=0;
+function playStretch(sp){if(muted||sp<1.5)return;const n=Date.now();if(n-lsnd<90)return;lsnd=n;wetSq(0.28,0.4+Math.random()*0.4,0.07);}
+function playRelease(){wetSq(0.32,0.2,0.1);setTimeout(()=>wetSq(0.15,0.1,0.08),60);}
+function playSquish(){shlorp(0.65,0.22);for(let i=0;i<4;i++)setTimeout(()=>wetSq(0.4,0.5+Math.random(),0.06),i*40);}
+function playMix(){for(let i=0;i<6;i++)setTimeout(()=>shlorp(0.35,0.12),i*90);}
+function playPop(){wetSq(0.35,0.5,0.09);}
 function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
 function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
 
-// ── TOAST ──────────────────────────────────────
 function showToast(msg){
   document.querySelectorAll('.toast').forEach(t=>t.remove());
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),2300);
 }
 
-// ── RESIZE ─────────────────────────────────────
-window.addEventListener('resize',()=>{setSize();recalcNatural();initSlime();dCtx.clearRect(0,0,W,H);});
+window.addEventListener('resize',()=>{setSize();reNatural();initSlime();strokes=[];});
 
-// ── BOOT ──────────────────────────────────────
-buildUI();
-initSlime();
-loop();
-showToast('🧪 Welcome! Squish · Draw · Add Bubbles!');
+buildUI();initSlime();loop();
+showToast('🧪 Draw inside the slime — it squishes and moves your art!');
 </script>
 </body>
 </html>
