@@ -646,36 +646,67 @@ function minimax(b, depth, alpha, beta, maximizing){
   }
 }
 
+function aiPickBest(moves, depth){
+  if(difficulty===1) return moves[Math.floor(Math.random()*moves.length)];
+  let best=null, bestVal=-Infinity;
+  moves.forEach(m=>{
+    const nb=cloneBoard(board);applyMove(nb,m);
+    const v=minimax(nb,depth,-Infinity,Infinity,false);
+    if(v>bestVal){bestVal=v;best=m;}
+  });
+  return best;
+}
+
 function aiMove(){
   const moves=getMoves(board,2);
   if(!moves.length) return;
-  let best=null, bestVal=-Infinity;
-  const depths=[0,1,2,3]; // baby=random, sea=1, old=2, demon=3
+  const depths=[0,1,2,3];
   const depth=depths[Math.min(difficulty-1,3)];
-  aiDeadline=Date.now()+800; // 800ms max think time!
+  aiDeadline=Date.now()+800;
 
-  if(difficulty===1){
-    // Baby: random move
-    best=moves[Math.floor(Math.random()*moves.length)];
-  } else {
-    moves.forEach(m=>{
-      const nb=cloneBoard(board);applyMove(nb,m);
-      const v=minimax(nb,depth,-Infinity,Infinity,false);
-      if(v>bestVal){bestVal=v;best=m;}
-    });
+  // Pick the best first move
+  const best=aiPickBest(moves, depth);
+  if(!best) return;
+
+  history.push(cloneBoard(board));
+  applyMove(board,best);
+  checkKings();
+
+  // ── MULTI-JUMP CHAIN for AI ──────────────────────
+  // If the AI just jumped, keep jumping with the same piece!
+  if(best.capRow!==undefined){
+    let cr=best.toRow, cc=best.toCol;
+    let safetyCount=0; // prevent infinite loop
+    while(safetyCount++<8){
+      const moreJumps=getPieceMoves(board,cr,cc)
+        .filter(m=>m.capRow!==undefined);
+      if(!moreJumps.length) break;
+      // Pick best follow-up jump (or random for Baby)
+      let next;
+      if(difficulty===1){
+        next=moreJumps[Math.floor(Math.random()*moreJumps.length)];
+      } else {
+        // Pick jump that captures the most valuable position
+        let bestScore=-Infinity;
+        moreJumps.forEach(m=>{
+          const nb=cloneBoard(board);applyMove(nb,m);
+          const v=evaluate(nb);
+          if(v>bestScore){bestScore=v;next=m;}
+        });
+      }
+      applyMove(board,next);
+      checkKings();
+      cr=next.toRow; cc=next.toCol;
+    }
   }
-  if(best){
-    history.push(cloneBoard(board));
-    applyMove(board,best);
-    checkKings();
-    updateStatus();
-    if(checkGameOver()) return;
-    turn=1;
-    setStatus('Pick a glowing turtle! 🐢');
-    document.getElementById('turnLabel').textContent='Your turn';
-    document.getElementById('turnTurtle').textContent='🐢';
-    refreshMoveables();
-  }
+
+  updateStatus();
+  if(checkGameOver()) return;
+  turn=1;
+  setStatus('Pick a glowing turtle! 🐢');
+  document.getElementById('turnLabel').textContent='Your turn';
+  document.getElementById('turnTurtle').textContent='🐢';
+  refreshMoveables();
 }
 
 // ── PLAYER INTERACTION ─────────────────────────────
