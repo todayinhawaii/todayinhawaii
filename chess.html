@@ -24,7 +24,7 @@
       position:absolute;inset:0;
       width:100%;height:100%;
       object-fit:cover;      /* fills screen, crops edges */
-      opacity:0.55;          /* subtle — doesn't overpower board */
+      opacity:0.72;          /* more visible through transparent board */
       pointer-events:none;
       z-index:0;
       display:none;          /* hidden until loaded */
@@ -107,9 +107,11 @@
     }
     #boardCanvas{
       display:block;touch-action:none;cursor:pointer;
-      box-shadow:0 0 0 3px rgba(200,168,0,0.4),0 0 30px rgba(120,80,0,0.3),
-        0 8px 40px rgba(0,0,0,0.8);
+      box-shadow:0 0 0 3px rgba(0,180,255,0.4),
+        0 0 30px rgba(0,130,220,0.3),
+        0 8px 40px rgba(0,0,0,0.6);
       border-radius:4px;
+      background:transparent; /* lets video show through gaps */
     }
 
     #capturedWrap{
@@ -249,7 +251,7 @@ const vid=document.getElementById('bgVideo');
 if(vid){
   vid.addEventListener('playing',()=>{
     vid.style.transition='opacity 1.5s ease';
-    vid.style.opacity='0.55';
+    vid.style.opacity='0.72';
   });
 }
 </script>
@@ -357,7 +359,16 @@ function sizeBoard(){
   const availW = wrap.clientWidth - 4;
   const availH = wrap.clientHeight - 4;
   const isMobile = window.innerWidth <= 768;
-  let avail = Math.min(availW, availH, isMobile ? 99999 : 700);
+
+  let avail;
+  if(isMobile){
+    // Mobile: fill available space
+    avail = Math.min(availW, availH);
+  } else {
+    // Desktop: 20% bigger than before (was 700, now 840)
+    avail = Math.min(availW, availH, 840);
+  }
+
   SZ = Math.max(38, Math.floor(avail / 8));
   const total = SZ * 8;
   canvas.width        = total * PR;
@@ -688,33 +699,29 @@ function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save(); ctx.scale(PR,PR);
   const W=SZ*8;
-
-  // ── MERMAID OCEAN BOARD ─────────────────────────
-  // Draw the full board background first
-  const boardGrad=ctx.createLinearGradient(0,0,W,W);
-  boardGrad.addColorStop(0,'#0a1628');
-  boardGrad.addColorStop(0.5,'#0d2040');
-  boardGrad.addColorStop(1,'#0a1628');
-  ctx.fillStyle=boardGrad;
-  ctx.fillRect(0,0,W,W);
+  // Board background fully transparent — video shows through!
+  // Individual squares at 75% opacity painted below
 
   for(let r=0;r<8;r++) for(let c=0;c<8;c++){
     const dark=(r+c)%2===1;
     const x=c*SZ, y=r*SZ;
 
     if(dark){
-      // Deep ocean squares — rich teal/navy
+      // Deep ocean squares — 75% opacity so video shows through!
+      ctx.globalAlpha=0.75;
       const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
       g.addColorStop(0,'#1a4a6e');
       g.addColorStop(0.5,'#0d3554');
       g.addColorStop(1,'#0a2840');
       ctx.fillStyle=g;
       ctx.fillRect(x,y,SZ,SZ);
-      // Subtle wave shimmer on dark squares
-      ctx.fillStyle=`rgba(0,180,220,${0.04+0.03*Math.sin(glowT+r*0.7+c*0.5)})`;
+      // Wave shimmer
+      ctx.fillStyle=`rgba(0,180,220,${0.05+0.03*Math.sin(glowT+r*0.7+c*0.5)})`;
       ctx.fillRect(x,y,SZ,SZ);
+      ctx.globalAlpha=1;
     } else {
-      // Light ocean squares — pearl seafoam
+      // Light squares — 75% opacity so video shows through!
+      ctx.globalAlpha=0.75;
       const g=ctx.createLinearGradient(x,y,x+SZ,y+SZ);
       g.addColorStop(0,'#c8e8f0');
       g.addColorStop(0.4,'#b0d8e8');
@@ -722,8 +729,9 @@ function draw(){
       ctx.fillStyle=g;
       ctx.fillRect(x,y,SZ,SZ);
       // Pearl shimmer
-      ctx.fillStyle=`rgba(255,255,255,${0.08+0.06*Math.sin(glowT*1.3+c*0.6+r*0.4)})`;
+      ctx.fillStyle=`rgba(255,255,255,${0.08+0.05*Math.sin(glowT*1.3+c*0.6+r*0.4)})`;
       ctx.fillRect(x,y,SZ,SZ);
+      ctx.globalAlpha=1;
     }
 
     // Subtle sea texture lines on dark squares
