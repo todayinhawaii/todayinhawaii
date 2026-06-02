@@ -374,8 +374,10 @@ function sizeBoard(){
   canvas.style.width  = total + 'px';
   canvas.style.height = total + 'px';
 }
-// Wait for layout to settle before sizing
-setTimeout(sizeBoard, 60);
+// Run immediately so SZ has a value before drawBoard() starts
+sizeBoard();
+// Then run again after layout fully settles for accurate sizing
+setTimeout(sizeBoard, 80);
 
 // ── GAME STATE ─────────────────────────────────────
 // board[row][col]: null | {player:1or2, king:bool}
