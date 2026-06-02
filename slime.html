@@ -41,12 +41,15 @@
       display:flex;align-items:center;
     }
     #toolBar{
-      padding:8px 6px;display:flex;flex-direction:column;gap:5px;
+      padding:8px 6px;display:flex;flex-direction:column;gap:4px;
       background:rgba(13,17,23,0.95);border-radius:0 14px 14px 0;
       border:1px solid rgba(255,255,255,0.08);border-left:none;
-      transition:all 0.25s;overflow:hidden;
-      max-width:200px;
+      transition:all 0.25s;overflow-y:auto;overflow-x:hidden;
+      max-width:160px;
+      max-height:calc(100vh - 48px - 215px);
+      scrollbar-width:none;
     }
+    #toolBar::-webkit-scrollbar{display:none;}
     #toolBar.hidden{max-width:0;padding:8px 0;opacity:0;pointer-events:none;}
     #tbToggle{
       width:20px;height:56px;border-radius:0 10px 10px 0;
@@ -70,7 +73,10 @@
     .tool-btn.on .tlbl{color:#fff;}
 
     /* Color + sliders section */
-    .tool-ctrl{display:flex;flex-direction:column;align-items:center;gap:5px;padding:4px 0;}
+    .tool-ctrl{
+      display:flex;flex-direction:column;align-items:stretch;
+      gap:5px;padding:4px 0;width:100%;
+    }
     /* Live brush preview area */
     #brushPreview{
       width:68px;height:68px;border-radius:14px;
@@ -93,47 +99,46 @@
       text-transform:uppercase;letter-spacing:0.1em;
       text-shadow:0 0 6px rgba(255,255,255,0.3);
     }
-    /* Neon Vegas sliders */
-    .vslider{
+    /* Horizontal neon sliders — mobile friendly! */
+    .sldr-row{display:flex;align-items:center;gap:4px;width:100%;}
+    .sldr-lbl{font-size:8px;color:#aaa;font-weight:900;
+      text-transform:uppercase;white-space:nowrap;width:24px;text-align:right;flex-shrink:0;
+      text-shadow:0 0 6px rgba(255,255,255,0.3);}
+    .hslider{
       -webkit-appearance:none;appearance:none;
-      width:28px;height:60px;
-      writing-mode:vertical-lr;direction:rtl;
-      background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.1));
-      border-radius:14px;outline:none;cursor:pointer;
-      border:1px solid rgba(255,255,255,0.15);
+      flex:1;height:16px;border-radius:8px;
+      outline:none;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.12);
+      touch-action:none;
     }
-    .vslider::-webkit-slider-thumb{
+    .hslider::-webkit-slider-thumb{
       -webkit-appearance:none;
-      width:22px;height:22px;border-radius:50%;
-      background:radial-gradient(circle,#fff 30%,#aaa 100%);
-      box-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.3);
+      width:24px;height:24px;border-radius:50%;
       cursor:grab;
     }
-
     /* Vegas opacity display */
     #opacityVal{
-      font-size:9px;font-weight:900;
-      color:#ffd700;
+      font-size:9px;font-weight:900;color:#ffd700;
       text-shadow:0 0 8px rgba(255,215,0,0.6);
-      letter-spacing:0.05em;
+      width:26px;text-align:right;flex-shrink:0;
     }
-    /* Opacity slider — gold neon */
-    #brushOpacity{background:linear-gradient(180deg,rgba(255,215,0,0.15),rgba(255,140,0,0.1));}
+    /* Gold opacity slider */
+    #brushOpacity{background:linear-gradient(90deg,rgba(255,215,0,0.06),rgba(255,140,0,0.25));}
     #brushOpacity::-webkit-slider-thumb{
       background:radial-gradient(circle,#ffd700 30%,#ff8c00 100%);
-      box-shadow:0 0 12px rgba(255,215,0,0.8),0 0 24px rgba(255,140,0,0.4);
+      box-shadow:0 0 14px rgba(255,215,0,0.9),0 0 28px rgba(255,140,0,0.5);
     }
-    /* Size slider — cyan neon */
-    #brushSz{background:linear-gradient(180deg,rgba(34,211,238,0.15),rgba(34,211,238,0.06));}
+    /* Cyan size slider */
+    #brushSz{background:linear-gradient(90deg,rgba(34,211,238,0.06),rgba(34,211,238,0.25));}
     #brushSz::-webkit-slider-thumb{
       background:radial-gradient(circle,#88ffee 30%,#22d3ee 100%);
-      box-shadow:0 0 12px rgba(34,211,238,0.8),0 0 24px rgba(34,211,238,0.3);
+      box-shadow:0 0 14px rgba(34,211,238,0.9),0 0 28px rgba(34,211,238,0.4);
     }
-    /* Hard slider — pink neon */
-    #brushHard{background:linear-gradient(180deg,rgba(255,100,180,0.15),rgba(255,100,180,0.06));}
+    /* Pink hardness slider */
+    #brushHard{background:linear-gradient(90deg,rgba(255,100,180,0.06),rgba(255,100,180,0.25));}
     #brushHard::-webkit-slider-thumb{
       background:radial-gradient(circle,#ffaadd 30%,#ff69b4 100%);
-      box-shadow:0 0 12px rgba(255,105,180,0.8),0 0 24px rgba(255,105,180,0.3);
+      box-shadow:0 0 14px rgba(255,105,180,0.9),0 0 28px rgba(255,105,180,0.4);
     }
 
     /* Shelf */
@@ -278,18 +283,19 @@
         style="position:fixed;left:-999px;top:-999px;width:1px;height:1px;opacity:0;pointer-events:none;"
         oninput="setColor(this.value)">
       <div class="slider-wrap">
-        <span class="sldr-lbl">Size</span>
-        <input type="range" class="vslider" id="brushSz" min="1" max="50" value="8" orient="vertical">
-      </div>
-      <div class="slider-wrap">
-        <span class="sldr-lbl">Soft↔Hard</span>
-        <input type="range" class="vslider" id="brushHard" min="0" max="100" value="50" orient="vertical">
-
-      </div>
-      <div class="slider-wrap">
-        <span class="sldr-lbl">Opacity</span>
-        <input type="range" class="vslider" id="brushOpacity" min="5" max="100" value="80" orient="vertical">
-        <span class="sldr-lbl" id="opacityVal">80%</span>
+        <div class="sldr-row">
+          <span class="sldr-lbl">SZ</span>
+          <input type="range" class="hslider" id="brushSz" min="1" max="50" value="8">
+        </div>
+        <div class="sldr-row">
+          <span class="sldr-lbl">HRD</span>
+          <input type="range" class="hslider" id="brushHard" min="0" max="100" value="50">
+        </div>
+        <div class="sldr-row">
+          <span class="sldr-lbl">OPC</span>
+          <input type="range" class="hslider" id="brushOpacity" min="5" max="100" value="80">
+          <span id="opacityVal">80%</span>
+        </div>
       </div>
     </div>
   </div>
