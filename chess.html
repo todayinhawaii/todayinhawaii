@@ -62,11 +62,11 @@
 
     #statusBar{
       width:100%;max-width:440px;flex-shrink:0;
-      background:rgba(0,15,30,0.85);
-      border:1px solid rgba(0,200,255,0.25);
-      border-radius:12px;padding:6px 12px;
+      background:linear-gradient(135deg,rgba(0,10,30,0.92),rgba(0,20,50,0.88));
+      border:2px solid rgba(0,200,255,0.45);
+      border-radius:14px;padding:8px 12px;
       display:flex;align-items:center;justify-content:space-between;gap:6px;
-      box-shadow:0 0 12px rgba(0,150,220,0.12);
+      box-shadow:0 0 20px rgba(0,180,255,0.3),inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .turn-ind{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#fff;}
     .turn-icon{font-size:22px;}
@@ -94,27 +94,56 @@
       justify-content:space-between;flex-shrink:0;gap:6px;
     }
     .cap-row{
-      flex:1;padding:3px 8px;background:rgba(0,0,0,0.4);border-radius:8px;
-      border:1px solid rgba(200,168,0,0.15);font-size:14px;min-height:24px;
+      flex:1;padding:5px 10px;
+      background:linear-gradient(135deg,rgba(0,10,30,0.88),rgba(0,20,50,0.8));
+      border-radius:12px;
+      border:1px solid rgba(0,200,255,0.2);
+      font-size:15px;min-height:30px;
       overflow:hidden;white-space:nowrap;
+      box-shadow:0 0 8px rgba(0,150,220,0.1);
     }
-    .cap-lbl{font-size:7px;color:#9e7c00;font-weight:700;text-transform:uppercase;display:block;}
+    .cap-lbl{
+      font-size:8px;color:#00bcd4;font-weight:900;
+      text-transform:uppercase;letter-spacing:0.1em;
+      display:block;margin-bottom:1px;
+      text-shadow:0 0 6px rgba(0,200,255,0.4);
+    }
 
     #controls{
-      display:flex;gap:6px;flex-shrink:0;
+      display:flex;gap:7px;flex-shrink:0;
       width:100%;max-width:440px;
     }
     .ctrl{
-      flex:1;padding:9px 4px;border:none;border-radius:10px;
-      font-size:11px;font-weight:800;cursor:pointer;
+      flex:1;padding:11px 4px;border:none;border-radius:12px;
+      font-size:12px;font-weight:900;cursor:pointer;
       font-family:inherit;transition:all 0.12s;
+      letter-spacing:0.04em;text-transform:uppercase;
     }
-    .ctrl:active{transform:scale(0.93);}
-    .c-new{background:linear-gradient(135deg,#b8860b,#daa520);color:#fff;
-      box-shadow:0 3px 0 #5a4000,0 0 10px rgba(200,160,0,0.3);}
-    .c-undo{background:rgba(255,255,255,0.07);color:#aaa;box-shadow:0 3px 0 rgba(0,0,0,0.4);}
-    .c-diff{background:linear-gradient(135deg,#6a0dad,#9b30ff);color:#fff;
-      box-shadow:0 3px 0 #2a005a;}
+    .ctrl:active{transform:translateY(3px);}
+    .c-new{
+      background:linear-gradient(180deg,#22d3ee,#0288d1);color:#fff;
+      box-shadow:0 4px 0 #014f6e,0 0 16px rgba(34,211,238,0.4);
+      border:1px solid rgba(255,255,255,0.15);
+      text-shadow:0 1px 3px rgba(0,0,0,0.4);
+    }
+    .c-new:active{box-shadow:0 1px 0 #014f6e;}
+    .c-undo{
+      background:linear-gradient(180deg,#94a3b8,#64748b);color:#fff;
+      box-shadow:0 4px 0 #334155,0 0 8px rgba(100,116,139,0.3);
+      border:1px solid rgba(255,255,255,0.1);
+    }
+    .c-undo:active{box-shadow:0 1px 0 #334155;}
+    .c-diff{
+      background:linear-gradient(180deg,#a855f7,#7c3aed);color:#fff;
+      box-shadow:0 4px 0 #3b0080,0 0 16px rgba(168,85,247,0.4);
+      border:1px solid rgba(255,255,255,0.15);
+      animation:diffPulse 2s ease-in-out infinite;
+    }
+    .c-diff:active{box-shadow:0 1px 0 #3b0080;animation:none;}
+    @keyframes diffPulse{
+      0%,100%{box-shadow:0 4px 0 #3b0080,0 0 16px rgba(168,85,247,0.4);}
+      50%{box-shadow:0 4px 0 #3b0080,0 0 28px rgba(168,85,247,0.8),0 0 50px rgba(168,85,247,0.3);}
+    }
 
     .ov{
       position:fixed;inset:0;z-index:100;
@@ -202,36 +231,45 @@
 <div style="position:fixed;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(0,5,15,0.35) 0%,rgba(0,5,15,0.15) 50%,rgba(0,5,15,0.35) 100%);"></div>
 <script>
-// Ocean bubbles (show whether or not video is present)
-for(let i=0;i<20;i++){
-  const b=document.createElement('div'); b.className='sea-bubble';
-  const sz=6+Math.random()*22;
-  b.style.cssText=`width:${sz}px;height:${sz}px;
-    left:${Math.random()*100}%;bottom:${Math.random()*20}%;
-    animation-duration:${9+Math.random()*16}s;
-    animation-delay:${Math.random()*12}s;`;
-  document.getElementById('bg').appendChild(b);
-}
-['✦','🌊','✧','🐚','⋆','🧜','·','✦'].forEach(s=>{
-  const sp=document.createElement('div'); sp.className='sea-spark';
+// Sparkles appended to body — no #bg div needed
+['✦','🌊','✧','🐚','🧜‍♀️','⋆'].forEach(s=>{
+  const sp=document.createElement('div');
   sp.textContent=s;
-  sp.style.cssText=`left:${10+Math.random()*80}%;top:${10+Math.random()*80}%;
-    animation-duration:${4+Math.random()*7}s;
-    animation-delay:${Math.random()*6}s;`;
-  document.getElementById('bg').appendChild(sp);
+  sp.style.cssText='position:fixed;font-size:'+(14+Math.random()*10)+'px;'+
+    'left:'+(10+Math.random()*80)+'%;top:'+(10+Math.random()*80)+'%;'+
+    'pointer-events:none;z-index:1;opacity:0;'+
+    'animation:sparkDrift '+(4+Math.random()*6)+'s ease-in-out '+(Math.random()*5)+'s infinite;';
+  document.body.appendChild(sp);
 });
-// ── VIDEO PLAYLIST ───────────────────────────────
-// Video 1 plays via HTML autoplay above.
-// JS only handles advancing to videos 2-5 when each ends.
+</script>
+<script>
+// ── VIDEO PLAYLIST ─────────────────────────────
 const VIDS=['/chess_bg.mp4','/chess_bg2.mp4','/chess_bg3.mp4','/chess_bg4.mp4','/chess_bg5.mp4'];
-let vIdx=0;
+let vIdx=0, errStreak=0;
 const vid=document.getElementById('bgVideo');
 if(vid){
-  vid.onended=function(){
+  function goNext(){
+    errStreak=0;
     vIdx=(vIdx+1)%VIDS.length;
     vid.src=VIDS[vIdx];
+    vid.load();
     vid.play().catch(()=>{});
+  }
+  vid.onended = goNext;
+  vid.onerror = function(){
+    errStreak++;
+    if(errStreak>=VIDS.length){ errStreak=0; vid.src=VIDS[0]; vid.load(); vid.play().catch(()=>{}); return; }
+    goNext();
   };
+  // Stall detection: if currentTime frozen for 4s → reload
+  let lastT=-1;
+  setInterval(()=>{
+    if(vid.paused||vid.ended) return;
+    if(vid.currentTime>0 && vid.currentTime===lastT){
+      vid.load(); vid.play().catch(()=>{});
+    }
+    lastT=vid.currentTime;
+  },4000);
 }
 </script>
 <div id="wrap">
