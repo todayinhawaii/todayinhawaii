@@ -220,6 +220,29 @@ def get_lava_scores():
     scores = json.load(open(f)) if os.path.exists(f) else []
     return jsonify(scores[:10])
 
+@app.route('/turtles')
+def turtles_game():
+    return send_from_directory('.', 'turtles.html')
+
+@app.route('/turtle_score', methods=['POST'])
+def save_turtle_score():
+    import json, os
+    data = request.get_json()
+    f = 'turtle_scores.json'
+    scores = json.load(open(f)) if os.path.exists(f) else []
+    scores.append({'name':data.get('name','?'),'location':data.get('location','Hawaii'),
+                   'score':int(data.get('score',0)),'difficulty':int(data.get('difficulty',1))})
+    scores.sort(key=lambda x:x['score'],reverse=True)
+    json.dump(scores[:100],open(f,'w'))
+    return jsonify({'ok':True})
+
+@app.route('/turtle_scores')
+def get_turtle_scores():
+    import json, os
+    f = 'turtle_scores.json'
+    scores = json.load(open(f)) if os.path.exists(f) else []
+    return jsonify(scores[:10])
+
 @app.route('/card_<name>.jpg')
 def card_image(name):
     return send_from_directory('.', 'card_'+name+'.jpg')
