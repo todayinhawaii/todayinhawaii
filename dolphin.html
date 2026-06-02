@@ -69,6 +69,7 @@
     /* Game area */
     #gameWrap{position:relative;z-index:1;padding:10px 8px 40px;}
 
+    @keyframes stagePulse{0%{opacity:0.7;}100%{opacity:1;}}
     /* Card grid */
     #cardGrid{
       display:grid;
@@ -346,7 +347,12 @@ for(let i=0;i<30;i++){
 
 <!-- Game area -->
 <div id="gameWrap" style="display:none;">
-  <div id="cardGrid"></div>
+  <div id="stageBadge" style="display:none;text-align:center;
+  font-size:13px;font-weight:900;color:#00e5ff;
+  text-shadow:0 0 10px rgba(0,200,255,0.6);
+  padding:4px 0 2px;letter-spacing:0.05em;
+  animation:stagePulse 1.5s ease-in-out infinite alternate;"></div>
+<div id="cardGrid"></div>
 </div>
 
 <!-- Name Screen -->
@@ -440,6 +446,9 @@ let timerSecs=0,timerInterval=null;
 let gameStarted=false,gameOver=false;
 let muted=false,myRank=0;
 let displayScore=0;
+// Mobile 2-stage system
+let stage=1, allCards=[], stage1Count=30, stage2Start=30;
+const isMobile=()=>window.innerWidth<=640;
 
 // ── Name Entry ─────────────────────────────────
 document.getElementById('pName').addEventListener('input',checkReady);
@@ -491,16 +500,33 @@ function buildDeck(){
     const j=Math.floor(Math.random()*(i+1));
     [deck[i],deck[j]]=[deck[j],deck[i]];
   }
-  cards=deck;
+  if(isMobile()){
+    // Mobile: stage 1 = first 30 cards (15 pairs), stage 2 = rest
+    allCards=deck;
+    cards=deck.slice(0,stage1Count);
+  } else {
+    allCards=deck;
+    cards=deck;
+  }
 }
 
 // ── Render Grid ────────────────────────────────
 function renderGrid(){
   const grid=document.getElementById('cardGrid');
   grid.innerHTML='';
-
-  // Always 5 columns — big beautiful cards!
   grid.style.gridTemplateColumns='repeat(5,1fr)';
+
+  // Show stage badge on mobile
+  const badge=document.getElementById('stageBadge');
+  if(badge){
+    if(isMobile()){
+      badge.textContent=stage===1
+        ?'🐬 Stage 1 of 2 — 15 pairs':'🌊 Stage 2 of 2 — 11 pairs!';
+      badge.style.display='block';
+    } else {
+      badge.style.display='none';
+    }
+  }
 
   cards.forEach((card,idx)=>{
     const div=document.createElement('div');
@@ -620,7 +646,13 @@ function checkMatch(){
       canFlip=true;
 
       // Check win!
-      if(matchesFound===26) setTimeout(()=>winGame(),600);
+      const pairsInStage = Math.floor(cards.length/2);
+      if(matchesFound===pairsInStage && isMobile() && stage===1){
+        // Stage 1 complete on mobile! Load stage 2
+        setTimeout(()=>advanceStage(),800);
+      } else if(matchesFound===26 || (isMobile() && stage===2 && matchesFound===pairsInStage)){
+        setTimeout(()=>winGame(),600);
+      }
     },400);
   } else {
     // No match — flip back
@@ -641,6 +673,24 @@ function checkMatch(){
 }
 
 // ── Win! ────────────────────────────────────────
+// ── Stage Advance (mobile) ─────────────────────
+function advanceStage(){
+  stage=2;
+  matchesFound=0; // reset match counter for stage 2
+  // Load remaining cards
+  cards=allCards.slice(stage1Count);
+  // Quick flash animation
+  const grid=document.getElementById('cardGrid');
+  grid.style.transition='opacity 0.3s';
+  grid.style.opacity='0';
+  setTimeout(()=>{
+    renderGrid();
+    grid.style.opacity='1';
+    showToast('🌊 Stage 2!! '+(cards.length/2)+' more pairs!!');
+    playLevelUp();
+  },320);
+}
+
 async function winGame(){
   gameOver=true;
   clearInterval(timerInterval);
@@ -689,6 +739,7 @@ function playAgain(){
   cards=[];flippedCards=[];canFlip=true;
   matchesFound=0;totalFlips=0;timerSecs=0;
   gameStarted=false;gameOver=false;displayScore=0;
+  stage=1;allCards=[];
   clearInterval(timerInterval);
   document.getElementById('timerDisplay').textContent='0:00';
   document.getElementById('scoreDisplay').textContent='0';
@@ -814,6 +865,31 @@ function playWinSound(){
   notes.forEach((f,i)=>playTone(f,'sine',0.5,0.2,i*0.08));
 }
 function toggleMute(){muted=!muted;document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';}
+function playLevelUp(){
+  try{
+    const c=new(window.AudioContext||window.webkitAudioContext)();
+    [523,659,784,1047].forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,c.currentTime+i*0.1);
+      g.gain.linearRampToValueAtTime(0.3,c.currentTime+i*0.1+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.1+0.18);
+      o.start(c.currentTime+i*0.1);o.stop(c.currentTime+i*0.1+0.2);
+    });
+  }catch(e){}
+}
+function showToast(msg){
+  document.querySelectorAll('.toast-msg').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className='toast-msg';
+  t.textContent=msg;
+  t.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);'+
+    'background:rgba(0,0,0,0.85);color:#00e5ff;padding:8px 18px;'+
+    'border-radius:99px;font-size:13px;font-weight:700;z-index:999;'+
+    'animation:tpop 2.5s ease forwards;white-space:nowrap;pointer-events:none;'+
+    'border:1px solid rgba(0,200,255,0.3);';
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
+}
 function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
 
 // ── Leaderboard ────────────────────────────────
