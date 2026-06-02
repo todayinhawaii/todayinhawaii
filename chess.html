@@ -222,14 +222,19 @@
 </head>
 <body>
 <!-- Video plays directly — no container nesting issues! -->
-<video id="bgVideo" autoplay muted playsinline
+<video id="vid1" autoplay muted playsinline
   style="position:fixed;top:0;left:0;width:100%;height:100%;
-         object-fit:cover;opacity:0.85;pointer-events:none;z-index:0;">
+         object-fit:cover;opacity:0.85;pointer-events:none;z-index:0;
+         transition:opacity 0.8s ease;">
   <source src="/chess_bg.mp4" type="video/mp4">
 </video>
-<!-- Subtle dark vignette so board stays readable -->
+<video id="vid2" muted playsinline
+  style="position:fixed;top:0;left:0;width:100%;height:100%;
+         object-fit:cover;opacity:0;pointer-events:none;z-index:0;
+         transition:opacity 0.8s ease;">
+</video>
 <div style="position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,5,15,0.35) 0%,rgba(0,5,15,0.15) 50%,rgba(0,5,15,0.35) 100%);"></div>
+  background:linear-gradient(180deg,rgba(0,5,15,0.3) 0%,rgba(0,5,15,0.1) 50%,rgba(0,5,15,0.3) 100%);"></div>
 <script>
 // Sparkles appended to body — no #bg div needed
 ['✦','🌊','✧','🐚','🧜‍♀️','⋆'].forEach(s=>{
@@ -243,33 +248,59 @@
 });
 </script>
 <script>
-// ── VIDEO PLAYLIST ─────────────────────────────
+// ── SEAMLESS VIDEO CROSSFADE ──────────────────
+// Two video elements swap — next video preloads while current plays!
+// Result: zero black gap between videos
 const VIDS=['/chess_bg.mp4','/chess_bg2.mp4','/chess_bg3.mp4','/chess_bg4.mp4','/chess_bg5.mp4'];
-let vIdx=0, errStreak=0;
-const vid=document.getElementById('bgVideo');
-if(vid){
-  function goNext(){
-    errStreak=0;
-    vIdx=(vIdx+1)%VIDS.length;
-    vid.src=VIDS[vIdx];
-    vid.load();
-    vid.play().catch(()=>{});
-  }
-  vid.onended = goNext;
-  vid.onerror = function(){
-    errStreak++;
-    if(errStreak>=VIDS.length){ errStreak=0; vid.src=VIDS[0]; vid.load(); vid.play().catch(()=>{}); return; }
-    goNext();
+let vIdx=0, active=0; // active=0 means vid1 is showing
+const vids=[document.getElementById('vid1'), document.getElementById('vid2')];
+
+function crossfadeTo(src){
+  const next = 1-active;    // the hidden video
+  const vNext = vids[next];
+  const vCurr = vids[active];
+
+  // Load next video while current still plays
+  vNext.src = src;
+  vNext.load();
+
+  vNext.oncanplay = function(){
+    vNext.oncanplay = null;
+    vNext.play().catch(()=>{});
+    // Crossfade: show next, hide current
+    vNext.style.opacity = '0.85';
+    vCurr.style.opacity = '0';
+    // After fade completes, pause the hidden one
+    setTimeout(()=>{ vCurr.pause(); vCurr.src=''; }, 900);
+    active = next;
   };
-  // Stall detection: if currentTime frozen for 4s → reload
-  let lastT=-1;
-  setInterval(()=>{
-    if(vid.paused||vid.ended) return;
-    if(vid.currentTime>0 && vid.currentTime===lastT){
-      vid.load(); vid.play().catch(()=>{});
-    }
-    lastT=vid.currentTime;
-  },4000);
+
+  // If next video errors (missing file) — skip it
+  vNext.onerror = function(){
+    vNext.onerror = null;
+    vIdx = (vIdx+1) % VIDS.length;
+    crossfadeTo(VIDS[vIdx]);
+  };
+}
+
+// When active video ends → load + crossfade to next
+function onVideoEnd(){
+  vIdx = (vIdx+1) % VIDS.length;
+  crossfadeTo(VIDS[vIdx]);
+}
+
+// Attach ended listener to both videos
+vids.forEach(v => v.addEventListener('ended', onVideoEnd));
+
+// Start preloading video 2 immediately while video 1 plays
+if(vids[0] && VIDS.length > 1){
+  // Pre-warm video 2 after 1 second
+  setTimeout(()=>{
+    const preload = document.createElement('video');
+    preload.src = VIDS[1];
+    preload.load(); // just triggers caching
+    preload.onerror = ()=>{};
+  }, 1000);
 }
 </script>
 <div id="wrap">
