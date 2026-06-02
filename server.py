@@ -201,6 +201,25 @@ def slime_game():
 def lava_game():
     return send_from_directory('.', 'lava.html')
 
+@app.route('/lava_score', methods=['POST'])
+def save_lava_score():
+    import json, os
+    data = request.get_json()
+    f = 'lava_scores.json'
+    scores = json.load(open(f)) if os.path.exists(f) else []
+    scores.append({'name':data.get('name','?'),'location':data.get('location','Hawaii'),
+                   'score':int(data.get('score',0))})
+    scores.sort(key=lambda x:x['score'],reverse=True)
+    json.dump(scores[:100],open(f,'w'))
+    return jsonify({'ok':True})
+
+@app.route('/lava_scores')
+def get_lava_scores():
+    import json, os
+    f = 'lava_scores.json'
+    scores = json.load(open(f)) if os.path.exists(f) else []
+    return jsonify(scores[:10])
+
 @app.route('/card_<name>.jpg')
 def card_image(name):
     return send_from_directory('.', 'card_'+name+'.jpg')
