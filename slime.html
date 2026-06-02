@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🧪 The Slime Factory — Today in Hawaii</title>
+  <title>🧪 The Slime Artists Factory — Today in Hawaii</title>
   <link rel="icon" href="/icon-192.png">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -52,15 +52,16 @@
     #tbToggle:hover{color:#fff;background:rgba(255,255,255,0.1);}
 
     .tool-btn{
-      width:58px;height:44px;border-radius:11px;cursor:pointer;
+      width:110px;height:40px;border-radius:11px;cursor:pointer;
       background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.09);
-      font-size:18px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
-      gap:7px;padding:0 8px;transition:all 0.12s;color:#fff;white-space:nowrap;
+      font-size:17px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
+      gap:8px;padding:0 10px;transition:all 0.12s;color:#fff;
+      white-space:nowrap;overflow:hidden;
     }
     .tool-btn:active{transform:scale(0.88);}
     .tool-btn.on{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.5);
       box-shadow:0 0 10px rgba(255,255,255,0.2);}
-    .tlbl{font-size:10px;color:rgba(255,255,255,0.7);font-weight:700;letter-spacing:0.02em;}
+    .tlbl{font-size:11px;color:rgba(255,255,255,0.75);font-weight:700;}
     .tool-btn.on .tlbl{color:#fff;}
 
     /* Color + sliders section */
@@ -148,7 +149,7 @@
 <body>
 
 <div id="hdr">
-  <div><div class="hdr-title">🧪 THE SLIME FACTORY</div>
+  <div><div class="hdr-title">🧪 THE SLIME ARTISTS FACTORY</div>
     <div class="hdr-hint" id="hdrHint">👆 Squish · ✏️ Draw · 💬 Write!</div></div>
   <div class="hdr-right">
     <button class="icon-btn" onclick="undoStroke()" title="Undo">↩️</button>
@@ -179,9 +180,14 @@
         <input type="range" class="vslider" id="brushSz" min="1" max="50" value="8" orient="vertical">
       </div>
       <div class="slider-wrap">
-        <span class="sldr-lbl">Soft↕Hard</span>
+        <span class="sldr-lbl">Soft↔Hard</span>
         <input type="range" class="vslider" id="brushHard" min="0" max="100" value="50" orient="vertical">
         <div id="hardDot"></div>
+      </div>
+      <div class="slider-wrap">
+        <span class="sldr-lbl">Opacity</span>
+        <input type="range" class="vslider" id="brushOpacity" min="5" max="100" value="80" orient="vertical">
+        <span class="sldr-lbl" id="opacityVal">80%</span>
       </div>
     </div>
   </div>
@@ -225,7 +231,7 @@
 
 <script>
 // ════════════════════════════════════════════════
-// THE SLIME FACTORY — Live Warp Art Studio
+// THE SLIME ARTISTS FACTORY — Live Warp Art Studio
 // Today in Hawaii © 2026
 //
 // KEY ARCHITECTURE:
@@ -328,6 +334,7 @@ function startStroke(x,y){
     tool:currentTool, color:drawColor,
     size:brushSz*PR*0.6,
     hardness:brushHardness,
+    opacity:brushOpacity,   // store opacity with each stroke!
     pts:[{x,y}]
   };
 }
@@ -361,8 +368,11 @@ function renderStroke(stroke){
   if(!stroke||stroke.pts.length<1) return;
   const warped=stroke.pts.map(p=>warpPoint(p.x,p.y));
   const sz=stroke.size;
+  const op=stroke.opacity!==undefined?stroke.opacity:0.8; // default 80%
   ctx.save();
   ctx.lineCap='round'; ctx.lineJoin='round';
+  // Apply stroke-level opacity — multiplied with per-tool alpha below
+  ctx.globalAlpha=op;
 
   switch(stroke.tool){
 
@@ -543,6 +553,8 @@ function toggleToolbar(){
 }
 
 let brushHardness=0.5; // 0=soft 1=hard
+let brushOpacity=0.8;  // 0.05 to 1.0
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('brushHard').addEventListener('input',e=>{
     brushHardness=parseInt(e.target.value)/100;
@@ -550,6 +562,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   document.getElementById('brushSz').addEventListener('input',e=>{
     brushSz=parseInt(e.target.value);
+  });
+  document.getElementById('brushOpacity').addEventListener('input',e=>{
+    brushOpacity=parseInt(e.target.value)/100;
+    document.getElementById('opacityVal').textContent=e.target.value+'%';
   });
   updateHardDot();
 });
@@ -901,27 +917,45 @@ window.addEventListener('resize',()=>{setSize();reNatural();initSlime();strokes=
 
 buildUI();initSlime();loop();
 
-// Pre-warm ALL fonts so first use never fails!
+// Reliable font preload — hidden div forces browser to render all fonts NOW
 (function preloadFonts(){
-  const fonts=[
-    '900 42px system-ui',
-    '900 42px Georgia',
-    "900 38px 'Courier New'",
-    'italic 900 42px Georgia',
-    '900 48px fantasy',
-  ];
-  // Draw each font off-screen to force browser to load it
-  fonts.forEach(f=>{
-    ctx.save();
-    ctx.font=f.replace(/(\d+)px/,Math.round(42*PR)+'px');
-    ctx.globalAlpha=0.001; // invisible but loaded!
-    ctx.fillText('🌺',W*2,H*2); // way off screen
-    ctx.restore();
+  const div=document.createElement('div');
+  div.style.cssText='position:fixed;left:-9999px;top:-9999px;opacity:0.001;font-size:42px;pointer-events:none;';
+  div.innerHTML=
+    '<span style="font:900 42px system-ui">Aa</span>'+
+    '<span style="font:900 42px Georgia">Aa</span>'+
+    "<span style="font:900 38px 'Courier New'">Aa</span>"+
+    '<span style="font:italic 900 42px Georgia">Aa</span>'+
+    '<span style="font:900 48px fantasy">Aa</span>';
+  document.body.appendChild(div);
+
+  // Also draw each onto canvas to warm GPU texture cache
+  function warmCanvas(){
+    const fonts=[
+      '900 '+Math.round(42*PR)+'px system-ui',
+      '900 '+Math.round(42*PR)+'px Georgia',
+      "900 "+Math.round(38*PR)+"px 'Courier New'",
+      'italic 900 '+Math.round(42*PR)+'px Georgia',
+      '900 '+Math.round(48*PR)+'px fantasy',
+    ];
+    fonts.forEach(f=>{
+      ctx.save();
+      ctx.globalAlpha=0.001;
+      ctx.font=f;
+      ctx.fillStyle='#fff';
+      ctx.fillText('Aa',-9999,-9999);
+      ctx.restore();
+    });
+  }
+
+  // Warm immediately
+  warmCanvas();
+  // Warm again after fonts definitely loaded
+  document.fonts.ready.then(()=>{
+    warmCanvas();
+    setTimeout(()=>div.remove(),2000);
+    console.log('✅ All fonts ready!');
   });
-  // Also trigger document.fonts.load for each
-  Promise.all(fonts.map(f=>document.fonts.load(f.replace(/(\d+)px/,Math.round(42*PR)+'px'))))
-    .then(()=>console.log('✅ All fonts preloaded!'))
-    .catch(()=>{});
 })();
 
 showToast('🧪 Draw inside the slime — it squishes and moves your art!');
