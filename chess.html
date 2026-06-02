@@ -219,10 +219,10 @@
 <body>
 <div id="bg">
   <!-- chess_bg.mp4 through chess_bg5.mp4 — plays in sequence, loops! -->
-  <video id="bgVideo"
-    autoplay muted playsinline
+  <video id="bgVideo" autoplay muted playsinline
     style="position:absolute;inset:0;width:100%;height:100%;
            object-fit:cover;opacity:0.72;pointer-events:none;z-index:0;">
+    <source src="/chess_bg.mp4" type="video/mp4">
   </video>
   <div id="bgOverlay"></div>
 </div>
@@ -245,32 +245,18 @@ for(let i=0;i<20;i++){
     animation-delay:${Math.random()*6}s;`;
   document.getElementById('bg').appendChild(sp);
 });
-// ── VIDEO PLAYLIST — ultra simple ───────────────
+// ── VIDEO PLAYLIST ───────────────────────────────
+// Video 1 plays via HTML autoplay above.
+// JS only handles advancing to videos 2-5 when each ends.
 const VIDS=['/chess_bg.mp4','/chess_bg2.mp4','/chess_bg3.mp4','/chess_bg4.mp4','/chess_bg5.mp4'];
 let vIdx=0;
 const vid=document.getElementById('bgVideo');
-
 if(vid){
-  // Just set src and play — browser handles the rest!
-  function playVid(i){
-    vid.src=VIDS[i];
+  vid.onended=function(){
+    vIdx=(vIdx+1)%VIDS.length;
+    vid.src=VIDS[vIdx];
     vid.play().catch(()=>{});
-  }
-
-  // Advance to next when current ends
-  vid.onended=()=>{
-    vIdx=(vIdx+1)%VIDS.length;
-    playVid(vIdx);
   };
-
-  // Skip missing files
-  vid.onerror=()=>{
-    vIdx=(vIdx+1)%VIDS.length;
-    setTimeout(()=>playVid(vIdx),100);
-  };
-
-  // Start!
-  playVid(0);
 }
 </script>
 <div id="wrap">
