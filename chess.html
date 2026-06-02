@@ -14,33 +14,8 @@
       font-family:system-ui,sans-serif;
       user-select:none;-webkit-user-select:none;
     }
-    #bg{
-      position:fixed;inset:0;z-index:0;
-      background:#020e1a; /* fallback if no video */
-      overflow:hidden;
-    }
-    /* Mermaid video — always visible */
-    #bgVideo{
-      position:absolute;inset:0;
-      width:100%;height:100%;
-      object-fit:cover;
-      opacity:0.72;
-      pointer-events:none;
-      z-index:0;
-      display:block;   /* ALWAYS visible — was wrongly set to none! */
-    }
-    /* Dark ocean overlay on top of video */
-    #bgOverlay{
-      position:absolute;inset:0;z-index:1;
-      background:
-        radial-gradient(ellipse at 50% 50%,rgba(0,5,20,0.45) 0%,transparent 70%),
-        linear-gradient(180deg,
-          rgba(2,8,18,0.55) 0%,
-          rgba(2,8,18,0.25) 40%,
-          rgba(2,8,18,0.25) 60%,
-          rgba(2,8,18,0.6)  100%);
-      pointer-events:none;
-    }
+    /* Fallback body bg if no video */
+    body{ background:#020e1a; }
     /* Floating ocean bubbles */
     .sea-bubble{
       position:absolute;border-radius:50%;pointer-events:none;
@@ -67,7 +42,7 @@
       100%{opacity:0;transform:translateY(-60px) rotate(360deg);}
     }
     #wrap{
-      position:relative;z-index:1;
+      position:relative;z-index:2;
       display:flex;flex-direction:column;align-items:center;
       height:100vh;padding:5px 8px 5px;gap:5px;
     }
@@ -217,15 +192,15 @@
   </style>
 </head>
 <body>
-<div id="bg">
-  <!-- chess_bg.mp4 through chess_bg5.mp4 — plays in sequence, loops! -->
-  <video id="bgVideo" autoplay muted playsinline
-    style="position:absolute;inset:0;width:100%;height:100%;
-           object-fit:cover;opacity:0.72;pointer-events:none;z-index:0;">
-    <source src="/chess_bg.mp4" type="video/mp4">
-  </video>
-  <div id="bgOverlay"></div>
-</div>
+<!-- Video plays directly — no container nesting issues! -->
+<video id="bgVideo" autoplay muted playsinline
+  style="position:fixed;top:0;left:0;width:100%;height:100%;
+         object-fit:cover;opacity:0.85;pointer-events:none;z-index:0;">
+  <source src="/chess_bg.mp4" type="video/mp4">
+</video>
+<!-- Subtle dark vignette so board stays readable -->
+<div style="position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,5,15,0.35) 0%,rgba(0,5,15,0.15) 50%,rgba(0,5,15,0.35) 100%);"></div>
 <script>
 // Ocean bubbles (show whether or not video is present)
 for(let i=0;i<20;i++){
@@ -618,14 +593,27 @@ function doAI(){
       if(v>bestV){bestV=v;best=m;}
     }
   }
-  if(best) doMove(best,'b');
+  if(best) {
+    // Announce AI move BEFORE executing so player sees what happened
+    const fromSq=String.fromCharCode(97+best.fc)+(8-best.fr);
+    const toSq=String.fromCharCode(97+best.tc)+(8-best.tr);
+    const names={K:'King',Q:'Queen',R:'Rook',B:'Bishop',N:'Knight',P:'Pawn'};
+    const piece=board[best.fr][best.fc];
+    const pName=piece?names[piece.type]:'Piece';
+    const wasCapture=board[best.tr][best.tc];
+    const moveDesc=wasCapture
+      ? `AI ${pName} captures on ${toSq}! ⚔️`
+      : `AI ${pName} moves to ${toSq} ♟`;
+    doMove(best,'b');
+    setStatus(moveDesc);
+    showToast(moveDesc);
+  }
   aiThinking=false;
   if(gameOver) return;
   turn='w'; updateTurnDisplay();
   const wm=allMoves(board,'w');
   if(!wm.length){ endGame(inCheck(board,'w')?'b':'draw'); return; }
-  if(inCheck(board,'w')) setStatus('⚠️ CHECK! Your king is in danger!!');
-  else setStatus('Your move — select a white piece!');
+  if(inCheck(board,'w')) setStatus('⚠️ CHECK!! Your king is in danger!!');
 }
 
 // ── EXECUTE MOVE ─────────────────────────────────
@@ -677,9 +665,10 @@ function handleClick(row,col){
     const bm=allMoves(board,'b');
     if(!bm.length){ endGame(inCheck(board,'b')?'w':'draw'); return; }
     if(inCheck(board,'b')) showToast('💥 AI King is in CHECK!');
-    turn='b'; updateTurnDisplay(); setStatus('AI thinking... ♟');
+    turn='b'; updateTurnDisplay();
+    setStatus('🤔 AI is thinking...');
     aiThinking=true;
-    setTimeout(doAI, 350+Math.random()*250);
+    setTimeout(doAI, 900+Math.random()*600);
     return;
   }
   // Select a white piece
@@ -768,13 +757,18 @@ function draw(){
   corners.forEach(({x,y,e})=>ctx.fillText(e,x,y));
   ctx.globalAlpha=1;
 
-  // Last move highlight
+  // Last move highlight — bright and obvious!
   if(lastMove){
-    [lastMove.fr,lastMove.tr].forEach((r,i)=>{
-      const c=i===0?lastMove.fc:lastMove.tc;
-      ctx.fillStyle='rgba(205,210,106,0.7)';
-      ctx.fillRect(c*SZ,r*SZ,SZ,SZ);
-    });
+    // "From" square — warm yellow
+    ctx.fillStyle='rgba(255,220,50,0.55)';
+    ctx.fillRect(lastMove.fc*SZ,lastMove.fr*SZ,SZ,SZ);
+    // "To" square — bright green pulse
+    ctx.fillStyle=`rgba(50,220,100,${0.5+0.2*Math.sin(glowT*3)})`;
+    ctx.fillRect(lastMove.tc*SZ,lastMove.tr*SZ,SZ,SZ);
+    // Arrow-like border on destination
+    ctx.strokeStyle=`rgba(50,255,80,${0.8+0.2*Math.sin(glowT*3)})`;
+    ctx.lineWidth=3;
+    ctx.strokeRect(lastMove.tc*SZ+2,lastMove.tr*SZ+2,SZ-4,SZ-4);
   }
 
   // Check highlight
