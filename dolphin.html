@@ -792,6 +792,7 @@ function checkMatch(){
       el2.classList.add('matched');
       // Inject overlay into .card-front (works with 3D flip)
       [el1,el2].forEach(el=>{
+        if(!el) return;
         const front=el.querySelector('.card-front');
         if(front){
           const ov=document.createElement('div');
@@ -824,7 +825,7 @@ function checkMatch(){
       }
 
       flippedCards=[];
-      canFlip=true;
+      canFlip=true; // always reset before win check
 
       // Check win — use allCards directly, not cards (avoids sync bug)
       const need1 = Math.floor(allCards.s1.length/2); // always 15
@@ -838,17 +839,24 @@ function checkMatch(){
   } else {
     // No match — flip back
     setTimeout(()=>{
-      const el1=document.getElementById('card-'+i1);
-      const el2=document.getElementById('card-'+i2);
-      el1.classList.add('wrong');el2.classList.add('wrong');
-      setTimeout(()=>{
-        el1.classList.remove('wrong');el2.classList.remove('wrong');
-      },400);
-      el1.classList.remove('flipped');el2.classList.remove('flipped');
-      c1.flipped=false;c2.flipped=false;
-      playNoMatchSound();
-      flippedCards=[];
-      canFlip=true;
+      try{
+        const el1=document.getElementById('card-'+i1);
+        const el2=document.getElementById('card-'+i2);
+        if(el1){ el1.classList.add('wrong'); }
+        if(el2){ el2.classList.add('wrong'); }
+        setTimeout(()=>{
+          if(el1){ el1.classList.remove('wrong'); el1.classList.remove('flipped'); }
+          if(el2){ el2.classList.remove('wrong'); el2.classList.remove('flipped'); }
+        },400);
+        c1.flipped=false; c2.flipped=false;
+        try{ playNoMatchSound(); }catch(e){}
+      }catch(e){
+        console.error('No-match handler error:',e);
+      }finally{
+        // ALWAYS reset — game must never freeze
+        flippedCards=[];
+        canFlip=true;
+      }
     },900);
   }
 }
