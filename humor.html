@@ -214,7 +214,18 @@
     .confetti{position:fixed;pointer-events:none;z-index:9999;}
     .back{text-align:center;margin-top:14px;font-size:13px;color:#666600;}
     .back a{color:#ff8c00;text-decoration:none;font-weight:600;}
-  </style>
+  
+    .signup-form{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;align-items:center;}
+    .signup-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.07);
+      border:2px solid rgba(255,255,255,0.2);border-radius:12px;color:#fff;
+      font-size:14px;font-family:system-ui,sans-serif;outline:none;text-align:center;
+      transition:border-color 0.2s;}
+    .signup-input:focus{border-color:rgba(255,255,255,0.6);}
+    .signup-input::placeholder{color:rgba(255,255,255,0.35);}
+    .signup-label{font-size:9px;font-weight:900;text-transform:uppercase;
+      letter-spacing:0.12em;color:rgba(255,255,255,0.5);
+      margin-bottom:-6px;align-self:flex-start;padding-left:4px;}
+    </style>
 </head>
 <body>
 <div id="funBg"></div>
@@ -234,7 +245,21 @@
 
   <div class="spin-count" id="spinCount">😂 Who are you TODAY? Spin and find out!</div>
 
-  <button class="spin-btn glowing" id="spinBtn" onclick="spinWheel()">
+  <div class="signup-form">
+            <span class="signup-label">Your Full Name</span>
+            <input class="signup-input" id="playerName"
+              placeholder="e.g. Sarah Johnson" maxlength="30"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerUser').focus()">
+            <span class="signup-label">Choose a Username</span>
+            <input class="signup-input" id="playerUser"
+              placeholder="e.g. SurfQueen808" maxlength="20"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
+            <span class="signup-label">Country, City or Island 🌺</span>
+            <input class="signup-input" id="playerLoc"
+              placeholder="e.g. Maui, Hawaii" maxlength="30"
+              onkeydown="if(event.key==='Enter')beginGame()">
+          </div>
+          <button class="spin-btn glowing" id="spinBtn" onclick="beginGame()">
     🎰 SPIN TO FIND OUT!
   </button>
 
@@ -321,6 +346,13 @@ function adjustColor(hex,amt){
   return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
 }
 
+function beginGame(){
+  playerName=document.getElementById('playerName')?.value.trim()||'Mystery Player';
+  const _u=document.getElementById('playerUser')?.value.trim()||'';
+  const _l=document.getElementById('playerLoc')?.value.trim()||'Hawaii';
+  playerLoc=(_u?_u+' · ':'')+_l;
+  spinWheel();
+}
 function spinWheel(){
   if(spinning)return;
   spinning=true;spinCount++;
