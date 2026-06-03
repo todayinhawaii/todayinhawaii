@@ -431,94 +431,7 @@
   <!-- Name Screen -->
   <div id="nameScreen">
     <div style="font-size:14px;font-weight:700;color:#22d3ee;margin-bottom:12px;text-align:center;">🌺 Enter your details to play!</div>
-    <input type="text" id="pName" placeholder="Your name..." maxlength="20">
-    <select id="pLoc">
-      <option value=""></option>
-      <optgroup label="🌺 Hawaii">
-        <option value="Maui, Hawaii">🌺 Maui</option>
-        <option value="Oahu, Hawaii">🌊 Oahu</option>
-        <option value="Kauai, Hawaii">🌿 Kauai</option>
-        <option value="Big Island, Hawaii">🌋 Big Island</option>
-        <option value="Molokai, Hawaii">🌴 Molokai</option>
-        <option value="Lanai, Hawaii">🌸 Lanai</option>
-      </optgroup>
-      <optgroup label="🇺🇸 USA States">
-        <option value="Alabama, USA">Alabama</option>
-        <option value="Alaska, USA">Alaska</option>
-        <option value="Arizona, USA">Arizona</option>
-        <option value="Arkansas, USA">Arkansas</option>
-        <option value="California, USA">California</option>
-        <option value="Colorado, USA">Colorado</option>
-        <option value="Connecticut, USA">Connecticut</option>
-        <option value="Delaware, USA">Delaware</option>
-        <option value="Florida, USA">Florida</option>
-        <option value="Georgia, USA">Georgia</option>
-        <option value="Idaho, USA">Idaho</option>
-        <option value="Illinois, USA">Illinois</option>
-        <option value="Indiana, USA">Indiana</option>
-        <option value="Iowa, USA">Iowa</option>
-        <option value="Kansas, USA">Kansas</option>
-        <option value="Kentucky, USA">Kentucky</option>
-        <option value="Louisiana, USA">Louisiana</option>
-        <option value="Maine, USA">Maine</option>
-        <option value="Maryland, USA">Maryland</option>
-        <option value="Massachusetts, USA">Massachusetts</option>
-        <option value="Michigan, USA">Michigan</option>
-        <option value="Minnesota, USA">Minnesota</option>
-        <option value="Mississippi, USA">Mississippi</option>
-        <option value="Missouri, USA">Missouri</option>
-        <option value="Montana, USA">Montana</option>
-        <option value="Nebraska, USA">Nebraska</option>
-        <option value="Nevada, USA">Nevada</option>
-        <option value="New Hampshire, USA">New Hampshire</option>
-        <option value="New Jersey, USA">New Jersey</option>
-        <option value="New Mexico, USA">New Mexico</option>
-        <option value="New York, USA">New York</option>
-        <option value="North Carolina, USA">North Carolina</option>
-        <option value="North Dakota, USA">North Dakota</option>
-        <option value="Ohio, USA">Ohio</option>
-        <option value="Oklahoma, USA">Oklahoma</option>
-        <option value="Oregon, USA">Oregon</option>
-        <option value="Pennsylvania, USA">Pennsylvania</option>
-        <option value="Rhode Island, USA">Rhode Island</option>
-        <option value="South Carolina, USA">South Carolina</option>
-        <option value="South Dakota, USA">South Dakota</option>
-        <option value="Tennessee, USA">Tennessee</option>
-        <option value="Texas, USA">Texas</option>
-        <option value="Utah, USA">Utah</option>
-        <option value="Vermont, USA">Vermont</option>
-        <option value="Virginia, USA">Virginia</option>
-        <option value="Washington, USA">Washington State</option>
-        <option value="Washington DC, USA">Washington DC</option>
-        <option value="West Virginia, USA">West Virginia</option>
-        <option value="Wisconsin, USA">Wisconsin</option>
-        <option value="Wyoming, USA">Wyoming</option>
-      </optgroup>
-      <optgroup label="🌍 Countries">
-        <option value="Australia">🇦🇺 Australia</option>
-        <option value="Brazil">🇧🇷 Brazil</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="China">🇨🇳 China</option>
-        <option value="France">🇫🇷 France</option>
-        <option value="Germany">🇩🇪 Germany</option>
-        <option value="India">🇮🇳 India</option>
-        <option value="Ireland">🇮🇪 Ireland</option>
-        <option value="Italy">🇮🇹 Italy</option>
-        <option value="Japan">🇯🇵 Japan</option>
-        <option value="Mexico">🇲🇽 Mexico</option>
-        <option value="Netherlands">🇳🇱 Netherlands</option>
-        <option value="New Zealand">🇳🇿 New Zealand</option>
-        <option value="Norway">🇳🇴 Norway</option>
-        <option value="Philippines">🇵🇭 Philippines</option>
-        <option value="Portugal">🇵🇹 Portugal</option>
-        <option value="South Korea">🇰🇷 South Korea</option>
-        <option value="Spain">🇪🇸 Spain</option>
-        <option value="Sweden">🇸🇪 Sweden</option>
-        <option value="Thailand">🇹🇭 Thailand</option>
-        <option value="United Kingdom">🇬🇧 United Kingdom</option>
-        <option value="Other">🌍 Other Country</option>
-      </optgroup>
-    </select>
+    
     <div class="signup-form">
             <span class="signup-label">Your Full Name</span>
             <input class="signup-input" id="playerName"
@@ -574,17 +487,16 @@ let busy = false;
 let muted = false;
 
 // ── Name entry ──────────────────────────────
-document.getElementById('pName').addEventListener('input', checkReady);
-document.getElementById('pLoc').addEventListener('change', checkReady);
+document.getElementById('playerName').addEventListener('input', checkReady);
+document.getElementById('playerLoc').addEventListener('input', checkReady);
 function checkReady() {
-  const ok = document.getElementById('pName').value.trim().length >= 2
-          && document.getElementById('pLoc').value;
+  const ok = (document.getElementById('playerName')?.value.trim().length > 0) && (document.getElementById('playerLoc')?.value.trim().length > 0);
   document.getElementById('startBtn').disabled = !ok;
 }
 
 function startGame() {
-  playerName = document.getElementById('pName').value.trim();
-  playerLoc  = document.getElementById('pLoc').value;
+  playerName = document.getElementById('playerName').value.trim();
+  playerLoc  = document.getElementById('playerLoc').value;
   if (!playerName || !playerLoc) return;
   document.getElementById('nameScreen').style.display = 'none';
   document.getElementById('gameArea').style.display   = 'block';
