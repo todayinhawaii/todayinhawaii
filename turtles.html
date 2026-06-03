@@ -305,10 +305,20 @@ for(let i=0;i<12;i++){
   <div class="ov-turtles">🐢</div>
   <div class="ov-title" style="font-size:clamp(20px,5vw,28px);">What's Your Name?</div>
   <div class="ov-sub">Join the <strong style="color:#69f0ae;">Global Turtle Leaderboard!</strong></div>
-  <input class="ov-input" id="playerName" placeholder="Your name 🐢" maxlength="20"
-    onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
-  <input class="ov-input" id="playerLoc"  placeholder="City / Island 🌺" maxlength="24"
-    onkeydown="if(event.key==='Enter')beginGame()">
+            <div class="signup-form">
+            <span class="signup-label">Your Full Name</span>
+            <input class="signup-input" id="playerName"
+              placeholder="e.g. Sarah Johnson" maxlength="30"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerUser').focus()">
+            <span class="signup-label">Choose a Username</span>
+            <input class="signup-input" id="playerUser"
+              placeholder="e.g. SurfQueen808" maxlength="20"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
+            <span class="signup-label">Country, City or Island 🌺</span>
+            <input class="signup-input" id="playerLoc"
+              placeholder="e.g. Maui, Hawaii" maxlength="30"
+              onkeydown="if(event.key==='Enter')beginGame()">
+          </div>
   <button class="ov-btn" onclick="beginGame()">🐢 Into the Ocean!!</button>
   <button style="background:none;border:none;color:#4caf50;font-size:12px;cursor:pointer;margin-top:-4px;" onclick="beginGame()">Play as Guest</button>
 </div>
