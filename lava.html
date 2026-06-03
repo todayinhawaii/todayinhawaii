@@ -681,13 +681,18 @@ function sizeBoard(){
   const gameArea = document.getElementById('gameArea');
   let availW, availH;
   if(isMob){
-    // Controls are position:fixed so board uses remaining height
-    const fixedCtrlH = 74; // fixed controls height
-    const statsH = 30;     // compact stats bar (shrunk)
-    const hdrH   = 24;     // tiny header
-    const scoreH = 34;     // score row
+    // Measure actual element heights at runtime — never guesses!
+    const ctrl     = document.getElementById('controls');
+    const hdr      = document.getElementById('hdr');
+    const scoreRow = document.getElementById('scoreRow');
+    const stats    = document.getElementById('mobileStats');
+    const ctrlH    = ctrl     ? ctrl.offsetHeight     : 70;
+    const hdrH     = hdr      ? hdr.offsetHeight      : 28;
+    const scoreH   = scoreRow ? scoreRow.offsetHeight : 36;
+    const statsH   = stats    ? stats.offsetHeight    : 32;
+    const gaps     = 16; // wrap gap + padding
     availW = window.innerWidth - 8;
-    availH = window.innerHeight - fixedCtrlH - statsH - hdrH - scoreH - 12;
+    availH = window.innerHeight - ctrlH - hdrH - scoreH - statsH - gaps;
   } else {
     // Desktop: 50% bigger — up to 450px wide
     const sideW = 100, gap = 16;
