@@ -374,10 +374,20 @@ if(vids[0] && VIDS.length > 1){
   <div class="ov-icon">🏆</div>
   <div class="ov-title" style="font-size:clamp(18px,5vw,24px);">Your Name?</div>
   <div class="ov-sub">Join the <strong style="color:#ffe066;">Global Chess Leaderboard!</strong></div>
-  <input class="ov-input" id="playerName" placeholder="Your name ♟" maxlength="20"
-    onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
-  <input class="ov-input" id="playerLoc"  placeholder="City / Island 🌺" maxlength="24"
-    onkeydown="if(event.key==='Enter')beginGame()">
+            <div class="signup-form">
+            <span class="signup-label">Your Full Name</span>
+            <input class="signup-input" id="playerName"
+              placeholder="e.g. Sarah Johnson" maxlength="30"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerUser').focus()">
+            <span class="signup-label">Choose a Username</span>
+            <input class="signup-input" id="playerUser"
+              placeholder="e.g. SurfQueen808" maxlength="20"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
+            <span class="signup-label">Country, City or Island 🌺</span>
+            <input class="signup-input" id="playerLoc"
+              placeholder="e.g. Maui, Hawaii" maxlength="30"
+              onkeydown="if(event.key==='Enter')beginGame()">
+          </div>
   <button class="ov-btn" onclick="beginGame()">♛ Into Battle!!</button>
   <button style="background:none;border:none;color:#c8a800;font-size:12px;cursor:pointer;" onclick="beginGame()">Play as Guest</button>
 </div>
