@@ -433,7 +433,7 @@
     <div style="font-size:14px;font-weight:700;color:#22d3ee;margin-bottom:12px;text-align:center;">🌺 Enter your details to play!</div>
     <input type="text" id="pName" placeholder="Your name..." maxlength="20">
     <select id="pLoc">
-      <option value="">📍 Where are you from?</option>
+      <option value=""></option>
       <optgroup label="🌺 Hawaii">
         <option value="Maui, Hawaii">🌺 Maui</option>
         <option value="Oahu, Hawaii">🌊 Oahu</option>
@@ -754,8 +754,6 @@ function roundComplete() {
 function roundFailed() {
   dimAll(true);
   setTimeout(() => dimAll(false), 200);
-
-
 
   setStatus('❌ ' + (score > 0
     ? 'You scored ' + score + ' points! Good effort! 🌺 Press Start to try again!'
