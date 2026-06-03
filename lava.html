@@ -196,33 +196,62 @@
       #controls{ max-width:100%; padding:0 8px 8px; }
     }
     .ctrl-btn{
-      flex:1;padding:8px 4px;border:none;border-radius:14px;
-      font-size:26px;cursor:pointer;
-      background:linear-gradient(135deg,rgba(255,80,0,0.5),rgba(180,20,0,0.45));
-      border:3px solid rgba(255,140,0,0.85);
-      color:#ffe066;
-      box-shadow:0 0 20px rgba(255,80,0,0.5),inset 0 1px 0 rgba(255,200,0,0.3),0 4px 0 rgba(0,0,0,0.4);
+      flex:1;padding:12px 8px;border:none;border-radius:16px;
+      font-size:34px;cursor:pointer;
+      background:linear-gradient(160deg,#cc3300,#881100);
+      border:2px solid #ff6600;
+      color:#ffffff;
+      box-shadow:0 6px 0 #550000,0 0 24px rgba(255,80,0,0.6),
+                 inset 0 1px 0 rgba(255,150,0,0.4);
       transition:all 0.1s;
       -webkit-tap-highlight-color:transparent;
-      min-height:56px;
-      text-shadow:0 0 14px rgba(255,220,0,0.9);
+      min-height:72px;
+      text-shadow:0 0 16px #ffaa00, 0 2px 4px rgba(0,0,0,0.8);
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
-      gap:1px;
+      gap:4px;
       line-height:1;
+      letter-spacing:0.05em;
+    }
+    .ctrl-btn span{
+      font-size:11px;
+      font-weight:900;
+      color:#ffffff;
+      text-shadow:0 0 8px #ffaa00;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+    }
+    .ctrl-btn:hover{
+      background:linear-gradient(160deg,#ee4400,#aa1500);
+      border-color:#ff8822;
+      box-shadow:0 6px 0 #550000,0 0 36px rgba(255,120,0,0.8),
+                 inset 0 1px 0 rgba(255,200,0,0.5);
+      transform:translateY(-1px);
     }
     .ctrl-btn:active{
-      background:linear-gradient(135deg,rgba(255,120,0,0.6),rgba(220,60,0,0.5));
-      transform:scale(0.96);
-      box-shadow:0 0 24px rgba(255,100,0,0.7);
+      background:linear-gradient(160deg,#ff5500,#cc2200);
+      transform:translateY(4px);
+      box-shadow:0 2px 0 #550000,0 0 40px rgba(255,140,0,0.9);
     }
     .ctrl-btn.drop{
-      background:linear-gradient(135deg,rgba(255,30,0,0.5),rgba(180,0,0,0.4));
-      border-color:rgba(255,60,0,0.9);
+      background:linear-gradient(160deg,#dd1100,#770000);
+      border-color:#ff2200;
+      box-shadow:0 6px 0 #440000,0 0 28px rgba(255,30,0,0.7),
+                 inset 0 1px 0 rgba(255,100,0,0.4);
+    }
+    .ctrl-btn.drop:hover{
+      background:linear-gradient(160deg,#ff2200,#991100);
+      box-shadow:0 6px 0 #440000,0 0 40px rgba(255,50,0,0.9);
     }
     .ctrl-btn.rotate{
-      background:linear-gradient(135deg,rgba(255,160,0,0.4),rgba(220,80,0,0.35));
-      border-color:rgba(255,180,0,0.8);
+      background:linear-gradient(160deg,#cc7700,#885500);
+      border-color:#ffaa00;
+      box-shadow:0 6px 0 #443300,0 0 28px rgba(255,170,0,0.6),
+                 inset 0 1px 0 rgba(255,220,0,0.4);
+    }
+    .ctrl-btn.rotate:hover{
+      background:linear-gradient(160deg,#ee9900,#aa6600);
+      box-shadow:0 6px 0 #443300,0 0 40px rgba(255,200,0,0.8);
     }
     .ctrl-btn:active{
       background:rgba(255,60,0,0.3);
