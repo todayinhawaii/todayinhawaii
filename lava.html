@@ -97,10 +97,12 @@
       color:#ff8800;letter-spacing:0.1em;}
     .m-stat-val{font-size:16px;font-weight:900;color:#fff;}
     @media(max-width:640px){
+      body{ overflow:hidden; }
       #wrap{
-        height:100dvh; /* dynamic viewport — excludes browser chrome */
-        padding:6px 6px 0;
+        height:100dvh;
+        padding:4px 4px 0;
         justify-content:space-between;
+        gap:4px;
       }
       #gameArea{
         flex-direction:column;
@@ -114,9 +116,10 @@
       #boardWrap{ display:flex; justify-content:center; width:100%; }
       #controls{
         max-width:100% !important;
-        padding:6px 6px 10px !important;
+        padding:4px 4px 6px !important;
         flex-shrink:0;
-        gap:10px !important;
+        gap:6px !important;
+        margin-bottom:env(safe-area-inset-bottom, 4px);
       }
     }
     @media(min-width:641px){
@@ -164,19 +167,19 @@
       #controls{ max-width:100%; padding:0 8px 8px; }
     }
     .ctrl-btn{
-      flex:1;padding:14px 4px;border:none;border-radius:16px;
-      font-size:30px;cursor:pointer;
+      flex:1;padding:8px 4px;border:none;border-radius:14px;
+      font-size:26px;cursor:pointer;
       background:linear-gradient(135deg,rgba(255,80,0,0.5),rgba(180,20,0,0.45));
       border:3px solid rgba(255,140,0,0.85);
       color:#ffe066;
       box-shadow:0 0 20px rgba(255,80,0,0.5),inset 0 1px 0 rgba(255,200,0,0.3),0 4px 0 rgba(0,0,0,0.4);
       transition:all 0.1s;
       -webkit-tap-highlight-color:transparent;
-      min-height:72px;
+      min-height:56px;
       text-shadow:0 0 14px rgba(255,220,0,0.9);
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
-      gap:2px;
+      gap:1px;
       line-height:1;
     }
     .ctrl-btn:active{
@@ -580,12 +583,12 @@ function sizeBoard(){
   const gameArea = document.getElementById('gameArea');
   let availW, availH;
   if(isMob){
-    // Mobile: bigger — fill most of screen width, leave room for controls
-    const ctrlH = 90; // height of arrow buttons
-    const statsH = 70; // height of top stats bar
-    const hdrH = 60;  // score header
-    availW = Math.min(window.innerWidth - 16, 380); // wider!
-    availH = window.innerHeight - ctrlH - statsH - hdrH - 24;
+    // Mobile: fill screen width, calculate height from remaining space
+    const ctrlH = 70;  // buttons
+    const statsH = 62; // top stats bar
+    const hdrH  = 52;  // score header
+    availW = window.innerWidth - 8; // almost full width!
+    availH = window.innerHeight - ctrlH - statsH - hdrH - 20;
   } else {
     // Desktop: 50% bigger — up to 450px wide
     const sideW = 100, gap = 16;
