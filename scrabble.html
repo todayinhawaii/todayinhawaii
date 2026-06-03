@@ -342,33 +342,7 @@
   <div id="nameScr" class="name-scr">
     <div class="ns-title">🎰 Place Your Bets!</div>
     <div class="ns-sub">Build words from your letter tiles — longer words score bigger! Hit the jackpot with rare letters!</div>
-    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
-    <select id="pLoc" class="ns-select">
-      <option value=""></option>
-      <optgroup label="🌺 Hawaii">
-        <option value="Maui, Hawaii">🌺 Maui</option>
-        <option value="Oahu, Hawaii">🌊 Oahu</option>
-        <option value="Kauai, Hawaii">🌿 Kauai</option>
-        <option value="Big Island, Hawaii">🌋 Big Island</option>
-        <option value="Molokai, Hawaii">🌴 Molokai</option>
-        <option value="Lanai, Hawaii">🌸 Lanai</option>
-      </optgroup>
-      <optgroup label="🇺🇸 USA States">
-        <option value="Alabama, USA">Alabama</option><option value="Alaska, USA">Alaska</option>
-        <option value="Arizona, USA">Arizona</option><option value="California, USA">California</option>
-        <option value="Colorado, USA">Colorado</option><option value="Florida, USA">Florida</option>
-        <option value="Georgia, USA">Georgia</option><option value="Hawaii, USA">Hawaii</option>
-        <option value="Illinois, USA">Illinois</option><option value="New York, USA">New York</option>
-        <option value="Texas, USA">Texas</option><option value="Washington, USA">Washington</option>
-        <option value="Other USA State">Other USA State</option>
-      </optgroup>
-      <optgroup label="🌍 Countries">
-        <option value="Australia">🇦🇺 Australia</option><option value="Canada">🇨🇦 Canada</option>
-        <option value="France">🇫🇷 France</option><option value="Germany">🇩🇪 Germany</option>
-        <option value="Japan">🇯🇵 Japan</option><option value="United Kingdom">🇬🇧 UK</option>
-        <option value="Other">🌍 Other Country</option>
-      </optgroup>
-    </select>
+    
     <div class="signup-form">
             <span class="signup-label">Your Full Name</span>
             <input class="signup-input" id="playerName"
@@ -542,13 +516,12 @@ let dragFromZone=null; // 'rack' or 'word'
 let dragOverIdx=null;  // insertion index in target
 
 // ── Name Entry ──────────────────────────────
-document.getElementById('pName').addEventListener('input',checkReady);
-document.getElementById('pLoc').addEventListener('change',checkReady);
+document.getElementById('playerName').addEventListener('input', checkReady);
+document.getElementById('playerLoc').addEventListener('input', checkReady);
 let dictReady = true; // Dictionary is inline — always ready!
 
 function checkReady(){
-  const ok = document.getElementById('pName').value.trim().length>=2
-    && document.getElementById('pLoc').value;
+  const ok = (document.getElementById('playerName')?.value.trim().length > 0) && (document.getElementById('playerLoc')?.value.trim().length > 0);
   document.getElementById('startBtn').disabled=!ok;
 }
 
@@ -571,8 +544,8 @@ function startGame(){
     setTimeout(()=>{if(_fi){_fi.style.borderColor='';_fi.style.boxShadow='';}if(_fe)_fe.textContent='';},3000);
     return;
   }
-  playerName=document.getElementById('pName').value.trim();
-  playerLoc=document.getElementById('pLoc').value;
+  playerName=document.getElementById('playerName').value.trim();
+  playerLoc=document.getElementById('playerLoc').value;
   if(!playerName||!playerLoc) return;
   document.getElementById('nameScr').style.display='none';
   document.getElementById('gameArea').style.display='block';
