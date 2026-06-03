@@ -357,7 +357,18 @@
       display:flex;align-items:center;justify-content:center;
       z-index:100;color:white;
     }
-  </style>
+  
+    .signup-form{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;align-items:center;}
+    .signup-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.07);
+      border:2px solid rgba(255,255,255,0.2);border-radius:12px;color:#fff;
+      font-size:14px;font-family:system-ui,sans-serif;outline:none;text-align:center;
+      transition:border-color 0.2s;}
+    .signup-input:focus{border-color:rgba(255,255,255,0.6);}
+    .signup-input::placeholder{color:rgba(255,255,255,0.35);}
+    .signup-label{font-size:9px;font-weight:900;text-transform:uppercase;
+      letter-spacing:0.12em;color:rgba(255,255,255,0.5);
+      margin-bottom:-6px;align-self:flex-start;padding-left:4px;}
+    </style>
 </head>
 <body>
 <!-- DEBUG SKIP BUTTON — remove after testing -->
@@ -443,7 +454,21 @@ for(let i=0;i<30;i++){
         <option value="Other">🌍 Other Country</option>
       </optgroup>
     </select>
-    <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🐬 Deal the Cards!</button>
+    <div class="signup-form">
+            <span class="signup-label">Your Full Name</span>
+            <input class="signup-input" id="playerName"
+              placeholder="e.g. Sarah Johnson" maxlength="30"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerUser').focus()">
+            <span class="signup-label">Choose a Username</span>
+            <input class="signup-input" id="playerUser"
+              placeholder="e.g. SurfQueen808" maxlength="20"
+              onkeydown="if(event.key==='Enter')document.getElementById('playerLoc').focus()">
+            <span class="signup-label">Country, City or Island 🌺</span>
+            <input class="signup-input" id="playerLoc"
+              placeholder="e.g. Maui, Hawaii" maxlength="30"
+              onkeydown="if(event.key==='Enter')beginGame()">
+          </div>
+          <button class="ns-btn" id="startBtn" onclick="startGame()" disabled>🐬 Deal the Cards!</button>
     <div class="ns-lb">
       <div class="ns-lb-title">🏆 Fastest Players</div>
       <div id="lbList"><div style="text-align:center;color:#7fb3c8;font-size:12px;padding:8px;">Loading... 🐬</div></div>
@@ -871,35 +896,59 @@ function checkMatch(){
 // ── Win! ────────────────────────────────────────
 // ── Stage Advance (mobile) ─────────────────────
 function advanceStage(){
-  console.log('advanceStage called! allCards.s2 length:', allCards.s2?.length);
-  stage=2;
-  matchesFound=0;
-  canFlip=false;
-  flippedCards=[];
-  cards=allCards.s2;
+  // Set state immediately - no delays
+  stage = 2;
+  matchesFound = 0;
+  canFlip = false;
+  flippedCards = [];
 
-  const grid=document.getElementById('cardGrid');
-  grid.style.transition='opacity 0.4s';
-  grid.style.opacity='0';
+  // CRITICAL: update cards to stage 2 BEFORE rendering
+  cards = allCards.s2;
 
-  setTimeout(()=>{
-    try{
-      renderGrid();
-    }catch(e){
-      console.error('renderGrid stage 2 error:',e);
-    }
-    // Always restore visibility even if renderGrid had an issue
-    grid.style.opacity='1';
-    canFlip=true;
+  showDebug('advanceStage running!\nStage: '+stage+'\nCards now: '+cards.length+'\nExpected: 22');
 
-    // Update pairs counter for stage 2
-    const pl=document.getElementById('pairsLeft');
-    if(pl) pl.textContent=cards.length/2;
+  // Re-render the grid with new cards
+  var grid = document.getElementById('cardGrid');
+  if(!grid){
+    showDebug('ERROR: cardGrid not found!');
+    return;
+  }
 
-    try{ showToast('🌊 Stage 2!! '+(cards.length/2)+' more pairs!!'); }catch(e){}
-    try{ playLevelUp(); }catch(e){}
-  },400);
+  // Clear and rebuild
+  grid.style.opacity = '1';
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = 'repeat(5,1fr)';
+
+  // Stage badge
+  var badge = document.getElementById('stageBadge');
+  if(badge){
+    badge.textContent = '🌊 Stage 2 of 2 — 11 pairs!';
+    badge.style.display = 'block';
+  }
+
+  // Render each card
+  cards.forEach(function(card, idx){
+    var div = document.createElement('div');
+    div.className = 'card';
+    div.id = 'card-' + idx;
+    div.innerHTML = buildCardHTML(card);
+    div.addEventListener('click', (function(i){ return function(){ flipCard(i); }; })(idx));
+    grid.appendChild(div);
+  });
+
+  showDebug('Stage 2 rendered!\nCards: '+cards.length+'\nGrid children: '+grid.children.length);
+
+  // Update pairs counter
+  var pl = document.getElementById('pairsLeft');
+  if(pl) pl.textContent = Math.floor(cards.length/2);
+
+  // Re-enable play
+  canFlip = true;
+
+  try{ showToast('🌊 Stage 2!! 11 more pairs!!'); }catch(e){}
+  try{ playLevelUp(); }catch(e){}
 }
+
 
 async function winGame(){
   gameOver=true;
