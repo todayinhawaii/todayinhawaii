@@ -442,7 +442,30 @@ for(let i=0;i<12;i++){
               onkeydown="if(event.key==='Enter')beginGame()">
           </div>
   <button class="ov-btn" onclick="beginGame()">🐢 Into the Ocean!! 🌊</button>
-  <button style="background:none;border:none;color:#4caf50;font-size:12px;cursor:pointer;margin-top:-4px;" onclick="beginGame()">Play as Guest</button>
+  <button onclick="beginGame()" style="
+    padding:14px 40px;
+    border:3px solid #00ff88;
+    border-radius:99px;
+    background:linear-gradient(160deg,#00cc44,#008833,#00ff66,#007722);
+    background-size:200% 200%;
+    color:#fff;
+    font-size:17px;
+    font-weight:900;
+    font-family:inherit;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    cursor:pointer;
+    margin-top:4px;
+    box-shadow:0 7px 0 #004422,
+               0 0 22px #00ff66,
+               0 0 45px rgba(0,255,100,0.5),
+               inset 0 1px 0 rgba(255,255,255,0.3);
+    text-shadow:0 0 12px #00ff88,0 2px 4px rgba(0,0,0,0.8);
+    animation:turtleGreenPulse 1.6s ease-in-out infinite alternate,
+              turtleShift 3s ease infinite;
+    -webkit-font-smoothing:antialiased;
+    transition:all 0.12s;
+  ">🌊 Play as Guest!</button>
 </div>
 
 <!-- Result overlay -->
