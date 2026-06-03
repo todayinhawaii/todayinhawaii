@@ -254,6 +254,21 @@ def chess_piece_img(piece):
         return send_from_directory('.', f'chess_{piece}.png')
     return '', 404
 
+@app.route('/dolphin_back.jpg')
+def dolphin_back():
+    import os
+    if os.path.exists('dolphin_back.jpg'):
+        return send_from_directory('.', 'dolphin_back.jpg')
+    return '', 404
+
+@app.route('/card_<card>.jpg')
+def dolphin_card(card):
+    import os
+    f = f'card_{card}.jpg'
+    if os.path.exists(f):
+        return send_from_directory('.', f)
+    return '', 404
+
 @app.route('/chess_bg.mp4')
 def chess_bg1(): 
     return send_from_directory('.','chess_bg.mp4') if __import__('os').path.exists('chess_bg.mp4') else ('',404)
