@@ -269,6 +269,22 @@ def dolphin_card(card):
         return send_from_directory('.', f)
     return '', 404
 
+@app.route('/game_<name>.jpg')
+def game_card_jpg(name):
+    import os
+    f = f'game_{name}.jpg'
+    if os.path.exists(f):
+        return send_from_directory('.', f)
+    return '', 404
+
+@app.route('/game_<name>.mp4')
+def game_card_mp4(name):
+    import os
+    f = f'game_{name}.mp4'
+    if os.path.exists(f):
+        return send_from_directory('.', f, mimetype='video/mp4')
+    return '', 404
+
 @app.route('/chess_bg.mp4')
 def chess_bg1(): 
     return send_from_directory('.','chess_bg.mp4') if __import__('os').path.exists('chess_bg.mp4') else ('',404)
