@@ -371,13 +371,6 @@
     </style>
 </head>
 <body>
-<!-- DEBUG SKIP BUTTON — remove after testing -->
-<button onclick="cheatComplete()" style="
-  position:fixed;top:10px;left:10px;z-index:99999;
-  background:red;color:#fff;border:none;border-radius:8px;
-  padding:12px 20px;font-size:16px;font-weight:900;cursor:pointer;">
-  ⚡ SKIP STAGE
-</button>
 
 <!-- Stars -->
 <script>
@@ -428,32 +421,8 @@ for(let i=0;i<30;i++){
       <div class="ns-stat"><div class="ns-stat-v">26</div><div class="ns-stat-l">Pairs</div></div>
       <div class="ns-stat"><div class="ns-stat-v">⏱️</div><div class="ns-stat-l">Timed</div></div>
     </div>
-    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
-    <select id="pLoc" class="ns-select">
-      <option value=""></option>
-      <optgroup label="🌺 Hawaii">
-        <option value="Maui, Hawaii">🌺 Maui</option>
-        <option value="Oahu, Hawaii">🌊 Oahu</option>
-        <option value="Kauai, Hawaii">🌿 Kauai</option>
-        <option value="Big Island, Hawaii">🌋 Big Island</option>
-        <option value="Molokai, Hawaii">🌴 Molokai</option>
-      </optgroup>
-      <optgroup label="🇺🇸 USA">
-        <option value="California, USA">California</option>
-        <option value="New York, USA">New York</option>
-        <option value="Texas, USA">Texas</option>
-        <option value="Florida, USA">Florida</option>
-        <option value="Washington, USA">Washington</option>
-        <option value="Other USA">Other USA State</option>
-      </optgroup>
-      <optgroup label="🌍 World">
-        <option value="Australia">🇦🇺 Australia</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="Japan">🇯🇵 Japan</option>
-        <option value="United Kingdom">🇬🇧 UK</option>
-        <option value="Other">🌍 Other Country</option>
-      </optgroup>
-    </select>
+    
+    
     <div class="signup-form">
             <span class="signup-label">Your Full Name</span>
             <input class="signup-input" id="playerName"
@@ -497,11 +466,6 @@ for(let i=0;i<30;i++){
 </div>
 
 <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
-    <button onclick="cheatComplete()" style="
-      position:fixed;bottom:60px;right:10px;z-index:500;
-      background:#ff6600;color:#fff;border:none;border-radius:10px;
-      padding:10px 16px;font-size:13px;font-weight:900;cursor:pointer;
-      box-shadow:0 4px 0 #993300;">⚡ SKIP</button>
 
 <script>
 // ══════════════════════════════════════════════════
@@ -532,10 +496,10 @@ let stage=1, allCards=[], stage1Count=30, stage2Start=30;
 const isMobile=()=>window.innerWidth<=640;
 
 // ── Name Entry ─────────────────────────────────
-document.getElementById('pName').addEventListener('input',checkReady);
-document.getElementById('pLoc').addEventListener('change',checkReady);
+document.getElementById('playerName').addEventListener('input',checkReady);
+document.getElementById('playerLoc').addEventListener('input',checkReady);
 function checkReady(){
-  const ok=document.getElementById('pName').value.trim().length>=2&&document.getElementById('pLoc').value;
+  const ok=document.getElementById('playerName')?.value.trim().length>=2 && document.getElementById('playerLoc')?.value.trim().length>=2;
   document.getElementById('startBtn').disabled=!ok;
 }
 
@@ -558,8 +522,9 @@ function startGame(){
     setTimeout(()=>{if(_fi){_fi.style.borderColor='';_fi.style.boxShadow='';}if(_fe)_fe.textContent='';},3000);
     return;
   }
-  playerName=document.getElementById('pName').value.trim();
-  playerLoc=document.getElementById('pLoc').value;
+  playerName=document.getElementById('playerName')?.value.trim()||'Player';
+  const _u=document.getElementById('playerUser')?.value.trim()||'';
+  playerLoc=(_u?_u+' · ':'')+document.getElementById('playerLoc')?.value.trim()||'Hawaii';
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('hud').style.display='block';
   document.getElementById('gameWrap').style.display='block';
@@ -582,8 +547,7 @@ function buildDeck(){
     VALUES.forEach(val=>{
       pool.push({val, suit, flipped:false, matched:false});
     });
-  });
-  console.log('Pool size:', pool.length); // should be 52
+  }); // should be 52
 
   // Step 2: shuffle pool
   for(let i=pool.length-1;i>0;i--){
@@ -602,8 +566,7 @@ function buildDeck(){
     const b=buckets[val];
     pairs.push([b[0],b[1]]); // pair A
     pairs.push([b[2],b[3]]); // pair B
-  });
-  console.log('Total pairs:', pairs.length); // should be 26
+  }); // should be 26
 
   // Step 5: shuffle the pairs
   for(let i=pairs.length-1;i>0;i--){
@@ -614,7 +577,6 @@ function buildDeck(){
   // Step 6: split — stage 1 gets 15 pairs, stage 2 gets 11
   const s1pairs=pairs.slice(0,15);
   const s2pairs=pairs.slice(15);
-  console.log('Stage 1 pairs:', s1pairs.length, 'Stage 2 pairs:', s2pairs.length);
 
   // Step 7: flatten and shuffle each stage
   function flatShuffle(pList){
@@ -628,11 +590,9 @@ function buildDeck(){
 
   const s1cards=flatShuffle(s1pairs);
   const s2cards=flatShuffle(s2pairs);
-  console.log('Stage 1 cards:', s1cards.length, 'Stage 2 cards:', s2cards.length);
 
   allCards={s1:s1cards, s2:s2cards};
   cards=allCards.s1;
-  console.log('buildDeck done. cards.length=', cards.length);
 }
 
 // ── Render Grid ────────────────────────────────
@@ -869,7 +829,6 @@ function checkMatch(){
       // Check win — use allCards directly, not cards (avoids sync bug)
       const need1 = Math.floor(allCards.s1.length/2); // always 15
       const need2 = Math.floor(allCards.s2.length/2); // always 11
-      console.log('Win check: matched='+matchesFound+' stage='+stage+' need1='+need1+' need2='+need2);
       if(stage===1 && matchesFound===need1){
         setTimeout(()=>advanceStage(),500);
       } else if(stage===2 && matchesFound===need2){
@@ -906,12 +865,9 @@ function advanceStage(){
   // CRITICAL: update cards to stage 2 BEFORE rendering
   cards = allCards.s2;
 
-  showDebug('advanceStage running!\nStage: '+stage+'\nCards now: '+cards.length+'\nExpected: 22');
-
   // Re-render the grid with new cards
   var grid = document.getElementById('cardGrid');
   if(!grid){
-    showDebug('ERROR: cardGrid not found!');
     return;
   }
 
@@ -936,8 +892,6 @@ function advanceStage(){
     div.addEventListener('click', (function(i){ return function(){ flipCard(i); }; })(idx));
     grid.appendChild(div);
   });
-
-  showDebug('Stage 2 rendered!\nCards: '+cards.length+'\nGrid children: '+grid.children.length);
 
   // Update pairs counter
   var pl = document.getElementById('pairsLeft');
@@ -1256,112 +1210,7 @@ function checkInputs(nameId, locId){
 }
 // ────────────────────────────────────────────────
 
-// ── SKIP BUTTON + DEBUG ────────────────────────────────────────────
-function showDebug(msg){
-  // Show debug info ON SCREEN so user can read while typing
-  var el=document.getElementById('debugBox');
-  if(!el){
-    el=document.createElement('div');
-    el.id='debugBox';
-    el.style.cssText='position:fixed;top:60px;left:10px;right:10px;z-index:99999;'+
-      'background:rgba(0,0,0,0.95);color:#00ff00;font-family:monospace;'+
-      'font-size:14px;padding:14px;border-radius:10px;border:2px solid #00ff00;'+
-      'white-space:pre-wrap;line-height:1.8;';
-    document.body.appendChild(el);
-  }
-  el.textContent=msg;
-}
 
-function cheatComplete(){
-  var s2len=(allCards&&allCards.s2)?allCards.s2.length:'MISSING!';
-  var info='=== DEBUG INFO ===\n'+
-    'Stage: '+stage+'\n'+
-    'Cards on board: '+cards.length+'\n'+
-    'Matched so far: '+matchesFound+'\n'+
-    'allCards.s2 length: '+s2len+'\n'+
-    '=== Skipping now... ===';
-  showDebug(info);
-
-  setTimeout(function(){
-    cards.forEach(function(card,idx){
-      if(card.matched) return;
-      card.matched=true; card.flipped=true;
-      var el=document.getElementById('card-'+idx);
-      if(el){
-        el.classList.add('matched','flipped');
-        var front=el.querySelector('.card-front');
-        if(front&&!front.querySelector('.match-overlay')){
-          var ov=document.createElement('div');
-          ov.className='match-overlay'; ov.textContent='✓';
-          front.appendChild(ov);
-        }
-      }
-    });
-    // Use stage-specific pair count for cheat
-  matchesFound = stage===1
-    ? Math.floor(allCards.s1.length/2)   // 15
-    : Math.floor(allCards.s2.length/2);  // 11
-    canFlip=false; flippedCards=[];
-
-    var s2len2=(allCards&&allCards.s2)?allCards.s2.length:'MISSING!';
-    showDebug('=== AFTER SKIP ===\n'+
-      'Stage: '+stage+'\n'+
-      'matchesFound: '+matchesFound+'\n'+
-      'cards.length: '+cards.length+'\n'+
-      'allCards.s2 length: '+s2len2+'\n'+
-      'Win condition: '+matchesFound+'==='+Math.floor(cards.length/2)+'? '+(matchesFound===Math.floor(cards.length/2))+'\n'+
-      'Now calling '+(stage===1?'advanceStage':'winGame')+'...');
-
-    if(stage===1){
-      setTimeout(function(){
-        try{
-          advanceStage();
-          showDebug('=== advanceStage() CALLED OK ===\n'+
-            'New stage: '+stage+'\n'+
-            'New cards: '+cards.length+'\n'+
-            'allCards.s2: '+(allCards&&allCards.s2?allCards.s2.length:'???'));
-        }catch(err){
-          showDebug('=== ERROR in advanceStage ===\n'+err.toString());
-        }
-      },800);
-    } else {
-      setTimeout(function(){winGame();},500);
-    }
-  },300);
-}
-
-// ── DEBUG CHEAT — press D to instantly complete current stage ──────
-document.addEventListener('keydown',function(e){
-  if(e.key!=='d'&&e.key!=='D') return;
-  console.log('CHEAT: completing stage',stage,'cards:',cards.length);
-  cards.forEach(function(card,idx){
-    if(card.matched) return;
-    card.matched=true; card.flipped=true;
-    var el=document.getElementById('card-'+idx);
-    if(el){
-      el.classList.add('matched','flipped');
-      var front=el.querySelector('.card-front');
-      if(front&&!front.querySelector('.match-overlay')){
-        var ov=document.createElement('div');
-        ov.className='match-overlay'; ov.textContent='✓';
-        front.appendChild(ov);
-      }
-    }
-  });
-  // Use stage-specific pair count for cheat
-  matchesFound = stage===1
-    ? Math.floor(allCards.s1.length/2)   // 15
-    : Math.floor(allCards.s2.length/2);  // 11
-  canFlip=false; flippedCards=[];
-  console.log('CHEAT done: matched='+matchesFound+' stage='+stage);
-  if(stage===1){
-    console.log('CHEAT: calling advanceStage...');
-    setTimeout(function(){advanceStage();},500);
-  } else {
-    console.log('CHEAT: calling winGame...');
-    setTimeout(function(){winGame();},500);
-  }
-});
 </script>
 </body>
 </html>
