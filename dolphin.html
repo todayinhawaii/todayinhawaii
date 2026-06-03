@@ -1195,6 +1195,41 @@ function checkInputs(nameId, locId){
 }
 // ────────────────────────────────────────────────
 
+// ── SKIP BUTTON + DEBUG ────────────────────────────────────────────
+function cheatComplete(){
+  var info='Stage: '+stage+'\nCards: '+cards.length+'\nMatched: '+matchesFound;
+  info+='\nallCards.s2 length: '+(allCards&&allCards.s2?allCards.s2.length:'MISSING!');
+  alert('DEBUG INFO:\n'+info);
+
+  cards.forEach(function(card,idx){
+    if(card.matched) return;
+    card.matched=true; card.flipped=true;
+    var el=document.getElementById('card-'+idx);
+    if(el){
+      el.classList.add('matched','flipped');
+      var front=el.querySelector('.card-front');
+      if(front&&!front.querySelector('.match-overlay')){
+        var ov=document.createElement('div');
+        ov.className='match-overlay'; ov.textContent='✓';
+        front.appendChild(ov);
+      }
+    }
+  });
+  matchesFound=Math.floor(cards.length/2);
+  canFlip=false; flippedCards=[];
+
+  var result='Matched: '+matchesFound+' / Stage: '+stage;
+  alert('After skip:\n'+result+'\nNow checking win condition...');
+
+  if(stage===1){
+    alert('Calling advanceStage() in 1 second...');
+    setTimeout(function(){advanceStage();},1000);
+  } else {
+    alert('Calling winGame() in 1 second...');
+    setTimeout(function(){winGame();},1000);
+  }
+}
+
 // ── DEBUG CHEAT — press D to instantly complete current stage ──────
 document.addEventListener('keydown',function(e){
   if(e.key!=='d'&&e.key!=='D') return;
