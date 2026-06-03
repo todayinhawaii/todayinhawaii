@@ -98,29 +98,58 @@
     .m-stat-val{font-size:16px;font-weight:900;color:#fff;}
     @media(max-width:640px){
       body{ overflow:hidden; }
+
+      /* Pin controls FIXED at bottom — never cut off! */
+      #controls{
+        position:fixed !important;
+        bottom:0;left:0;right:0;
+        padding:6px 8px env(safe-area-inset-bottom,8px) !important;
+        background:rgba(0,0,0,0.92);
+        backdrop-filter:blur(6px);
+        border-top:1px solid rgba(255,100,0,0.3);
+        z-index:50;
+        max-width:100% !important;
+        gap:8px !important;
+      }
+
       #wrap{
         height:100dvh;
-        padding:4px 4px 0;
-        justify-content:space-between;
-        gap:4px;
+        padding:2px 4px 0;
+        gap:2px;
+        overflow:hidden;
       }
+
+      /* Shrink header on mobile */
+      #hdr h1{ font-size:16px !important; margin:0; }
+      #hdr .sub{ display:none; }
+      #hdr{ padding:2px 0; }
+
+      /* Shrink score row */
+      .sbox{ padding:3px 6px !important; }
+      .sbox-lbl{ font-size:7px !important; }
+      .sbox-val{ font-size:14px !important; }
+      #scoreRow{ gap:6px; }
+
+      /* Shrink mobile stats bar */
+      #mobileStats{
+        display:flex !important;
+        gap:6px;
+        margin-bottom:0;
+      }
+      .m-stat{ padding:3px 6px !important; border-radius:7px; }
+      .m-stat-lbl{ font-size:7px !important; }
+      .m-stat-val{ font-size:13px !important; }
+
       #gameArea{
         flex-direction:column;
         align-items:center;
-        gap:4px;
+        gap:2px;
         max-width:100%;
         flex:0 0 auto;
+        padding-bottom:72px; /* room for fixed controls */
       }
       #side{ display:none !important; }
-      #mobileStats{ display:flex !important; }
       #boardWrap{ display:flex; justify-content:center; width:100%; }
-      #controls{
-        max-width:100% !important;
-        padding:4px 4px 6px !important;
-        flex-shrink:0;
-        gap:6px !important;
-        margin-bottom:env(safe-area-inset-bottom, 4px);
-      }
     }
     @media(min-width:641px){
       #mobileStats{ display:none !important; }
@@ -583,12 +612,13 @@ function sizeBoard(){
   const gameArea = document.getElementById('gameArea');
   let availW, availH;
   if(isMob){
-    // Mobile: fill screen width, calculate height from remaining space
-    const ctrlH = 70;  // buttons
-    const statsH = 62; // top stats bar
-    const hdrH  = 52;  // score header
-    availW = window.innerWidth - 8; // almost full width!
-    availH = window.innerHeight - ctrlH - statsH - hdrH - 20;
+    // Controls are position:fixed so board uses remaining height
+    const fixedCtrlH = 72; // fixed controls height
+    const statsH = 42;     // compact stats bar
+    const hdrH   = 26;     // tiny header
+    const scoreH = 36;     // score row
+    availW = window.innerWidth - 8;
+    availH = window.innerHeight - fixedCtrlH - statsH - hdrH - scoreH - 16;
   } else {
     // Desktop: 50% bigger — up to 450px wide
     const sideW = 100, gap = 16;
