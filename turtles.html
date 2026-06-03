@@ -10,7 +10,7 @@
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     html,body{
       width:100%;height:100%;overflow:hidden;
-      background:#0a1a0a;
+      background:radial-gradient(ellipse at 30% 20%,#0a2a0a,#041004 60%,#000800);
       font-family:system-ui,sans-serif;
       user-select:none;-webkit-user-select:none;
     }
@@ -99,11 +99,15 @@
       width:100%;max-width:440px;
     }
     .ctrl{
-      flex:1;padding:14px 6px;border:none;border-radius:14px;
-      font-size:14px;font-weight:800;cursor:pointer;
+      flex:1;padding:16px 6px;border:none;border-radius:16px;
+      font-size:15px;font-weight:900;cursor:pointer;
       font-family:inherit;transition:all 0.12s;
-      letter-spacing:0.03em;
+      letter-spacing:0.05em;
+      box-shadow:0 5px 0 rgba(0,0,0,0.4);
+      -webkit-font-smoothing:antialiased;
     }
+    .ctrl:hover{transform:translateY(-2px);}
+    .ctrl:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.4);}
     .ctrl:active{transform:scale(0.93);}
     .c-new{background:linear-gradient(135deg,#00c853,#00897b);color:#fff;
       box-shadow:0 3px 0 #005740,0 0 12px rgba(0,200,100,0.3);}
@@ -124,24 +128,54 @@
     }
     .ov.hide{display:none;}
     .ov-title{
-      font-size:clamp(24px,7vw,42px);font-weight:900;
-      text-transform:uppercase;letter-spacing:2px;
-      background:linear-gradient(135deg,#69f0ae,#00e5ff,#69f0ae);
-      background-size:200% auto;
+      font-size:clamp(28px,7vw,48px);font-weight:900;
+      background:linear-gradient(180deg,#ffffff,#69f0ae,#00c853);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      animation:shimmer 2s linear infinite;
-      text-align:center;
+      filter:drop-shadow(0 0 14px rgba(0,255,100,0.7));
+      letter-spacing:2px;text-transform:uppercase;
+      margin-bottom:8px;text-align:center;
+      -webkit-font-smoothing:antialiased;
     }
     .ov-turtles{font-size:clamp(36px,10vw,64px);letter-spacing:8px;}
-    .ov-sub{font-size:13px;color:#69f0ae;text-align:center;
-      line-height:1.7;max-width:320px;}
+    .ov-sub{
+      font-size:16px;color:#b9f6ca;line-height:1.7;
+      text-align:center;max-width:320px;
+      -webkit-font-smoothing:antialiased;
+      text-shadow:0 0 10px rgba(0,200,80,0.3);
+    }
     .ov-btn{
-      padding:13px 36px;border:none;border-radius:99px;
-      font-size:15px;font-weight:900;cursor:pointer;
-      font-family:inherit;letter-spacing:1px;text-transform:uppercase;
-      background:linear-gradient(180deg,#00e676,#00897b);color:#fff;
-      box-shadow:0 5px 0 #004d40,0 0 20px rgba(0,230,100,0.4);
+      padding:18px 48px;border:none;border-radius:99px;
+      font-size:18px;font-weight:900;cursor:pointer;
+      font-family:inherit;letter-spacing:2px;text-transform:uppercase;
+      background:linear-gradient(160deg,#00e676,#00c853,#69f0ae,#00897b);
+      background-size:200% 200%;
+      color:#fff;
+      border:3px solid #00ff88;
+      box-shadow:0 8px 0 #004d40,
+                 0 0 25px #00e676,
+                 0 0 50px rgba(0,255,120,0.5),
+                 0 0 90px rgba(0,255,80,0.25),
+                 inset 0 1px 0 rgba(255,255,255,0.3);
+      text-shadow:0 0 12px #00ff88,0 2px 4px rgba(0,0,0,0.7);
+      animation:turtleGreenPulse 1.6s ease-in-out infinite alternate,
+                turtleShift 3s ease infinite;
       transition:all 0.12s;
+      -webkit-font-smoothing:antialiased;
+    }
+    @keyframes turtleGreenPulse{
+      0%{box-shadow:0 8px 0 #004d40,0 0 20px #00e676,0 0 40px rgba(0,255,100,0.4),inset 0 1px 0 rgba(255,255,255,0.3);}
+      100%{box-shadow:0 8px 0 #004d40,0 0 40px #00ff88,0 0 80px rgba(0,255,120,0.8),0 0 120px rgba(0,255,80,0.4),inset 0 1px 0 rgba(255,255,255,0.4);}
+    }
+    @keyframes turtleShift{
+      0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}
+    }
+    .ov-btn:hover{
+      transform:translateY(-3px) scale(1.05);
+      box-shadow:0 12px 0 #004d40,0 0 50px #00ff88,0 0 100px rgba(0,255,120,0.9);
+    }
+    .ov-btn:active{
+      transform:translateY(6px);
+      box-shadow:0 2px 0 #004d40,0 0 30px #00e676;
     }
     .ov-btn:active{transform:translateY(4px);box-shadow:0 1px 0 #004d40;}
 
@@ -151,10 +185,19 @@
       width:100%;max-width:300px;
     }
     .diff-btn{
-      padding:14px 8px;border:2px solid rgba(0,200,100,0.3);
-      border-radius:14px;background:rgba(0,0,0,0.4);
+      padding:18px 10px;
+      border:2px solid rgba(0,255,100,0.4);
+      border-radius:18px;
+      background:linear-gradient(160deg,rgba(0,60,20,0.8),rgba(0,30,10,0.9));
       cursor:pointer;transition:all 0.15s;text-align:center;
       font-family:inherit;
+      box-shadow:0 4px 0 rgba(0,0,0,0.5),0 0 15px rgba(0,200,80,0.2);
+    }
+    .diff-btn:hover{
+      border-color:rgba(0,255,120,0.9);
+      background:linear-gradient(160deg,rgba(0,100,40,0.9),rgba(0,60,20,0.95));
+      box-shadow:0 4px 0 rgba(0,0,0,0.5),0 0 30px rgba(0,255,100,0.5);
+      transform:translateY(-2px) scale(1.03);
     }
     .diff-btn:active{transform:scale(0.94);}
     .diff-btn.sel{
@@ -232,6 +275,45 @@
       letter-spacing:0.12em;color:rgba(255,255,255,0.55);
       margin-bottom:-6px;align-self:flex-start;padding-left:4px;
     }
+    
+    /* ── FLYING TURTLES BACKGROUND ─────────────────── */
+    .fly-turtle{
+      position:fixed;
+      font-size:clamp(24px,4vw,42px);
+      pointer-events:none;
+      z-index:0;
+      animation:flyAcross linear infinite;
+      filter:drop-shadow(0 0 8px rgba(0,255,100,0.6));
+      opacity:0;
+    }
+    @keyframes flyAcross{
+      0%  { transform:translateX(-120px) translateY(0px) rotate(-10deg); opacity:0; }
+      5%  { opacity:0.7; }
+      45% { transform:translateX(50vw) translateY(-30px) rotate(5deg); }
+      55% { transform:translateX(55vw) translateY(10px) rotate(-5deg); }
+      95% { opacity:0.7; }
+      100%{ transform:translateX(calc(100vw + 120px)) translateY(-20px) rotate(10deg); opacity:0; }
+    }
+
+    /* Extra overlay bling */
+    .ov{
+      background:radial-gradient(ellipse at 50% 0%,rgba(0,100,40,0.3),rgba(0,0,0,0.95)) !important;
+    }
+    .ov-turtles{
+      font-size:clamp(50px,12vw,80px);
+      filter:drop-shadow(0 0 20px rgba(0,255,100,0.7));
+      animation:turtleBob 2s ease-in-out infinite;
+    }
+    @keyframes turtleBob{
+      0%,100%{transform:translateY(0) rotate(-5deg) scale(1);}
+      50%{transform:translateY(-12px) rotate(5deg) scale(1.08);}
+    }
+    /* Score glow */
+    .sbox-val{
+      color:#69f0ae !important;
+      text-shadow:0 0 14px rgba(0,255,100,0.7) !important;
+    }
+
     </style>
 </head>
 <body>
@@ -286,7 +368,28 @@ for(let i=0;i<12;i++){
     to capture them — last turtle wins! 🏆
   </div>
   <button class="ov-btn" onclick="showDifficultyFirst()">🐢 Choose Difficulty!</button>
-  <a href="/games" style="color:#4caf50;font-size:12px;">← Games Hub</a>
+  <a href="/games" style="
+    display:inline-block;
+    margin-top:8px;
+    padding:10px 28px;
+    background:linear-gradient(135deg,rgba(0,200,80,0.15),rgba(0,100,40,0.2));
+    border:2px solid rgba(0,255,100,0.5);
+    border-radius:99px;
+    color:#69f0ae;
+    font-size:14px;
+    font-weight:800;
+    text-decoration:none;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    box-shadow:0 0 16px rgba(0,200,80,0.3);
+    transition:all 0.2s;
+    -webkit-font-smoothing:antialiased;
+    animation:hubPulse 2s ease-in-out infinite alternate;
+    ">🎮 ← Games Hub</a>
+  <style>@keyframes hubPulse{
+    0%{box-shadow:0 0 10px rgba(0,200,80,0.2);border-color:rgba(0,255,100,0.4);}
+    100%{box-shadow:0 0 25px rgba(0,255,100,0.6);border-color:rgba(0,255,100,0.9);}
+  }</style>
 </div>
 
 <!-- Difficulty overlay -->
@@ -338,7 +441,7 @@ for(let i=0;i<12;i++){
               placeholder="e.g. Maui, Hawaii" maxlength="30"
               onkeydown="if(event.key==='Enter')beginGame()">
           </div>
-  <button class="ov-btn" onclick="beginGame()">🐢 Into the Ocean!!</button>
+  <button class="ov-btn" onclick="beginGame()">🐢 Into the Ocean!! 🌊</button>
   <button style="background:none;border:none;color:#4caf50;font-size:12px;cursor:pointer;margin-top:-4px;" onclick="beginGame()">Play as Guest</button>
 </div>
 
@@ -357,7 +460,28 @@ for(let i=0;i<12;i++){
       border-radius:99px;padding:10px 24px;color:#4caf50;font-size:13px;font-weight:700;cursor:pointer;"
       onclick="showDifficulty()">⚡ Change Level</button>
   </div>
-  <a href="/games" style="color:#4caf50;font-size:12px;">← Games Hub</a>
+  <a href="/games" style="
+    display:inline-block;
+    margin-top:8px;
+    padding:10px 28px;
+    background:linear-gradient(135deg,rgba(0,200,80,0.15),rgba(0,100,40,0.2));
+    border:2px solid rgba(0,255,100,0.5);
+    border-radius:99px;
+    color:#69f0ae;
+    font-size:14px;
+    font-weight:800;
+    text-decoration:none;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    box-shadow:0 0 16px rgba(0,200,80,0.3);
+    transition:all 0.2s;
+    -webkit-font-smoothing:antialiased;
+    animation:hubPulse 2s ease-in-out infinite alternate;
+    ">🎮 ← Games Hub</a>
+  <style>@keyframes hubPulse{
+    0%{box-shadow:0 0 10px rgba(0,200,80,0.2);border-color:rgba(0,255,100,0.4);}
+    100%{box-shadow:0 0 25px rgba(0,255,100,0.6);border-color:rgba(0,255,100,0.9);}
+  }</style>
 </div>
 
 <script>
@@ -1174,6 +1298,29 @@ function checkInputs(nameId, locId){
   return {ok:true};
 }
 // ────────────────────────────────────────────────
+
+// ── FLYING TURTLES BACKGROUND ──────────────────────
+(function spawnTurtles(){
+  const turtles = ['🐢','🐢','🐢','🌊','🌴','🐢','🐢','⭐','🐢'];
+  const count = 12;
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'fly-turtle';
+    el.textContent = turtles[Math.floor(Math.random()*turtles.length)];
+    const dur   = 6 + Math.random()*10;  // 6–16 seconds crossing
+    const delay = Math.random()*12;       // staggered start
+    const top   = 5 + Math.random()*85;  // vertical position %
+    const size  = 20 + Math.random()*28; // size variation
+    el.style.cssText = [
+      `top:${top}%`,
+      `font-size:${size}px`,
+      `animation-duration:${dur}s`,
+      `animation-delay:-${delay}s`,  // negative = already in progress
+    ].join(';');
+    document.body.appendChild(el);
+  }
+})();
+
 </script>
 </body>
 </html>
