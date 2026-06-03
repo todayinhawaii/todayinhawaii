@@ -738,7 +738,6 @@ function endAiTurn(){
   refreshMoveables();
 }
 
-
 function aiMove(){
   const moves=getMoves(board,2);
   if(!moves.length) return;
@@ -919,7 +918,6 @@ function endHumanTurn(){
   setStatus('AI is thinking... 🤖');
   setTimeout(() => { aiMove(); }, 350 + Math.random()*200);
 }
-
 
 function checkKings(){
   for(let c=0;c<8;c++){
