@@ -987,5 +987,67 @@ async function loadTopScore() {
 loadTopScore();
 </script>
 
+<script>
+// ══════════════════════════════════════════════
+// GAME CARD HOVER SOUNDS — Web Audio API
+// ══════════════════════════════════════════════
+let _ac = null;
+let _audioUnlocked = false;
+
+function getAC(){
+  if(!_ac) _ac = new(window.AudioContext||window.webkitAudioContext)();
+  return _ac;
+}
+
+function unlockAudio(){
+  if(_audioUnlocked) return;
+  try{
+    const c = getAC();
+    if(c.state==='suspended') c.resume();
+    _audioUnlocked = true;
+  }catch(e){}
+}
+
+// Unlock on first mouse move
+document.addEventListener('mousemove', unlockAudio, {once:true});
+document.addEventListener('touchstart', unlockAudio, {once:true});
+
+const GAME_SOUNDS = {
+  dolphins:   function(){ var c=getAC(); [800,1200,600,1000].forEach(function(f,i){ var o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine';o.frequency.setValueAtTime(f,c.currentTime+i*0.04); o.frequency.exponentialRampToValueAtTime(f*0.5,c.currentTime+i*0.04+0.08); g.gain.setValueAtTime(0,c.currentTime+i*0.04); g.gain.linearRampToValueAtTime(0.18,c.currentTime+i*0.04+0.01); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.04+0.1); o.start(c.currentTime+i*0.04);o.stop(c.currentTime+i*0.04+0.12); }); },
+  hulacrush:  function(){ var c=getAC(); [1047,1319,1568].forEach(function(f,i){ var o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine';o.frequency.value=f; g.gain.setValueAtTime(0,c.currentTime+i*0.07); g.gain.linearRampToValueAtTime(0.2,c.currentTime+i*0.07+0.01); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.07+0.4); o.start(c.currentTime+i*0.07);o.stop(c.currentTime+i*0.07+0.45); }); },
+  trivia:     function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='square'; o.frequency.setValueAtTime(440,c.currentTime); o.frequency.setValueAtTime(550,c.currentTime+0.08); o.frequency.setValueAtTime(440,c.currentTime+0.16); g.gain.setValueAtTime(0.12,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.28); o.start(c.currentTime);o.stop(c.currentTime+0.3); },
+  wordsearch: function(){ var c=getAC(); [0,0.06,0.11].forEach(function(t,i){ var o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='square';o.frequency.value=800+i*200; g.gain.setValueAtTime(0.1,c.currentTime+t); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+t+0.04); o.start(c.currentTime+t);o.stop(c.currentTime+t+0.05); }); },
+  scrabble:   function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='square';o.frequency.value=300; g.gain.setValueAtTime(0.18,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.08); o.start(c.currentTime);o.stop(c.currentTime+0.09); },
+  balloons:   function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sawtooth'; o.frequency.setValueAtTime(200,c.currentTime); o.frequency.exponentialRampToValueAtTime(800,c.currentTime+0.04); o.frequency.exponentialRampToValueAtTime(150,c.currentTime+0.12); g.gain.setValueAtTime(0.22,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.15); o.start(c.currentTime);o.stop(c.currentTime+0.16); },
+  fortune:    function(){ var c=getAC(); [523,659,784,1047,1319].forEach(function(f,i){ var o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine';o.frequency.value=f; g.gain.setValueAtTime(0,c.currentTime+i*0.05); g.gain.linearRampToValueAtTime(0.12,c.currentTime+i*0.05+0.02); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.05+0.35); o.start(c.currentTime+i*0.05);o.stop(c.currentTime+i*0.05+0.4); }); },
+  humor:      function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine'; o.frequency.setValueAtTime(150,c.currentTime); o.frequency.exponentialRampToValueAtTime(600,c.currentTime+0.15); o.frequency.exponentialRampToValueAtTime(200,c.currentTime+0.3); g.gain.setValueAtTime(0.28,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.35); o.start(c.currentTime);o.stop(c.currentTime+0.36); },
+  slime:      function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(),filt=c.createBiquadFilter(); o.connect(filt);filt.connect(g);g.connect(c.destination); o.type='sawtooth';o.frequency.setValueAtTime(180,c.currentTime); o.frequency.exponentialRampToValueAtTime(60,c.currentTime+0.2); filt.type='lowpass';filt.frequency.value=300; g.gain.setValueAtTime(0.3,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.22); o.start(c.currentTime);o.stop(c.currentTime+0.23); },
+  lava:       function(){ var c=getAC(); [60,80,55].forEach(function(f,i){ var o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sawtooth';o.frequency.value=f; g.gain.setValueAtTime(0,c.currentTime+i*0.03); g.gain.linearRampToValueAtTime(0.18,c.currentTime+i*0.03+0.05); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.03+0.4); o.start(c.currentTime+i*0.03);o.stop(c.currentTime+i*0.03+0.45); }); },
+  turtles:    function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='sine'; o.frequency.setValueAtTime(250,c.currentTime); o.frequency.exponentialRampToValueAtTime(120,c.currentTime+0.12); g.gain.setValueAtTime(0.22,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.15); o.start(c.currentTime);o.stop(c.currentTime+0.16); },
+  chess:      function(){ var c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination); o.type='triangle'; o.frequency.setValueAtTime(700,c.currentTime); o.frequency.exponentialRampToValueAtTime(350,c.currentTime+0.06); g.gain.setValueAtTime(0.2,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.1); o.start(c.currentTime);o.stop(c.currentTime+0.11); },
+};
+
+// Attach hover sounds to all game cards
+(function attachSounds(){
+  Object.keys(GAME_SOUNDS).forEach(function(id){
+    var card = document.getElementById(id);
+    if(!card) return;
+    var last = 0;
+    card.addEventListener('mouseenter', function(){
+      unlockAudio();
+      var now = Date.now();
+      if(now - last < 600) return;
+      last = now;
+      try{ GAME_SOUNDS[id](); }catch(e){}
+    });
+    card.addEventListener('touchstart', function(){
+      unlockAudio();
+      try{ GAME_SOUNDS[id](); }catch(e){}
+    }, {passive:true});
+  });
+})();
+
+</script>
+
 </body>
 </html>
