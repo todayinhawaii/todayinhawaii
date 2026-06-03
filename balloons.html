@@ -167,8 +167,6 @@
     }
     @keyframes rainbowShift{0%{background-position:0% center;}100%{background-position:200% center;}}
 
-
-
     /* Balloon */
     .balloon{
       position:absolute;
@@ -388,8 +386,6 @@
 </div>
 <div id="timerBar" style="display:none;"><div id="timerFill" style="width:100%"></div></div>
 
-
-
 <!-- Game Canvas -->
 <div id="gameCanvas"></div>
 
@@ -405,7 +401,7 @@
 
     <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
     <select id="pLoc" class="ns-select">
-      <option value="">📍 Where are you from?</option>
+      <option value=""></option>
       <optgroup label="🌺 Hawaii">
         <option value="Maui, Hawaii">🌺 Maui</option>
         <option value="Oahu, Hawaii">🌊 Oahu</option>
@@ -512,7 +508,6 @@ function buildPreview(){
 buildPreview();
 
 // ── Legend ──────────────────────────────────────
-
 
 // ── Name Entry ─────────────────────────────────
 document.getElementById('pName').addEventListener('input',checkReady);
