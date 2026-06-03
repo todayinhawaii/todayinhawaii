@@ -168,51 +168,128 @@
       margin-bottom:50px;
     }
 
-    /* Game card */
+    /* Game card — full bleed 9:16 art card */
     .game-card{
-      background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(6,29,44,0.9));
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:24px;
+      border-radius:20px;
       overflow:hidden;
       position:relative;
-      transition:all 0.25s;
       cursor:pointer;
       text-decoration:none;
-      display:flex;
-      flex-direction:column;
+      display:block;
+      aspect-ratio:9/16;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow:0 8px 30px rgba(0,0,0,0.4);
     }
     .game-card:hover{
-      transform:translateY(-8px);
-      border-color:rgba(255,255,255,0.15);
-      box-shadow:0 20px 50px rgba(0,0,0,0.4);
+      transform:translateY(-6px) scale(1.02);
+      box-shadow:0 24px 60px rgba(0,0,0,0.6);
     }
     .game-card.live{
-      border-color:rgba(251,191,36,0.3);
-      background:linear-gradient(160deg,rgba(251,191,36,0.08),rgba(6,29,44,0.9));
+      box-shadow:0 8px 30px rgba(251,191,36,0.2);
     }
     .game-card.live:hover{
-      border-color:rgba(251,191,36,0.6);
-      box-shadow:0 20px 50px rgba(251,191,36,0.15);
+      box-shadow:0 24px 60px rgba(251,191,36,0.3);
     }
 
-    /* Card top - emoji display */
+    /* Art fills full card */
     .card-top{
-      height:140px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      overflow:hidden;
+      position:absolute;
+      inset:0;
+      width:100%;height:100%;
     }
+    .card-top img{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      object-fit:cover;
+      transition:transform 0.5s ease;
+    }
+    .game-card:hover .card-top img{
+      transform:scale(1.06);
+    }
+    /* Emoji fallback — centred when no image */
     .card-emoji{
-      font-size:72px;
-      position:relative;
-      z-index:1;
-      filter:drop-shadow(0 4px 16px rgba(0,0,0,0.3));
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-60%);
+      font-size:clamp(60px,12vw,90px);
+      z-index:2;
+      filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));
       transition:transform 0.3s;
     }
     .game-card:hover .card-emoji{
-      transform:scale(1.15) rotate(5deg);
+      transform:translate(-50%,-60%) scale(1.12) rotate(5deg);
+    }
+    /* Hide emoji when image loaded */
+    .card-top img:not([style*="display:none"]) ~ .card-emoji{
+      opacity:0;
+    }
+
+    /* Dark gradient overlay — text lives here */
+    .card-overlay{
+      position:absolute;
+      inset:0;
+      z-index:3;
+      background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0) 35%,
+        rgba(0,0,0,0.5) 55%,
+        rgba(0,0,0,0.88) 75%,
+        rgba(0,0,0,0.97) 100%
+      );
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      padding:18px 16px 16px;
+    }
+
+    .card-cat{
+      font-size:9px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      color:var(--gold);
+      margin-bottom:4px;
+      opacity:0.9;
+    }
+    .card-title{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(16px,3.5vw,22px);
+      font-weight:900;
+      color:#fff;
+      line-height:1.2;
+      margin-bottom:6px;
+    }
+    .card-desc{
+      font-size:11px;
+      color:rgba(255,255,255,0.75);
+      line-height:1.5;
+      margin-bottom:10px;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .card-footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .card-meta{
+      font-size:10px;
+      color:rgba(255,255,255,0.5);
+    }
+    .play-btn{
+      background:linear-gradient(135deg,var(--gold),var(--orange));
+      color:#000;
+      font-weight:900;
+      font-size:11px;
+      border-radius:99px;
+      padding:7px 16px;
+      white-space:nowrap;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
     }
     .card-top-bg{
       position:absolute;
@@ -221,7 +298,7 @@
     }
 
     /* LIVE badge */
-    .live-badge{
+    .live-badge{ z-index:10;
       position:absolute;
       top:12px;
       right:12px;
@@ -445,16 +522,16 @@
     <a href="/memorygame" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(249,115,22,0.1));">
+        <img src="/game_hulacrush.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧠</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Memory · Brain Training</div>
         <div class="card-title">The Aloha Memory Game</div>
         <div class="card-desc">Watch the tiles light up one by one then repeat the pattern from memory! Gets harder every round. Perfect for all ages — great for brain training!</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🏆 Top score: <strong id="topScore">Loading...</strong></div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🏆 Top score: <strong id="topScore">Loading...</strong></div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -464,16 +541,16 @@
     <a href="/slime" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,220,80,0.2),rgba(0,200,180,0.15));">
+        <img src="/game_slime.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧪</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">ASMR · Creative · Kids</div>
         <div class="card-title">The Slime Factory</div>
         <div class="card-desc">Make your own slime! Add colors glitter candy and sprinkles! Touch and squish with satisfying ASMR sounds! Grandkids approved! 🟢</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🧪 12 colors · 12 add-ins!</div>
-        <div class="play-btn active">Make Slime!</div>
+        <div class="card-footer"><div class="card-meta">🧪 12 colors · 12 add-ins!</div>
+        <div class="play-btn active">Make Slime!</div></div>
       </div>
     </a>
 
@@ -481,16 +558,16 @@
     <a href="/lava" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,60,0,0.25),rgba(180,20,0,0.2));">
+        <img src="/game_lava.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🌋</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Arcade · Strategy · All Ages</div>
         <div class="card-title">Pele's Fury</div>
         <div class="card-desc">Lava rocks rain from the volcano! Stack them, clear lines and trigger a MEGA ERUPTION!! Hawaii's hottest falling rock game!! 🔥</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🌋 10 levels · Eruption combos!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🌋 10 levels · Eruption combos!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>  </div>
 
@@ -502,16 +579,16 @@
     <a href="/trivia" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(251,191,36,0.1));">
+        <img src="/game_trivia.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🌺</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Trivia · Knowledge</div>
         <div class="card-title">Hawaii Trivia Challenge</div>
         <div class="card-desc">How much do you know about Hawaii? 222 questions covering history culture ocean food and nature — 20 random questions per game!</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🌺 <strong>222</strong> questions!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🌺 <strong>222</strong> questions!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -519,16 +596,16 @@
     <a href="/dolphins" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(6,29,44,0.8));">
+        <img src="/game_dolphins.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🐬</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Memory · Cards · All Ages</div>
         <div class="card-title">Dolphin Card Game</div>
         <div class="card-desc">The card game that's hundreds of years old — everyone's favourite memory game! Flip the full 52-card deck, find the matching pair and win. Fast, fun and totally addictive! 🐬🃏</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🃏 52 cards · 2 Rounds</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🃏 52 cards · 2 Rounds</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -536,16 +613,16 @@
     <a href="/fortune" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(155,89,182,0.2),rgba(6,29,44,0.8));">
+        <img src="/game_fortune.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🔮</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Fortune · Mystery · Fun</div>
         <div class="card-title">Fortune Roulette</div>
         <div class="card-desc">Spin the Vegas gypsy fortune wheel and discover your destiny! Love wealth adventure and mystery — what does the universe have planned for you?</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🔮 56 fortunes!</div>
-        <div class="play-btn active">Spin Now!</div>
+        <div class="card-footer"><div class="card-meta">🔮 56 fortunes!</div>
+        <div class="play-btn active">Spin Now!</div></div>
       </div>
     </a>
 
@@ -553,16 +630,16 @@
     <a href="/wordsearch" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(167,139,250,0.1));">
+        <img src="/game_wordsearch.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🔤</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Word Search · All Themes</div>
         <div class="card-title">Hawaii Word Search</div>
         <div class="card-desc">Find hidden words in all directions — horizontal vertical and diagonal! 222 puzzle themes from Hawaiian culture to world languages!</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🔤 <strong>222</strong> puzzles!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🔤 <strong>222</strong> puzzles!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -570,16 +647,16 @@
     <a href="/scrabble" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,0,128,0.15),rgba(255,200,0,0.1));">
+        <img src="/game_scrabble.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🎰</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Word Game · Vegas Style</div>
         <div class="card-title">Aloha Letters</div>
         <div class="card-desc">Vegas-style Scrabble! Build words from your letter tiles — rare letters score big! Bonus multipliers jackpots and celebrations!</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🎰 Vegas fun!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🎰 Vegas fun!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -587,37 +664,43 @@
     <a href="/balloons" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,105,180,0.2),rgba(135,206,235,0.2));">
+        <img src="/game_balloons.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🎈</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">ASMR · Relaxing · All Ages</div>
         <div class="card-title">Aloha Balloons!</div>
         <div class="card-desc">Pop colorful balloons as they float up from the bottom! 9 rounds of colors — satisfying ASMR pops and confetti! Perfect for all ages!</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🎈 9 color rounds!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🎈 9 color rounds!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
 
     <!-- Who Are You? -->
-    <a href="/humor" class="game-card live"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));"><div class="card-emoji">😂</div></div><div class="card-body"><div class="card-cat">Comedy · Roast</div><div class="card-title">Who Are You?</div><div class="card-desc">Spin for hilarious roasts! 64 comedy burns — all in good fun! 😂</div></div><div class="card-footer"><div class="card-meta">🎭 222 personalities!</div><div class="play-btn active">Spin Now!</div></div></a>
+    <a href="/humor" class="game-card live"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));"><img src="/game_humor.jpg" alt="" onerror="this.style.display='none'">
+        <div class="card-emoji">😂</div></div>
+      <div class="card-overlay">
+        <div class="card-cat">Comedy · Roast</div><div class="card-title">Who Are You?</div><div class="card-desc">Spin for hilarious roasts! 64 comedy burns — all in good fun! 😂</div>
+        <div class="card-footer"><div class="card-meta">🎭 222 personalities!</div><div class="play-btn active">Spin Now!</div></div>
+      </div>
+    </a>
 
     <!-- Turtle Checkers -->
     <a href="/turtles" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,180,100,0.2),rgba(0,100,60,0.15));">
+        <img src="/game_turtles.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🐢</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Strategy · AI · All Ages</div>
         <div class="card-title">Turtle Checkers</div>
         <div class="card-desc">Black turtles vs White turtles! Beat the AI from Baby to DEMON difficulty! Hawaiian sea turtle battle!! 🐢</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🐢 4 difficulty levels · vs AI!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🐢 4 difficulty levels · vs AI!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
 
@@ -625,16 +708,16 @@
     <a href="/chess" class="game-card live">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,150,255,0.2),rgba(100,0,200,0.15));">
+        <img src="/game_chess.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧜‍♀️</div>
       </div>
-      <div class="card-body">
+      
+      <div class="card-overlay">
         <div class="card-cat">Strategy · AI · Classic</div>
         <div class="card-title">Mermaid Chess</div>
         <div class="card-desc">Full chess with ocean creatures! Mermaids vs Sea Monsters — beat the AI from Reef Fish to Leviathan difficulty! 🌊</div>
-        </div>
-      <div class="card-footer">
-        <div class="card-meta">🧜‍♀️ 4 levels · Full chess rules!</div>
-        <div class="play-btn active">Play Now!</div>
+        <div class="card-footer"><div class="card-meta">🧜‍♀️ 4 levels · Full chess rules!</div>
+        <div class="play-btn active">Play Now!</div></div>
       </div>
     </a>
   </div>
