@@ -97,15 +97,27 @@
       color:#ff8800;letter-spacing:0.1em;}
     .m-stat-val{font-size:16px;font-weight:900;color:#fff;}
     @media(max-width:640px){
+      #wrap{
+        height:100dvh; /* dynamic viewport — excludes browser chrome */
+        padding:6px 6px 0;
+        justify-content:space-between;
+      }
       #gameArea{
         flex-direction:column;
         align-items:center;
-        gap:8px;
+        gap:4px;
         max-width:100%;
+        flex:0 0 auto;
       }
       #side{ display:none !important; }
       #mobileStats{ display:flex !important; }
-      #boardWrap{ display:flex; justify-content:center; }
+      #boardWrap{ display:flex; justify-content:center; width:100%; }
+      #controls{
+        max-width:100% !important;
+        padding:6px 6px 10px !important;
+        flex-shrink:0;
+        gap:10px !important;
+      }
     }
     @media(min-width:641px){
       #mobileStats{ display:none !important; }
@@ -152,16 +164,20 @@
       #controls{ max-width:100%; padding:0 8px 8px; }
     }
     .ctrl-btn{
-      flex:1;padding:18px 4px;border:none;border-radius:16px;
-      font-size:28px;cursor:pointer;
-      background:linear-gradient(135deg,rgba(255,80,0,0.35),rgba(180,20,0,0.3));
-      border:2px solid rgba(255,120,0,0.7);
-      color:#ffcc00;
-      box-shadow:0 0 16px rgba(255,80,0,0.4),inset 0 1px 0 rgba(255,200,0,0.2);
+      flex:1;padding:14px 4px;border:none;border-radius:16px;
+      font-size:30px;cursor:pointer;
+      background:linear-gradient(135deg,rgba(255,80,0,0.5),rgba(180,20,0,0.45));
+      border:3px solid rgba(255,140,0,0.85);
+      color:#ffe066;
+      box-shadow:0 0 20px rgba(255,80,0,0.5),inset 0 1px 0 rgba(255,200,0,0.3),0 4px 0 rgba(0,0,0,0.4);
       transition:all 0.1s;
       -webkit-tap-highlight-color:transparent;
-      min-height:64px;
-      text-shadow:0 0 10px rgba(255,200,0,0.8);
+      min-height:72px;
+      text-shadow:0 0 14px rgba(255,220,0,0.9);
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      gap:2px;
+      line-height:1;
     }
     .ctrl-btn:active{
       background:linear-gradient(135deg,rgba(255,120,0,0.6),rgba(220,60,0,0.5));
@@ -415,10 +431,26 @@ for(let i=0;i<25;i++){
   </div>
 
   <div id="controls">
-    <button class="ctrl-btn" id="btnLeft"  ontouchstart="startRepeat('left')"  ontouchend="stopRepeat()" onclick="move(-1)">◀</button>
-    <button class="ctrl-btn rotate"         ontouchstart="rotatePiece()"        onclick="rotatePiece()">↻</button>
-    <button class="ctrl-btn"               ontouchstart="startRepeat('right')" ontouchend="stopRepeat()" onclick="move(1)">▶</button>
-    <button class="ctrl-btn drop"          ontouchstart="hardDrop()"           onclick="hardDrop()">⬇</button>
+    <button class="ctrl-btn" id="btnLeft"
+      ontouchstart="event.preventDefault();startRepeat('left')"
+      ontouchend="stopRepeat()" onclick="move(-1)">
+      ◀<br><span style="font-size:10px;font-weight:700;opacity:0.8;">LEFT</span>
+    </button>
+    <button class="ctrl-btn rotate"
+      ontouchstart="event.preventDefault();rotatePiece()"
+      onclick="rotatePiece()">
+      ↻<br><span style="font-size:10px;font-weight:700;opacity:0.8;">SPIN</span>
+    </button>
+    <button class="ctrl-btn"
+      ontouchstart="event.preventDefault();startRepeat('right')"
+      ontouchend="stopRepeat()" onclick="move(1)">
+      ▶<br><span style="font-size:10px;font-weight:700;opacity:0.8;">RIGHT</span>
+    </button>
+    <button class="ctrl-btn drop"
+      ontouchstart="event.preventDefault();hardDrop()"
+      onclick="hardDrop()">
+      ⬇<br><span style="font-size:10px;font-weight:700;opacity:0.8;">DROP</span>
+    </button>
   </div>
 </div>
 
@@ -548,9 +580,12 @@ function sizeBoard(){
   const gameArea = document.getElementById('gameArea');
   let availW, availH;
   if(isMob){
-    // Mobile: full width minus padding, side panel hidden
-    availW = Math.min(window.innerWidth - 24, 300);
-    availH = window.innerHeight * 0.55;
+    // Mobile: bigger — fill most of screen width, leave room for controls
+    const ctrlH = 90; // height of arrow buttons
+    const statsH = 70; // height of top stats bar
+    const hdrH = 60;  // score header
+    availW = Math.min(window.innerWidth - 16, 380); // wider!
+    availH = window.innerHeight - ctrlH - statsH - hdrH - 24;
   } else {
     // Desktop: 50% bigger — up to 450px wide
     const sideW = 100, gap = 16;
@@ -797,7 +832,7 @@ function draw(){
   if(piece&&running){
     let ghostY=piece.y;
     while(!collides(piece,0,ghostY-piece.y+1)) ghostY++;
-    if(ghostY!==piece.y) drawPiece(bCtx, piece, ghostY, 0.18, true);
+    if(ghostY!==piece.y) drawPiece(bCtx, piece, ghostY, 0.35, true);
     // Active piece
     drawPiece(bCtx, piece, piece.y, 1.0, false, true);
   }
