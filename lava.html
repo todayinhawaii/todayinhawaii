@@ -722,7 +722,7 @@ function draw(){
     while(!collides(piece,0,ghostY-piece.y+1)) ghostY++;
     if(ghostY!==piece.y) drawPiece(bCtx, piece, ghostY, 0.18, true);
     // Active piece
-    drawPiece(bCtx, piece, piece.y, 1.0, false);
+    drawPiece(bCtx, piece, piece.y, 1.0, false, true);
   }
 
   // Lava glow at bottom
@@ -736,7 +736,7 @@ function draw(){
   bCtx.restore();
 }
 
-function drawCell(ctx, cx, cy, colorIdx, alpha, ghost=false){
+function drawCell(ctx, cx, cy, colorIdx, alpha, ghost=false, isActive=false){
   const col=LAVA_COLORS[colorIdx%LAVA_COLORS.length];
   const x=cx*CELL, y=cy*CELL, s=CELL;
   const pad=1;
@@ -792,13 +792,22 @@ function drawCell(ctx, cx, cy, colorIdx, alpha, ghost=false){
   ctx.lineWidth=0.5;
   ctx.strokeRect(x+pad,y+pad,s-pad*2,s-pad*2);
 
+  // Active piece — bright white border so you can clearly see it!
+  if(isActive){
+    ctx.shadowColor='rgba(255,255,255,0.6)';
+    ctx.shadowBlur=8;
+    ctx.strokeStyle='rgba(255,255,255,0.9)';
+    ctx.lineWidth=2.5;
+    ctx.strokeRect(x+pad,y+pad,s-pad*2,s-pad*2);
+  }
+
   ctx.restore();
 }
 
-function drawPiece(ctx, p, overrideY, alpha, ghost){
+function drawPiece(ctx, p, overrideY, alpha, ghost, isActive=false){
   p.shape.forEach((row,r)=>
     row.forEach((cell,c)=>{
-      if(cell) drawCell(ctx, p.x+c, overrideY+r, p.color, alpha, ghost);
+      if(cell) drawCell(ctx, p.x+c, overrideY+r, p.color, alpha, ghost, isActive);
     })
   );
 }
