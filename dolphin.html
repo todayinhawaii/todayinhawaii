@@ -379,7 +379,7 @@ for(let i=0;i<30;i++){
       <div class="slot-val" id="timerDisplay">0:00</div>
     </div>
     <div class="hud-pairs">
-      <div class="hud-pairs-num"><span id="pairsLeft">26</span> / 26</div>
+      <div class="hud-pairs-num"><span id="pairsLeft">15</span></div>
       <div class="hud-pairs-lbl">pairs left 🐬</div>
     </div>
     <div class="slot-box gold">
@@ -801,7 +801,12 @@ function checkMatch(){
       // Score popup
       showScorePop('+'+pts,el1);
 
-      document.getElementById('pairsLeft').textContent=26-matchesFound;
+      // Update pairs left for current stage
+      const _pl=document.getElementById('pairsLeft');
+      if(_pl){
+        const _remaining=Math.floor(cards.length/2)-matchesFound;
+        _pl.textContent=_remaining;
+      }
 
       flippedCards=[];
       canFlip=true;
@@ -837,17 +842,31 @@ function checkMatch(){
 function advanceStage(){
   stage=2;
   matchesFound=0;
+  canFlip=false;
+  flippedCards=[];
   cards=allCards.s2;
-  // Quick flash animation
+
   const grid=document.getElementById('cardGrid');
-  grid.style.transition='opacity 0.3s';
+  grid.style.transition='opacity 0.4s';
   grid.style.opacity='0';
+
   setTimeout(()=>{
-    renderGrid();
+    try{
+      renderGrid();
+    }catch(e){
+      console.error('renderGrid stage 2 error:',e);
+    }
+    // Always restore visibility even if renderGrid had an issue
     grid.style.opacity='1';
-    showToast('🌊 Stage 2!! '+(cards.length/2)+' more pairs!!');
-    playLevelUp();
-  },320);
+    canFlip=true;
+
+    // Update pairs counter for stage 2
+    const pl=document.getElementById('pairsLeft');
+    if(pl) pl.textContent=cards.length/2;
+
+    try{ showToast('🌊 Stage 2!! '+(cards.length/2)+' more pairs!!'); }catch(e){}
+    try{ playLevelUp(); }catch(e){}
+  },400);
 }
 
 async function winGame(){
@@ -902,7 +921,7 @@ function playAgain(){
   clearInterval(timerInterval);
   document.getElementById('timerDisplay').textContent='0:00';
   document.getElementById('scoreDisplay').textContent='0';
-  document.getElementById('pairsLeft').textContent='26';
+  document.getElementById('pairsLeft').textContent='15';
   buildDeck();renderGrid();
 }
 
