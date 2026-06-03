@@ -297,10 +297,47 @@
     }
     .ov-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #660000;}
     .ov-btn.sec{
-      background:rgba(255,255,255,0.08);color:#ff8844;
-      border:1px solid rgba(255,100,0,0.3);
-      box-shadow:0 3px 0 rgba(0,0,0,0.4);font-size:13px;
-      padding:10px 28px;
+      background:linear-gradient(160deg,#00cc44,#008833,#00ff66,#007722);
+      background-size:200% 200%;
+      animation:greenBling 1.5s ease infinite, greenPulse 1s ease-in-out infinite alternate;
+      color:#ffffff;
+      border:3px solid #00ff66;
+      padding:14px 36px;
+      font-size:16px;
+      border-radius:99px;
+      box-shadow:
+        0 6px 0 #004422,
+        0 0 20px #00ff66,
+        0 0 40px rgba(0,255,100,0.6),
+        0 0 80px rgba(0,255,80,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      text-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ffaa,
+        0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing:2px;
+    }
+    .ov-btn.sec:hover{
+      box-shadow:
+        0 6px 0 #004422,
+        0 0 30px #00ff66,
+        0 0 60px rgba(0,255,100,0.9),
+        0 0 100px rgba(0,255,80,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      transform:translateY(-2px) scale(1.04);
+    }
+    .ov-btn.sec:active{
+      transform:translateY(4px);
+      box-shadow:0 2px 0 #004422,0 0 40px #00ff66;
+    }
+    @keyframes greenBling{
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
+    @keyframes greenPulse{
+      0%{border-color:#00ff66;box-shadow:0 6px 0 #004422,0 0 20px #00ff66,0 0 40px rgba(0,255,100,0.6),0 0 80px rgba(0,255,80,0.3),inset 0 1px 0 rgba(255,255,255,0.3);}
+      100%{border-color:#66ffaa;box-shadow:0 6px 0 #004422,0 0 35px #00ff88,0 0 70px rgba(0,255,120,0.9),0 0 120px rgba(0,255,100,0.5),inset 0 1px 0 rgba(255,255,255,0.4);}
     }
 
     /* Name/location inputs */
@@ -530,7 +567,7 @@ for(let i=0;i<25;i++){
     <strong style="color:#ffcc00;">Can you survive her fury?</strong>
   </div>
   <button class="ov-btn" onclick="showHowToPlay()">🔥 How To Play!</button>
-  <button class="ov-btn sec" onclick="showNameEntry()">⚡ I Know — Let's Go!</button>
+  <button class="ov-btn sec" onclick="showNameEntry()">⚡ I Know — Let's GO!! 🌋</button>
   <a href="/games" style="color:#ff8844;font-size:12px;">← Games Hub</a>
 </div>
 
