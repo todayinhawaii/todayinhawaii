@@ -197,16 +197,23 @@
       inset:0;
       width:100%;height:100%;
     }
+    .card-top video{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      object-fit:cover;
+      transition:transform 0.5s ease;
+    }
     .card-top img{
       position:absolute;inset:0;
       width:100%;height:100%;
       object-fit:cover;
       transition:transform 0.5s ease;
     }
+    .game-card:hover .card-top video,
     .game-card:hover .card-top img{
       transform:scale(1.06);
     }
-    /* Emoji fallback — centred when no image */
+    /* Emoji fallback */
     .card-emoji{
       position:absolute;
       top:50%;left:50%;
@@ -218,10 +225,6 @@
     }
     .game-card:hover .card-emoji{
       transform:translate(-50%,-60%) scale(1.12) rotate(5deg);
-    }
-    /* Hide emoji when image loaded */
-    .card-top img:not([style*="display:none"]) ~ .card-emoji{
-      opacity:0;
     }
 
     /* Dark gradient overlay — text lives here */
@@ -558,7 +561,14 @@
     <a href="/memorygame" class="game-card live" id="hulacrush">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(249,115,22,0.1));">
-        <img src="/game_hulacrush.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_hulacrush.mp4" type="video/mp4">
+        </video>
+        <img src="/game_hulacrush.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🧠</div>
       </div>
       
@@ -582,7 +592,14 @@
     <a href="/slime" class="game-card live" id="slime">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,220,80,0.2),rgba(0,200,180,0.15));">
-        <img src="/game_slime.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_slime.mp4" type="video/mp4">
+        </video>
+        <img src="/game_slime.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🧪</div>
       </div>
       
@@ -604,7 +621,14 @@
     <a href="/lava" class="game-card live" id="lava">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,60,0,0.25),rgba(180,20,0,0.2));">
-        <img src="/game_lava.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_lava.mp4" type="video/mp4">
+        </video>
+        <img src="/game_lava.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🌋</div>
       </div>
       
@@ -630,7 +654,14 @@
     <a href="/trivia" class="game-card live" id="trivia">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(251,191,36,0.1));">
-        <img src="/game_trivia.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_trivia.mp4" type="video/mp4">
+        </video>
+        <img src="/game_trivia.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🌺</div>
       </div>
       
@@ -652,7 +683,14 @@
     <a href="/dolphins" class="game-card live" id="dolphins">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(6,29,44,0.8));">
-        <img src="/game_dolphins.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_dolphins.mp4" type="video/mp4">
+        </video>
+        <img src="/game_dolphins.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🐬</div>
       </div>
       
@@ -674,7 +712,14 @@
     <a href="/fortune" class="game-card live" id="fortune">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(155,89,182,0.2),rgba(6,29,44,0.8));">
-        <img src="/game_fortune.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_fortune.mp4" type="video/mp4">
+        </video>
+        <img src="/game_fortune.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🔮</div>
       </div>
       
@@ -696,7 +741,14 @@
     <a href="/wordsearch" class="game-card live" id="wordsearch">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(167,139,250,0.1));">
-        <img src="/game_wordsearch.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_wordsearch.mp4" type="video/mp4">
+        </video>
+        <img src="/game_wordsearch.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🔤</div>
       </div>
       
@@ -718,7 +770,14 @@
     <a href="/scrabble" class="game-card live" id="scrabble">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,0,128,0.15),rgba(255,200,0,0.1));">
-        <img src="/game_scrabble.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_scrabble.mp4" type="video/mp4">
+        </video>
+        <img src="/game_scrabble.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🎰</div>
       </div>
       
@@ -740,7 +799,14 @@
     <a href="/balloons" class="game-card live" id="balloons">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,105,180,0.2),rgba(135,206,235,0.2));">
-        <img src="/game_balloons.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_balloons.mp4" type="video/mp4">
+        </video>
+        <img src="/game_balloons.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🎈</div>
       </div>
       
@@ -760,8 +826,17 @@
 
 
     <!-- Who Are You? -->
-    <a href="/humor" class="game-card live" id="humor"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));"><img src="/game_humor.jpg" alt="" onerror="this.style.display='none'">
-        <div class="card-emoji">😂</div></div>
+    <a href="/humor" class="game-card live" id="humor"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_humor.mp4" type="video/mp4">
+        </video>
+        <img src="/game_humor.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="card-emoji">😂</div>
+      </div>
       <div class="card-overlay">
         <div class="card-cat">Comedy · Roast</div><div class="card-title">Who Are You?</div><div class="card-desc">Spin for hilarious roasts! 64 comedy burns — all in good fun! 😂</div>
         <div class="card-footer">
@@ -778,7 +853,14 @@
     <a href="/turtles" class="game-card live" id="turtles">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,180,100,0.2),rgba(0,100,60,0.15));">
-        <img src="/game_turtles.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_turtles.mp4" type="video/mp4">
+        </video>
+        <img src="/game_turtles.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🐢</div>
       </div>
       
@@ -800,7 +882,14 @@
     <a href="/chess" class="game-card live" id="chess">
       <div class="live-badge">🟢 Live Now!</div>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,150,255,0.2),rgba(100,0,200,0.15));">
-        <img src="/game_chess.jpg" alt="" onerror="this.style.display='none'">
+        <video autoplay muted loop playsinline preload="none"
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <source src="/game_chess.mp4" type="video/mp4">
+        </video>
+        <img src="/game_chess.jpg" alt=""
+          onerror="this.style.display='none'"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="card-emoji">🧜‍♀️</div>
       </div>
       
