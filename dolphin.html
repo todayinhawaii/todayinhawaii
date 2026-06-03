@@ -360,6 +360,13 @@
   </style>
 </head>
 <body>
+<!-- DEBUG SKIP BUTTON — remove after testing -->
+<button onclick="cheatComplete()" style="
+  position:fixed;top:10px;left:10px;z-index:99999;
+  background:red;color:#fff;border:none;border-radius:8px;
+  padding:12px 20px;font-size:16px;font-weight:900;cursor:pointer;">
+  ⚡ SKIP STAGE
+</button>
 
 <!-- Stars -->
 <script>
@@ -1201,38 +1208,74 @@ function checkInputs(nameId, locId){
 // ────────────────────────────────────────────────
 
 // ── SKIP BUTTON + DEBUG ────────────────────────────────────────────
-function cheatComplete(){
-  var info='Stage: '+stage+'\nCards: '+cards.length+'\nMatched: '+matchesFound;
-  info+='\nallCards.s2 length: '+(allCards&&allCards.s2?allCards.s2.length:'MISSING!');
-  alert('DEBUG INFO:\n'+info);
-
-  cards.forEach(function(card,idx){
-    if(card.matched) return;
-    card.matched=true; card.flipped=true;
-    var el=document.getElementById('card-'+idx);
-    if(el){
-      el.classList.add('matched','flipped');
-      var front=el.querySelector('.card-front');
-      if(front&&!front.querySelector('.match-overlay')){
-        var ov=document.createElement('div');
-        ov.className='match-overlay'; ov.textContent='✓';
-        front.appendChild(ov);
-      }
-    }
-  });
-  matchesFound=Math.floor(cards.length/2);
-  canFlip=false; flippedCards=[];
-
-  var result='Matched: '+matchesFound+' / Stage: '+stage;
-  alert('After skip:\n'+result+'\nNow checking win condition...');
-
-  if(stage===1){
-    alert('Calling advanceStage() in 1 second...');
-    setTimeout(function(){advanceStage();},1000);
-  } else {
-    alert('Calling winGame() in 1 second...');
-    setTimeout(function(){winGame();},1000);
+function showDebug(msg){
+  // Show debug info ON SCREEN so user can read while typing
+  var el=document.getElementById('debugBox');
+  if(!el){
+    el=document.createElement('div');
+    el.id='debugBox';
+    el.style.cssText='position:fixed;top:60px;left:10px;right:10px;z-index:99999;'+
+      'background:rgba(0,0,0,0.95);color:#00ff00;font-family:monospace;'+
+      'font-size:14px;padding:14px;border-radius:10px;border:2px solid #00ff00;'+
+      'white-space:pre-wrap;line-height:1.8;';
+    document.body.appendChild(el);
   }
+  el.textContent=msg;
+}
+
+function cheatComplete(){
+  var s2len=(allCards&&allCards.s2)?allCards.s2.length:'MISSING!';
+  var info='=== DEBUG INFO ===\n'+
+    'Stage: '+stage+'\n'+
+    'Cards on board: '+cards.length+'\n'+
+    'Matched so far: '+matchesFound+'\n'+
+    'allCards.s2 length: '+s2len+'\n'+
+    '=== Skipping now... ===';
+  showDebug(info);
+
+  setTimeout(function(){
+    cards.forEach(function(card,idx){
+      if(card.matched) return;
+      card.matched=true; card.flipped=true;
+      var el=document.getElementById('card-'+idx);
+      if(el){
+        el.classList.add('matched','flipped');
+        var front=el.querySelector('.card-front');
+        if(front&&!front.querySelector('.match-overlay')){
+          var ov=document.createElement('div');
+          ov.className='match-overlay'; ov.textContent='✓';
+          front.appendChild(ov);
+        }
+      }
+    });
+    matchesFound=Math.floor(cards.length/2);
+    canFlip=false; flippedCards=[];
+
+    var s2len2=(allCards&&allCards.s2)?allCards.s2.length:'MISSING!';
+    showDebug('=== AFTER SKIP ===\n'+
+      'Stage: '+stage+'\n'+
+      'matchesFound: '+matchesFound+'\n'+
+      'cards.length: '+cards.length+'\n'+
+      'allCards.s2 length: '+s2len2+'\n'+
+      'Win condition: '+matchesFound+'==='+Math.floor(cards.length/2)+'? '+(matchesFound===Math.floor(cards.length/2))+'\n'+
+      'Now calling '+(stage===1?'advanceStage':'winGame')+'...');
+
+    if(stage===1){
+      setTimeout(function(){
+        try{
+          advanceStage();
+          showDebug('=== advanceStage() CALLED OK ===\n'+
+            'New stage: '+stage+'\n'+
+            'New cards: '+cards.length+'\n'+
+            'allCards.s2: '+(allCards&&allCards.s2?allCards.s2.length:'???'));
+        }catch(err){
+          showDebug('=== ERROR in advanceStage ===\n'+err.toString());
+        }
+      },800);
+    } else {
+      setTimeout(function(){winGame();},500);
+    }
+  },300);
 }
 
 // ── DEBUG CHEAT — press D to instantly complete current stage ──────
