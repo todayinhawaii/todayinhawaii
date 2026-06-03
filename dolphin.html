@@ -533,51 +533,69 @@ function startGame(){
 // ── Build & Shuffle Deck ──────────────────────
 function buildDeck(){
   const SUITS_ALL=[
-    {sym:'♠',name:'spades',  color:'black',code:'s'},
-    {sym:'♥',name:'hearts',  color:'red',  code:'h'},
-    {sym:'♦',name:'diamonds',color:'red',  code:'d'},
-    {sym:'♣',name:'clubs',   color:'black',code:'c'},
+    {sym:'♠',color:'black',code:'s'},
+    {sym:'♥',color:'red',  code:'h'},
+    {sym:'♦',color:'red',  code:'d'},
+    {sym:'♣',color:'black',code:'c'},
   ];
 
-  function shuffleArr(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-
-  // Build 52 individual cards (4 suits × 13 values)
+  // Step 1: create flat array of 52 cards
   const pool=[];
   SUITS_ALL.forEach(suit=>{
     VALUES.forEach(val=>{
-      pool.push({val,suit,flipped:false,matched:false});
+      pool.push({val, suit, flipped:false, matched:false});
     });
   });
+  console.log('Pool size:', pool.length); // should be 52
 
-  // Group by value — each value has 4 cards → 2 pairs
-  const byVal={};
-  VALUES.forEach(v=>{byVal[v]=[];});
-  pool.forEach(c=>byVal[c.val].push(c));
-
-  // Create 26 pairs: 2 per value, shuffling which suits pair together
-  const pairs=[];
-  VALUES.forEach(val=>{
-    const four=shuffleArr([...byVal[val]]);
-    pairs.push([four[0],four[1]]); // pair 1
-    pairs.push([four[2],four[3]]); // pair 2
-  });
-  // 13 values × 2 pairs = 26 total pairs
-
-  shuffleArr(pairs);
-
-  function flatShuffle(pairList){
-    return shuffleArr(pairList.flat());
+  // Step 2: shuffle pool
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
   }
 
-  // Stage 1: 15 pairs (30 cards), Stage 2: 11 pairs (22 cards)
-  allCards={s1:flatShuffle(pairs.slice(0,15)), s2:flatShuffle(pairs.slice(15))};
+  // Step 3: group into value buckets (4 cards each)
+  const buckets={};
+  VALUES.forEach(v=>{buckets[v]=[];});
+  pool.forEach(c=>buckets[c.val].push(c));
+
+  // Step 4: from each bucket of 4, make 2 pairs
+  const pairs=[];
+  VALUES.forEach(val=>{
+    const b=buckets[val];
+    pairs.push([b[0],b[1]]); // pair A
+    pairs.push([b[2],b[3]]); // pair B
+  });
+  console.log('Total pairs:', pairs.length); // should be 26
+
+  // Step 5: shuffle the pairs
+  for(let i=pairs.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pairs[i],pairs[j]]=[pairs[j],pairs[i]];
+  }
+
+  // Step 6: split — stage 1 gets 15 pairs, stage 2 gets 11
+  const s1pairs=pairs.slice(0,15);
+  const s2pairs=pairs.slice(15);
+  console.log('Stage 1 pairs:', s1pairs.length, 'Stage 2 pairs:', s2pairs.length);
+
+  // Step 7: flatten and shuffle each stage
+  function flatShuffle(pList){
+    const flat=pList.flat();
+    for(let i=flat.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [flat[i],flat[j]]=[flat[j],flat[i]];
+    }
+    return flat;
+  }
+
+  const s1cards=flatShuffle(s1pairs);
+  const s2cards=flatShuffle(s2pairs);
+  console.log('Stage 1 cards:', s1cards.length, 'Stage 2 cards:', s2cards.length);
+
+  allCards={s1:s1cards, s2:s2cards};
   cards=allCards.s1;
+  console.log('buildDeck done. cards.length=', cards.length);
 }
 
 // ── Render Grid ────────────────────────────────
@@ -813,6 +831,7 @@ function checkMatch(){
 
       // Check win!
       const pairsInStage = Math.floor(cards.length/2);
+      console.log('Win check: matched='+matchesFound+' need='+pairsInStage+' stage='+stage);
       if(matchesFound===pairsInStage && stage===1){
         setTimeout(()=>advanceStage(),800);
       } else if(matchesFound===pairsInStage && stage===2){
@@ -840,6 +859,7 @@ function checkMatch(){
 // ── Win! ────────────────────────────────────────
 // ── Stage Advance (mobile) ─────────────────────
 function advanceStage(){
+  console.log('advanceStage called! allCards.s2 length:', allCards.s2?.length);
   stage=2;
   matchesFound=0;
   canFlip=false;
@@ -1174,6 +1194,36 @@ function checkInputs(nameId, locId){
   return {ok:true};
 }
 // ────────────────────────────────────────────────
+
+// ── DEBUG CHEAT — press D to instantly complete current stage ──────
+document.addEventListener('keydown',function(e){
+  if(e.key!=='d'&&e.key!=='D') return;
+  console.log('CHEAT: completing stage',stage,'cards:',cards.length);
+  cards.forEach(function(card,idx){
+    if(card.matched) return;
+    card.matched=true; card.flipped=true;
+    var el=document.getElementById('card-'+idx);
+    if(el){
+      el.classList.add('matched','flipped');
+      var front=el.querySelector('.card-front');
+      if(front&&!front.querySelector('.match-overlay')){
+        var ov=document.createElement('div');
+        ov.className='match-overlay'; ov.textContent='✓';
+        front.appendChild(ov);
+      }
+    }
+  });
+  matchesFound=Math.floor(cards.length/2);
+  canFlip=false; flippedCards=[];
+  console.log('CHEAT done: matched='+matchesFound+' stage='+stage);
+  if(stage===1){
+    console.log('CHEAT: calling advanceStage...');
+    setTimeout(function(){advanceStage();},500);
+  } else {
+    console.log('CHEAT: calling winGame...');
+    setTimeout(function(){winGame();},500);
+  }
+});
 </script>
 </body>
 </html>
