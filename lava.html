@@ -273,7 +273,26 @@
       text-align:center;white-space:nowrap;
     }
     #announce.show{opacity:1;}
-  </style>
+  
+    /* ── Standard Signup Form ─────────────────── */
+    .signup-form{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;align-items:center;}
+    .signup-input{
+      width:100%;padding:12px 16px;
+      background:rgba(255,255,255,0.1);
+      border:2px solid rgba(255,255,255,0.25);
+      border-radius:12px;color:#fff;
+      font-size:15px;font-family:system-ui,sans-serif;
+      outline:none;text-align:center;
+      transition:border-color 0.2s;
+    }
+    .signup-input:focus{border-color:rgba(255,255,255,0.7);}
+    .signup-input::placeholder{color:rgba(255,255,255,0.4);}
+    .signup-label{
+      font-size:9px;font-weight:900;text-transform:uppercase;
+      letter-spacing:0.12em;color:rgba(255,255,255,0.55);
+      margin-bottom:-6px;align-self:flex-start;padding-left:4px;
+    }
+    </style>
 </head>
 <body>
 <div id="bg"></div>
@@ -1003,8 +1022,10 @@ function beginGame(){
     return;
   }
 
-  playerName = document.getElementById('playerName').value.trim() || 'Lava Warrior';
-  playerLoc  = document.getElementById('playerLoc').value.trim()  || 'Hawaii';
+  playerName = document.getElementById('playerName')?.value.trim() || 'Lava Warrior';
+  const _u  = document.getElementById('playerUser')?.value.trim() || '';
+  const _l  = document.getElementById('playerLoc')?.value.trim()  || 'Hawaii';
+  playerLoc = (_u ? _u + ' · ' : '') + _l;
   document.getElementById('nameScreen').classList.add('hide');
   startGame();
 }
