@@ -480,7 +480,32 @@
       .games-grid{grid-template-columns:1fr;}
       .hub-title{font-size:32px;}
     }
-  </style>
+  
+    /* Share button on game cards */
+    .share-btn{
+      position:absolute;
+      top:12px;left:12px;
+      z-index:10;
+      background:rgba(0,0,0,0.55);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.15);
+      border-radius:99px;
+      padding:5px 11px;
+      font-size:11px;
+      font-weight:700;
+      color:#fff;
+      cursor:pointer;
+      display:flex;align-items:center;gap:4px;
+      transition:background 0.2s,transform 0.15s;
+      text-decoration:none;
+    }
+    .share-btn:hover{
+      background:rgba(24,119,242,0.8);
+      transform:scale(1.05);
+    }
+    .share-btn:active{transform:scale(0.97);}
+
+    </style>
 </head>
 <body>
 
@@ -519,8 +544,9 @@
   <div class="games-grid" style="margin-bottom:40px;">
 
     <!-- Memory Game — LIVE -->
-    <a href="/memorygame" class="game-card live">
+    <a href="/memorygame" class="game-card live" id="hulacrush">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#hulacrush','I just played 🧠 Aloha Memory on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#hulacrush')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(249,115,22,0.1));">
         <img src="/game_hulacrush.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧠</div>
@@ -538,8 +564,9 @@
 
 
     <!-- Slime Factory — LIVE! -->
-    <a href="/slime" class="game-card live">
+    <a href="/slime" class="game-card live" id="slime">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#slime','I just played 🧪 Slime Artists Factory on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#slime')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,220,80,0.2),rgba(0,200,180,0.15));">
         <img src="/game_slime.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧪</div>
@@ -555,8 +582,9 @@
     </a>
 
     <!-- Pele's Fury — LIVE! -->
-    <a href="/lava" class="game-card live">
+    <a href="/lava" class="game-card live" id="lava">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#lava','I just played 🌋 Pele's Fury on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#lava')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,60,0,0.25),rgba(180,20,0,0.2));">
         <img src="/game_lava.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🌋</div>
@@ -576,8 +604,9 @@
   <div class="games-grid">
 
     <!-- Hawaii Trivia — LIVE! -->
-    <a href="/trivia" class="game-card live">
+    <a href="/trivia" class="game-card live" id="trivia">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#trivia','I just played 🌺 Hawaii Trivia on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#trivia')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(251,191,36,0.1));">
         <img src="/game_trivia.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🌺</div>
@@ -593,8 +622,9 @@
     </a>
 
     <!-- Dolphin Card Game — LIVE! -->
-    <a href="/dolphins" class="game-card live">
+    <a href="/dolphins" class="game-card live" id="dolphins">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#dolphins','I just played 🐬 Dolphin Card Game on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#dolphins')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(6,29,44,0.8));">
         <img src="/game_dolphins.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🐬</div>
@@ -610,8 +640,9 @@
     </a>
 
     <!-- Fortune Roulette — LIVE! -->
-    <a href="/fortune" class="game-card live">
+    <a href="/fortune" class="game-card live" id="fortune">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#fortune','I just played 🔮 Fortune Roulette on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#fortune')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(155,89,182,0.2),rgba(6,29,44,0.8));">
         <img src="/game_fortune.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🔮</div>
@@ -627,8 +658,9 @@
     </a>
 
     <!-- Word Search — LIVE! -->
-    <a href="/wordsearch" class="game-card live">
+    <a href="/wordsearch" class="game-card live" id="wordsearch">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#wordsearch','I just played 🔤 Hawaii Word Search on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#wordsearch')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(167,139,250,0.1));">
         <img src="/game_wordsearch.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🔤</div>
@@ -644,8 +676,9 @@
     </a>
 
     <!-- Aloha Letters Scrabble — LIVE! -->
-    <a href="/scrabble" class="game-card live">
+    <a href="/scrabble" class="game-card live" id="scrabble">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#scrabble','I just played 🎰 Aloha Letters on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#scrabble')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,0,128,0.15),rgba(255,200,0,0.1));">
         <img src="/game_scrabble.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🎰</div>
@@ -661,8 +694,9 @@
     </a>
 
     <!-- Aloha Balloons — LIVE! -->
-    <a href="/balloons" class="game-card live">
+    <a href="/balloons" class="game-card live" id="balloons">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#balloons','I just played 🎈 Aloha Balloons on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#balloons')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(255,105,180,0.2),rgba(135,206,235,0.2));">
         <img src="/game_balloons.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🎈</div>
@@ -679,7 +713,7 @@
 
 
     <!-- Who Are You? -->
-    <a href="/humor" class="game-card live"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));"><img src="/game_humor.jpg" alt="" onerror="this.style.display='none'">
+    <a href="/humor" class="game-card live" id="humor"><div class="live-badge">🟢 Live Now!</div><div class="card-top" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(6,29,44,0.8));"><img src="/game_humor.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">😂</div></div>
       <div class="card-overlay">
         <div class="card-cat">Comedy · Roast</div><div class="card-title">Who Are You?</div><div class="card-desc">Spin for hilarious roasts! 64 comedy burns — all in good fun! 😂</div>
@@ -688,8 +722,9 @@
     </a>
 
     <!-- Turtle Checkers -->
-    <a href="/turtles" class="game-card live">
+    <a href="/turtles" class="game-card live" id="turtles">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#turtles','I just played 🐢 Turtle Checkers on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#turtles')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,180,100,0.2),rgba(0,100,60,0.15));">
         <img src="/game_turtles.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🐢</div>
@@ -705,8 +740,9 @@
     </a>
 
     <!-- Mermaid Chess -->
-    <a href="/chess" class="game-card live">
+    <a href="/chess" class="game-card live" id="chess">
       <div class="live-badge">🟢 Live Now!</div>
+      <button class="share-btn" onclick="event.preventDefault();event.stopPropagation();shareGame('https://www.todayinhawaii.com/games#chess','I just played ♛ Mermaid Chess on Today in Hawaii! 🌺 Try it! 👉 todayinhawaii.com/games#chess')">📤 Share</button>
       <div class="card-top" style="background:linear-gradient(135deg,rgba(0,150,255,0.2),rgba(100,0,200,0.15));">
         <img src="/game_chess.jpg" alt="" onerror="this.style.display='none'">
         <div class="card-emoji">🧜‍♀️</div>
