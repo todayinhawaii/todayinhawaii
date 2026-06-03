@@ -532,36 +532,50 @@ function startGame(){
 
 // ── Build & Shuffle Deck ──────────────────────
 function buildDeck(){
-  // Use 2 suits only: ♠ (black) and ♥ (red)
-  // Each value gets 2 pairs — one black, one red = 26 pairs total
-  // This guarantees each stage has EXACTLY 2 of every value shown!
-  const DECK_SUITS=[
-    {sym:'♠',name:'spades',  color:'black'},
-    {sym:'♥',name:'hearts',  color:'red'},
+  const SUITS_ALL=[
+    {sym:'♠',name:'spades',  color:'black',code:'s'},
+    {sym:'♥',name:'hearts',  color:'red',  code:'h'},
+    {sym:'♦',name:'diamonds',color:'red',  code:'d'},
+    {sym:'♣',name:'clubs',   color:'black',code:'c'},
   ];
-  const pairs=[];
-  DECK_SUITS.forEach(suit=>{
+
+  function shuffleArr(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  // Build 52 individual cards (4 suits × 13 values)
+  const pool=[];
+  SUITS_ALL.forEach(suit=>{
     VALUES.forEach(val=>{
-      pairs.push([
-        {id:suit.sym+val+'_1',val,suit,flipped:false,matched:false},
-        {id:suit.sym+val+'_2',val,suit,flipped:false,matched:false}
-      ]);
+      pool.push({val,suit,flipped:false,matched:false});
     });
   });
-  // 2 × 13 = 26 pairs. Shuffle them.
-  for(let i=pairs.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [pairs[i],pairs[j]]=[pairs[j],pairs[i]];
-  }
+
+  // Group by value — each value has 4 cards → 2 pairs
+  const byVal={};
+  VALUES.forEach(v=>{byVal[v]=[];});
+  pool.forEach(c=>byVal[c.val].push(c));
+
+  // Create 26 pairs: 2 per value, shuffling which suits pair together
+  const pairs=[];
+  VALUES.forEach(val=>{
+    const four=shuffleArr([...byVal[val]]);
+    pairs.push([four[0],four[1]]); // pair 1
+    pairs.push([four[2],four[3]]); // pair 2
+  });
+  // 13 values × 2 pairs = 26 total pairs
+
+  shuffleArr(pairs);
+
   function flatShuffle(pairList){
-    const flat=pairList.flat();
-    for(let i=flat.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [flat[i],flat[j]]=[flat[j],flat[i]];
-    }
-    return flat;
+    return shuffleArr(pairList.flat());
   }
-  // Stage 1 = 15 pairs (30 cards), Stage 2 = 11 pairs (22 cards)
+
+  // Stage 1: 15 pairs (30 cards), Stage 2: 11 pairs (22 cards)
   allCards={s1:flatShuffle(pairs.slice(0,15)), s2:flatShuffle(pairs.slice(15))};
   cards=allCards.s1;
 }
@@ -675,17 +689,40 @@ function buildCardHTML(card){
 
   const center = v==='A' ? ace() : isFace ? faceCard() : pipGrid();
 
+  // Image filename: card_As.png, card_Kh.png, card_10d.png, card_Jc.png etc
+  const suitCode = card.suit.code || (
+    card.suit.sym==='♠'?'s':card.suit.sym==='♥'?'h':
+    card.suit.sym==='♦'?'d':'c');
+  const valCode  = v; // A, 2-9, 10, J, Q, K
+  const imgFile  = `card_${valCode}${suitCode}.jpg`;
+
   return `<div class="card-inner">
-    <div class="card-back">
-      <div class="dolphin-back">🐬</div>
-      <div class="dolphin-sub">DOLPHINS</div>
+    <div class="card-back" id="card-back-face">
+      <img src="/dolphin_back.jpg"
+        style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div style="display:none;flex-direction:column;align-items:center;
+        justify-content:center;width:100%;height:100%;">
+        <div class="dolphin-back">🐬</div>
+        <div class="dolphin-sub">DOLPHINS</div>
+      </div>
     </div>
     <div class="card-front">
-      ${corner(false)}
-      <div style="position:absolute;inset:8px;border:1px solid rgba(0,0,0,0.1);
-        border-radius:4px;pointer-events:none;"></div>
-      ${center}
-      ${corner(true)}
+      <img src="/${imgFile}"
+        style="width:100%;height:100%;object-fit:cover;border-radius:6px;
+               display:block;position:absolute;inset:0;z-index:1;"
+        onerror="this.style.display='none';">
+      <!-- Drawn fallback (shows when no image uploaded) -->
+      <div class="card-drawn-fallback" style="
+        position:absolute;inset:0;z-index:0;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;">
+        ${corner(false)}
+        <div style="position:absolute;inset:8px;border:1px solid rgba(0,0,0,0.1);
+          border-radius:4px;pointer-events:none;"></div>
+        ${center}
+        ${corner(true)}
+      </div>
     </div>
   </div>`;
 }
