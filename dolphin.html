@@ -430,7 +430,7 @@ for(let i=0;i<30;i++){
     </div>
     <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
     <select id="pLoc" class="ns-select">
-      <option value="">📍 Where are you from?</option>
+      <option value=""></option>
       <optgroup label="🌺 Hawaii">
         <option value="Maui, Hawaii">🌺 Maui</option>
         <option value="Oahu, Hawaii">🌊 Oahu</option>
@@ -866,12 +866,13 @@ function checkMatch(){
       flippedCards=[];
       canFlip=true;
 
-      // Check win!
-      const pairsInStage = Math.floor(cards.length/2);
-      console.log('Win check: matched='+matchesFound+' need='+pairsInStage+' stage='+stage);
-      if(matchesFound===pairsInStage && stage===1){
-        setTimeout(()=>advanceStage(),800);
-      } else if(matchesFound===pairsInStage && stage===2){
+      // Check win — use allCards directly, not cards (avoids sync bug)
+      const need1 = Math.floor(allCards.s1.length/2); // always 15
+      const need2 = Math.floor(allCards.s2.length/2); // always 11
+      console.log('Win check: matched='+matchesFound+' stage='+stage+' need1='+need1+' need2='+need2);
+      if(stage===1 && matchesFound===need1){
+        setTimeout(()=>advanceStage(),500);
+      } else if(stage===2 && matchesFound===need2){
         setTimeout(()=>winGame(),600);
       }
     },400);
@@ -948,7 +949,6 @@ function advanceStage(){
   try{ showToast('🌊 Stage 2!! 11 more pairs!!'); }catch(e){}
   try{ playLevelUp(); }catch(e){}
 }
-
 
 async function winGame(){
   gameOver=true;
@@ -1297,7 +1297,10 @@ function cheatComplete(){
         }
       }
     });
-    matchesFound=Math.floor(cards.length/2);
+    // Use stage-specific pair count for cheat
+  matchesFound = stage===1
+    ? Math.floor(allCards.s1.length/2)   // 15
+    : Math.floor(allCards.s2.length/2);  // 11
     canFlip=false; flippedCards=[];
 
     var s2len2=(allCards&&allCards.s2)?allCards.s2.length:'MISSING!';
@@ -1345,7 +1348,10 @@ document.addEventListener('keydown',function(e){
       }
     }
   });
-  matchesFound=Math.floor(cards.length/2);
+  // Use stage-specific pair count for cheat
+  matchesFound = stage===1
+    ? Math.floor(allCards.s1.length/2)   // 15
+    : Math.floor(allCards.s2.length/2);  // 11
   canFlip=false; flippedCards=[];
   console.log('CHEAT done: matched='+matchesFound+' stage='+stage);
   if(stage===1){
