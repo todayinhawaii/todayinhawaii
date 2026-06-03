@@ -399,32 +399,7 @@
     <!-- Color preview chips -->
     <div class="ns-balloons" id="previewChips"></div>
 
-    <input type="text" id="pName" class="ns-input" placeholder="Your name..." maxlength="20">
-    <select id="pLoc" class="ns-select">
-      <option value=""></option>
-      <optgroup label="🌺 Hawaii">
-        <option value="Maui, Hawaii">🌺 Maui</option>
-        <option value="Oahu, Hawaii">🌊 Oahu</option>
-        <option value="Kauai, Hawaii">🌿 Kauai</option>
-        <option value="Big Island, Hawaii">🌋 Big Island</option>
-        <option value="Molokai, Hawaii">🌴 Molokai</option>
-      </optgroup>
-      <optgroup label="🇺🇸 USA">
-        <option value="California, USA">California</option>
-        <option value="New York, USA">New York</option>
-        <option value="Texas, USA">Texas</option>
-        <option value="Florida, USA">Florida</option>
-        <option value="Washington, USA">Washington</option>
-        <option value="Other USA">Other USA State</option>
-      </optgroup>
-      <optgroup label="🌍 World">
-        <option value="Australia">🇦🇺 Australia</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="Japan">🇯🇵 Japan</option>
-        <option value="United Kingdom">🇬🇧 UK</option>
-        <option value="Other">🌍 Other Country</option>
-      </optgroup>
-    </select>
+    
     <div class="signup-form">
             <span class="signup-label">Your Full Name</span>
             <input class="signup-input" id="playerName"
@@ -510,10 +485,10 @@ buildPreview();
 // ── Legend ──────────────────────────────────────
 
 // ── Name Entry ─────────────────────────────────
-document.getElementById('pName').addEventListener('input',checkReady);
-document.getElementById('pLoc').addEventListener('change',checkReady);
+document.getElementById('playerName').addEventListener('input', checkReady);
+document.getElementById('playerLoc').addEventListener('input', checkReady);
 function checkReady(){
-  const ok=document.getElementById('pName').value.trim().length>=2&&document.getElementById('pLoc').value;
+  const ok = (document.getElementById('playerName')?.value.trim().length > 0) && (document.getElementById('playerLoc')?.value.trim().length > 0);
   document.getElementById('startBtn').disabled=!ok;
 }
 
@@ -536,8 +511,8 @@ function startGame(){
     setTimeout(()=>{if(_fi){_fi.style.borderColor='';_fi.style.boxShadow='';}if(_fe)_fe.textContent='';},3000);
     return;
   }
-  playerName=document.getElementById('pName').value.trim();
-  playerLoc=document.getElementById('pLoc').value;
+  playerName=document.getElementById('playerName').value.trim();
+  playerLoc=document.getElementById('playerLoc').value;
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('hud').style.display='flex';
   document.getElementById('timerBar').style.display='block';
